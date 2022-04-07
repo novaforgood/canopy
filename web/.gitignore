@@ -1,10 +1,6 @@
 node_modules
 
-.cache
-.env
-.vercel
-.output
-
-/build/
+/.cache
 /public/build
-/api/index.js
+/.netlify
+.env
