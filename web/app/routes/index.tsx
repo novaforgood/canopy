@@ -17,7 +17,7 @@ export default function Index() {
         </div>
       ) : (
         <div>
-          <h1>Not Authenticated</h1>
+          <h1 className="bg-red-50">Not Authenticated</h1>
 
           <a href="/login">Login</a>
         </div>
