@@ -1,10 +1,5 @@
-import {
-  NhostReactProvider,
-  useAccessToken,
-  useAuthenticationStatus,
-} from "@nhost/react";
+import { NhostReactProvider, useAccessToken } from "@nhost/react";
 import { json, MetaFunction } from "@remix-run/node";
-import { MantineProvider } from "@mantine/core";
 import {
   Links,
   LiveReload,
@@ -17,12 +12,12 @@ import {
 import { useMemo } from "react";
 import { getNhostClient } from "./api/nhost";
 import { requireEnv } from "./utils";
-import styles from "./styles/app.css";
+import tailwindStyles from "./generated/tw.css";
 import { Provider } from "urql";
 import { getUrqlClient } from "./api/urql";
 
 export function links() {
-  return [{ rel: "stylesheet", href: styles }];
+  return [{ rel: "stylesheet", href: tailwindStyles }];
 }
 
 export const meta: MetaFunction = () => ({

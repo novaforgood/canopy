@@ -7,10 +7,10 @@
   "scripts": {
     "introspect": "graphql-codegen --config graphql-introspect.config.js",
     "build": "npm run build:css && npm run build:graphql && remix build",
-    "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
+    "build:css": "tailwindcss -m -i ./styles/app.css -o app/generated/tw.css",
     "build:graphql": "graphql-codegen --config graphql-codegen.config.js",
     "dev": "concurrently \"npm run dev:css\" \"cross-env NODE_ENV=development netlify dev\"",
-    "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
+    "dev:css": "tailwindcss -w -i ./styles/app.css -o app/generated/tw.css",
     "start": "cross-env NODE_ENV=production netlify dev",
     "postinstall": "npm run build:graphql && npm run build:css"
   },
