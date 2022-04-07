@@ -1,6 +1,5 @@
 .nhost
 
-nhost/config.yaml
 
 web/node_modules
 node_modules
