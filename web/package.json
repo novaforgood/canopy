@@ -5,13 +5,17 @@
   "license": "",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run build:css && remix build",
+    "introspect": "graphql-codegen --config graphql-introspect.config.js",
+    "build": "npm run build:css && npm run build:graphql && remix build",
     "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
+    "build:graphql": "graphql-codegen --config graphql-codegen.config.js",
     "dev": "concurrently \"npm run dev:css\" \"cross-env NODE_ENV=development netlify dev\"",
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
-    "start": "cross-env NODE_ENV=production netlify dev"
+    "start": "cross-env NODE_ENV=production netlify dev",
+    "postinstall": "npm run build:graphql && npm run build:css"
   },
   "dependencies": {
+    "@graphql-codegen/cli": "^2.6.2",
     "@mantine/hooks": "^4.1.2",
     "@netlify/functions": "^0.10.0",
     "@nhost/react": "^0.5.0",
@@ -19,10 +23,18 @@
     "@remix-run/node": "^1.3.4",
     "@remix-run/react": "^1.3.4",
     "cross-env": "^7.0.3",
+    "graphql": "^16.3.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "urql": "^2.2.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.6.2",
+    "@graphql-codegen/introspection": "^2.1.1",
+    "@graphql-codegen/typescript": "2.4.8",
+    "@graphql-codegen/typescript-operations": "^2.3.5",
+    "@graphql-codegen/typescript-urql": "^3.5.7",
+    "@graphql-codegen/urql-introspection": "2.1.1",
     "@remix-run/dev": "^1.3.4",
     "@remix-run/eslint-config": "^1.3.4",
     "@types/react": "^17.0.24",
