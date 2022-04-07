@@ -1,4 +1,8 @@
-import { NhostReactProvider } from "@nhost/react";
+import {
+  NhostReactProvider,
+  useAccessToken,
+  useAuthenticationStatus,
+} from "@nhost/react";
 import { json, MetaFunction } from "@remix-run/node";
 import { MantineProvider } from "@mantine/core";
 import {
@@ -14,6 +18,8 @@ import { useMemo } from "react";
 import { getNhostClient } from "./api/nhost";
 import { requireEnv } from "./utils";
 import styles from "./styles/app.css";
+import { Provider } from "urql";
+import { getUrqlClient } from "./api/urql";
 
 export function links() {
   return [{ rel: "stylesheet", href: styles }];
@@ -46,6 +52,22 @@ export async function loader() {
   });
 }
 
+interface UrqlProviderProps {
+  children: React.ReactNode;
+}
+function UrqlProvider({ children }: UrqlProviderProps) {
+  const data = useLoaderData<LoaderData>();
+  const nhostUrl = data.ENV.NHOST_URL;
+
+  const accessToken = useAccessToken();
+
+  const urqlClient = useMemo(
+    () => getUrqlClient(`${nhostUrl}/v1/graphql`, accessToken),
+    [accessToken, nhostUrl]
+  );
+  return <Provider value={urqlClient}>{children}</Provider>;
+}
+
 export default function App() {
   const data = useLoaderData<LoaderData>();
 
@@ -60,7 +82,9 @@ export default function App() {
       </head>
       <body>
         <NhostReactProvider nhost={nhost}>
-          <Outlet />
+          <UrqlProvider>
+            <Outlet />
+          </UrqlProvider>
         </NhostReactProvider>
         <script
           dangerouslySetInnerHTML={{
