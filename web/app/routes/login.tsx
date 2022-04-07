@@ -3,21 +3,9 @@ import { useState } from "react";
 
 export default function Login() {
   const { google } = useProviderLink();
-  const { signInEmailPasswordless, isLoading, isSuccess, isError, error } =
-    useSignInEmailPasswordless();
-
   const [email, setEmail] = useState("");
-
-  if (isSuccess) {
-    return (
-      <div>
-        <div>
-          An email has been sent to {email}. Please check your mailbox and click
-          on the authentication link.
-        </div>
-      </div>
-    );
-  }
+  const [emailSent, setEmailSent] = useState(false);
+  const { signInEmailPasswordless } = useSignInEmailPasswordless(email);
 
   return (
     <div>
@@ -33,12 +21,19 @@ export default function Login() {
       />
       <button
         onClick={() => {
-          console.log(email);
-          signInEmailPasswordless(email);
+          signInEmailPasswordless().then(() => {
+            setEmailSent(true);
+          });
         }}
       >
         Login
       </button>
+
+      {emailSent && (
+        <div>
+          Email sent to {email}. Click the link in the e-mail to log in.
+        </div>
+      )}
     </div>
   );
 }
