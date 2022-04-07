@@ -6,3 +6,4 @@ Install:
 
 - Docker
 - Nhost
+- Netlify CLI

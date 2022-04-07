@@ -1,3 +1,4 @@
+import { NhostReactProvider } from "@nhost/react";
 import type { MetaFunction } from "@remix-run/node";
 import {
   Links,
@@ -7,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { nhost } from "./api/nhost";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -22,7 +24,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <NhostReactProvider nhost={nhost}>
+          <Outlet />
+        </NhostReactProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
