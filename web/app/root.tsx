@@ -1,5 +1,6 @@
 import { NhostReactProvider } from "@nhost/react";
 import { json, MetaFunction } from "@remix-run/node";
+import { MantineProvider } from "@mantine/core";
 import {
   Links,
   LiveReload,
