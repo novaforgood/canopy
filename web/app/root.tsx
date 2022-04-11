@@ -1,4 +1,3 @@
-import { NhostReactProvider, useAccessToken } from "@nhost/react";
 import { json, MetaFunction } from "@remix-run/node";
 import {
   Links,
@@ -10,7 +9,6 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { useMemo } from "react";
-import { getNhostClient } from "./api/nhost";
 import { requireEnv } from "./utils";
 import tailwindStyles from "./generated/tw.css";
 import { Provider } from "urql";
@@ -27,7 +25,7 @@ export const meta: MetaFunction = () => ({
 });
 
 // Put environment variables that should be exposed to the client here.
-const EXPOSED_ENV_VARS = ["NHOST_URL"] as const;
+const EXPOSED_ENV_VARS = [] as const;
 
 interface LoaderData {
   ENV: {
@@ -51,23 +49,18 @@ interface UrqlProviderProps {
   children: React.ReactNode;
 }
 function UrqlProvider({ children }: UrqlProviderProps) {
-  const data = useLoaderData<LoaderData>();
-  const nhostUrl = data.ENV.NHOST_URL;
-
-  const accessToken = useAccessToken();
+  const apiUrl = "";
+  const accessToken = "";
 
   const urqlClient = useMemo(
-    () => getUrqlClient(`${nhostUrl}/v1/graphql`, accessToken),
-    [accessToken, nhostUrl]
+    () => getUrqlClient(`${apiUrl}/v1/graphql`, accessToken),
+    [accessToken, apiUrl]
   );
   return <Provider value={urqlClient}>{children}</Provider>;
 }
 
 export default function App() {
   const data = useLoaderData<LoaderData>();
-
-  const nhostUrl = data.ENV.NHOST_URL;
-  const nhost = useMemo(() => getNhostClient(nhostUrl), [nhostUrl]);
 
   return (
     <html lang="en">
@@ -76,11 +69,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <NhostReactProvider nhost={nhost}>
-          <UrqlProvider>
-            <Outlet />
-          </UrqlProvider>
-        </NhostReactProvider>
+        <UrqlProvider>
+          <Outlet />
+        </UrqlProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(data.ENV)}`,

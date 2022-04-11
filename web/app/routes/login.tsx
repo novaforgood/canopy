@@ -1,17 +1,12 @@
-import { useProviderLink, useSignInEmailPasswordless } from "@nhost/react";
 import { useState } from "react";
 import { Button } from "~/components/atomic/Button";
 
 export default function Login() {
-  const { google } = useProviderLink();
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const { signInEmailPasswordless } = useSignInEmailPasswordless(email);
 
   return (
     <div>
-      <a href={`${google}`}>Login with google</a>
-
       <div>Login with email</div>
       <input
         type="text"
@@ -20,15 +15,7 @@ export default function Login() {
           setEmail(e.target.value);
         }}
       />
-      <Button
-        onClick={() => {
-          signInEmailPasswordless().then(() => {
-            setEmailSent(true);
-          });
-        }}
-      >
-        Login
-      </Button>
+      <Button onClick={() => {}}>Login</Button>
 
       {emailSent && (
         <div>
