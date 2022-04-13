@@ -1,7 +1,7 @@
 import { signOut } from "firebase/auth";
-import { useAuth } from "../src/hooks/useAuth";
-import { useSignIn } from "../src/hooks/useSignIn";
-import { auth } from "../src/lib/firebase";
+import { useAuth } from "../hooks/useAuth";
+import { useSignIn } from "../hooks/useSignIn";
+import { auth } from "../lib/firebase";
 
 const logout = () => {
   signOut(auth);
