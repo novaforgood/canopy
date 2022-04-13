@@ -1,8 +1,9 @@
 import type { AppProps } from "next/app";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { getUrqlClient } from "../lib/urql";
 import { Provider } from "urql";
 import { auth } from "../lib/firebase";
+import "../styles/globals.css";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
