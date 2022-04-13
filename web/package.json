@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:graphql": "graphql-codegen --config graphql-codegen.config.js",
-    "introspect": "graphql-codegen --config graphql-introspect.config.js",
+    "introspect": "npx env-cmd graphql-codegen --config graphql-introspect.config.js",
     "start": "next start",
     "lint": "next lint"
   },
