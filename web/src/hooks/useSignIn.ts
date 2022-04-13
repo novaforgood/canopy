@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { requireEnv } from "../lib/env";
 import { auth } from "../lib/firebase";
 
 export function useSignIn() {
@@ -7,7 +8,7 @@ export function useSignIn() {
 
   const afterSignIn = useCallback(async () => {
     const token = await auth.currentUser?.getIdToken();
-    return fetch("/api/upsertUserData", {
+    return fetch(`${requireEnv("NEXT_PUBLIC_API_PREFIX")}/upsertUserData`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
