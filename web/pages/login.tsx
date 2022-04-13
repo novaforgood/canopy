@@ -1,4 +1,6 @@
 import { signOut } from "firebase/auth";
+import { useState } from "react";
+import { useUserQuery } from "../generated/graphql";
 import { useAuth } from "../hooks/useAuth";
 import { useSignIn } from "../hooks/useSignIn";
 import { auth } from "../lib/firebase";
@@ -11,6 +13,10 @@ export default function Login() {
   const { signInWithGoogle } = useSignIn();
 
   const { user, loading, error } = useAuth();
+  const [{ data }, executeQuery] = useUserQuery({
+    variables: { id: user?.uid ?? "" },
+  });
+  const userId = data?.users_by_pk?.id;
 
   if (loading) {
     return (
@@ -26,6 +32,14 @@ export default function Login() {
     return (
       <div>
         <p>Current User: {user.email}</p>
+        <p>User ID: {userId}</p>
+        <button
+          onClick={() => {
+            executeQuery({ requestPolicy: "network-only" });
+          }}
+        >
+          lol
+        </button>
         <button onClick={logout}>Log out</button>
       </div>
     );

@@ -25,9 +25,6 @@ export default withAuth<ResponseData>(async (req, res) => {
       email: req.token.email,
     })
     .toPromise()
-    .then((res) => {
-      console.log(res);
-    })
     .catch((e) => {
       console.log(e);
     });
