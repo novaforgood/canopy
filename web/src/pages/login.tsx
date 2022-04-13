@@ -1,6 +1,6 @@
 import { signOut } from "firebase/auth";
-import { useAuthState, useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { useAuth } from "../hooks/useAuth";
+import { useSignIn } from "../hooks/useSignIn";
 import { auth } from "../lib/firebase";
 
 const logout = () => {
@@ -8,7 +8,7 @@ const logout = () => {
 };
 
 export default function Login() {
-  const [signInWithGoogle] = useSignInWithGoogle(auth);
+  const { signInWithGoogle } = useSignIn();
 
   const { user, loading, error } = useAuth();
 
@@ -35,7 +35,7 @@ export default function Login() {
     <div>
       <button
         onClick={() => {
-          signInWithGoogle();
+          signInWithGoogle().then(() => {});
         }}
       >
         Sign in with Google
