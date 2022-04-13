@@ -6,10 +6,14 @@ import { auth } from "../lib/firebase";
 export function useAuth() {
   const handleUserChanged = useCallback(async (user: User | null) => {
     if (!user) return;
-    const token = await auth.currentUser?.getIdToken();
+    const tokenResult = await user.getIdTokenResult();
+    const claims = tokenResult.claims["https://hasura.io/jwt/claims"];
+    if (claims) return;
+
+    // New user has logged in but doesn't have JWT claims
     await fetch("/api/updateJwt", {
       headers: {
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${tokenResult.token}`,
       },
     });
     await auth.currentUser?.getIdToken(true);
