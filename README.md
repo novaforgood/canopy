@@ -9,7 +9,7 @@ Install:
 
 ### Setup Next.js
 
-Create a `.env` file with the following variables:
+Create a `.env` file in the `/web` folder with the following variables:
 
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY=
@@ -32,6 +32,12 @@ npm run dev
 ```
 
 ### Setup Hasura
+
+Create a `.env` file in the `/hasura` folder with the following variables:
+
+```
+HASURA_GRAPHQL_JWT_SECRET=
+```
 
 Run all commands from inside the `/hasura` folder:
 
