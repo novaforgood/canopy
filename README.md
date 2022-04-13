@@ -7,13 +7,28 @@ Install:
 - Docker
 - Hasura CLI
 
-### Setup Web Client
+### Setup Next.js
+
+Create a `.env` file with the following variables:
 
 ```
-~$ cd web
-~$ npm install
-~$ npm run build:graphql
-~$ npm run dev
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_GRAPHQL_ENDPOINT=
+
+FIREBASE_SERVICE_ACCOUNT=
+GRAPHQL_ADMIN_SECRET=
+```
+
+Run the project:
+
+```
+cd web
+npm install
+npm run build:graphql
+npm run dev
 ```
 
 ### Setup Hasura
@@ -21,25 +36,25 @@ Install:
 Run all commands from inside the `/hasura` folder:
 
 ```
-~$ cd hasura
+cd hasura
 ```
 
 Start local database and Hasura GraphQL server
 
 ```
-~$ docker-compose up -d
+docker-compose up -d
 ```
 
 Apply metadata and migrations. (Only necessary if you recently pulled changes and need to update your local instance to match the metadata/migrations in the repo.)
 
 ```
-~$ hasura metadata apply
-~$ hasura migrate apply --all-databases
-~$ hasura metadata reload
+hasura metadata apply
+hasura migrate apply --all-databases
+hasura metadata reload
 ```
 
 Start Hasura console
 
 ```
-~$ hasura console --endpoint "http://localhost:8080"  --admin-secret "myadminsecretkey" // Connect to local instance
+hasura console --endpoint "http://localhost:8080"  --admin-secret "myadminsecretkey" // Connect to local instance
 ```
