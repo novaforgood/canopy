@@ -1,7 +1,6 @@
 import { signOut } from "firebase/auth";
-import { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useUserQuery } from "../generated/graphql";
-import { useAuth } from "../hooks/useAuth";
 import { useSignIn } from "../hooks/useSignIn";
 import { auth } from "../lib/firebase";
 
@@ -12,7 +11,7 @@ const logout = () => {
 export default function Login() {
   const { signInWithGoogle } = useSignIn();
 
-  const { user, loading, error } = useAuth();
+  const [user, loading, error] = useAuthState(auth);
   const [{ data }, executeQuery] = useUserQuery({
     variables: { id: user?.uid ?? "" },
   });
