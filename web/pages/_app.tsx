@@ -1,7 +1,6 @@
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { useMemo } from "react";
-import { urqlClient } from "../lib/urql";
+import { urqlClient } from "../src/lib/urql";
 import { Provider } from "urql";
 
 interface UrqlProviderProps {

@@ -1,6 +1,6 @@
 import { gql } from "urql";
-import { serverUrqlClient } from "../../server/urql";
-import { withAuth } from "../../server/withAuth";
+import { serverUrqlClient } from "../../src/server/urql";
+import { withAuth } from "../../src/server/withAuth";
 
 const UPSERT_USER_MUTATION = gql`
   mutation UpsertUser($id: String!, $email: String!) {
