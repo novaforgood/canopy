@@ -1,7 +1,6 @@
 import { User } from "firebase/auth";
 import { useCallback } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { requireEnv } from "../lib/env";
 import { auth } from "../lib/firebase";
 
 export function useAuth() {
@@ -12,7 +11,7 @@ export function useAuth() {
     if (claims) return;
 
     // New user has logged in but doesn't have JWT claims
-    await fetch(`${requireEnv("NEXT_PUBLIC_API_PREFIX")}/updateJwt`, {
+    await fetch(`/api/updateJwt`, {
       headers: {
         authorization: `Bearer ${tokenResult.token}`,
       },

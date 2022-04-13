@@ -8,7 +8,7 @@ export function useSignIn() {
 
   const afterSignIn = useCallback(async () => {
     const token = await auth.currentUser?.getIdToken();
-    return fetch(`${requireEnv("NEXT_PUBLIC_API_PREFIX")}/upsertUserData`, {
+    return fetch(`/api/upsertUserData`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
