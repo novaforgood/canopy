@@ -1,10 +1,10 @@
 module.exports = {
   schema: [
     {
-      "http://localhost:1337/v1/graphql": {
+      "https://mentorcenter-v3-dev.hasura.app/v1/graphql": {
         headers: {
-          "x-hasura-admin-secret": "nhost-admin-secret",
-          "x-hasura-role": "user",
+          "x-hasura-admin-secret": process.env.GRAPHQL_ADMIN_SECRET,
+          "x-hasura-role": "admin",
         },
       },
     },
