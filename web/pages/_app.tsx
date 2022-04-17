@@ -14,7 +14,9 @@ function UrqlProvider({ children }: UrqlProviderProps) {
     if (user) {
       const tokenResult = await user.getIdTokenResult();
       const claims = tokenResult.claims["https://hasura.io/jwt/claims"];
-      if (!claims) {
+
+      // TODO: Add logic to prevent execessive JWT updates.
+      if (true || !claims) {
         // New user has logged in but doesn't have JWT claims
         await fetch(`/api/auth/updateJwt`, {
           headers: {
