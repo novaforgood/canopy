@@ -16,7 +16,7 @@ function UrqlProvider({ children }: UrqlProviderProps) {
       const claims = tokenResult.claims["https://hasura.io/jwt/claims"];
       if (!claims) {
         // New user has logged in but doesn't have JWT claims
-        await fetch(`/api/updateJwt`, {
+        await fetch(`/api/auth/updateJwt`, {
           headers: {
             authorization: `Bearer ${tokenResult.token}`,
           },

@@ -1,5 +1,5 @@
-import { auth } from "../../server/firebaseAdmin";
-import { withAuth } from "../../server/withAuth";
+import { auth } from "../../../server/firebaseAdmin";
+import { withAuth } from "../../../server/withAuth";
 
 type ResponseData = {
   detail: string;

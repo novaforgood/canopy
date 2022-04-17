@@ -8,7 +8,7 @@ export function useSignIn() {
 
   const afterSignIn = useCallback(async () => {
     const token = await auth.currentUser?.getIdToken();
-    return fetch(`/api/upsertUserData`, {
+    return fetch(`/api/auth/upsertUserData`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -17,7 +17,7 @@ export function useSignIn() {
 
   const signInWithGoogle = useCallback(async () => {
     _signInWithGoogle().then(afterSignIn);
-  }, [_signInWithGoogle]);
+  }, [_signInWithGoogle, afterSignIn]);
 
   return {
     signInWithGoogle,
