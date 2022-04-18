@@ -13,10 +13,10 @@ insert_permissions:
   - role: user
     permission:
       check:
-        profiles:
-          user_id:
-            _eq: X-Hasura-User-Id
+        owner_id:
+          _eq: X-Hasura-User-Id
       columns:
         - name
+        - owner_id
         - slug
       backend_only: false
