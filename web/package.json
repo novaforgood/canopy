@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@urql/exchange-auth": "^0.1.7",
+    "classnames": "^2.3.1",
     "firebase": "^9.6.10",
     "firebase-admin": "^10.0.2",
     "graphql": "^16.3.0",
