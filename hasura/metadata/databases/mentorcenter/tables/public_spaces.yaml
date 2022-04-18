@@ -20,3 +20,13 @@ insert_permissions:
         - owner_id
         - slug
       backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - name
+        - owner_id
+        - slug
+        - created_at
+        - id
+      filter: {}
