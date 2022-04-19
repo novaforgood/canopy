@@ -11,13 +11,11 @@ import { auth } from "../lib/firebase";
 function LandingPage() {
   return (
     <div className="p-4">
-      <h1>Landing Page</h1>
-      <p>This is the landing page.</p>
+      <h1 className="text-xl">Welcome to the Landing Page</h1>
+      <p>This is a landing page.</p>
       <div className="h-2"></div>
       <div className="flex flex-col">
-        <Link href="/create">Create Program</Link>
         <Link href="/login">Login</Link>
-        <Link href="/">Home</Link>
       </div>
     </div>
   );

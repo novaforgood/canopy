@@ -21,7 +21,7 @@ export default function Login() {
   });
 
   return (
-    <div>
+    <div className="p-4">
       {isLoggedIn ? (
         <div>Redirecting...</div>
       ) : (
