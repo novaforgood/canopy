@@ -15,12 +15,12 @@ export function useSignIn() {
         authorization: `Bearer ${token}`,
       },
     }).then(() => {
-      refetch({ requestPolicy: "network-only" });
+      return refetch({ requestPolicy: "network-only" });
     });
   }, [refetch]);
 
   const signInWithGoogle = useCallback(async () => {
-    signInWithPopup(auth, googleOauthProvider).then(afterSignIn);
+    return signInWithPopup(auth, googleOauthProvider).then(afterSignIn);
   }, [afterSignIn]);
 
   return {
