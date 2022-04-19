@@ -4,3 +4,37 @@ query User($id: String!) {
     email
   }
 }
+
+query AllProfilesOfUser($user_id: String!) {
+  profiles(where: { user_id: { _eq: $user_id } }) {
+    id
+    space {
+      id
+      name
+      slug
+    }
+  }
+}
+
+query SpaceBySlug($slug: String!) {
+  spaces(where: { slug: { _eq: $slug } }) {
+    id
+    name
+  }
+}
+
+mutation CreateOwnerProfileInNewSpace(
+  $user_id: String!
+  $space: spaces_insert_input!
+) {
+  insert_profiles_one(object: { space: { data: $space }, user_id: $user_id }) {
+    id
+    space_id
+    space {
+      id
+      name
+      slug
+    }
+    user_id
+  }
+}

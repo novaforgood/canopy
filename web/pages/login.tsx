@@ -1,58 +1,38 @@
 import { signOut } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { Button } from "../components/atomic/Button";
 import { useUserQuery } from "../generated/graphql";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useSignIn } from "../hooks/useSignIn";
+import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
-
-const logout = () => {
-  signOut(auth);
-};
 
 export default function Login() {
   const { signInWithGoogle } = useSignIn();
+  const isLoggedIn = useIsLoggedIn();
+  const router = useRouter();
+  const { userData } = useUserData();
 
-  const [user, loading, error] = useAuthState(auth);
-  const [{ data }, executeQuery] = useUserQuery({
-    variables: { id: user?.uid ?? "" },
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/");
+    }
   });
-  const userId = data?.users_by_pk?.id;
-
-  if (loading) {
-    return (
-      <div>
-        <p>Initialising User...</p>
-      </div>
-    );
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-  if (user) {
-    return (
-      <div>
-        <p>Current User: {user.email}</p>
-        <p>User ID: {userId}</p>
-        <button
-          onClick={() => {
-            executeQuery({ requestPolicy: "network-only" });
-          }}
-        >
-          lol
-        </button>
-        <button onClick={logout}>Log out</button>
-      </div>
-    );
-  }
 
   return (
     <div>
-      <button
-        onClick={() => {
-          signInWithGoogle().then(() => {});
-        }}
-      >
-        Sign in with Google
-      </button>
+      {isLoggedIn ? (
+        <div>Redirecting...</div>
+      ) : (
+        <Button
+          onClick={() => {
+            signInWithGoogle();
+          }}
+        >
+          Sign in with Google
+        </Button>
+      )}
     </div>
   );
 }

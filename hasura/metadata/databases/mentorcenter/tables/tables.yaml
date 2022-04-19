@@ -1,1 +1,3 @@
+- "!include public_profiles.yaml"
+- "!include public_spaces.yaml"
 - "!include public_users.yaml"
