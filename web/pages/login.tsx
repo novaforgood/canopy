@@ -12,7 +12,6 @@ export default function Login() {
   const { signInWithGoogle } = useSignIn();
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
-  const { userData } = useUserData();
 
   useEffect(() => {
     if (isLoggedIn) {
