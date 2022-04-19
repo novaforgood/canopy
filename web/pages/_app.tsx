@@ -36,6 +36,11 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     const unsubscribeListener = auth.onAuthStateChanged(async (user) => {
+      // Whenever auth state changes, we no longer know what the session is.
+      // We must wait for this handler to run to completion, resolving
+      // the session to either authenticated or null.
+
+      setSession(undefined);
       if (user) {
         const tokenResult = await user.getIdTokenResult();
         const claims = tokenResult.claims["https://hasura.io/jwt/claims"];
@@ -56,7 +61,8 @@ function AuthProvider({ children }: AuthProviderProps) {
           ? new Date(lastSignedIn).getTime()
           : 0;
         const timeDiff = Date.now() - lastSignedInTime;
-        if (timeDiff < 1000 * 15) {
+        if (true || timeDiff < 1000 * 15) {
+          // TODO: Do not always upsert. (Right now we hardcode this to true)
           // Upsert user info if it's less than 15 seconds since last signed in
           await fetch(`/api/auth/upsertUserData`, {
             method: "POST",
@@ -81,7 +87,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, [setSession]);
 
   if (session === undefined) {
-    return null; // TODO: Add loading screen.
+    return <div>Auth Loading...</div>; // TODO: Add loading screen.
   }
   return <>{children}</>;
 }
