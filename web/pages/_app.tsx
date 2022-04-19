@@ -61,8 +61,8 @@ function AuthProvider({ children }: AuthProviderProps) {
           ? new Date(lastSignedIn).getTime()
           : 0;
         const timeDiff = Date.now() - lastSignedInTime;
-        if (true || timeDiff < 1000 * 15) {
-          // TODO: Do not always upsert. (Right now we hardcode this to true)
+        console.log("Time since last signed in (ms):", timeDiff);
+        if (timeDiff < 1000 * 15) {
           // Upsert user info if it's less than 15 seconds since last signed in
           await fetch(`/api/auth/upsertUserData`, {
             method: "POST",
