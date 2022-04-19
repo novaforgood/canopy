@@ -1,7 +1,6 @@
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { Button } from "../components/atomic/Button";
 import { useUserQuery } from "../generated/graphql";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
