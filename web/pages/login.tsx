@@ -12,12 +12,13 @@ export default function Login() {
   const { signInWithGoogle } = useSignIn();
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
+  const { userData } = useUserData();
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (userData) {
       router.push("/");
     }
-  });
+  }, [userData, router]);
 
   return (
     <div className="p-4">
@@ -26,7 +27,9 @@ export default function Login() {
       ) : (
         <Button
           onClick={() => {
-            signInWithGoogle();
+            signInWithGoogle().then(() => {
+              router.push("/");
+            });
           }}
         >
           Sign in with Google
