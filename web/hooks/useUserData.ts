@@ -1,11 +1,12 @@
 import { useMemo } from "react";
+import { useRecoilValue } from "recoil";
 import { useUserQuery } from "../generated/graphql";
-import { useAuthState } from "./useAuthState";
+import { sessionAtom } from "../lib/recoil";
 
 export function useUserData() {
-  const { user } = useAuthState();
+  const session = useRecoilValue(sessionAtom);
   const [{ data }] = useUserQuery({
-    variables: { id: user?.uid ?? "" },
+    variables: { id: session?.userId ?? "" },
   });
 
   return useMemo(

@@ -2,6 +2,7 @@ import { atom } from "recoil";
 
 type Session = {
   jwt: string;
+  userId: string;
 } | null; // null means user is logged out
 
 export const sessionAtom = atom<Session | undefined>({

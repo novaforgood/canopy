@@ -43,6 +43,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         if (!claims) {
           // New user has logged in but doesn't have JWT claims
           await fetch(`/api/auth/updateJwt`, {
+            method: "POST",
             headers: {
               authorization: `Bearer ${tokenResult.token}`,
             },
@@ -50,7 +51,23 @@ function AuthProvider({ children }: AuthProviderProps) {
           await user.getIdToken(true);
         }
 
+        const lastSignedIn = user.metadata.lastSignInTime;
+        const lastSignedInTime = lastSignedIn
+          ? new Date(lastSignedIn).getTime()
+          : 0;
+        const timeDiff = Date.now() - lastSignedInTime;
+        if (timeDiff < 1000 * 15) {
+          // Upsert user info if it's less than 15 seconds since last signed in
+          await fetch(`/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${tokenResult.token}`,
+            },
+          });
+        }
+
         setSession({
+          userId: user.uid,
           jwt: await user.getIdToken(),
         });
       } else {
