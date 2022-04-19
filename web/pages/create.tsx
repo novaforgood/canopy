@@ -7,7 +7,7 @@ import { useCreateOwnerProfileInNewSpaceMutation } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
 
-const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 8);
+const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
 
 function slugify(name: string) {
   return name
