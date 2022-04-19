@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { customAlphabet } from "nanoid";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
 import { useCreateOwnerProfileInNewSpaceMutation } from "../generated/graphql";

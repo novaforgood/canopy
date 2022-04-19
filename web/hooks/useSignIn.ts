@@ -1,11 +1,10 @@
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useCallback } from "react";
-import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { requireEnv } from "../lib/env";
 import { auth } from "../lib/firebase";
 
-export function useSignIn() {
-  const [_signInWithGoogle] = useSignInWithGoogle(auth);
+const googleOauthProvider = new GoogleAuthProvider();
 
+export function useSignIn() {
   const afterSignIn = useCallback(async () => {
     const token = await auth.currentUser?.getIdToken();
     return fetch(`/api/auth/upsertUserData`, {
@@ -16,8 +15,8 @@ export function useSignIn() {
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
-    _signInWithGoogle().then(afterSignIn);
-  }, [_signInWithGoogle, afterSignIn]);
+    signInWithPopup(auth, googleOauthProvider).then(afterSignIn);
+  }, [afterSignIn]);
 
   return {
     signInWithGoogle,

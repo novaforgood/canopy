@@ -1,10 +1,9 @@
 import { useMemo } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useUserQuery } from "../generated/graphql";
-import { auth } from "../lib/firebase";
+import { useAuthState } from "./useAuthState";
 
 export function useUserData() {
-  const [user] = useAuthState(auth);
+  const { user } = useAuthState();
   const [{ data }] = useUserQuery({
     variables: { id: user?.uid ?? "" },
     pause: !user?.uid,

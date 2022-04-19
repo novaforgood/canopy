@@ -13,6 +13,7 @@ function LandingPage() {
     <div>
       <h1>Landing Page</h1>
       <p>This is the landing page.</p>
+      <div className="h-2"></div>
       <div className="flex flex-col">
         <Link href="/create">Create Program</Link>
         <Link href="/login">Login</Link>
