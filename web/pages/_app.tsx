@@ -62,8 +62,8 @@ function AuthProvider({ children }: AuthProviderProps) {
           : 0;
         const timeDiff = Date.now() - lastSignedInTime;
         console.log("Time since last signed in (ms):", timeDiff);
-        if (timeDiff < 1000 * 15) {
-          // Upsert user info if it's less than 15 seconds since last signed in
+        if (timeDiff < 1000 * 3) {
+          // Upsert user info if it's less than 3 seconds since last signed in
           await fetch(`/api/auth/upsertUserData`, {
             method: "POST",
             headers: {
@@ -87,7 +87,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, [setSession]);
 
   if (session === undefined) {
-    return <div>Auth Loading...</div>; // TODO: Add loading screen.
+    return <div></div>; // TODO: Add loading screen.
   }
   return <>{children}</>;
 }
