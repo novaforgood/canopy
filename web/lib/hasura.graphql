@@ -5,13 +5,11 @@ query User($id: String!) {
   }
 }
 
-mutation CreateSpace($user_id: String!, $space_name: String!, $slug: String!) {
-  insert_profiles_one(
-    object: {
-      space: { data: { name: $space_name, slug: $slug, owner_id: $user_id } }
-      user_id: $user_id
-    }
-  ) {
+mutation CreateOwnerProfileInNewSpace(
+  $user_id: String!
+  $space: spaces_insert_input!
+) {
+  insert_profiles_one(object: { space: { data: $space }, user_id: $user_id }) {
     id
     space_id
     space {
