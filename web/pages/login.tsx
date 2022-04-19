@@ -9,7 +9,7 @@ import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
 
 export default function Login() {
-  const { signInWithGoogle } = useSignIn();
+  const { signInWithGoogle, signingIn } = useSignIn();
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
   const { userData } = useUserData();
@@ -22,7 +22,9 @@ export default function Login() {
 
   return (
     <div className="p-4">
-      {isLoggedIn ? (
+      {signingIn ? (
+        <div>Signing in...</div>
+      ) : isLoggedIn ? (
         <div>Redirecting...</div>
       ) : (
         <Button

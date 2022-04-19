@@ -30,26 +30,11 @@ function makeReadableError(message: string) {
 }
 
 export default function CreatePage() {
-  const [
-    { data: createSpaceData, error: createSpaceError },
-    createOwnerProfile,
-  ] = useCreateOwnerProfileInNewSpaceMutation();
+  const [_, createOwnerProfile] = useCreateOwnerProfileInNewSpaceMutation();
 
   const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    if (createSpaceError) {
-      const msg = makeReadableError(createSpaceError.message);
-      setError(msg);
-    }
-  }, [createSpaceError]);
 
   const router = useRouter();
-  const newSlug = createSpaceData?.insert_profiles_one?.space.slug;
-  useEffect(() => {
-    if (newSlug) {
-      router.push(`/space/${newSlug}`);
-    }
-  }, [newSlug, router]);
 
   const { userData } = useUserData();
   const [name, setName] = useState("");
@@ -79,6 +64,13 @@ export default function CreatePage() {
               slug: generatedSlug,
             },
             user_id: userData?.id ?? "",
+          }).then((result) => {
+            if (result.error) {
+              const msg = makeReadableError(result.error.message);
+              setError(msg);
+            } else {
+              router.push(`/space/${generatedSlug}`);
+            }
           });
         }}
       >

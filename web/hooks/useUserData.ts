@@ -4,15 +4,14 @@ import { useAuthState } from "./useAuthState";
 
 export function useUserData() {
   const { user } = useAuthState();
-  const [{ data }, refetch] = useUserQuery({
+  const [{ data }] = useUserQuery({
     variables: { id: user?.uid ?? "" },
   });
 
   return useMemo(
     () => ({
       userData: data?.users_by_pk,
-      refetch,
     }),
-    [data?.users_by_pk, refetch]
+    [data?.users_by_pk]
   );
 }
