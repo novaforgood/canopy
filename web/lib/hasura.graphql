@@ -16,6 +16,13 @@ query AllProfilesOfUser($user_id: String!) {
   }
 }
 
+query SpaceBySlug($slug: String!) {
+  spaces(where: { slug: { _eq: $slug } }) {
+    id
+    name
+  }
+}
+
 mutation CreateOwnerProfileInNewSpace(
   $user_id: String!
   $space: spaces_insert_input!

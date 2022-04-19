@@ -10,7 +10,7 @@ import { auth } from "../lib/firebase";
 
 function LandingPage() {
   return (
-    <div>
+    <div className="p-4">
       <h1>Landing Page</h1>
       <p>This is the landing page.</p>
       <div className="h-2"></div>
@@ -34,7 +34,7 @@ function LoggedInHomePage() {
   });
   const router = useRouter();
   return (
-    <div>
+    <div className="p-4">
       <h1>Logged In Home Page</h1>
       <p>This is the logged in home page.</p>
       <div className="h-4"></div>
