@@ -4,7 +4,6 @@ import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
 import { useCreateOwnerProfileInNewSpaceMutation } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
-import { auth } from "../lib/firebase";
 import { useRouter } from "next/router";
 
 const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
@@ -56,14 +55,18 @@ export default function CreatePage() {
       <Button
         // disabled={!name}
         onClick={() => {
+          if (!userData?.id) {
+            return;
+          }
+
           const generatedSlug = slugifyAndAppendRandomString(name);
           createOwnerProfile({
             space: {
               name,
-              owner_id: userData?.id,
+              owner_id: userData.id,
               slug: generatedSlug,
             },
-            user_id: userData?.id ?? "",
+            user_id: userData.id,
           }).then((result) => {
             if (result.error) {
               const msg = makeReadableError(result.error.message);

@@ -1,10 +1,7 @@
-import {
-  createClient,
-  dedupExchange,
-  cacheExchange,
-  fetchExchange,
-} from "urql";
+import { cacheExchange } from "@urql/exchange-graphcache";
+import { createClient, dedupExchange, fetchExchange } from "urql";
 import { requireEnv } from "./env";
+import schema from "../generated/graphql";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
@@ -15,6 +12,7 @@ export function getUrqlClient(jwt: string) {
         Authorization: `Bearer ${jwt}`,
       },
     },
-    exchanges: [dedupExchange, cacheExchange, fetchExchange],
+    requestPolicy: "cache-and-network",
+    exchanges: [dedupExchange, cacheExchange({ schema }), fetchExchange],
   });
 }

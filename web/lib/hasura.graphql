@@ -34,6 +34,7 @@ mutation CreateOwnerProfileInNewSpace(
       id
       name
       slug
+      owner_id
     }
     user_id
   }
