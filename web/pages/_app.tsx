@@ -56,22 +56,6 @@ function AuthProvider({ children }: AuthProviderProps) {
           await user.getIdToken(true);
         }
 
-        const lastSignedIn = user.metadata.lastSignInTime;
-        const lastSignedInTime = lastSignedIn
-          ? new Date(lastSignedIn).getTime()
-          : 0;
-        const timeDiff = Date.now() - lastSignedInTime;
-        console.log("Time since last signed in (ms):", timeDiff);
-        if (timeDiff < 1000 * 3) {
-          // Upsert user info if it's less than 3 seconds since last signed in
-          await fetch(`/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${tokenResult.token}`,
-            },
-          });
-        }
-
         setSession({
           userId: user.uid,
           jwt: await user.getIdToken(),
