@@ -13,7 +13,7 @@ function LandingPage() {
   return (
     <div className="w-full p-8 md:h-screen">
       <div className="w-full items-center justify-between md:flex">
-        {<img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" />}
+        <img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" />
         <div className="flex" justify-end="true">
           {
             <Button
@@ -36,14 +36,10 @@ function LandingPage() {
           }
         </div>
       </div>
-      <div className="flex justify-between gap-8 pt-10 md:px-36 md:pt-36">
-        <div className="md:w-160 md:flex-shrink-0">
-          <div />
-          <div>This is a landing page</div>
-          <div>
-            Mentor Center makes mentorship accessible and manageable for any
-            community. Only login button works for now.
-          </div>
+      <div className="flex justify-between gap-100 pt-10 md:px-36 md:pt-36">
+        <div>
+          Mentor Center makes mentorship accessible and manageable for any
+          community. Only login button works for now.
           <Button
             className="h-14 px-4 md:w-80"
             onClick={() => {
@@ -53,10 +49,6 @@ function LandingPage() {
             Join Beta
           </Button>
         </div>
-        <img
-          src="https://emoji.gg/assets/emoji/6757_Sadge.png"
-          // className="hidden md:block"
-        ></img>
       </div>
     </div>
   );
