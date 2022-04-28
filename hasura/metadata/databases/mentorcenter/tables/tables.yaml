@@ -1,3 +1,5 @@
 - "!include public_profiles.yaml"
+- "!include public_space_invite_link_types.yaml"
+- "!include public_space_invite_links.yaml"
 - "!include public_spaces.yaml"
 - "!include public_users.yaml"
