@@ -17,7 +17,7 @@ module.exports = {
         withComponent: false,
         withRefetchFn: true,
         scalars: {
-          timestamptz: "string",
+          timestamptz: "Date",
           uuid: "string",
         },
       },
@@ -39,7 +39,7 @@ module.exports = {
         withHooks: false,
         urqlImportFrom: "../urql",
         scalars: {
-          timestamptz: "string",
+          timestamptz: "Date",
           uuid: "string",
         },
       },
