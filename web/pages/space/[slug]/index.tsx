@@ -2,13 +2,25 @@ import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Button } from "../../../components/atomic/Button";
-import { useSpaceBySlugQuery, useUserQuery } from "../../../generated/graphql";
+import {
+  useCreateInviteLinkMutation,
+  useSpaceBySlugQuery,
+  useUserQuery,
+} from "../../../generated/graphql";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../hooks/useIsLoggedIn";
 import { useSignIn } from "../../../hooks/useSignIn";
 import { useUserData } from "../../../hooks/useUserData";
 import { auth } from "../../../lib/firebase";
 
+function CreateInviteLink() {
+  const [createInviteLink] = useCreateInviteLinkMutation();
+  return (
+    <div className="p-4">
+      <Button>Create Invite Link</Button>
+    </div>
+  );
+}
 export default function SpaceHomepage() {
   const router = useRouter();
 

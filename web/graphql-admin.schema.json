@@ -6984,6 +6984,18 @@
             "deprecationReason": null
           },
           {
+            "name": "space",
+            "description": "An object relationship",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "spaces",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space_id",
             "description": null,
             "args": [],
@@ -7247,6 +7259,18 @@
             "deprecationReason": null
           },
           {
+            "name": "space",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "spaces_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space_id",
             "description": null,
             "type": {
@@ -7328,6 +7352,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "space",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "spaces_obj_rel_insert_input",
               "ofType": null
             },
             "defaultValue": null,
@@ -7631,6 +7667,18 @@
             "type": {
               "kind": "ENUM",
               "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "space",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "spaces_order_by",
               "ofType": null
             },
             "defaultValue": null,

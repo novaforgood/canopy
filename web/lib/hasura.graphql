@@ -48,3 +48,13 @@ mutation CreateOwnerProfileInNewSpace(
     user_id
   }
 }
+
+mutation CreateInviteLink($data: space_invite_links_insert_input!) {
+  insert_space_invite_links_one(object: $data) {
+    id
+    expires_at
+    created_at
+    space_id
+    type
+  }
+}
