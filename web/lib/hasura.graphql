@@ -26,8 +26,17 @@ query SpaceBySlug($slug: String!) {
 mutation CreateOwnerProfileInNewSpace(
   $user_id: String!
   $space: spaces_insert_input!
+  $profile_type: profile_types_enum!
+  $profile_listing_enabled: Boolean!
 ) {
-  insert_profiles_one(object: { space: { data: $space }, user_id: $user_id }) {
+  insert_profiles_one(
+    object: {
+      space: { data: $space }
+      user_id: $user_id
+      type: $profile_type
+      listing_enabled: $profile_listing_enabled
+    }
+  ) {
     id
     space_id
     space {

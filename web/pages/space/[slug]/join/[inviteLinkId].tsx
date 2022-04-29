@@ -18,7 +18,6 @@ export default function SpaceHomepage() {
 
   const { currentSpace } = useCurrentSpace();
   const inviteLinkId = useQueryParam("inviteLinkId", "string");
-  console.log(inviteLinkId);
 
   if (!currentSpace) {
     return <div>404 - Space not found</div>;

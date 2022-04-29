@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { customAlphabet } from "nanoid";
 import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
-import { useCreateOwnerProfileInNewSpaceMutation } from "../generated/graphql";
+import {
+  Profile_Types_Enum,
+  useCreateOwnerProfileInNewSpaceMutation,
+} from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
 import { useRouter } from "next/router";
 
@@ -67,6 +70,8 @@ export default function CreatePage() {
               slug: generatedSlug,
             },
             user_id: userData.id,
+            profile_type: Profile_Types_Enum.SuperAdmin,
+            profile_listing_enabled: true,
           }).then((result) => {
             if (result.error) {
               const msg = makeReadableError(result.error.message);

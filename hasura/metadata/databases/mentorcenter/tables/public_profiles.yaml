@@ -19,7 +19,9 @@ insert_permissions:
           - user_id:
               _eq: X-Hasura-User-Id
       columns:
+        - listing_enabled
         - space_id
+        - type
         - user_id
       backend_only: false
 select_permissions:

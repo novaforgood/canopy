@@ -1393,6 +1393,41 @@
         "possibleTypes": null
       },
       {
+        "kind": "ENUM",
+        "name": "profile_types_enum",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "Admin",
+            "description": "Admins",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "Banned",
+            "description": "Profile is banned from space",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "Member",
+            "description": "Normal members",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SuperAdmin",
+            "description": "Admins that can manage other admins",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "profiles",
         "description": "columns and relationships of \"profiles\"",
@@ -1723,6 +1758,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "listing_enabled",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space",
             "description": null,
             "type": {
@@ -1740,6 +1787,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "profile_types_enum",
               "ofType": null
             },
             "defaultValue": null,
