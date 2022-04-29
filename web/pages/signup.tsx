@@ -121,7 +121,7 @@ export default function signup() {
         <input
           className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-5 leading-tight focus:outline-none focus:bg-white"
           id="grid-password"
-          type="text"
+          type="password"
           onChange={(e) => {
             setFormData({ ...formData, password: e.target.value });
           }}
