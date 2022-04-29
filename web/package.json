@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@urql/exchange-auth": "^0.1.7",
+    "classnames": "^2.3.1",
     "firebase": "^9.6.10",
     "firebase-admin": "^10.0.2",
     "graphql": "^16.3.0",
@@ -22,6 +23,7 @@
     "urql": "^2.2.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.2.0",
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/introspection": "^2.1.1",
     "@graphql-codegen/typescript": "^2.4.8",
