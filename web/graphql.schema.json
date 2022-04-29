@@ -1417,12 +1417,6 @@
             "description": "Normal members",
             "isDeprecated": false,
             "deprecationReason": null
-          },
-          {
-            "name": "SuperAdmin",
-            "description": "Admins that can manage other admins",
-            "isDeprecated": false,
-            "deprecationReason": null
           }
         ],
         "possibleTypes": null

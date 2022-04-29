@@ -70,7 +70,7 @@ export default function CreatePage() {
               slug: generatedSlug,
             },
             user_id: userData.id,
-            profile_type: Profile_Types_Enum.SuperAdmin,
+            profile_type: Profile_Types_Enum.Admin,
             profile_listing_enabled: true,
           }).then((result) => {
             if (result.error) {
