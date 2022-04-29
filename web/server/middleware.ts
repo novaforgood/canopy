@@ -61,7 +61,7 @@ export function applyMiddleware<
   let middleware = nc<CustomApiRequest<TAuth, TValidation>, NextApiResponse>({
     onError: (e, req, res) => {
       res
-        .status(500)
+        .status(e.code ?? 500)
         .json({ code: e.code ?? 500, message: e.message ?? "Unknown error" });
     },
   });
