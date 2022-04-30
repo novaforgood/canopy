@@ -3,12 +3,14 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Button } from "../../../components/atomic/Button";
 import {
+  Profile_Types_Enum,
   Space_Invite_Link_Types_Enum,
   useCreateInviteLinkMutation,
   useInviteLinksQuery,
   useSpaceBySlugQuery,
   useUserQuery,
 } from "../../../generated/graphql";
+import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../hooks/useIsLoggedIn";
 import { useSignIn } from "../../../hooks/useSignIn";
@@ -30,8 +32,8 @@ function CreateInviteLink() {
   }
 
   return (
-    <div className="p-4">
-      <div>Invite links:</div>
+    <div className="">
+      <div className="text-xl font-bold">Invite Links</div>
       <div>
         {inviteLinksData?.space_invite_links?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
@@ -62,9 +64,14 @@ export default function SpaceHomepage() {
   const router = useRouter();
 
   const { currentSpace } = useCurrentSpace();
+  const { currentProfile } = useCurrentProfile();
 
   if (!currentSpace) {
     return <div>404 - Space not found</div>;
+  }
+
+  if (!currentProfile) {
+    return <div>Ur not in this space lol</div>;
   }
 
   return (
@@ -80,8 +87,8 @@ export default function SpaceHomepage() {
       >
         Go back to home
       </Button>
-
-      <CreateInviteLink />
+      <div className="h-8"></div>
+      {currentProfile.type === Profile_Types_Enum.Admin && <CreateInviteLink />}
     </div>
   );
 }

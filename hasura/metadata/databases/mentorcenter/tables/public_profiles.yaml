@@ -28,10 +28,12 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - user_id
         - created_at
         - id
+        - listing_enabled
         - space_id
+        - type
+        - user_id
       filter:
         _or:
           - user_id:
