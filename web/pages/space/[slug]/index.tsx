@@ -1,7 +1,8 @@
 import { useClipboard } from "@mantine/hooks";
+import { format } from "date-fns";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { Button } from "../../../components/atomic/Button";
 import {
   Profile_Types_Enum,
@@ -45,10 +46,18 @@ function CreateInviteLink() {
   return (
     <div className="">
       <div className="text-xl font-bold">Invite Links</div>
-      <div>
+      <div className="flex flex-col gap-2">
         {inviteLinksData?.space_invite_links?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
-          return <CopyLink key={inviteLink.id} link={link} />;
+          return (
+            <div key={inviteLink.id}>
+              <CopyLink link={link} />
+              <div className="ml-16">
+                Expires{" "}
+                {format(new Date(inviteLink.expires_at), "MMM dd yyyy, h:mm a")}
+              </div>
+            </div>
+          );
         })}
       </div>
       <Button
@@ -56,7 +65,9 @@ function CreateInviteLink() {
           await createInviteLink({
             space_id: currentSpace.id,
             type: Space_Invite_Link_Types_Enum.Member,
-            expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // One week
+            expires_at: new Date(
+              Date.now() + 1000 * 60 * 60 * 24 * 7
+            ).toISOString(), // One week
           });
 
           refetchInviteLinks();
@@ -82,13 +93,21 @@ function ShowAllUsers() {
   return (
     <div className="">
       <div className="text-xl font-bold">Users</div>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-4">
+        <strong>Email</strong>
+        <strong>Type</strong>
+        <strong>Listing Enabled</strong>
+        <strong>Created At</strong>
         {profilesData?.profiles?.map((profile) => {
           return (
-            <>
-              <div key={profile.id}>{profile.user.email}</div>
-              <div key={profile.id}>{profile.type}</div>
-            </>
+            <Fragment key={profile.id}>
+              <div>{profile.user.email}</div>
+              <div>{profile.type}</div>
+              <div>{profile.listing_enabled ? "true" : "false"}</div>
+              <div>
+                {format(new Date(profile.created_at), "MMM dd yyyy, h:mm a")}
+              </div>
+            </Fragment>
           );
         })}
       </div>

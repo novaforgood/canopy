@@ -90,5 +90,6 @@ query ProfilesBySpaceId($space_id: uuid!) {
     listing_enabled
     space_id
     user_id
+    created_at
   }
 }
