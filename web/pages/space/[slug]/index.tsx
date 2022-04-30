@@ -1,3 +1,4 @@
+import { useClipboard } from "@mantine/hooks";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -17,10 +18,28 @@ import { useSignIn } from "../../../hooks/useSignIn";
 import { useUserData } from "../../../hooks/useUserData";
 import { auth } from "../../../lib/firebase";
 
+function CopyLink({ link }: { link: string }) {
+  const clipboard = useClipboard({ timeout: 500 });
+
+  return (
+    <div className="flex gap-4">
+      <button
+        onClick={() => {
+          clipboard.copy(link);
+        }}
+      >
+        {clipboard.copied ? "Copied!" : "Copy"}
+      </button>
+      <a href={link}>{link}</a>
+    </div>
+  );
+}
+
 function CreateInviteLink() {
   const { currentSpace } = useCurrentSpace();
   const router = useRouter();
-  console.log(router);
+
+  const clipboard = useClipboard({ timeout: 500 });
 
   const [_, createInviteLink] = useCreateInviteLinkMutation();
   const [{ data: inviteLinksData }, refetchInviteLinks] = useInviteLinksQuery({
@@ -37,11 +56,7 @@ function CreateInviteLink() {
       <div>
         {inviteLinksData?.space_invite_links?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
-          return (
-            <div key={inviteLink.id}>
-              <a href={link}>{link}</a>
-            </div>
-          );
+          return <CopyLink key={inviteLink.id} link={link} />;
         })}
       </div>
       <Button
