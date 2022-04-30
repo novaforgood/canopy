@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useRecoilValue } from "recoil";
-import { ApiClient } from "../lib/apiClient";
+import { ApiClient } from "../lib/ApiClient";
 import { sessionAtom } from "../lib/recoil";
 
 export function useApiClient() {
