@@ -3,18 +3,6 @@ import { executeUpsertUserMutation } from "../../../server/generated/serverGraph
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiSuccess } from "../../../server/response";
 
-const UPSERT_USER_MUTATION = gql`
-  mutation UpsertUser($id: String!, $email: String!) {
-    insert_users_one(
-      object: { id: $id, email: $email }
-      on_conflict: { constraint: users_pkey, update_columns: [email] }
-    ) {
-      email
-      id
-    }
-  }
-`;
-
 export default applyMiddleware({
   authenticated: true,
 }).get(async (req, res) => {

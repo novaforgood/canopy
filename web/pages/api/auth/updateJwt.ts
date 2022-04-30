@@ -1,11 +1,6 @@
 import { auth } from "../../../server/firebaseAdmin";
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiSuccess } from "../../../server/response";
-import { withAuth } from "../../../server/withAuth";
-
-type ResponseData = {
-  detail: string;
-};
 
 export default applyMiddleware({ authenticated: true }).get(
   async (req, res) => {
