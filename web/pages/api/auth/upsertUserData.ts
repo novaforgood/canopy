@@ -1,6 +1,7 @@
 import { gql } from "urql";
 import { executeUpsertUserMutation } from "../../../server/generated/serverGraphql";
-import { withAuth } from "../../../server/withAuth";
+import { applyMiddleware } from "../../../server/middleware";
+import { makeApiSuccess } from "../../../server/response";
 
 const UPSERT_USER_MUTATION = gql`
   mutation UpsertUser($id: String!, $email: String!) {
@@ -14,17 +15,14 @@ const UPSERT_USER_MUTATION = gql`
   }
 `;
 
-type ResponseData = {
-  detail: string;
-};
-
-export default withAuth<ResponseData>(async (req, res) => {
+export default applyMiddleware({
+  authenticated: true,
+}).get(async (req, res) => {
   await executeUpsertUserMutation({
     id: req.token.uid,
     email: req.token.email ?? "",
-  }).catch((e) => {
-    console.log(e);
   });
 
-  res.status(200).json({ detail: "Successful" });
+  const response = makeApiSuccess({ detail: "Successful" });
+  res.status(response.code).json(response);
 });
