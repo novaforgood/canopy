@@ -1,20 +1,12 @@
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
+import toast from "react-hot-toast";
 import { Button } from "../../../../components/atomic/Button";
-import {
-  useSpaceBySlugQuery,
-  useUserQuery,
-} from "../../../../generated/graphql";
 import { useApiClient } from "../../../../hooks/useApiClient";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
-import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
-import { useSignIn } from "../../../../hooks/useSignIn";
-import { useUserData } from "../../../../hooks/useUserData";
-import { handleError } from "../../../../lib/error";
-import { auth } from "../../../../lib/firebase";
 
 export default function SpaceHomepage() {
   const router = useRouter();
@@ -31,10 +23,10 @@ export default function SpaceHomepage() {
         inviteLinkId,
       })
       .then((response) => {
-        console.log("success");
+        toast.success("Good job");
       })
       .catch((e) => {
-        console.log(e);
+        toast.error(`Error: ${e.message}`);
       });
   }, [apiClient, inviteLinkId]);
 

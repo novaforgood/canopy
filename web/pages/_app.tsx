@@ -1,7 +1,9 @@
-import type { AppProps } from "next/app";
 import { Suspense, useEffect, useMemo, useState } from "react";
+
+import type { AppProps } from "next/app";
 import { getUrqlClient } from "../lib/urql";
 import { Provider } from "urql";
+import { Toaster } from "react-hot-toast";
 import { auth } from "../lib/firebase";
 import "../styles/globals.css";
 import {
@@ -82,6 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <AuthProvider>
         <UrqlProvider>
           <Suspense fallback={<div>Loading...</div>}>
+            <Toaster />
             <Component {...pageProps} />
           </Suspense>
         </UrqlProvider>
