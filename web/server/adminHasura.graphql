@@ -1,0 +1,29 @@
+query GetInviteLink($invite_link_id: uuid!) {
+  space_invite_links_by_pk(id: $invite_link_id) {
+    id
+    expires_at
+    created_at
+    space_id
+    type
+  }
+}
+
+mutation UpsertUser($id: String!, $email: String!) {
+  insert_users_one(
+    object: { id: $id, email: $email }
+    on_conflict: { constraint: users_pkey, update_columns: [email] }
+  ) {
+    email
+    id
+  }
+}
+
+mutation InsertProfile($data: profiles_insert_input!) {
+  insert_profiles_one(object: $data) {
+    id
+    user_id
+    space_id
+    type
+    listing_enabled
+  }
+}

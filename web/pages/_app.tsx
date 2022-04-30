@@ -1,7 +1,9 @@
-import type { AppProps } from "next/app";
 import { Suspense, useEffect, useMemo, useState } from "react";
+
+import type { AppProps } from "next/app";
 import { getUrqlClient } from "../lib/urql";
 import { Provider } from "urql";
+import { Toaster } from "react-hot-toast";
 import { auth } from "../lib/firebase";
 import "../styles/globals.css";
 import {
@@ -56,22 +58,6 @@ function AuthProvider({ children }: AuthProviderProps) {
           await user.getIdToken(true);
         }
 
-        const lastSignedIn = user.metadata.lastSignInTime;
-        const lastSignedInTime = lastSignedIn
-          ? new Date(lastSignedIn).getTime()
-          : 0;
-        const timeDiff = Date.now() - lastSignedInTime;
-        console.log("Time since last signed in (ms):", timeDiff);
-        if (timeDiff < 1000 * 3) {
-          // Upsert user info if it's less than 3 seconds since last signed in
-          await fetch(`/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${tokenResult.token}`,
-            },
-          });
-        }
-
         setSession({
           userId: user.uid,
           jwt: await user.getIdToken(),
@@ -98,6 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <AuthProvider>
         <UrqlProvider>
           <Suspense fallback={<div>Loading...</div>}>
+            <Toaster />
             <Component {...pageProps} />
           </Suspense>
         </UrqlProvider>

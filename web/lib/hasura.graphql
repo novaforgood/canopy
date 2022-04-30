@@ -20,14 +20,24 @@ query SpaceBySlug($slug: String!) {
   spaces(where: { slug: { _eq: $slug } }) {
     id
     name
+    slug
   }
 }
 
 mutation CreateOwnerProfileInNewSpace(
   $user_id: String!
   $space: spaces_insert_input!
+  $profile_type: profile_types_enum!
+  $profile_listing_enabled: Boolean!
 ) {
-  insert_profiles_one(object: { space: { data: $space }, user_id: $user_id }) {
+  insert_profiles_one(
+    object: {
+      space: { data: $space }
+      user_id: $user_id
+      type: $profile_type
+      listing_enabled: $profile_listing_enabled
+    }
+  ) {
     id
     space_id
     space {
@@ -37,5 +47,31 @@ mutation CreateOwnerProfileInNewSpace(
       owner_id
     }
     user_id
+  }
+}
+
+query InviteLinks($space_id: uuid!) {
+  space_invite_links(where: { space_id: { _eq: $space_id } }) {
+    id
+    expires_at
+    created_at
+    space_id
+    type
+  }
+}
+
+mutation CreateInviteLink(
+  $space_id: uuid!
+  $type: space_invite_link_types_enum!
+  $expires_at: timestamptz!
+) {
+  insert_space_invite_links_one(
+    object: { space_id: $space_id, type: $type, expires_at: $expires_at }
+  ) {
+    id
+    expires_at
+    created_at
+    space_id
+    type
   }
 }

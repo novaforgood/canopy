@@ -1,5 +1,5 @@
 import { gql } from "urql";
-import { serverUrqlClient } from "../../../server/urql";
+import { executeUpsertUserMutation } from "../../../server/generated/serverGraphql";
 import { withAuth } from "../../../server/withAuth";
 
 const UPSERT_USER_MUTATION = gql`
@@ -19,14 +19,12 @@ type ResponseData = {
 };
 
 export default withAuth<ResponseData>(async (req, res) => {
-  await serverUrqlClient
-    .mutation(UPSERT_USER_MUTATION, {
-      id: req.token.uid,
-      email: req.token.email,
-    })
-    .toPromise()
-    .catch((e) => {
-      console.log(e);
-    });
+  await executeUpsertUserMutation({
+    id: req.token.uid,
+    email: req.token.email ?? "",
+  }).catch((e) => {
+    console.log(e);
+  });
+
   res.status(200).json({ detail: "Successful" });
 });

@@ -99,7 +99,7 @@ function LoggedInHomePage() {
             router.push("/create");
           }}
         >
-          Create new program
+          Create new space
         </Button>
       </div>
       <div className="h-16"></div>
