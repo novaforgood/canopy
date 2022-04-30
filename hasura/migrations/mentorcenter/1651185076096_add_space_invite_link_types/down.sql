@@ -1,5 +1,0 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- INSERT INTO space_invite_link_types (value, description) VALUES
---   ('Member', 'Allow users to join as members'),
---   ('MemberListingEnabled', 'Allow users to join as members who can list profiles');
