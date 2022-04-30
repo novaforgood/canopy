@@ -42,3 +42,25 @@ select_permissions:
               profiles:
                 user_id:
                   _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - listing_enabled
+        - type
+      filter:
+        _or:
+          - _and:
+              - space:
+                  profiles:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - type:
+                          _eq: Admin
+              - type:
+                  _neq: Admin
+          - space:
+              owner_id:
+                _eq: X-Hasura-User-Id
+      check: null
