@@ -2,26 +2,26 @@
  * Response from the server
  */
 
-export enum ApiResponseType {
+export enum ApiResponseStatus {
   Success = "success",
   Error = "error",
   Fail = "fail",
 }
 
 export type ApiResponseSuccess<TData> = {
-  type: ApiResponseType.Success;
+  status: ApiResponseStatus.Success;
   code: number;
   data: TData;
 };
 
 export type ApiResponseFail = {
-  type: ApiResponseType.Fail;
+  status: ApiResponseStatus.Fail;
   code: number;
   message: string;
 };
 
 export type ApiResponseError = {
-  type: ApiResponseType.Error;
+  status: ApiResponseStatus.Error;
   code: number;
   message: string;
 };

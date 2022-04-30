@@ -2,7 +2,7 @@ import {
   ApiResponseError,
   ApiResponseFail,
   ApiResponseSuccess,
-  ApiResponseType,
+  ApiResponseStatus,
 } from "../common/types";
 
 export function makeApiSuccess<TData>(
@@ -10,7 +10,7 @@ export function makeApiSuccess<TData>(
   code?: number
 ): ApiResponseSuccess<TData> {
   return {
-    type: ApiResponseType.Success,
+    status: ApiResponseStatus.Success,
     code: code ?? 200,
     data: data,
   };
@@ -18,7 +18,7 @@ export function makeApiSuccess<TData>(
 
 export function makeApiFail(message: string, code?: number): ApiResponseFail {
   return {
-    type: ApiResponseType.Fail,
+    status: ApiResponseStatus.Fail,
     code: code ?? 400,
     message: message,
   };
@@ -26,7 +26,7 @@ export function makeApiFail(message: string, code?: number): ApiResponseFail {
 
 export function makeApiError(message: string, code?: number): ApiResponseError {
   return {
-    type: ApiResponseType.Error,
+    status: ApiResponseStatus.Error,
     code: code ?? 500,
     message: message,
   };

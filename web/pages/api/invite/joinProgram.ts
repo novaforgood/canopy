@@ -39,7 +39,8 @@ export default applyMiddleware({
   // Check if invite link has expired
   const { expires_at } = inviteLink;
   const expireDate = new Date(expires_at);
-  if (expireDate > new Date()) {
+
+  if (expireDate < new Date()) {
     throw makeApiFail("Invite link has expired");
   }
 
