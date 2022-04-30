@@ -1,0 +1,37 @@
+name: Hasura migrations
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "hasura/**"
+
+concurrency: dev_environment
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+          cache: "npm"
+
+      - name: Install Hasura CLI
+        run: npm install --global hasura-cli
+
+      - name: hasura metadata apply
+        working-directory: ./hasura
+        run: hasura metadata apply --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
+
+      - name: hasura migrate apply
+        working-directory: ./hasura
+        run: hasura migrate apply --all-databases --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
+
+      - name: hasura metadata reload
+        working-directory: ./hasura
+        run: hasura metadata reload --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
