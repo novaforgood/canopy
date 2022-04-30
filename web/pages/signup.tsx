@@ -1,8 +1,11 @@
 import {
+  applyActionCode,
   createUserWithEmailAndPassword,
   getAuth,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   updateProfile,
+  UserCredential,
 } from "firebase/auth";
 import { useState } from "react";
 
@@ -16,7 +19,7 @@ import { useState } from "react";
 const actionCodeSettings = {
   // URL you want to redirect back to. The domain (www.example.com) for this
   // URL must be in the authorized domains list in the Firebase Console.
-  url: "https://www.example.com/finishSignUp?cartId=1234",
+  url: "http://localhost:3000/login",
   // This must be true.
   handleCodeInApp: true,
 };
@@ -42,13 +45,12 @@ const signUpUser = async (
           authorization: `Bearer ${tokenResult.token}`,
         },
       });
+      await sendEmailVerification(user);
     })
     .catch((e) => {
       alert(e.code + ": " + e.message);
     });
 };
-
-const sendAuthLink = async () => {};
 
 export default function signup() {
   const [formData, setFormData] = useState({
