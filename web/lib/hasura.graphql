@@ -77,3 +77,18 @@ mutation CreateInviteLink(
     type
   }
 }
+
+query ProfilesBySpaceId($space_id: uuid!) {
+  profiles(where: { space_id: { _eq: $space_id } }) {
+    id
+    user {
+      first_name
+      last_name
+      email
+    }
+    type
+    listing_enabled
+    space_id
+    user_id
+  }
+}

@@ -8,15 +8,10 @@ import {
   Space_Invite_Link_Types_Enum,
   useCreateInviteLinkMutation,
   useInviteLinksQuery,
-  useSpaceBySlugQuery,
-  useUserQuery,
+  useProfilesBySpaceIdQuery,
 } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { useIsLoggedIn } from "../../../hooks/useIsLoggedIn";
-import { useSignIn } from "../../../hooks/useSignIn";
-import { useUserData } from "../../../hooks/useUserData";
-import { auth } from "../../../lib/firebase";
 
 function CopyLink({ link }: { link: string }) {
   const clipboard = useClipboard({ timeout: 500 });
@@ -37,9 +32,6 @@ function CopyLink({ link }: { link: string }) {
 
 function CreateInviteLink() {
   const { currentSpace } = useCurrentSpace();
-  const router = useRouter();
-
-  const clipboard = useClipboard({ timeout: 500 });
 
   const [_, createInviteLink] = useCreateInviteLinkMutation();
   const [{ data: inviteLinksData }, refetchInviteLinks] = useInviteLinksQuery({
@@ -75,6 +67,35 @@ function CreateInviteLink() {
     </div>
   );
 }
+
+function ShowAllUsers() {
+  const { currentSpace } = useCurrentSpace();
+
+  const [{ data: profilesData }] = useProfilesBySpaceIdQuery({
+    variables: { space_id: currentSpace?.id ?? "" },
+  });
+
+  if (!currentSpace) {
+    return <div>404 - Space not found</div>;
+  }
+
+  return (
+    <div className="">
+      <div className="text-xl font-bold">Users</div>
+      <div className="grid grid-cols-2">
+        {profilesData?.profiles?.map((profile) => {
+          return (
+            <>
+              <div key={profile.id}>{profile.user.email}</div>
+              <div key={profile.id}>{profile.type}</div>
+            </>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function SpaceHomepage() {
   const router = useRouter();
 
@@ -104,6 +125,9 @@ export default function SpaceHomepage() {
       </Button>
       <div className="h-8"></div>
       {currentProfile.type === Profile_Types_Enum.Admin && <CreateInviteLink />}
+      <div className="h-8"></div>
+
+      <ShowAllUsers />
     </div>
   );
 }
