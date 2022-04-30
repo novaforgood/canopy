@@ -4,10 +4,13 @@ import {
   getAuth,
   sendEmailVerification,
   signInWithEmailAndPassword,
+  signOut,
   updateProfile,
   UserCredential,
 } from "firebase/auth";
+import { Router, useRouter } from "next/router";
 import { useState } from "react";
+import { Input } from "../components/atomic/Input";
 
 // Plan
 // Create user with email and password (getAuth().createUser or createUserWithEmailAndPassword?)
@@ -15,14 +18,6 @@ import { useState } from "react";
 // upsert data to our db ()
 // send authentication link to email
 // complete sign in with auth link
-
-const actionCodeSettings = {
-  // URL you want to redirect back to. The domain (www.example.com) for this
-  // URL must be in the authorized domains list in the Firebase Console.
-  url: "http://localhost:3000/login",
-  // This must be true.
-  handleCodeInApp: true,
-};
 
 const signUpUser = async (
   firstName: string,
@@ -49,6 +44,7 @@ const signUpUser = async (
     })
     .catch((e) => {
       alert(e.code + ": " + e.message);
+      signOut(auth);
     });
 };
 
@@ -59,6 +55,7 @@ export default function signup() {
     email: "",
     password: "",
   });
+  const router = useRouter();
   return (
     <div className="w-full  max-w-lg rounded p-4 flex flex-wrap -mx-3">
       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -68,16 +65,26 @@ export default function signup() {
         >
           First Name
         </label>
-        <input
+        <Input
+          id="grid-first-name"
+          type="text"
+          placeholder="Enter your first name"
+          className={
+            "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3"
+          }
+          onChange={(e) => {
+            setFormData({ ...formData, firstName: e.target.value });
+          }}
+        />
+        {/* <input
           className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
           id="grid-first-name"
-          pattern="[A-Za-z]{2,}"
           type="text"
           placeholder="Enter your first name"
           onChange={(e) => {
             setFormData({ ...formData, firstName: e.target.value });
           }}
-        />
+        /> */}
       </div>
       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
         <label
@@ -142,7 +149,9 @@ export default function signup() {
                 formData.lastName,
                 formData.email,
                 formData.password
-              );
+              ).then(() => {
+                router.push("/");
+              });
             } else {
               alert("Please enter valid first and last name");
             }
@@ -152,10 +161,5 @@ export default function signup() {
         </button>
       </div>
     </div>
-    // <div className='flex flex-wrap max-w-xl'>
-    // <div className="w-1/2 bg-sky-200">
-    //     test
-    // </div>
-    // </div>
   );
 }

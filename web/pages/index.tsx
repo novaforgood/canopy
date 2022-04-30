@@ -31,6 +31,7 @@ function LoggedInHomePage() {
     variables: { user_id: userData?.id ?? "" },
   });
   const router = useRouter();
+  console.log(auth.currentUser);
   return (
     <div className="p-4">
       <h1>Logged In Home Page</h1>
@@ -39,6 +40,7 @@ function LoggedInHomePage() {
       <div className="border shadow-md p-2">
         <p>Current User: {userData?.email}</p>
         <p>User ID: {userData?.id}</p>
+        <p>Email Verified: {auth.currentUser?.emailVerified ? "Yes" : "No"}</p>
       </div>
 
       <div className="h-4"></div>
