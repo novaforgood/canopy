@@ -1,4 +1,4 @@
-name: Hasura migrations
+name: Hasura migrations (DEV)
 on:
   push:
     branches:
