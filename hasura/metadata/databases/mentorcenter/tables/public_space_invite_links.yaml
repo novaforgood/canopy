@@ -20,7 +20,9 @@ insert_permissions:
             _and:
               - user_id:
                   _eq: X-Hasura-User-Id
-              - id: {}
+              - roles:
+                  profile_role:
+                    _eq: Admin
       columns:
         - expires_at
         - space_id

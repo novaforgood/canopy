@@ -3,9 +3,9 @@ import { format } from "date-fns";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { Fragment, useEffect } from "react";
+import toast from "react-hot-toast";
 import { Button } from "../../../components/atomic/Button";
 import {
-  Profile_Types_Enum,
   Space_Invite_Link_Types_Enum,
   useCreateInviteLinkMutation,
   useInviteLinksQuery,
@@ -62,7 +62,7 @@ function CreateInviteLink() {
       </div>
       <Button
         onClick={async () => {
-          await createInviteLink({
+          const { data, error } = await createInviteLink({
             space_id: currentSpace.id,
             type: Space_Invite_Link_Types_Enum.Member,
             expires_at: new Date(
@@ -70,7 +70,12 @@ function CreateInviteLink() {
             ).toISOString(), // One week
           });
 
-          refetchInviteLinks();
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success("Invite link created");
+            refetchInviteLinks();
+          }
         }}
       >
         Create Invite Link
@@ -95,14 +100,16 @@ function ShowAllUsers() {
       <div className="text-xl font-bold">Users</div>
       <div className="grid grid-cols-4">
         <strong>Email</strong>
-        <strong>Type</strong>
+        <strong>Roles</strong>
         <strong>Listing Enabled</strong>
         <strong>Created At</strong>
         {profilesData?.profiles?.map((profile) => {
           return (
             <Fragment key={profile.id}>
               <div>{profile.user.email}</div>
-              <div>{profile.type}</div>
+              <div>
+                {profile.roles.map((role) => role.profile_role).join(", ")}
+              </div>
               <div>{profile.listing_enabled ? "true" : "false"}</div>
               <div>
                 {format(new Date(profile.created_at), "MMM dd yyyy, h:mm a")}
@@ -143,7 +150,7 @@ export default function SpaceHomepage() {
         Go back to home
       </Button>
       <div className="h-8"></div>
-      {currentProfile.type === Profile_Types_Enum.Admin && <CreateInviteLink />}
+      <CreateInviteLink />
       <div className="h-8"></div>
 
       <ShowAllUsers />

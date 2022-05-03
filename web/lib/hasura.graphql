@@ -8,8 +8,10 @@ query User($id: String!) {
 query AllProfilesOfUser($user_id: String!) {
   profiles(where: { user_id: { _eq: $user_id } }) {
     id
-    type
     listing_enabled
+    roles {
+      profile_role
+    }
     space {
       id
       name
@@ -29,14 +31,13 @@ query SpaceBySlug($slug: String!) {
 mutation CreateOwnerProfileInNewSpace(
   $user_id: String!
   $space: spaces_insert_input!
-  $profile_type: profile_types_enum!
   $profile_listing_enabled: Boolean!
 ) {
   insert_profiles_one(
     object: {
       space: { data: $space }
+      roles: { data: { profile_role: Admin } }
       user_id: $user_id
-      type: $profile_type
       listing_enabled: $profile_listing_enabled
     }
   ) {
@@ -86,7 +87,9 @@ query ProfilesBySpaceId($space_id: uuid!) {
       last_name
       email
     }
-    type
+    roles {
+      profile_role
+    }
     listing_enabled
     space_id
     user_id

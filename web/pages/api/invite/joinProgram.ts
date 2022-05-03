@@ -5,7 +5,7 @@ import {
   executeGetInviteLinkQuery,
   executeInsertProfileMutation,
   GetInviteLinkDocument,
-  Profile_Types_Enum,
+  Profile_Roles_Enum,
   Space_Invite_Link_Types_Enum,
 } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
@@ -54,7 +54,15 @@ export default applyMiddleware({
       data: {
         user_id: req.token.uid,
         space_id: inviteLink.space_id,
-        type: Profile_Types_Enum.Member,
+        roles: {
+          data: [
+            {
+              profile_role: listingEnabled
+                ? Profile_Roles_Enum.MemberWhoCanList
+                : Profile_Roles_Enum.Member,
+            },
+          ],
+        },
         listing_enabled: listingEnabled,
       },
     });
