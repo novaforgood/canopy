@@ -30,7 +30,7 @@ jobs:
 
       - name: Print Migration Status
         working-directory: ./hasura
-        run: hasura migrate status --all-databases --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
+        run: hasura migrate status --database-name mentorcenter --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
 
       - name: Apply Migrations
         working-directory: ./hasura
