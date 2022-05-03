@@ -17,6 +17,7 @@ import {
 import aws from "aws-sdk";
 import multer from "multer";
 import multerS3 from "multer-s3";
+import { requireServerEnv } from "../../../server/env";
 
 export const config = {
   api: {
@@ -25,9 +26,9 @@ export const config = {
 };
 
 aws.config.update({
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  region: process.env.AWS_REGION,
+  secretAccessKey: requireServerEnv("AWS_SECRET_ACCESS_KEY"),
+  accessKeyId: requireServerEnv("AWS_ACCESS_KEY_ID"),
+  region: requireServerEnv("AWS_REGION"),
 });
 
 const s3 = new aws.S3();
@@ -35,7 +36,8 @@ const s3 = new aws.S3();
 var upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: process.env.AWS_S3_BUCKET,
+    acl: "public-read",
+    bucket: requireServerEnv("AWS_S3_BUCKET"),
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
@@ -54,6 +56,7 @@ export default applyMiddleware({
 })
   .use(upload.single("upload"))
   .post(async (req, res) => {
-    const response = makeApiSuccess({ detail: "Success" });
+    console.log(req.body);
+    const response = makeApiSuccess({ detail: "Success", file: req.file });
     res.status(response.code).json(response);
   });
