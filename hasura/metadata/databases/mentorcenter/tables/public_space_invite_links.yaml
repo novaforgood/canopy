@@ -20,8 +20,7 @@ insert_permissions:
             _and:
               - user_id:
                   _eq: X-Hasura-User-Id
-              - type:
-                  _eq: Admin
+              - id: {}
       columns:
         - expires_at
         - space_id
@@ -42,5 +41,4 @@ select_permissions:
             _and:
               - user_id:
                   _eq: X-Hasura-User-Id
-              - type:
-                  _eq: Admin
+              - id: {}

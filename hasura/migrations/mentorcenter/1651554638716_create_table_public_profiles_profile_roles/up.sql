@@ -1,0 +1,2 @@
+CREATE TABLE "public"."profiles_profile_roles" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "profile_id" uuid NOT NULL, "profile_role" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("profile_id") REFERENCES "public"."profiles"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("profile_role") REFERENCES "public"."profile_roles"("value") ON UPDATE restrict ON DELETE restrict, UNIQUE ("profile_id", "profile_role"));
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
