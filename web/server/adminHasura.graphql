@@ -23,7 +23,6 @@ mutation InsertProfile($data: profiles_insert_input!) {
     id
     user_id
     space_id
-    type
     listing_enabled
   }
 }

@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Use Node.js
@@ -24,11 +24,15 @@ jobs:
       - name: Install Hasura CLI
         run: npm install --global hasura-cli
 
-      - name: hasura metadata apply
+      - name: Apply Metadata
         working-directory: ./hasura
         run: hasura metadata apply --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
 
-      - name: hasura migrate apply
+      - name: Print Migration Status
+        working-directory: ./hasura
+        run: hasura migrate status --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
+
+      - name: Apply Migrations
         working-directory: ./hasura
         run: hasura migrate apply --all-databases --endpoint ${{ secrets.DEV_HASURA_ENDPOINT }} --admin-secret ${{ secrets.DEV_HASURA_ADMIN_SECRET }}
 
