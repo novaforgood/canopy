@@ -41,7 +41,7 @@ export default applyMiddleware({
   authenticated: false,
 })
   .use(upload.single("upload"))
-  .post(async (req, res) => {
+  .post<{ file: Express.Multer.File }>(async (req, res) => {
     console.log(req.body);
     const response = makeApiSuccess({ detail: "Success", file: req.file });
     res.status(response.code).json(response);
