@@ -79,7 +79,7 @@ function LoggedInHomePage() {
       <div className="text-xl">Spaces:</div>
       <div className="h-4"></div>
       <div className="flex flex-col gap-2 items-start">
-        {profileData?.profiles.map((profile) => {
+        {profileData?.profile.map((profile) => {
           return (
             <Button
               key={profile.id}

@@ -3,17 +3,16 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../../../../components/atomic/Button";
-import { useApiClient } from "../../../../hooks/useApiClient";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { apiClient } from "../../../../lib/apiClient";
 
 export default function SpaceHomepage() {
   const router = useRouter();
 
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
-  const { apiClient } = useApiClient();
 
   const inviteLinkId = useQueryParam("inviteLinkId", "string");
 
@@ -28,7 +27,7 @@ export default function SpaceHomepage() {
       .catch((e) => {
         toast.error(`Error: ${e.message}`);
       });
-  }, [apiClient, inviteLinkId]);
+  }, [inviteLinkId]);
 
   if (!currentSpace) {
     return <div>404 - Space not found</div>;

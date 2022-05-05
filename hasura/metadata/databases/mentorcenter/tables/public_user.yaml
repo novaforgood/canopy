@@ -1,6 +1,6 @@
 table:
   schema: public
-  name: users
+  name: user
 array_relationships:
   - name: profiles
     using:

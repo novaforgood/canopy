@@ -7,7 +7,7 @@ export function useCurrentSpace() {
   const [{ data: spaceData, fetching }] = useSpaceBySlugQuery({
     variables: { slug: router.query.slug as string },
   });
-  const space = spaceData?.spaces[0] ?? null;
+  const space = spaceData?.space[0] ?? null;
 
   return useMemo(
     () => ({ currentSpace: space, fetchingCurrentSpace: fetching }),

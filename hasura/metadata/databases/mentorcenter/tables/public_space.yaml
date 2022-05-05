@@ -1,6 +1,6 @@
 table:
   schema: public
-  name: spaces
+  name: space
 array_relationships:
   - name: profiles
     using:

@@ -11,8 +11,8 @@ export function useUserData() {
 
   return useMemo(
     () => ({
-      userData: data?.users_by_pk,
+      userData: data?.user_by_pk,
     }),
-    [data?.users_by_pk]
+    [data?.user_by_pk]
   );
 }

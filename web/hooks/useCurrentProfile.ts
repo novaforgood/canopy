@@ -12,7 +12,7 @@ export function useCurrentProfile() {
 
   const currentProfile = useMemo(
     () =>
-      allProfilesData?.profiles.find((profile) => {
+      allProfilesData?.profile.find((profile) => {
         return profile.space.slug === slug;
       }) ?? null,
     [allProfilesData, slug]

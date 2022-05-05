@@ -2,11 +2,11 @@ import { useClipboard } from "@mantine/hooks";
 import { format } from "date-fns";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../../../components/atomic/Button";
 import {
-  Space_Invite_Link_Types_Enum,
+  Space_Invite_Link_Type_Enum,
   useCreateInviteLinkMutation,
   useInviteLinksQuery,
   useProfilesBySpaceIdQuery,
@@ -35,6 +35,8 @@ function CreateInviteLink() {
   const { currentSpace } = useCurrentSpace();
 
   const [_, createInviteLink] = useCreateInviteLinkMutation();
+
+  console.log({ "x-hasura-space-id": currentSpace?.id ?? "" });
   const [{ data: inviteLinksData }, refetchInviteLinks] = useInviteLinksQuery({
     variables: { space_id: currentSpace?.id ?? "" },
   });
@@ -47,7 +49,7 @@ function CreateInviteLink() {
     <div className="">
       <div className="text-xl font-bold">Invite Links</div>
       <div className="flex flex-col gap-2">
-        {inviteLinksData?.space_invite_links?.map((inviteLink) => {
+        {inviteLinksData?.space_invite_link?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
           return (
             <div key={inviteLink.id}>
@@ -64,7 +66,7 @@ function CreateInviteLink() {
         onClick={async () => {
           const { data, error } = await createInviteLink({
             space_id: currentSpace.id,
-            type: Space_Invite_Link_Types_Enum.Member,
+            type: Space_Invite_Link_Type_Enum.Member,
             expires_at: new Date(
               Date.now() + 1000 * 60 * 60 * 24 * 7
             ).toISOString(), // One week
@@ -103,12 +105,14 @@ function ShowAllUsers() {
         <strong>Roles</strong>
         <strong>Listing Enabled</strong>
         <strong>Created At</strong>
-        {profilesData?.profiles?.map((profile) => {
+        {profilesData?.profile?.map((profile) => {
           return (
             <Fragment key={profile.id}>
               <div>{profile.user.email}</div>
               <div>
-                {profile.roles.map((role) => role.profile_role).join(", ")}
+                {profile.profile_roles
+                  .map((role) => role.profile_role)
+                  .join(", ")}
               </div>
               <div>{profile.listing_enabled ? "true" : "false"}</div>
               <div>
