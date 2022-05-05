@@ -5,7 +5,6 @@ export const isServer = () => typeof window === "undefined";
 export async function loadSession(
   props: { spaceId?: string; forceUpdateJwt?: boolean } | void
 ) {
-  console.log("loadSession", props);
   const user = auth.currentUser;
   if (user) {
     const tokenResult = await user.getIdTokenResult();
@@ -14,10 +13,6 @@ export async function loadSession(
     if (!claims || props?.forceUpdateJwt) {
       // New user has logged in but doesn't have JWT claims
 
-      console.log(
-        "body",
-        JSON.stringify({ spaceId: props?.spaceId ?? undefined })
-      );
       await fetch(`/api/auth/updateJwt`, {
         method: "POST",
         headers: {

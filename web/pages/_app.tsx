@@ -17,6 +17,9 @@ import {
 import { sessionAtom } from "../lib/recoil";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { loadSession } from "../lib";
+import { usePrevious } from "../hooks/usePrevious";
+import { useSpaceBySlugQuery } from "../generated/graphql";
+import { useRouter } from "next/router";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -60,19 +63,38 @@ function AuthProvider({ children }: AuthProviderProps) {
 }
 
 function App({ Component, pageProps }: AppProps) {
-  const { currentSpace } = useCurrentSpace();
   const [session, setSession] = useRecoilState(sessionAtom);
+  const router = useRouter();
+  const spaceSlug = router.query.slug as string;
+  const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
+    pause: true,
+    variables: { slug: spaceSlug },
+  });
+  const spaceId = spaceData?.space[0].id;
 
+  // When a new spaceId is set, we need to refetch the invite links.
   useEffect(() => {
     const reloadSession = async () => {
       const session = await loadSession({
-        spaceId: currentSpace?.id,
+        spaceId: spaceId,
         forceUpdateJwt: true,
       });
       setSession(session);
     };
-    reloadSession();
-  }, [currentSpace?.id, setSession]);
+
+    if (spaceId) {
+      console.log("Refreshing JWT...");
+      reloadSession();
+    }
+  }, [spaceId, setSession]);
+
+  // Update space data when slug changes to a non-empty string.
+  useEffect(() => {
+    if (spaceSlug) {
+      console.log("Re-executing space lazy query...");
+      executeQuery();
+    }
+  }, [spaceSlug, executeQuery]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
