@@ -1,17 +1,27 @@
+import { z } from "zod";
 import { auth } from "../../../server/firebaseAdmin";
-import { withAuth } from "../../../server/withAuth";
+import { applyMiddleware } from "../../../server/middleware";
+import { makeApiSuccess } from "../../../server/response";
 
-type ResponseData = {
-  detail: string;
-};
+export default applyMiddleware({
+  authenticated: true,
+  validationSchema: z.object({
+    spaceId: z.string().optional(),
+  }),
+}).post(async (req, res) => {
+  await auth
+    .setCustomUserClaims(req.token.uid, {
+      "https://hasura.io/jwt/claims": {
+        "x-hasura-default-role": "user",
+        "x-hasura-allowed-roles": ["user"],
+        "x-hasura-user-id": req.token.uid,
+        "x-hasura-space-id": req.body.spaceId,
+      },
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 
-export default withAuth<ResponseData>(async (req, res) => {
-  await auth.setCustomUserClaims(req.token.uid, {
-    "https://hasura.io/jwt/claims": {
-      "x-hasura-default-role": "user",
-      "x-hasura-allowed-roles": ["user"],
-      "x-hasura-user-id": req.token.uid,
-    },
-  });
-  res.status(200).json({ detail: "Successful" });
+  const response = makeApiSuccess({ detail: "Successful" });
+  res.status(response.code).json(response);
 });

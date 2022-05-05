@@ -1,0 +1,71 @@
+table:
+  schema: public
+  name: profiles_profile_roles
+object_relationships:
+  - name: profile
+    using:
+      foreign_key_constraint_on: profile_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - profile:
+              space:
+                owner_id:
+                  _eq: X-Hasura-User-Id
+          - _and:
+              - profile:
+                  space:
+                    profiles:
+                      _and:
+                        - user_id:
+                            _eq: X-Hasura-User-Id
+                        - roles:
+                            profile_role:
+                              _eq: Admin
+              - profile:
+                  roles:
+                    profile_role:
+                      _neq: Admin
+      columns:
+        - profile_id
+        - profile_role
+      backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - profile_id
+        - profile_role
+      filter:
+        _or:
+          - profile:
+              space:
+                profiles:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - profile:
+              space:
+                owner_id:
+                  _eq: X-Hasura-User-Id
+          - _and:
+              - profile:
+                  space:
+                    profiles:
+                      _and:
+                        - user_id:
+                            _eq: X-Hasura-User-Id
+                        - roles:
+                            profile_role:
+                              _eq: Admin
+              - profile:
+                  roles:
+                    profile_role:
+                      _neq: Admin

@@ -1,23 +1,14 @@
 import {
-  applyActionCode,
   createUserWithEmailAndPassword,
   getAuth,
   sendEmailVerification,
-  signInWithEmailAndPassword,
   signOut,
   updateProfile,
-  UserCredential,
 } from "firebase/auth";
 import { Router, useRouter } from "next/router";
 import { useState } from "react";
+import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
-
-// Plan
-// Create user with email and password (getAuth().createUser or createUserWithEmailAndPassword?)
-// update profile/update user
-// upsert data to our db ()
-// send authentication link to email
-// complete sign in with auth link
 
 const signUpUser = async (
   firstName: string,
@@ -76,15 +67,6 @@ export default function signup() {
             setFormData({ ...formData, firstName: e.target.value });
           }}
         />
-        {/* <input
-          className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          id="grid-first-name"
-          type="text"
-          placeholder="Enter your first name"
-          onChange={(e) => {
-            setFormData({ ...formData, firstName: e.target.value });
-          }}
-        /> */}
       </div>
       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
         <label
@@ -93,10 +75,9 @@ export default function signup() {
         >
           Last Name
         </label>
-        <input
-          className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        <Input
+          className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 "
           id="grid-last-name"
-          pattern="[A-Za-z]{2,}"
           type="text"
           placeholder="Enter your last name"
           onChange={(e) => {
@@ -111,8 +92,8 @@ export default function signup() {
         >
           Email
         </label>
-        <input
-          className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        <Input
+          className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3"
           id="grid-email"
           type="text"
           onChange={(e) => {
@@ -127,7 +108,7 @@ export default function signup() {
         >
           Password
         </label>
-        <input
+        <Input
           className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-5 leading-tight focus:outline-none focus:bg-white"
           id="grid-password"
           type="password"
@@ -137,7 +118,7 @@ export default function signup() {
         />
       </div>
       <div className="w-full md:w-full px-3 mb-6 md:mb-0 justify-center ">
-        <button
+        <Button
           className="bg-sky-200 rounded py-3 px-4 "
           onClick={(e) => {
             if (
@@ -158,7 +139,7 @@ export default function signup() {
           }}
         >
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );

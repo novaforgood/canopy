@@ -1,0 +1,32 @@
+table:
+  schema: public
+  name: space
+array_relationships:
+  - name: profiles
+    using:
+      foreign_key_constraint_on:
+        column: space_id
+        table:
+          schema: public
+          name: profile
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        owner_id:
+          _eq: X-Hasura-User-Id
+      columns:
+        - name
+        - owner_id
+        - slug
+      backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - name
+        - owner_id
+        - slug
+        - created_at
+        - id
+      filter: {}

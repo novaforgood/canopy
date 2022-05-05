@@ -8,7 +8,7 @@ array_relationships:
         column: space_id
         table:
           schema: public
-          name: profiles
+          name: profile
 insert_permissions:
   - role: user
     permission:

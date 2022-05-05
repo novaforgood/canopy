@@ -33,7 +33,18 @@ export default function Login() {
           onClick={() => {
             setSigningIn(true);
             signInWithGoogle()
-              .then(() => {
+              .then(async () => {
+                const user = await auth.currentUser;
+                if (!user) {
+                  throw new Error("Could not get user after sign-in");
+                }
+                const idToken = await user.getIdToken();
+                await fetch(`/api/auth/upsertUserData`, {
+                  method: "POST",
+                  headers: {
+                    authorization: `Bearer ${idToken}`,
+                  },
+                });
                 router.push("/");
               })
               .catch((e) => {

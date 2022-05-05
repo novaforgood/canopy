@@ -1,7 +1,9 @@
-import type { AppProps } from "next/app";
 import { Suspense, useEffect, useMemo, useState } from "react";
+
+import type { AppProps } from "next/app";
 import { getUrqlClient } from "../lib/urql";
 import { Provider } from "urql";
+import { Toaster } from "react-hot-toast";
 import { auth } from "../lib/firebase";
 import "../styles/globals.css";
 import {
@@ -13,6 +15,8 @@ import {
   useSetRecoilState,
 } from "recoil";
 import { sessionAtom } from "../lib/recoil";
+import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { loadSession } from "../lib";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -39,46 +43,9 @@ function AuthProvider({ children }: AuthProviderProps) {
       // Whenever auth state changes, we no longer know what the session is.
       // We must wait for this handler to run to completion, resolving
       // the session to either authenticated or null.
-
       setSession(undefined);
-      if (user) {
-        const tokenResult = await user.getIdTokenResult();
-        const claims = tokenResult.claims["https://hasura.io/jwt/claims"];
-
-        if (!claims) {
-          // New user has logged in but doesn't have JWT claims
-          await fetch(`/api/auth/updateJwt`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${tokenResult.token}`,
-            },
-          });
-          await user.getIdToken(true);
-        }
-
-        const lastSignedIn = user.metadata.lastSignInTime;
-        const lastSignedInTime = lastSignedIn
-          ? new Date(lastSignedIn).getTime()
-          : 0;
-        const timeDiff = Date.now() - lastSignedInTime;
-        console.log("Time since last signed in (ms):", timeDiff);
-        if (timeDiff < 1000 * 3) {
-          // Upsert user info if it's less than 3 seconds since last signed in
-          await fetch(`/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${tokenResult.token}`,
-            },
-          });
-        }
-
-        setSession({
-          userId: user.uid,
-          jwt: await user.getIdToken(),
-        });
-      } else {
-        setSession(null);
-      }
+      const session = await loadSession();
+      setSession(session);
     });
 
     return () => {
@@ -92,18 +59,39 @@ function AuthProvider({ children }: AuthProviderProps) {
   return <>{children}</>;
 }
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
+  const { currentSpace } = useCurrentSpace();
+  const [session, setSession] = useRecoilState(sessionAtom);
+
+  useEffect(() => {
+    const reloadSession = async () => {
+      const session = await loadSession({
+        spaceId: currentSpace?.id,
+        forceUpdateJwt: true,
+      });
+      setSession(session);
+    };
+    reloadSession();
+  }, [currentSpace?.id, setSession]);
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Toaster />
+      <Component {...pageProps} />
+    </Suspense>
+  );
+}
+
+function AppWrapper({ Component, ...pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <AuthProvider>
         <UrqlProvider>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Component {...pageProps} />
-          </Suspense>
+          <App {...pageProps} Component={Component} />
         </UrqlProvider>
       </AuthProvider>
     </RecoilRoot>
   );
 }
 
-export default MyApp;
+export default AppWrapper;

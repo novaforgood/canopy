@@ -9,13 +9,46 @@ import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
 
 function LandingPage() {
+  const router = useRouter();
   return (
-    <div className="p-4">
-      <h1 className="text-xl">Welcome to the Landing Page</h1>
-      <p>This is a landing page.</p>
-      <div className="h-2"></div>
-      <div className="flex flex-col">
-        <Link href="/login">Login</Link>
+    <div className="w-full p-8 md:h-screen">
+      <div className="w-full items-center justify-between md:flex">
+        <img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" />
+        <div className="flex" justify-end="true">
+          {
+            <Button
+              onClick={() => {
+                router.push("/login");
+              }}
+            >
+              Login
+            </Button>
+          }
+          <div className="w-4" />
+          {
+            <Button
+              onClick={() => {
+                router.push("/jeff");
+              }}
+            >
+              Sign up
+            </Button>
+          }
+        </div>
+      </div>
+      <div className="flex justify-between gap-100 pt-10 md:px-36 md:pt-36">
+        <div>
+          Mentor Center makes mentorship accessible and manageable for any
+          community. Only login button works for now.
+          <Button
+            className="h-14 px-4 md:w-80"
+            onClick={() => {
+              router.push("/jeff");
+            }}
+          >
+            Join Beta
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -48,7 +81,7 @@ function LoggedInHomePage() {
       <div className="text-xl">Spaces:</div>
       <div className="h-4"></div>
       <div className="flex flex-col gap-2 items-start">
-        {profileData?.profiles.map((profile) => {
+        {profileData?.profile.map((profile) => {
           return (
             <Button
               key={profile.id}
@@ -68,7 +101,7 @@ function LoggedInHomePage() {
             router.push("/create");
           }}
         >
-          Create new program
+          Create new space
         </Button>
       </div>
       <div className="h-16"></div>
