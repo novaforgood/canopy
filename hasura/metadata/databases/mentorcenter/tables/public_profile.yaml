@@ -1,0 +1,74 @@
+table:
+  schema: public
+  name: profile
+object_relationships:
+  - name: space
+    using:
+      foreign_key_constraint_on: space_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+array_relationships:
+  - name: profile_roles
+    using:
+      foreign_key_constraint_on:
+        column: profile_id
+        table:
+          schema: public
+          name: profile_to_profile_role
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - _and:
+              - space:
+                  owner_id:
+                    _eq: X-Hasura-User-Id
+              - user_id:
+                  _eq: X-Hasura-User-Id
+      columns:
+        - created_at
+        - listing_enabled
+        - space_id
+        - user_id
+      backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - user_id
+        - space_id
+        - listing_enabled
+      filter:
+        _or:
+          - space:
+              profiles:
+                user_id:
+                  _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - listing_enabled
+      filter:
+        _or:
+          - space:
+              owner_id:
+                _eq: X-Hasura-User-Id
+          - _and:
+              - space:
+                  profiles:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - profile_roles:
+                          profile_role:
+                            _eq: Admin
+              - _not:
+                  profile_roles:
+                    profile_role:
+                      _eq: Admin
+      check: null

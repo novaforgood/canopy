@@ -1,15 +1,29 @@
 table:
-  name: users
   schema: public
+  name: users
+array_relationships:
+  - name: profiles
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: profile
 select_permissions:
-- permission:
-    columns:
-    - email
-    - first_name
-    - id
-    - last_name
-    - created_at
-    filter:
-      id:
-        _eq: X-Hasura-User-Id
-  role: user
+  - role: user
+    permission:
+      columns:
+        - email
+        - first_name
+        - id
+        - last_name
+        - created_at
+      filter:
+        _or:
+          - id:
+              _eq: X-Hasura-User-Id
+          - profiles:
+              space:
+                profiles:
+                  user_id:
+                    _eq: X-Hasura-User-Id

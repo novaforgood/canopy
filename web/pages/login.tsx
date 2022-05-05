@@ -1,58 +1,63 @@
 import { signOut } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { Button } from "../components/atomic/Button";
 import { useUserQuery } from "../generated/graphql";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useSignIn } from "../hooks/useSignIn";
+import { useUserData } from "../hooks/useUserData";
+import { handleError } from "../lib/error";
 import { auth } from "../lib/firebase";
-
-const logout = () => {
-  signOut(auth);
-};
 
 export default function Login() {
   const { signInWithGoogle } = useSignIn();
+  const [signingIn, setSigningIn] = useState(false);
+  const isLoggedIn = useIsLoggedIn();
+  const router = useRouter();
+  const { userData } = useUserData();
 
-  const [user, loading, error] = useAuthState(auth);
-  const [{ data }, executeQuery] = useUserQuery({
-    variables: { id: user?.uid ?? "" },
-  });
-  const userId = data?.users_by_pk?.id;
-
-  if (loading) {
-    return (
-      <div>
-        <p>Initialising User...</p>
-      </div>
-    );
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-  if (user) {
-    return (
-      <div>
-        <p>Current User: {user.email}</p>
-        <p>User ID: {userId}</p>
-        <button
-          onClick={() => {
-            executeQuery({ requestPolicy: "network-only" });
-          }}
-        >
-          lol
-        </button>
-        <button onClick={logout}>Log out</button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (userData) {
+      router.push("/");
+    }
+  }, [userData, router]);
 
   return (
-    <div>
-      <button
-        onClick={() => {
-          signInWithGoogle().then(() => {});
-        }}
-      >
-        Sign in with Google
-      </button>
+    <div className="p-4">
+      {signingIn ? (
+        <div>Signing in... </div>
+      ) : isLoggedIn ? (
+        <div>Redirecting...</div>
+      ) : (
+        <Button
+          onClick={() => {
+            setSigningIn(true);
+            signInWithGoogle()
+              .then(async () => {
+                const user = await auth.currentUser;
+                if (!user) {
+                  throw new Error("Could not get user after sign-in");
+                }
+                const idToken = await user.getIdToken();
+                await fetch(`/api/auth/upsertUserData`, {
+                  method: "POST",
+                  headers: {
+                    authorization: `Bearer ${idToken}`,
+                  },
+                });
+                router.push("/");
+              })
+              .catch((e) => {
+                handleError(e);
+              })
+              .finally(() => {
+                setSigningIn(false);
+              });
+          }}
+        >
+          Sign in with Google
+        </Button>
+      )}
     </div>
   );
 }
