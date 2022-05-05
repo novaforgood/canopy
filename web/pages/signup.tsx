@@ -1,6 +1,5 @@
 import {
   createUserWithEmailAndPassword,
-  getAuth,
   sendEmailVerification,
   signOut,
   updateProfile,
@@ -9,6 +8,7 @@ import { Router, useRouter } from "next/router";
 import { useState } from "react";
 import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
+import { auth } from "../lib/firebase";
 
 const signUpUser = async (
   firstName: string,
@@ -16,7 +16,6 @@ const signUpUser = async (
   email: string,
   password: string
 ) => {
-  const auth = getAuth();
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCred) => {
       const user = userCred.user;
