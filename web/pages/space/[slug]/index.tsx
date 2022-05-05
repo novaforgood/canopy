@@ -2,7 +2,7 @@ import { useClipboard } from "@mantine/hooks";
 import { format } from "date-fns";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../../../components/atomic/Button";
 import {
@@ -35,6 +35,8 @@ function CreateInviteLink() {
   const { currentSpace } = useCurrentSpace();
 
   const [_, createInviteLink] = useCreateInviteLinkMutation();
+
+  console.log({ "x-hasura-space-id": currentSpace?.id ?? "" });
   const [{ data: inviteLinksData }, refetchInviteLinks] = useInviteLinksQuery({
     variables: { space_id: currentSpace?.id ?? "" },
   });

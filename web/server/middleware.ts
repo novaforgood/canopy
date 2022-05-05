@@ -10,6 +10,7 @@ function validateMiddleware<T>(
 ): Middleware<NextApiRequest, NextApiResponse> {
   return async (req, res, next) => {
     const result = schema.safeParse(req.body);
+
     if (result.success) {
       Object.assign(req, { body: result.data });
       next();

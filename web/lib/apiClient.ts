@@ -1,12 +1,17 @@
 import { ApiResponse, ApiResponseStatus } from "../common/types";
+import { auth } from "./firebase";
 
-export class ApiClient {
+class ApiClient {
   readonly baseUrl: string;
-  readonly sessionJwt?: string;
+  readonly getSessionJwt?: () => Promise<string>;
 
-  constructor(props: { baseUrl: string; sessionJwt?: string }) {
+  constructor(props: {
+    baseUrl: string;
+    sessionJwt?: string;
+    getSessionJwt?: () => Promise<string>;
+  }) {
     this.baseUrl = props.baseUrl;
-    this.sessionJwt = props.sessionJwt;
+    this.getSessionJwt = props.getSessionJwt;
   }
 
   async customRequest<
@@ -17,12 +22,13 @@ export class ApiClient {
     method: string,
     body: TRequestBody | null
   ): Promise<TResponseBody> {
+    const sessionJwt = await this.getSessionJwt?.();
     return await fetch(`${this.baseUrl}${path}`, {
       method,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: this.sessionJwt ? `Bearer ${this.sessionJwt}` : "",
+        Authorization: sessionJwt ? `Bearer ${sessionJwt}` : "",
       },
       body: body ? JSON.stringify(body) : undefined,
     })
@@ -74,3 +80,8 @@ export class ApiClient {
     return this.customRequest<{}, TResponseBody>(path, "GET", null);
   }
 }
+
+export const apiClient = new ApiClient({
+  baseUrl: "",
+  getSessionJwt: async () => auth.currentUser?.getIdToken() ?? "",
+});
