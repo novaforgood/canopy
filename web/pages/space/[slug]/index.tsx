@@ -36,7 +36,6 @@ function CreateInviteLink() {
 
   const [_, createInviteLink] = useCreateInviteLinkMutation();
 
-  console.log({ "x-hasura-space-id": currentSpace?.id ?? "" });
   const [{ data: inviteLinksData }, refetchInviteLinks] = useInviteLinksQuery({
     variables: { space_id: currentSpace?.id ?? "" },
   });

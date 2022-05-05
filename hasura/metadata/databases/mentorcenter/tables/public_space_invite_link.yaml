@@ -25,7 +25,7 @@ insert_permissions:
                       - user_id:
                           _eq: X-Hasura-User-Id
                       - space_id:
-                          _eq: X-Hasura-User-Id
+                          _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: Admin
                   _table:
