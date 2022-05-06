@@ -64,7 +64,6 @@ function LoggedInHomePage() {
     variables: { user_id: userData?.id ?? "" },
   });
   const router = useRouter();
-  console.log(auth.currentUser);
   return (
     <div className="p-4">
       <h1>Logged In Home Page</h1>

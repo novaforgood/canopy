@@ -21,7 +21,7 @@ const signUpUser = async (
       const user = userCred.user;
       const tokenResult = await user.getIdTokenResult();
       const name = `${firstName} ${lastName}`;
-      updateProfile(user, {
+      await updateProfile(user, {
         displayName: name,
       });
       await fetch(`/api/auth/upsertUserData`, {
