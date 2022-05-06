@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import { Router, useRouter } from "next/router";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
 import { auth } from "../lib/firebase";
@@ -33,7 +34,7 @@ const signUpUser = async (
       await sendEmailVerification(user);
     })
     .catch((e) => {
-      alert(e.code + ": " + e.message);
+      toast.error(e.code + ": " + e.message);
       signOut(auth);
     });
 };
