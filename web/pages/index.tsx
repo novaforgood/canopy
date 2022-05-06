@@ -72,6 +72,7 @@ function LoggedInHomePage() {
       <div className="border shadow-md p-2">
         <p>Current User: {userData?.email}</p>
         <p>User ID: {userData?.id}</p>
+        <p>Email Verified: {auth.currentUser?.emailVerified ? "Yes" : "No"}</p>
       </div>
 
       <div className="h-4"></div>
