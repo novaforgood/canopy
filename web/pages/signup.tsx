@@ -11,34 +11,6 @@ import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
 import { auth } from "../lib/firebase";
 
-const signUpUser = async (
-  firstName: string,
-  lastName: string,
-  email: string,
-  password: string
-) => {
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCred) => {
-      const user = userCred.user;
-      const tokenResult = await user.getIdTokenResult();
-      const name = `${firstName} ${lastName}`;
-      await updateProfile(user, {
-        displayName: name,
-      });
-      await fetch(`/api/auth/upsertUserData`, {
-        method: "POST",
-        headers: {
-          authorization: `Bearer ${tokenResult.token}`,
-        },
-      });
-      await sendEmailVerification(user);
-    })
-    .catch((e) => {
-      toast.error(e.code + ": " + e.message);
-      signOut(auth);
-    });
-};
-
 export default function signup() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -47,6 +19,36 @@ export default function signup() {
     password: "",
   });
   const router = useRouter();
+
+  const signUpUser = async (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCred) => {
+        const user = userCred.user;
+        const tokenResult = await user.getIdTokenResult();
+        const name = `${firstName} ${lastName}`;
+        await updateProfile(user, {
+          displayName: name,
+        });
+        await fetch(`/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${tokenResult.token}`,
+          },
+        });
+        await sendEmailVerification(user);
+        router.push("/");
+      })
+      .catch((e) => {
+        toast.error(e.code + ": " + e.message);
+        signOut(auth);
+      });
+  };
+
   return (
     <div className="w-full  max-w-lg rounded p-4 flex flex-wrap -mx-3">
       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -130,9 +132,7 @@ export default function signup() {
                 formData.lastName,
                 formData.email,
                 formData.password
-              ).then(() => {
-                router.push("/");
-              });
+              );
             } else {
               alert("Please enter valid first and last name");
             }

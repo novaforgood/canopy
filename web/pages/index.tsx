@@ -28,10 +28,10 @@ function LandingPage() {
           {
             <Button
               onClick={() => {
-                router.push("/jeff");
+                router.push("/signup");
               }}
             >
-              Sign up
+              Sign up with email
             </Button>
           }
         </div>
