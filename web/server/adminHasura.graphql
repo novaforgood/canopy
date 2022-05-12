@@ -8,13 +8,15 @@ query GetInviteLink($invite_link_id: uuid!) {
   }
 }
 
-mutation UpsertUser($id: String!, $email: String!) {
+mutation UpsertUser($id: String!, $email: String!, $first_name: String!, $last_name: String!) {
   insert_user_one(
-    object: { id: $id, email: $email }
-    on_conflict: { constraint: users_pkey, update_columns: [email] }
+    object: { id: $id, email: $email, first_name: $first_name, last_name: $last_name }
+    on_conflict: { constraint: users_pkey, update_columns: [email, first_name, last_name] }
   ) {
     email
     id
+    first_name
+    last_name
   }
 }
 
