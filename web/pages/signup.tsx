@@ -39,7 +39,7 @@ const signUpUser = async (
     });
 };
 
-export default function signup() {
+export default function SignUpPage() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
