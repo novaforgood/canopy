@@ -30,6 +30,5 @@ mutation InsertImage($data: image_insert_input!) {
   insert_image_one(object: $data) {
     id
     url
-    alt
   }
 }
