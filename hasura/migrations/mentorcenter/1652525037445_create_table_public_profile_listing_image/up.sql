@@ -1,0 +1,2 @@
+CREATE TABLE "public"."profile_listing_image" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "profile_listing_id" uuid NOT NULL, "image_id" uuid NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("profile_listing_id") REFERENCES "public"."profile_listing"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("image_id") REFERENCES "public"."image"("id") ON UPDATE restrict ON DELETE restrict);
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
