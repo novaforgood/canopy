@@ -63,7 +63,6 @@ export default applyMiddleware({
             },
           ],
         },
-        listing_enabled: listingEnabled,
       },
     });
   if (insertError) {

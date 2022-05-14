@@ -67,7 +67,6 @@ export default function CreatePage() {
               slug: generatedSlug,
             },
             user_id: userData.id,
-            profile_listing_enabled: true,
           }).then((result) => {
             if (result.error) {
               const msg = makeReadableError(result.error.message);
