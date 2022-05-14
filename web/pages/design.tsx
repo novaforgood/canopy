@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "../components/atomic/Button";
-import { Input } from "../components/atomic/Input";
-import { Textarea } from "../components/atomic/Textarea";
+import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
+import { ActionModal } from "../components/modals/ActionModal";
 import { theme } from "../tailwind.config";
 
 // https://github.com/tailwindlabs/tailwindcss.com/blob/master/src/components/ColorPaletteReference.js
@@ -105,6 +104,83 @@ function ButtonsReference() {
   );
 }
 
+function ModalReference() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
+  const [isOpen3, setIsOpen3] = useState(false);
+  return (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+      >
+        <div className="w-96 bg-white p-4">
+          <Modal.Title>Title</Modal.Title>
+          <Modal.Description>Description</Modal.Description>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isOpen2}
+        onClose={() => {
+          setIsOpen2(false);
+        }}
+        backgroundBlur
+      >
+        <div className="w-96 bg-white p-4">
+          <Modal.Title>Title</Modal.Title>
+          <Modal.Description>Description</Modal.Description>
+        </div>
+      </Modal>
+      <ActionModal
+        isOpen={isOpen3}
+        onClose={() => {
+          setIsOpen3(false);
+        }}
+        actionText="Primary action"
+        onAction={() => {
+          toast.success("Primary action clicked");
+          setIsOpen3(false);
+        }}
+        secondaryActionText="Secondary action"
+        onSecondaryAction={() => {
+          toast.error("Secondary action clicked");
+          setIsOpen3(false);
+        }}
+      >
+        <div className="w-120 h-40 bg-teal-50">content</div>
+      </ActionModal>
+
+      <Button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Open modal
+      </Button>
+
+      <div className="h-4"></div>
+      <Button
+        onClick={() => {
+          setIsOpen2(true);
+        }}
+      >
+        Open modal (background blur)
+      </Button>
+
+      <div className="h-4"></div>
+      <Button
+        onClick={() => {
+          setIsOpen3(true);
+        }}
+      >
+        Open action modal
+      </Button>
+    </>
+  );
+}
+
 function SectionTitle({ title }: { title: string }) {
   return (
     <h1
@@ -169,6 +245,25 @@ export default function ComponentsPage() {
           <div>
             <Textarea placeholder="Type in textarea..." />
           </div>
+
+          <SectionTitle title="Typography" />
+          <div className="flex flex-col gap-2">
+            <Text variant="heading1">Heading 1</Text>
+            <Text variant="heading2">Heading 2</Text>
+            <Text variant="heading3">Heading 3</Text>
+            <Text variant="heading4">Heading 4</Text>
+            <Text variant="subheading1">Subheading 1</Text>
+            <Text variant="subheading2">Subheading 2</Text>
+            <Text variant="body1">Body 1</Text>
+            <Text variant="body2">Body 2</Text>
+            <Text variant="body3">Body 3</Text>
+            <Text bold>Bold</Text>
+            <Text italic>Italic</Text>
+            <Text underline>Underline</Text>
+          </div>
+
+          <SectionTitle title="Modals" />
+          <ModalReference />
 
           <div className="h-screen"></div>
         </div>

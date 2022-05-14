@@ -4,10 +4,11 @@ import aws from "aws-sdk";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { requireServerEnv } from "../../../server/env";
+import { v4 as uuidv4 } from "uuid";
 
 export const config = {
   api: {
-    bodyParser: true, // Disallow body parsing, consume as stream
+    bodyParser: false, // Disallow body parsing, consume as stream
   },
 };
 
@@ -28,10 +29,11 @@ var upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null, Date.now().toString());
+      const uuid = uuidv4();
+      cb(null, uuid);
     },
   }),
-  limits: { fileSize: 1 * 1024 * 1024 }, // 1MB
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
 });
 
 /**
@@ -42,7 +44,7 @@ export default applyMiddleware({
 })
   .use(upload.single("upload"))
   .post<{ file: Express.Multer.File }>(async (req, res) => {
-    console.log(req.body);
+    console.log(req.file);
     const response = makeApiSuccess({ detail: "Success", file: req.file });
     res.status(response.code).json(response);
   });

@@ -14,6 +14,17 @@ module.exports = {
         120: "30rem",
         240: "45rem",
       },
+      fontSize: {
+        heading1: "3.375rem",
+        heading2: "2.75rem",
+        heading3: "2.25rem",
+        heading4: "1.5rem",
+        subheading1: "1.25rem",
+        subheading2: "1.125rem",
+        body1: "1rem",
+        body2: "0.875rem",
+        body3: "0.75rem",
+      },
     },
     colors: {
       white: {
