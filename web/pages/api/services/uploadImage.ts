@@ -13,6 +13,7 @@ import { executeInsertImageMutation } from "../../../server/generated/serverGrap
 import { z } from "zod";
 import { Middleware } from "next-connect";
 import { NextApiRequest, NextApiResponse } from "next/types";
+import mime from "mime-types";
 
 export interface FileResponse {
   fieldname: string;
@@ -58,9 +59,13 @@ var upload = multer({
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
+    contentType: function (req, file, cb) {
+      cb(null, file.mimetype);
+    },
     key: function (req, file, cb) {
+      const fileExt = mime.extension(file.mimetype) ?? "";
       const uuid = uuidv4();
-      cb(null, uuid);
+      cb(null, `${uuid}.${fileExt}`);
     },
   }),
   limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
@@ -75,7 +80,7 @@ export default applyMiddleware({
   .use(upload.single("upload"))
   .post<{ file: FileResponse }>(async (req, res) => {
     const { data, error } = await executeInsertImageMutation({
-      data: { url: req.file.location, id: req.file.key },
+      data: { url: req.file.location, id: req.file.key.split(".")[0] },
     });
     if (error) {
       throw makeApiError(error.message);

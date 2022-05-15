@@ -202,7 +202,7 @@ function DropzoneReference() {
 function SectionTitle({ title }: { title: string }) {
   return (
     <h1
-      className="pb-4 pt-16 border-b mb-12 text-3xl"
+      className="pb-4 pt-40 border-b mb-12 text-3xl"
       id={title.replace(" ", "-")}
     >
       {title}
