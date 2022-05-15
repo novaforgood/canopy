@@ -40,7 +40,7 @@ export function ActionModal({
           </Button>
           <Text
             underline
-            className="text-gray-600 cursor-pointer"
+            className="text-gray-600 hover:text-gray-500 cursor-pointer"
             onClick={() => {
               onSecondaryAction();
             }}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
 import { ActionModal } from "../components/modals/ActionModal";
+import { useSingleImageDropzone } from "../hooks/useSingleImageDropzone";
 import { theme } from "../tailwind.config";
 
 // https://github.com/tailwindlabs/tailwindcss.com/blob/master/src/components/ColorPaletteReference.js
@@ -181,6 +182,23 @@ function ModalReference() {
   );
 }
 
+function DropzoneReference() {
+  const { getRootProps, getInputProps, isDragActive } = useSingleImageDropzone({
+    onDropAccepted: (file) => {
+      console.log(file);
+    },
+  });
+  return (
+    <div
+      {...getRootProps()}
+      className="flex justify-center items-center h-32 w-64 rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 hover:bg-gray-50 cursor-pointer"
+    >
+      <input {...getInputProps()} />
+      <div>Drop image here</div>
+    </div>
+  );
+}
+
 function SectionTitle({ title }: { title: string }) {
   return (
     <h1
@@ -210,7 +228,7 @@ export default function ComponentsPage() {
   return (
     <div className="flex h-screen">
       <div className="h-full p-4 pr-16 flex-none text-white bg-gray-900">
-        <div className="text-xl font-bold mb-8">Design System</div>
+        <div className="text-xl font-bold mb-8">Components</div>
         <div className="flex flex-col gap-1">
           {headers.map(({ title, link, element }, i) => {
             return (
@@ -264,6 +282,9 @@ export default function ComponentsPage() {
 
           <SectionTitle title="Modals" />
           <ModalReference />
+
+          <SectionTitle title="Image Dropzone" />
+          <DropzoneReference />
 
           <div className="h-screen"></div>
         </div>
