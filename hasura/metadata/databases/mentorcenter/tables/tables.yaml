@@ -2,6 +2,7 @@
 - "!include public_profile.yaml"
 - "!include public_profile_listing.yaml"
 - "!include public_profile_listing_image.yaml"
+- "!include public_profile_listing_response.yaml"
 - "!include public_profile_listing_social.yaml"
 - "!include public_profile_listing_social_type.yaml"
 - "!include public_profile_role.yaml"
@@ -11,4 +12,5 @@
 - "!include public_space.yaml"
 - "!include public_space_invite_link.yaml"
 - "!include public_space_invite_link_type.yaml"
+- "!include public_space_listing_question.yaml"
 - "!include public_user.yaml"
