@@ -1,5 +1,7 @@
+import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { tuple } from "zod";
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
 import { ActionModal } from "../components/modals/ActionModal";
 import { SimpleRichTextInput } from "../components/SimpleRichTextInput";
@@ -221,19 +223,60 @@ function InputReference() {
 }
 
 function DropzoneReference() {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [src, setSrc] = useState<string | null>(null);
+  const [hovered, setHovered] = useState(false);
+
   const { getRootProps, getInputProps, isDragActive } = useSingleImageDropzone({
     onDropAccepted: (file) => {
-      console.log(file);
+      const url = URL.createObjectURL(file);
+      setSrc(url);
+      setUploadedFile(file);
     },
   });
+
+  const styles = classNames({
+    "w-full h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 hover:bg-gray-50 cursor-pointer":
+      true,
+    "hover:brightness-90": src,
+    "border-teal-500 hover:border-teal-700": isDragActive,
+  });
   return (
-    <div
-      {...getRootProps()}
-      className="flex justify-center items-center h-32 w-64 rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 hover:bg-gray-50 cursor-pointer"
-    >
-      <input {...getInputProps()} />
-      <div>Drop image here</div>
-    </div>
+    <>
+      <div className="h-64 w-64">
+        <div
+          {...getRootProps()}
+          className={styles}
+          style={{
+            backgroundImage: src ? `url(${src})` : undefined,
+            backgroundSize: "cover",
+            backgroundClip: "padding-box",
+          }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          <input {...getInputProps()} />
+          {src ? (
+            hovered && (
+              <div className="bg-black/30 flex justify-center items-center w-full h-full text-white">
+                Change image
+              </div>
+            )
+          ) : (
+            <div className="">Drop image here</div>
+          )}
+        </div>
+      </div>
+      <div className="h-4"></div>
+      <Button
+        onClick={() => {
+          setUploadedFile(null);
+          setSrc(null);
+        }}
+      >
+        Clear
+      </Button>
+    </>
   );
 }
 
