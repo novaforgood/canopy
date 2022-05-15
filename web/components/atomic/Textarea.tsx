@@ -10,7 +10,7 @@ type TextAreaProps = TextareaAutosizeProps &
 //TODO: Implement color depending on theme
 export const Textarea = ({ className = "", ...props }: TextAreaProps) => {
   const styles = classNames({
-    "border border-gray-400 focus:border-black rounded-md px-4 py-2 focus:outline-none transition":
+    "border border-gray-400 focus:border-black rounded-md px-4 py-2 focus:outline-none transition resize-none":
       true,
     [`${className}`]: true,
   });

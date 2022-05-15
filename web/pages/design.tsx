@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
 import { ActionModal } from "../components/modals/ActionModal";
+import { SimpleRichTextInput } from "../components/SimpleRichTextInput";
 import { useSingleImageDropzone } from "../hooks/useSingleImageDropzone";
 import { theme } from "../tailwind.config";
 
@@ -41,7 +42,7 @@ export function ColorPaletteReference() {
                   return (
                     <div key={j} className="space-y-1.5">
                       <div
-                        className="h-10 w-full rounded dark:ring-1 dark:ring-inset dark:ring-white/10 shadow-md"
+                        className="h-10 w-full rounded dark:ring-1 dark:ring-inset dark:ring-white/10 shadow-lg"
                         style={{ backgroundColor: value }}
                       />
                       <div className="px-0.5 md:flex md:justify-between md:space-x-2 2xl:space-x-0 2xl:block">
@@ -182,6 +183,43 @@ function ModalReference() {
   );
 }
 
+function InputReference() {
+  const [value, setValue] = useState("");
+  const [editable, setEditable] = useState(true);
+  return (
+    <>
+      <div className="text-lg font-bold mb-2 mt-4">Input</div>
+      <Input placeholder="Type here..." />
+
+      <div className="text-lg font-bold mb-2 mt-4">Textarea</div>
+      <Textarea placeholder="Type in textarea..." />
+
+      <div>
+        <div className="text-lg font-bold mb-2 mt-4">
+          Simple Rich Text Input
+        </div>
+        <SimpleRichTextInput
+          placeholder="Type in simple rich text input..."
+          characterLimit={200}
+          value={value}
+          onUpdate={({ editor }) => {
+            setValue(editor.getHTML());
+          }}
+          editable={editable}
+        />
+        <Button
+          variant="outline"
+          onClick={() => {
+            setEditable((prev) => !prev);
+          }}
+        >
+          {editable ? "Make readonly" : "Make editable"}
+        </Button>
+      </div>
+    </>
+  );
+}
+
 function DropzoneReference() {
   const { getRootProps, getInputProps, isDragActive } = useSingleImageDropzone({
     onDropAccepted: (file) => {
@@ -202,7 +240,7 @@ function DropzoneReference() {
 function SectionTitle({ title }: { title: string }) {
   return (
     <h1
-      className="pb-4 pt-40 border-b mb-12 text-3xl"
+      className="pb-4 pt-16 border-b mb-12 text-3xl"
       id={title.replace(" ", "-")}
     >
       {title}
@@ -248,21 +286,9 @@ export default function ComponentsPage() {
         </div>
       </div>
       <div className="h-full w-full p-4 overflow-y-auto flex flex-col items-center">
-        <div className="max-w-4xl">
+        <div className="max-w-full xl:max-w-3xl">
           <SectionTitle title="Colors" />
           <ColorPaletteReference />
-
-          <SectionTitle title="Buttons" />
-          <ButtonsReference />
-
-          <SectionTitle title="Inputs" />
-          <div>
-            <Input placeholder="Type here..." />
-          </div>
-          <div className="h-4"></div>
-          <div>
-            <Textarea placeholder="Type in textarea..." />
-          </div>
 
           <SectionTitle title="Typography" />
           <div className="flex flex-col gap-2">
@@ -279,6 +305,13 @@ export default function ComponentsPage() {
             <Text italic>Italic</Text>
             <Text underline>Underline</Text>
           </div>
+
+          <SectionTitle title="Buttons" />
+          <ButtonsReference />
+
+          <SectionTitle title="Inputs" />
+
+          <InputReference />
 
           <SectionTitle title="Modals" />
           <ModalReference />
