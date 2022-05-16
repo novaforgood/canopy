@@ -1,6 +1,6 @@
 table:
   schema: public
-  name: spaces
+  name: space
 array_relationships:
   - name: profiles
     using:
@@ -8,7 +8,14 @@ array_relationships:
         column: space_id
         table:
           schema: public
-          name: profiles
+          name: profile
+  - name: space_listing_questions
+    using:
+      foreign_key_constraint_on:
+        column: space_id
+        table:
+          schema: public
+          name: space_listing_question
 insert_permissions:
   - role: user
     permission:

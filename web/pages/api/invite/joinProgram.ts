@@ -5,8 +5,8 @@ import {
   executeGetInviteLinkQuery,
   executeInsertProfileMutation,
   GetInviteLinkDocument,
-  Profile_Types_Enum,
-  Space_Invite_Link_Types_Enum,
+  Profile_Role_Enum,
+  Space_Invite_Link_Type_Enum,
 } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
 import {
@@ -31,7 +31,7 @@ export default applyMiddleware({
   if (inviteLinkError) {
     throw makeApiFail(inviteLinkError.message);
   }
-  const inviteLink = inviteLinkData?.space_invite_links_by_pk;
+  const inviteLink = inviteLinkData?.space_invite_link_by_pk;
   if (!inviteLink) {
     throw makeApiFail("Invite link not found");
   }
@@ -46,7 +46,7 @@ export default applyMiddleware({
 
   // If not expired, accept invite link and add user to program
   const listingEnabled =
-    inviteLink.type === Space_Invite_Link_Types_Enum.MemberListingEnabled
+    inviteLink.type === Space_Invite_Link_Type_Enum.MemberListingEnabled
       ? true
       : false;
   const { error: insertError, data: insertData } =
@@ -54,15 +54,22 @@ export default applyMiddleware({
       data: {
         user_id: req.token.uid,
         space_id: inviteLink.space_id,
-        type: Profile_Types_Enum.Member,
-        listing_enabled: listingEnabled,
+        profile_roles: {
+          data: [
+            {
+              profile_role: listingEnabled
+                ? Profile_Role_Enum.MemberWhoCanList
+                : Profile_Role_Enum.Member,
+            },
+          ],
+        },
       },
     });
   if (insertError) {
     throw makeApiError(insertError.message);
   }
 
-  const newProfileId = insertData?.insert_profiles_one?.id;
+  const newProfileId = insertData?.insert_profile_one?.id;
   if (!newProfileId) {
     throw makeApiError("Failed to insert new profile");
   }

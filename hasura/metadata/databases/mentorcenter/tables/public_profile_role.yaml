@@ -1,4 +1,4 @@
 table:
   schema: public
-  name: profile_types
+  name: profile_role
 is_enum: true

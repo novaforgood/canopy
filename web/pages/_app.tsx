@@ -15,6 +15,11 @@ import {
   useSetRecoilState,
 } from "recoil";
 import { sessionAtom } from "../lib/recoil";
+import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { loadSession } from "../lib";
+import { usePrevious } from "../hooks/usePrevious";
+import { useSpaceBySlugQuery } from "../generated/graphql";
+import { useRouter } from "next/router";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -41,30 +46,9 @@ function AuthProvider({ children }: AuthProviderProps) {
       // Whenever auth state changes, we no longer know what the session is.
       // We must wait for this handler to run to completion, resolving
       // the session to either authenticated or null.
-
       setSession(undefined);
-      if (user) {
-        const tokenResult = await user.getIdTokenResult();
-        const claims = tokenResult.claims["https://hasura.io/jwt/claims"];
-
-        if (!claims) {
-          // New user has logged in but doesn't have JWT claims
-          await fetch(`/api/auth/updateJwt`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${tokenResult.token}`,
-            },
-          });
-          await user.getIdToken(true);
-        }
-
-        setSession({
-          userId: user.uid,
-          jwt: await user.getIdToken(),
-        });
-      } else {
-        setSession(null);
-      }
+      const session = await loadSession();
+      setSession(session);
     });
 
     return () => {
@@ -78,19 +62,58 @@ function AuthProvider({ children }: AuthProviderProps) {
   return <>{children}</>;
 }
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
+  const [session, setSession] = useRecoilState(sessionAtom);
+  const router = useRouter();
+  const spaceSlug = router.query.slug as string;
+  const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
+    pause: true,
+    variables: { slug: spaceSlug },
+  });
+  const spaceId = spaceData?.space[0].id;
+
+  // When a new spaceId is set, we need to refetch the invite links.
+  useEffect(() => {
+    const reloadSession = async () => {
+      const session = await loadSession({
+        spaceId: spaceId,
+        forceUpdateJwt: true,
+      });
+      setSession(session);
+    };
+
+    if (spaceId) {
+      console.log("Refreshing JWT...");
+      reloadSession();
+    }
+  }, [spaceId, setSession]);
+
+  // Update space data when slug changes to a non-empty string.
+  useEffect(() => {
+    if (spaceSlug) {
+      console.log("Re-executing space lazy query...");
+      executeQuery();
+    }
+  }, [spaceSlug, executeQuery]);
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Toaster />
+      <Component {...pageProps} />
+    </Suspense>
+  );
+}
+
+function AppWrapper({ Component, ...pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <AuthProvider>
         <UrqlProvider>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Toaster />
-            <Component {...pageProps} />
-          </Suspense>
+          <App {...pageProps} Component={Component} />
         </UrqlProvider>
       </AuthProvider>
     </RecoilRoot>
   );
 }
 
-export default MyApp;
+export default AppWrapper;

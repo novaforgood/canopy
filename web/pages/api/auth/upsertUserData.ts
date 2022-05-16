@@ -1,30 +1,20 @@
-import { gql } from "urql";
+import { auth } from "../../../server/firebaseAdmin";
 import { executeUpsertUserMutation } from "../../../server/generated/serverGraphql";
-import { withAuth } from "../../../server/withAuth";
+import { applyMiddleware } from "../../../server/middleware";
+import { makeApiSuccess } from "../../../server/response";
 
-const UPSERT_USER_MUTATION = gql`
-  mutation UpsertUser($id: String!, $email: String!) {
-    insert_users_one(
-      object: { id: $id, email: $email }
-      on_conflict: { constraint: users_pkey, update_columns: [email] }
-    ) {
-      email
-      id
-    }
-  }
-`;
-
-type ResponseData = {
-  detail: string;
-};
-
-export default withAuth<ResponseData>(async (req, res) => {
-  await executeUpsertUserMutation({
-    id: req.token.uid,
-    email: req.token.email ?? "",
-  }).catch((e) => {
-    console.log(e);
+export default applyMiddleware({
+  authenticated: true,
+}).post(async (req, res) => {
+  auth.getUser(req.token.uid).then(async (user) => {
+    await executeUpsertUserMutation({
+      id: user.uid,
+      email: user.email ?? "",
+      first_name: user.displayName?.split(" ")[0] ?? "",
+      last_name: user.displayName?.split(" ")[1] ?? "",
+    });
   });
 
-  res.status(200).json({ detail: "Successful" });
+  const response = makeApiSuccess({ detail: "Successful" });
+  res.status(response.code).json(response);
 });

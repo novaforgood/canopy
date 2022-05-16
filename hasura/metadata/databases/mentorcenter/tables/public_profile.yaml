@@ -1,6 +1,6 @@
 table:
   schema: public
-  name: profiles
+  name: profile
 object_relationships:
   - name: space
     using:
@@ -8,34 +8,40 @@ object_relationships:
   - name: user
     using:
       foreign_key_constraint_on: user_id
+array_relationships:
+  - name: profile_roles
+    using:
+      foreign_key_constraint_on:
+        column: profile_id
+        table:
+          schema: public
+          name: profile_to_profile_role
 insert_permissions:
   - role: user
     permission:
       check:
-        _and:
-          - space:
-              owner_id:
-                _eq: X-Hasura-User-Id
-          - user_id:
-              _eq: X-Hasura-User-Id
+        _or:
+          - _and:
+              - space:
+                  owner_id:
+                    _eq: X-Hasura-User-Id
+              - user_id:
+                  _eq: X-Hasura-User-Id
       columns:
-        - listing_enabled
+        - created_at
         - space_id
-        - type
         - user_id
       backend_only: false
 select_permissions:
   - role: user
     permission:
       columns:
-        - user_id
         - created_at
         - id
         - space_id
+        - user_id
       filter:
         _or:
-          - user_id:
-              _eq: X-Hasura-User-Id
           - space:
               profiles:
                 user_id:

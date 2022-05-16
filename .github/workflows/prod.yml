@@ -24,11 +24,15 @@ jobs:
       - name: Install Hasura CLI
         run: npm install --global hasura-cli
 
-      - name: hasura metadata apply
+      - name: Apply Metadata
         working-directory: ./hasura
         run: hasura metadata apply --endpoint ${{ secrets.PROD_HASURA_ENDPOINT }} --admin-secret ${{ secrets.PROD_HASURA_ADMIN_SECRET }}
 
-      - name: hasura migrate apply
+      - name: Print Migration Status
+        working-directory: ./hasura
+        run: hasura migrate status --database-name mentorcenter --endpoint ${{ secrets.PROD_HASURA_ENDPOINT }} --admin-secret ${{ secrets.PROD_HASURA_ADMIN_SECRET }}
+
+      - name: Apply Migrations
         working-directory: ./hasura
         run: hasura migrate apply --all-databases --endpoint ${{ secrets.PROD_HASURA_ENDPOINT }} --admin-secret ${{ secrets.PROD_HASURA_ADMIN_SECRET }}
 

@@ -1,0 +1,61 @@
+table:
+  schema: public
+  name: space_invite_link
+object_relationships:
+  - name: space
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: space
+        insertion_order: null
+        column_mapping:
+          space_id: id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+      columns:
+        - expires_at
+        - space_id
+        - type
+      backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - space_id
+        - created_at
+        - expires_at
+        - type
+      filter:
+        _or:
+          - _exists:
+              _where:
+                _and:
+                  - user_id:
+                      _eq: X-Hasura-User-Id
+                  - space_id:
+                      _eq: X-Hasura-Space-Id
+                  - profile_role:
+                      _eq: Admin
+              _table:
+                schema: public
+                name: profile_to_profile_role_flattened
