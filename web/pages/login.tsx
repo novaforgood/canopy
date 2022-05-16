@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
+
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+
 import { Button } from "../components/atomic/Button";
 import { useUserQuery } from "../generated/graphql";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";

@@ -1,4 +1,9 @@
 // src/Tiptap.jsx
+import { useEffect } from "react";
+
+import CharacterCount from "@tiptap/extension-character-count";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
 import {
   useEditor,
   EditorContent,
@@ -6,10 +11,6 @@ import {
   EditorEvents,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
-import Placeholder from "@tiptap/extension-placeholder";
-import CharacterCount from "@tiptap/extension-character-count";
-import { useEffect } from "react";
 
 type SimpleRichTextInputProps = Omit<EditorContentProps, "editor" | "ref"> & {
   placeholder?: string;

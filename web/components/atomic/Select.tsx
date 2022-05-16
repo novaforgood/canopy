@@ -1,10 +1,10 @@
+import { Fragment } from "react";
+
 import { Listbox, Transition } from "@headlessui/react";
 import classNames from "classnames";
 import { isEqual } from "date-fns";
-import { Fragment } from "react";
 
-interface UpDownArrowProps {}
-const UpDownArrow: React.FC<UpDownArrowProps> = () => {
+const UpDownArrow: React.FC = () => {
   return (
     <svg
       className="h-5 w-5 text-gray-500"

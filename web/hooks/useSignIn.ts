@@ -1,5 +1,7 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useCallback } from "react";
+
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
 import { auth } from "../lib/firebase";
 
 const googleOauthProvider = new GoogleAuthProvider();

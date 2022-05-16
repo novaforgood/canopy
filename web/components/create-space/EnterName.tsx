@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Button, Input, Text } from "../atomic";
+
+import { useRouter } from "next/router";
+
 import { useCreateOwnerProfileInNewSpaceMutation } from "../../generated/graphql";
 import { useUserData } from "../../hooks/useUserData";
-import { useRouter } from "next/router";
+import { Button, Input, Text } from "../atomic";
 
 type EnterNameData = {
   spaceName: string;

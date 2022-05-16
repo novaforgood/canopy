@@ -1,4 +1,5 @@
 import { ReactNode, useState } from "react";
+
 import { Button, Modal, Text } from "../atomic";
 
 export interface ActionModalProps {

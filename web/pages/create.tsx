@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
+
+import { useDebouncedValue, useSetState } from "@mantine/hooks";
 import { customAlphabet } from "nanoid";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
+
+import { EnterName } from "../components/create-space/EnterName";
+import { EnterProfileSchema } from "../components/create-space/EnterProfileSchema";
+import { EnterSettings } from "../components/create-space/EnterSettings";
+import { StageNavigator } from "../components/StageNavigator";
+import { FadeTransition } from "../components/transitions/FadeTransition";
 import {
   Space_Listing_Question_Insert_Input,
   useCreateOwnerProfileInNewSpaceMutation,
 } from "../generated/graphql";
-import { useUserData } from "../hooks/useUserData";
-import { useRouter } from "next/router";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
-import { useDebouncedValue, useSetState } from "@mantine/hooks";
+import { useUserData } from "../hooks/useUserData";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
-import toast from "react-hot-toast";
-import { EnterName } from "../components/create-space/EnterName";
-import { StageNavigator } from "../components/StageNavigator";
-import { EnterSettings } from "../components/create-space/EnterSettings";
-import { FadeTransition } from "../components/transitions/FadeTransition";
-import { EnterProfileSchema } from "../components/create-space/EnterProfileSchema";
 
 const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
 

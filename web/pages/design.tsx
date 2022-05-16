@@ -1,7 +1,9 @@
-import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
+
+import classNames from "classnames";
 import toast from "react-hot-toast";
 import { tuple } from "zod";
+
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
 import { ActionModal } from "../components/modals/ActionModal";
 import { SimpleRichTextInput } from "../components/SimpleRichTextInput";
@@ -13,9 +15,9 @@ export function ColorPaletteReference() {
   return (
     <div className="grid grid-cols-1 gap-8">
       {Object.entries(theme.colors).map(([color, colorVariants], i) => {
-        let title = color;
+        const title = color;
 
-        let palette = Object.entries(colorVariants).map(
+        const palette = Object.entries(colorVariants).map(
           ([variant, hexCode]) => ({
             name: variant,
             value: hexCode,
@@ -52,7 +54,7 @@ export function ColorPaletteReference() {
                           {name}
                         </div>
                         <div className="text-slate-500 font-mono lowercase dark:text-slate-400">
-                          {value.replace(/^#[a-f0-9]+/gi, (m: any) =>
+                          {value.replace(/^#[a-f0-9]+/gi, (m: string) =>
                             m.toUpperCase()
                           )}
                         </div>

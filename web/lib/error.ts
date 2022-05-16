@@ -1,4 +1,4 @@
-export function handleError(e: any) {
+export function handleError(e: Error) {
   console.error(e);
   return e;
 }

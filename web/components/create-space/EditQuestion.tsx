@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+
+import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
 import { Input, Text } from "../atomic";
 import { ActionModal } from "../modals/ActionModal";
-import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
 
 type EditQuestionProps = {
   question: Space_Listing_Question_Insert_Input;

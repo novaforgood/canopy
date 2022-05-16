@@ -1,5 +1,7 @@
 import { useMemo } from "react";
+
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
+
 import { useQueryParam } from "./useQueryParam";
 import { useUserData } from "./useUserData";
 

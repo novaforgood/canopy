@@ -1,5 +1,6 @@
-import classNames from "classnames";
 import React, { ButtonHTMLAttributes } from "react";
+
+import classNames from "classnames";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
