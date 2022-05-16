@@ -27,6 +27,7 @@ insert_permissions:
                 name: profile_to_profile_role_flattened
       columns:
         - char_count
+        - listing_order
         - space_id
         - title
       backend_only: false
@@ -49,6 +50,7 @@ update_permissions:
     permission:
       columns:
         - char_count
+        - listing_order
         - title
       filter:
         _or:
