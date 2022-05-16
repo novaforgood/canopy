@@ -9,13 +9,6 @@ array_relationships:
         table:
           schema: public
           name: profile
-  - name: space_attributes
-    using:
-      foreign_key_constraint_on:
-        column: space_id
-        table:
-          schema: public
-          name: space_attribute
   - name: space_listing_questions
     using:
       foreign_key_constraint_on:
