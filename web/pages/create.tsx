@@ -11,11 +11,11 @@ import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
 import { useDebouncedValue, useSetState } from "@mantine/hooks";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 import toast from "react-hot-toast";
-import { EnterName } from "../components/create-program/EnterName";
+import { EnterName } from "../components/create-space/EnterName";
 import { StageNavigator } from "../components/StageNavigator";
-import { EnterSettings } from "../components/create-program/EnterSettings";
+import { EnterSettings } from "../components/create-space/EnterSettings";
 import { FadeTransition } from "../components/transitions/FadeTransition";
-import { EnterProfileSchema } from "../components/create-program/EnterProfileSchema";
+import { EnterProfileSchema } from "../components/create-space/EnterProfileSchema";
 
 const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
 
