@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Button, Modal, Text } from "../atomic";
 
-interface ActionModalProps {
+export interface ActionModalProps {
   children?: ReactNode;
   isOpen: boolean;
 
@@ -23,7 +23,7 @@ export function ActionModal({
   onSecondaryAction = () => {},
 }: ActionModalProps) {
   return (
-    <Modal backgroundBlur isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-md">
         <div className="flex justify-end p-8 pb-0">
           <button onClick={onClose}>x</button>

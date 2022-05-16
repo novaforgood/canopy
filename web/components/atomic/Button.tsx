@@ -4,21 +4,20 @@ import React, { ButtonHTMLAttributes } from "react";
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
   rounded?: boolean;
+  floating?: boolean;
   variant?: "primary" | "outline";
 };
 
-export const Button = (
-  {
-    className,
-    children,
-    loading = false,
-    disabled = false,
-    rounded = false,
-    variant = "primary",
-    ...props
-  }: ButtonProps,
-  _ //ref: creating this so the warning of passing refs with Links disappears
-) => {
+export const Button = ({
+  className,
+  children,
+  loading = false,
+  disabled = false,
+  rounded = false,
+  floating = false,
+  variant = "primary",
+  ...props
+}: ButtonProps) => {
   const styles = classNames({
     ["border border-black px-8 py-2 flex items-center"]: true,
     // Variant: primary
@@ -35,6 +34,7 @@ export const Button = (
     ["rounded-full"]: rounded,
     ["cursor-not-allowed"]: disabled,
     ["active:translate-y-px"]: !disabled,
+    ["drop-shadow-md active:drop-shadow-none"]: floating,
     [`${className}`]: true,
   });
 

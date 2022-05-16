@@ -81,6 +81,10 @@ function ButtonsReference() {
       title: "Disabled",
       props: { disabled: true },
     },
+    {
+      title: "Floating",
+      props: { floating: true },
+    },
   ];
 
   return (

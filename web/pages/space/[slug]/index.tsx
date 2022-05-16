@@ -102,7 +102,6 @@ function ShowAllUsers() {
       <div className="grid grid-cols-3">
         <strong>Email</strong>
         <strong>Roles</strong>
-        <strong>Listing Enabled</strong>
         <strong>Created At</strong>
         {profilesData?.profile?.map((profile) => {
           return (

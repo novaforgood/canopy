@@ -45,6 +45,12 @@ mutation CreateOwnerProfileInNewSpace(
       name
       slug
       owner_id
+      space_listing_questions {
+        char_count
+        id
+        space_id
+        title
+      }
     }
     user_id
   }

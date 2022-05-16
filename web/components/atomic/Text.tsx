@@ -9,7 +9,6 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
     | "heading4"
     | "subheading1"
     | "subheading2"
-    | "subheading3"
     | "body1"
     | "body2"
     | "body3";
@@ -33,6 +32,8 @@ export const Text = ({
     { "text-heading2 leading-tight": variant === "heading2" },
     { "text-heading3 leading-tight": variant === "heading3" },
     { "text-heading4 leading-tight": variant === "heading4" },
+    { "text-subheading1 leading-tight": variant === "subheading1" },
+    { "text-subheading2 leading-tight": variant === "subheading2" },
     { "text-body1": variant === "body1" },
     { "text-body2": variant === "body2" },
     { "text-body3": variant === "body3" },
