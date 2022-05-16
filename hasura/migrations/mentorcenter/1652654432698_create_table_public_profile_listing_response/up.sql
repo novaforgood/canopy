@@ -1,2 +1,0 @@
-CREATE TABLE "public"."profile_listing_response" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "profile_listing_id" uuid NOT NULL, "space_listing_question_id" uuid NOT NULL, "response_html" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("profile_listing_id") REFERENCES "public"."profile_listing"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("space_listing_question_id") REFERENCES "public"."space_listing_question"("id") ON UPDATE restrict ON DELETE restrict);
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
