@@ -8,7 +8,6 @@ query User($id: String!) {
 query AllProfilesOfUser($user_id: String!) {
   profile(where: { user_id: { _eq: $user_id } }) {
     id
-    listing_enabled
     profile_roles {
       profile_role
     }
@@ -31,14 +30,12 @@ query SpaceBySlug($slug: String!) {
 mutation CreateOwnerProfileInNewSpace(
   $user_id: String!
   $space: space_insert_input!
-  $profile_listing_enabled: Boolean!
 ) {
   insert_profile_one(
     object: {
       space: { data: $space }
       profile_roles: { data: { profile_role: Admin } }
       user_id: $user_id
-      listing_enabled: $profile_listing_enabled
     }
   ) {
     id
@@ -48,6 +45,12 @@ mutation CreateOwnerProfileInNewSpace(
       name
       slug
       owner_id
+      space_listing_questions {
+        char_count
+        id
+        space_id
+        title
+      }
     }
     user_id
   }
@@ -90,7 +93,6 @@ query ProfilesBySpaceId($space_id: uuid!) {
     profile_roles {
       profile_role
     }
-    listing_enabled
     space_id
     user_id
     created_at

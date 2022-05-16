@@ -3,3 +3,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tiptap style config, used in SimpleRichTextInput */
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror p {
+  display: block;
+  margin-block-start: 0.5rem;
+  margin-block-end: 0.5rem;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}

@@ -1,8 +1,11 @@
+import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "../components/atomic/Button";
-import { Input } from "../components/atomic/Input";
-import { Textarea } from "../components/atomic/Textarea";
+import { tuple } from "zod";
+import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
+import { ActionModal } from "../components/modals/ActionModal";
+import { SimpleRichTextInput } from "../components/SimpleRichTextInput";
+import { useSingleImageDropzone } from "../hooks/useSingleImageDropzone";
 import { theme } from "../tailwind.config";
 
 // https://github.com/tailwindlabs/tailwindcss.com/blob/master/src/components/ColorPaletteReference.js
@@ -41,7 +44,7 @@ export function ColorPaletteReference() {
                   return (
                     <div key={j} className="space-y-1.5">
                       <div
-                        className="h-10 w-full rounded dark:ring-1 dark:ring-inset dark:ring-white/10 shadow-md"
+                        className="h-10 w-full rounded dark:ring-1 dark:ring-inset dark:ring-white/10 shadow-lg"
                         style={{ backgroundColor: value }}
                       />
                       <div className="px-0.5 md:flex md:justify-between md:space-x-2 2xl:space-x-0 2xl:block">
@@ -78,6 +81,10 @@ function ButtonsReference() {
       title: "Disabled",
       props: { disabled: true },
     },
+    {
+      title: "Floating",
+      props: { floating: true },
+    },
   ];
 
   return (
@@ -102,6 +109,178 @@ function ButtonsReference() {
         );
       })}
     </div>
+  );
+}
+
+function ModalReference() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
+  const [isOpen3, setIsOpen3] = useState(false);
+  return (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+      >
+        <div className="w-96 bg-white p-4">
+          <Modal.Title>Title</Modal.Title>
+          <Modal.Description>Description</Modal.Description>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isOpen2}
+        onClose={() => {
+          setIsOpen2(false);
+        }}
+        backgroundBlur
+      >
+        <div className="w-96 bg-white p-4">
+          <Modal.Title>Title</Modal.Title>
+          <Modal.Description>Description</Modal.Description>
+        </div>
+      </Modal>
+      <ActionModal
+        isOpen={isOpen3}
+        onClose={() => {
+          setIsOpen3(false);
+        }}
+        actionText="Primary action"
+        onAction={() => {
+          toast.success("Primary action clicked");
+          setIsOpen3(false);
+        }}
+        secondaryActionText="Secondary action"
+        onSecondaryAction={() => {
+          toast.error("Secondary action clicked");
+          setIsOpen3(false);
+        }}
+      >
+        <div className="w-120 h-40 bg-teal-50">content</div>
+      </ActionModal>
+
+      <Button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Open modal
+      </Button>
+
+      <div className="h-4"></div>
+      <Button
+        onClick={() => {
+          setIsOpen2(true);
+        }}
+      >
+        Open modal (background blur)
+      </Button>
+
+      <div className="h-4"></div>
+      <Button
+        onClick={() => {
+          setIsOpen3(true);
+        }}
+      >
+        Open action modal
+      </Button>
+    </>
+  );
+}
+
+function InputReference() {
+  const [value, setValue] = useState("");
+  const [editable, setEditable] = useState(true);
+  return (
+    <>
+      <div className="text-lg font-bold mb-2 mt-4">Input</div>
+      <Input placeholder="Type here..." />
+
+      <div className="text-lg font-bold mb-2 mt-4">Textarea</div>
+      <Textarea placeholder="Type in textarea..." />
+
+      <div>
+        <div className="text-lg font-bold mb-2 mt-4">
+          Simple Rich Text Input
+        </div>
+        <SimpleRichTextInput
+          placeholder="Type in simple rich text input..."
+          characterLimit={200}
+          value={value}
+          onUpdate={({ editor }) => {
+            setValue(editor.getHTML());
+          }}
+          editable={editable}
+        />
+        <Button
+          variant="outline"
+          onClick={() => {
+            setEditable((prev) => !prev);
+          }}
+        >
+          {editable ? "Make readonly" : "Make editable"}
+        </Button>
+      </div>
+    </>
+  );
+}
+
+function DropzoneReference() {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [src, setSrc] = useState<string | null>(null);
+  const [hovered, setHovered] = useState(false);
+
+  const { getRootProps, getInputProps, isDragActive } = useSingleImageDropzone({
+    onDropAccepted: (file) => {
+      const url = URL.createObjectURL(file);
+      setSrc(url);
+      setUploadedFile(file);
+    },
+  });
+
+  const styles = classNames({
+    "w-full h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 hover:bg-gray-50 cursor-pointer":
+      true,
+    "hover:brightness-90": src,
+    "border-teal-500 hover:border-teal-700": isDragActive,
+  });
+  return (
+    <>
+      <div className="h-64 w-64">
+        <div
+          {...getRootProps()}
+          className={styles}
+          style={{
+            backgroundImage: src ? `url(${src})` : undefined,
+            backgroundSize: "cover",
+            backgroundClip: "padding-box",
+          }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          <input {...getInputProps()} />
+          {src ? (
+            hovered && (
+              <div className="bg-black/30 flex justify-center items-center w-full h-full text-white">
+                Change image
+              </div>
+            )
+          ) : (
+            <div className="">Drop image here</div>
+          )}
+        </div>
+      </div>
+      <div className="h-4"></div>
+      <Button
+        onClick={() => {
+          setUploadedFile(null);
+          setSrc(null);
+        }}
+      >
+        Clear
+      </Button>
+    </>
   );
 }
 
@@ -134,7 +313,7 @@ export default function ComponentsPage() {
   return (
     <div className="flex h-screen">
       <div className="h-full p-4 pr-16 flex-none text-white bg-gray-900">
-        <div className="text-xl font-bold mb-8">Design System</div>
+        <div className="text-xl font-bold mb-8">Components</div>
         <div className="flex flex-col gap-1">
           {headers.map(({ title, link, element }, i) => {
             return (
@@ -154,21 +333,38 @@ export default function ComponentsPage() {
         </div>
       </div>
       <div className="h-full w-full p-4 overflow-y-auto flex flex-col items-center">
-        <div className="max-w-4xl">
+        <div className="max-w-full xl:max-w-3xl">
           <SectionTitle title="Colors" />
           <ColorPaletteReference />
+
+          <SectionTitle title="Typography" />
+          <div className="flex flex-col gap-2">
+            <Text variant="heading1">Heading 1</Text>
+            <Text variant="heading2">Heading 2</Text>
+            <Text variant="heading3">Heading 3</Text>
+            <Text variant="heading4">Heading 4</Text>
+            <Text variant="subheading1">Subheading 1</Text>
+            <Text variant="subheading2">Subheading 2</Text>
+            <Text variant="body1">Body 1</Text>
+            <Text variant="body2">Body 2</Text>
+            <Text variant="body3">Body 3</Text>
+            <Text bold>Bold</Text>
+            <Text italic>Italic</Text>
+            <Text underline>Underline</Text>
+          </div>
 
           <SectionTitle title="Buttons" />
           <ButtonsReference />
 
           <SectionTitle title="Inputs" />
-          <div>
-            <Input placeholder="Type here..." />
-          </div>
-          <div className="h-4"></div>
-          <div>
-            <Textarea placeholder="Type in textarea..." />
-          </div>
+
+          <InputReference />
+
+          <SectionTitle title="Modals" />
+          <ModalReference />
+
+          <SectionTitle title="Image Dropzone" />
+          <DropzoneReference />
 
           <div className="h-screen"></div>
         </div>

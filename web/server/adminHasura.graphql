@@ -25,6 +25,12 @@ mutation InsertProfile($data: profile_insert_input!) {
     id
     user_id
     space_id
-    listing_enabled
+  }
+}
+
+mutation InsertImage($data: image_insert_input!) {
+  insert_image_one(object: $data) {
+    id
+    url
   }
 }

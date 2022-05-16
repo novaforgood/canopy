@@ -99,10 +99,9 @@ function ShowAllUsers() {
   return (
     <div className="">
       <div className="text-xl font-bold">Users</div>
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-3">
         <strong>Email</strong>
         <strong>Roles</strong>
-        <strong>Listing Enabled</strong>
         <strong>Created At</strong>
         {profilesData?.profile?.map((profile) => {
           return (
@@ -113,7 +112,6 @@ function ShowAllUsers() {
                   .map((role) => role.profile_role)
                   .join(", ")}
               </div>
-              <div>{profile.listing_enabled ? "true" : "false"}</div>
               <div>
                 {format(new Date(profile.created_at), "MMM dd yyyy, h:mm a")}
               </div>
