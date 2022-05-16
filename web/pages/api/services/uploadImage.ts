@@ -44,9 +44,9 @@ export const config = {
 };
 
 aws.config.update({
-  secretAccessKey: requireServerEnv("AWS_SECRET_ACCESS_KEY"),
-  accessKeyId: requireServerEnv("AWS_ACCESS_KEY_ID"),
-  region: requireServerEnv("AWS_REGION"),
+  secretAccessKey: requireServerEnv("AWS_ENV_SECRET_ACCESS_KEY"),
+  accessKeyId: requireServerEnv("AWS_ENV_ACCESS_KEY_ID"),
+  region: requireServerEnv("AWS_ENV_REGION"),
 });
 
 const s3 = new aws.S3();
@@ -55,7 +55,7 @@ var upload = multer({
   storage: multerS3({
     s3: s3,
     acl: "public-read",
-    bucket: requireServerEnv("AWS_S3_BUCKET"),
+    bucket: requireServerEnv("AWS_ENV_S3_BUCKET"),
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
