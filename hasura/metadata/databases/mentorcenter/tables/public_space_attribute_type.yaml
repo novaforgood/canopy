@@ -1,0 +1,4 @@
+table:
+  schema: public
+  name: space_attribute_type
+is_enum: true
