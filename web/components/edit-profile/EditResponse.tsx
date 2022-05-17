@@ -68,7 +68,7 @@ export function EditResponse(props: EditResponseProps) {
             ],
           });
 
-          refetchListingResponse({ question_id: question.id });
+          refetchListingResponse();
           setIsOpen(false);
         }}
         secondaryActionText="Cancel"
@@ -94,6 +94,7 @@ export function EditResponse(props: EditResponseProps) {
         <div className="h-2"></div>
 
         <HtmlDisplay html={initResponse?.response_html ?? ""} />
+        <div className="h-4"></div>
         <Button variant="outline" rounded onClick={openModal}>
           Edit section
         </Button>
