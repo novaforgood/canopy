@@ -1,11 +1,15 @@
+import { Fragment, useEffect, useMemo } from "react";
+
 import { useClipboard } from "@mantine/hooks";
 import { format } from "date-fns";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
-import { Button } from "../../../components/atomic/Button";
+
+import { Button, Text } from "../../../components/atomic";
+import { EditResponse } from "../../../components/edit-profile/EditResponse";
 import {
+  Profile_Role_Enum,
   Space_Invite_Link_Type_Enum,
   useCreateInviteLinkMutation,
   useInviteLinksQuery,
@@ -33,6 +37,7 @@ function CopyLink({ link }: { link: string }) {
 
 function CreateInviteLink() {
   const { currentSpace } = useCurrentSpace();
+  const { currentProfileHasRole } = useCurrentProfile();
 
   const [_, createInviteLink] = useCreateInviteLinkMutation();
 
@@ -43,10 +48,11 @@ function CreateInviteLink() {
   if (!currentSpace) {
     return <div>404 - Space not found</div>;
   }
-
+  if (!currentProfileHasRole(Profile_Role_Enum.Admin)) {
+    return <div>You must be an admin to view invite links</div>;
+  }
   return (
     <div className="">
-      <div className="text-xl font-bold">Invite Links</div>
       <div className="flex flex-col gap-2">
         {inviteLinksData?.space_invite_link?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
@@ -98,7 +104,6 @@ function ShowAllUsers() {
 
   return (
     <div className="">
-      <div className="text-xl font-bold">Users</div>
       <div className="grid grid-cols-3">
         <strong>Email</strong>
         <strong>Roles</strong>
@@ -118,6 +123,54 @@ function ShowAllUsers() {
             </Fragment>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function EditProfileListing() {
+  const { currentProfile, currentProfileHasRole } = useCurrentProfile();
+  const { currentSpace } = useCurrentSpace();
+  if (!currentProfileHasRole(Profile_Role_Enum.MemberWhoCanList)) {
+    return <div>You do not have profile listing permissions.</div>;
+  }
+  if (!currentProfile || !currentSpace) {
+    return <div>Either profile or space is null</div>;
+  }
+
+  const { first_name, last_name, email, id } = currentProfile.user;
+
+  return (
+    <div className="">
+      <div className="max-w-3xl border border-black rounded-lg w-full flex flex-col pb-12">
+        <div className="h-20 bg-gray-100 rounded-t-lg"></div>
+        <div className="px-12 -mt-4">
+          <div className="flex items-center gap-12">
+            <div className="rounded-full h-32 w-32 bg-gray-400"></div>
+            <div className="flex flex-col mt-4">
+              <Text variant="heading4">
+                {first_name} {last_name}
+              </Text>
+              <div className="h-1"></div>
+              <Text variant="body1">
+                Hello! This is my profile summary or bio.
+              </Text>
+            </div>
+          </div>
+          <div className="h-16"></div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              {currentSpace.space_listing_questions.map((question) => {
+                return <EditResponse key={question.id} question={question} />;
+              })}
+            </div>
+            <div>
+              <div className="h-24 bg-gray-50 p-4 rounded-md">Tags go here</div>
+              <div className="h-2"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -151,10 +204,16 @@ export default function SpaceHomepage() {
         Go back to home
       </Button>
       <div className="h-8"></div>
+      <div className="text-xl font-bold">Invite Links</div>
       <CreateInviteLink />
       <div className="h-8"></div>
 
       <ShowAllUsers />
+      <div className="text-xl font-bold">Users</div>
+      <div className="h-8"></div>
+
+      <div className="text-xl font-bold">Edit my profile</div>
+      <EditProfileListing />
     </div>
   );
 }

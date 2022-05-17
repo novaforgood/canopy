@@ -1,3 +1,108 @@
 table:
   schema: public
   name: profile_listing_response
+object_relationships:
+  - name: profile_listing
+    using:
+      foreign_key_constraint_on: profile_listing_id
+  - name: space_listing_question
+    using:
+      foreign_key_constraint_on: space_listing_question_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - _and:
+              - profile_listing:
+                  profile:
+                    user_id:
+                      _eq: X-Hasura-User-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: MemberWhoCanList
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+      columns:
+        - profile_listing_id
+        - response_html
+        - space_listing_question_id
+      backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - response_html
+        - id
+        - profile_listing_id
+        - space_listing_question_id
+      filter:
+        _or:
+          - _and:
+              - profile_listing:
+                  profile:
+                    space:
+                      profiles:
+                        user_id:
+                          _eq: X-Hasura-User-Id
+              - profile_listing:
+                  public:
+                    _eq: true
+          - profile_listing:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - response_html
+      filter:
+        _or:
+          - _and:
+              - profile_listing:
+                  profile:
+                    user_id:
+                      _eq: X-Hasura-User-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: MemberWhoCanList
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - _and:
+              - profile_listing:
+                  profile:
+                    user_id:
+                      _eq: X-Hasura-User-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: MemberWhoCanList
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened

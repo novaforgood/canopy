@@ -5,8 +5,9 @@ import toast from "react-hot-toast";
 import { tuple } from "zod";
 
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
+import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
+import { TextInput } from "../components/inputs/TextInput";
 import { ActionModal } from "../components/modals/ActionModal";
-import { SimpleRichTextInput } from "../components/SimpleRichTextInput";
 import { useSingleImageDropzone } from "../hooks/useSingleImageDropzone";
 import { theme } from "../tailwind.config";
 
@@ -159,7 +160,7 @@ function ModalReference() {
           setIsOpen3(false);
         }}
       >
-        <div className="w-120 h-40 bg-teal-50">content</div>
+        <div className="bg-teal-50">content</div>
       </ActionModal>
 
       <Button
@@ -196,14 +197,16 @@ function InputReference() {
   const [editable, setEditable] = useState(true);
   return (
     <>
-      <div className="text-lg font-bold mb-2 mt-4">Input</div>
+      <div className="text-lg font-bold mb-2 mt-8">Input</div>
       <Input placeholder="Type here..." />
+      <div className="h-4"></div>
+      <TextInput placeholder="Type here..." label="With a label" />
 
-      <div className="text-lg font-bold mb-2 mt-4">Textarea</div>
+      <div className="text-lg font-bold mb-2 mt-8">Textarea</div>
       <Textarea placeholder="Type in textarea..." />
 
       <div>
-        <div className="text-lg font-bold mb-2 mt-4">
+        <div className="text-lg font-bold mb-2 mt-8">
           Simple Rich Text Input
         </div>
         <SimpleRichTextInput

@@ -1,4 +1,3 @@
-// src/Tiptap.jsx
 import { useEffect } from "react";
 
 import CharacterCount from "@tiptap/extension-character-count";
@@ -17,6 +16,8 @@ type SimpleRichTextInputProps = Omit<EditorContentProps, "editor" | "ref"> & {
   characterLimit?: number;
   onUpdate?: (props: EditorEvents["update"]) => void;
   editable?: boolean;
+  content?: string;
+  unstyled?: boolean;
 };
 
 /**
@@ -29,6 +30,8 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     placeholder,
     characterLimit,
     editable = true,
+    content,
+    unstyled = false,
     onUpdate = () => {},
     ...rest
   } = props;
@@ -37,6 +40,10 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     // https://tiptap.dev/api/extensions/starter-kit
     onUpdate,
     editable,
+    parseOptions: {
+      preserveWhitespace: "full",
+    },
+    content: content,
     extensions: [
       StarterKit.configure({
         blockquote: false,
@@ -65,8 +72,9 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     ],
     editorProps: {
       attributes: {
-        class:
-          "border border-gray-400 focus:border-black rounded-md px-4 focus:outline-none transition w-full",
+        class: unstyled
+          ? ""
+          : "border border-gray-400 focus:border-black rounded-md px-4 focus:outline-none transition w-full",
       },
     },
   });
@@ -79,10 +87,10 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
   }, [editor, editable]);
 
   return (
-    <div>
+    <div className="w-full">
       <EditorContent {...rest} editor={editor} />
       {characterLimit && (
-        <div className="mt-1 w-full flex justify-end text-gray-400">
+        <div className="mt-1 flex justify-end text-gray-400 break-words">
           {editor?.storage.characterCount.characters()} / {characterLimit}{" "}
           characters
         </div>

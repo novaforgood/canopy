@@ -5,8 +5,12 @@ import {
   fetchExchange,
   makeOperation,
 } from "urql";
+
+import schema, {
+  Profile_To_Profile_Role_Flattened,
+} from "../generated/graphql";
+
 import { requireEnv } from "./env";
-import schema from "../generated/graphql";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
@@ -20,6 +24,16 @@ export function getUrqlClient(jwt: string) {
         },
       };
     },
-    exchanges: [dedupExchange, cacheExchange({ schema }), fetchExchange],
+    exchanges: [
+      dedupExchange,
+      cacheExchange({
+        schema,
+        keys: {
+          profile_to_profile_role_flattened: (data) =>
+            `${data.profile_id}-${data.profile_role}`,
+        },
+      }),
+      fetchExchange,
+    ],
   });
 }

@@ -2,6 +2,13 @@ table:
   schema: public
   name: profile
 object_relationships:
+  - name: profile_listing
+    using:
+      foreign_key_constraint_on:
+        column: profile_id
+        table:
+          schema: public
+          name: profile_listing
   - name: space
     using:
       foreign_key_constraint_on: space_id
@@ -9,6 +16,15 @@ object_relationships:
     using:
       foreign_key_constraint_on: user_id
 array_relationships:
+  - name: flattened_profile_roles
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: profile_to_profile_role_flattened
+        insertion_order: null
+        column_mapping:
+          id: profile_id
   - name: profile_roles
     using:
       foreign_key_constraint_on:
