@@ -1,3 +1,4 @@
+import { devtoolsExchange } from "@urql/devtools";
 import { cacheExchange } from "@urql/exchange-graphcache";
 import {
   createClient,
@@ -25,6 +26,7 @@ export function getUrqlClient(jwt: string) {
       };
     },
     exchanges: [
+      devtoolsExchange,
       dedupExchange,
       cacheExchange({
         schema,

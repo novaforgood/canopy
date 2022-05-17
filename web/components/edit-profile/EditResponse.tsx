@@ -16,11 +16,10 @@ import { ActionModal } from "../modals/ActionModal";
 type Question = Omit<Space_Listing_Question, "space">;
 type EditResponseProps = {
   question: Question;
-  onSave?: (question: Question) => void;
 };
 
 export function EditResponse(props: EditResponseProps) {
-  const { question, onSave = () => {} } = props;
+  const { question } = props;
 
   const { currentProfile } = useCurrentProfile();
   const [{ data: listingResponseData }, refetchListingResponse] =
@@ -78,6 +77,7 @@ export function EditResponse(props: EditResponseProps) {
       >
         <div className="p-8 py-16 w-96 flex flex-col">
           <Text variant="heading4">{question.title}</Text>
+          <div className="h-4"></div>
           <SimpleRichTextInput
             characterLimit={question.char_count}
             content={initResponse?.response_html ?? ""}
