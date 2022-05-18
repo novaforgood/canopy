@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 import classNames from "classnames";
+import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
 import { tuple } from "zod";
 
@@ -235,6 +236,11 @@ function DropzoneReference() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [src, setSrc] = useState<string | null>(null);
   const [hovered, setHovered] = useState(false);
+  const [showDragAndReposition, setShowDragAndReposition] = useState(false);
+  const [showDragAndRepositionActivated, setShowDragAndRepositionActivated] =
+    useState(false);
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0.5, y: 0.5 });
 
   const { getRootProps, getInputProps, isDragActive } = useSingleImageDropzone({
     onDropAccepted: (file) => {
@@ -242,45 +248,96 @@ function DropzoneReference() {
       setSrc(url);
       setUploadedFile(file);
     },
+    disabled: !!src,
   });
 
+  useEffect(() => {
+    if (scale > 1) {
+      if (showDragAndRepositionActivated) {
+        setShowDragAndReposition(true);
+      }
+    } else {
+      setShowDragAndReposition(false);
+      setShowDragAndRepositionActivated(true);
+    }
+  }, [scale, showDragAndRepositionActivated]);
+
   const styles = classNames({
-    "w-full h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 hover:bg-gray-50 cursor-pointer":
+    "w-full relative h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 cursor-pointer":
       true,
-    "hover:brightness-90": src,
+    "hover:brightness-95": !src,
     "border-teal-500 hover:border-teal-700": isDragActive,
   });
   return (
     <>
-      <div className="h-64 w-64">
+      <div style={{ width: 250, height: 250 }}>
         <div
           {...getRootProps()}
           className={styles}
-          style={{
-            backgroundImage: src ? `url(${src})` : undefined,
-            backgroundSize: "cover",
-            backgroundClip: "padding-box",
+          onMouseEnter={() => {
+            setHovered(true);
           }}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
+          onMouseLeave={() => {
+            setHovered(false);
+          }}
+          onMouseDown={() => {
+            setShowDragAndReposition(false);
+            setShowDragAndRepositionActivated(false);
+          }}
         >
+          {src && (
+            <AvatarEditor
+              width={300}
+              height={300}
+              style={{ width: "100%", height: "100%" }}
+              image={src ?? ""}
+              scale={scale}
+              border={0}
+              position={position}
+              onPositionChange={(pos) => setPosition(pos)}
+            />
+          )}
+
           <input {...getInputProps()} />
+
           {src ? (
-            hovered && (
-              <div className="bg-black/30 flex justify-center items-center w-full h-full text-white">
-                Change image
+            showDragAndReposition && (
+              <div className="absolute top-2 bg-black/50 py-1 px-2 pointer-events-none">
+                <Text variant="body2" className="text-white">
+                  Drag to reposition
+                </Text>
               </div>
             )
           ) : (
-            <div className="">Drop image here</div>
+            <div>Drop image here</div>
           )}
         </div>
       </div>
+      <div style={{ width: 250 }}>
+        {!!src && (
+          <>
+            <input
+              className="appearance-none w-full h-1 bg-gray-200 rounded outline-none slider-thumb"
+              type="range"
+              min={1}
+              max={3}
+              step={0.001}
+              value={scale}
+              onChange={(e) => {
+                setScale(parseFloat(e.target.value));
+              }}
+            />
+          </>
+        )}
+      </div>
+
       <div className="h-4"></div>
       <Button
         onClick={() => {
           setUploadedFile(null);
           setSrc(null);
+          setPosition({ x: 0.5, y: 0.5 });
+          setScale(1);
         }}
       >
         Clear
@@ -316,7 +373,7 @@ export default function ComponentsPage() {
   }, []);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex w-full h-screen">
       <div className="h-full p-4 pr-16 flex-none text-white bg-gray-900">
         <div className="text-xl font-bold mb-8">Components</div>
         <div className="flex flex-col gap-1">
@@ -337,7 +394,7 @@ export default function ComponentsPage() {
           })}
         </div>
       </div>
-      <div className="h-full w-full p-4 overflow-y-auto flex flex-col items-center">
+      <div className="h-screen flex-1 p-4 overflow-y-auto flex flex-col items-center">
         <div className="max-w-full xl:max-w-3xl">
           <SectionTitle title="Colors" />
           <ColorPaletteReference />

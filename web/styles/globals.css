@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Input slider */
+
+.slider-thumb::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 rounded-full cursor-pointer bg-white shadow-md border border-gray-900;
+}
+
+.slider-thumb::-webkit-slider-thumb:hover {
+  @apply bg-white;
+}
+
 /* Tiptap style config, used in SimpleRichTextInput */
 
 .ProseMirror p.is-editor-empty:first-child::before {

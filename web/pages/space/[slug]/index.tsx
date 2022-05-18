@@ -206,12 +206,12 @@ export default function SpaceHomepage() {
       <div className="h-8"></div>
       <div className="text-xl font-bold">Invite Links</div>
       <CreateInviteLink />
-      <div className="h-8"></div>
 
-      <ShowAllUsers />
+      <div className="h-8"></div>
       <div className="text-xl font-bold">Users</div>
-      <div className="h-8"></div>
+      <ShowAllUsers />
 
+      <div className="h-8"></div>
       <div className="text-xl font-bold">Edit my profile</div>
       <EditProfileListing />
     </div>
