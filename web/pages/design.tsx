@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import classNames from "classnames";
 import AvatarEditor from "react-avatar-editor";
@@ -74,7 +74,7 @@ export function ColorPaletteReference() {
 }
 
 function ButtonsReference() {
-  const variants = ["primary", "outline"] as const;
+  const variants = ["primary", "outline", "secondary"] as const;
   const propsets = [
     { title: "Normal", props: {} },
     {
@@ -92,7 +92,7 @@ function ButtonsReference() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-8">
+    <div className="grid grid-cols-3 gap-8">
       {variants.map((variant) => (
         <div key={variant} className="font-bold text-lg">
           <div className="bg-teal-50 w-auto">{variant}</div>
@@ -236,9 +236,9 @@ function DropzoneReference() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [src, setSrc] = useState<string | null>(null);
   const [hovered, setHovered] = useState(false);
-  const [showDragAndReposition, setShowDragAndReposition] = useState(false);
-  const [showDragAndRepositionActivated, setShowDragAndRepositionActivated] =
-    useState(false);
+  const editor = useRef<AvatarEditor | null>(null);
+  const [showReposition, setShowReposition] = useState(false);
+  const [showRepositionActivated, setShowRepositionActivated] = useState(true);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0.5, y: 0.5 });
 
@@ -251,16 +251,29 @@ function DropzoneReference() {
     disabled: !!src,
   });
 
+  const canReposition = useCallback(() => {
+    if (!editor.current) return false;
+    const croppedRect = editor.current.getCroppingRect();
+    const aspectRatio = croppedRect
+      ? croppedRect.width / croppedRect.height
+      : 1;
+    console.log(croppedRect.width, croppedRect.height);
+    return scale > 1 || aspectRatio != 1;
+  }, [editor, scale]);
+
   useEffect(() => {
-    if (scale > 1) {
-      if (showDragAndRepositionActivated) {
-        setShowDragAndReposition(true);
+    if (src) {
+      if (showRepositionActivated) {
+        setShowReposition(canReposition());
       }
-    } else {
-      setShowDragAndReposition(false);
-      setShowDragAndRepositionActivated(true);
     }
-  }, [scale, showDragAndRepositionActivated]);
+  }, [canReposition, showRepositionActivated, src]);
+
+  useEffect(() => {
+    if (!showRepositionActivated) {
+      setShowReposition(false);
+    }
+  }, [showRepositionActivated]);
 
   const styles = classNames({
     "w-full relative h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 cursor-pointer":
@@ -281,12 +294,18 @@ function DropzoneReference() {
             setHovered(false);
           }}
           onMouseDown={() => {
-            setShowDragAndReposition(false);
-            setShowDragAndRepositionActivated(false);
+            setShowReposition(false);
+            setShowRepositionActivated(false);
           }}
         >
           {src && (
             <AvatarEditor
+              onLoadSuccess={() => {
+                setShowRepositionActivated(true);
+              }}
+              ref={(ed) => {
+                editor.current = ed;
+              }}
               width={300}
               height={300}
               style={{ width: "100%", height: "100%" }}
@@ -301,7 +320,7 @@ function DropzoneReference() {
           <input {...getInputProps()} />
 
           {src ? (
-            showDragAndReposition && (
+            showReposition && (
               <div className="absolute top-2 bg-black/50 py-1 px-2 pointer-events-none">
                 <Text variant="body2" className="text-white">
                   Drag to reposition
