@@ -1,3 +1,4 @@
+import { useSetState } from "@mantine/hooks";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -18,17 +19,46 @@ export default function Login() {
   const router = useRouter();
   const { userData } = useUserData();
 
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useSetState({ email: "", password: "" });
   useEffect(() => {
     if (userData) {
       router.push("/");
     }
   }, [userData, router]);
 
+  useEffect(() => {
+    console.log(router.pathname);
+  }, [router.pathname]);
+
+  const googleSignin = async () => {
+    setSigningIn(true);
+    signInWithGoogle()
+      .then(async () => {
+        const user = await auth.currentUser;
+        if (!user) {
+          throw new Error("Could not get user after sign-in");
+        }
+        const idToken = await user.getIdToken();
+        await fetch(`/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${idToken}`,
+          },
+        });
+        router.push("/");
+      })
+      .catch((e) => {
+        handleError(e);
+      })
+      .finally(() => {
+        setSigningIn(false);
+      });
+  };
+
   const signInManually = async (email: string, password: string) => {
+    setSigningIn(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCred) => {
-        setSigningIn(true);
         const tokenResult = await userCred.user.getIdTokenResult();
         await fetch(`/api/auth/upsertUserData`, {
           method: "POST",
@@ -55,34 +85,7 @@ export default function Login() {
         <div>Redirecting...</div>
       ) : (
         <>
-          <Button
-            onClick={() => {
-              setSigningIn(true);
-              signInWithGoogle()
-                .then(async () => {
-                  const user = await auth.currentUser;
-                  if (!user) {
-                    throw new Error("Could not get user after sign-in");
-                  }
-                  const idToken = await user.getIdToken();
-                  await fetch(`/api/auth/upsertUserData`, {
-                    method: "POST",
-                    headers: {
-                      authorization: `Bearer ${idToken}`,
-                    },
-                  });
-                  router.push("/");
-                })
-                .catch((e) => {
-                  handleError(e);
-                })
-                .finally(() => {
-                  setSigningIn(false);
-                });
-            }}
-          >
-            Sign in with Google
-          </Button>
+          <Button onClick={signInWithGoogle}>Sign in with Google</Button>
           <div className="py-3">
             <label
               className="block uppercase tracking-wide text-slate-800 text-sm font-bold mb-2"
@@ -95,7 +98,7 @@ export default function Login() {
               id="email"
               type="text"
               onChange={(e) => {
-                setFormData({ ...formData, email: e.target.value });
+                setFormData({ email: e.target.value });
               }}
             />
             <label
@@ -109,7 +112,7 @@ export default function Login() {
               id="password"
               type="password"
               onChange={(e) => {
-                setFormData({ ...formData, password: e.target.value });
+                setFormData({ password: e.target.value });
               }}
             />
             <Button
