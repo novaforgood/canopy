@@ -1,25 +1,19 @@
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo } from "react";
+
+import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
+import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
+import { Provider } from "urql";
+
+import { useSpaceBySlugQuery } from "../generated/graphql";
+import { loadSession } from "../lib";
+import { auth } from "../lib/firebase";
+import { sessionAtom } from "../lib/recoil";
+import { getUrqlClient } from "../lib/urql";
 
 import type { AppProps } from "next/app";
-import { getUrqlClient } from "../lib/urql";
-import { Provider } from "urql";
-import { Toaster } from "react-hot-toast";
-import { auth } from "../lib/firebase";
+
 import "../styles/globals.css";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
-import { sessionAtom } from "../lib/recoil";
-import { useCurrentSpace } from "../hooks/useCurrentSpace";
-import { loadSession } from "../lib";
-import { usePrevious } from "../hooks/usePrevious";
-import { useSpaceBySlugQuery } from "../generated/graphql";
-import { useRouter } from "next/router";
 
 interface UrqlProviderProps {
   children: React.ReactNode;

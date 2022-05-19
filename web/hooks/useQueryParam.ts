@@ -46,7 +46,6 @@ export function useQueryParam<T extends QueryParamTypeName>(
       return parseQueryParamAsNumber(queryParam) as QueryParamType<T>;
     default:
     case "string":
-      const lol = type;
       return parseQueryParamAsString(queryParam) as QueryParamType<T>;
   }
 }

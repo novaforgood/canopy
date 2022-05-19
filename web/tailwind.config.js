@@ -12,6 +12,7 @@ module.exports = {
       },
       spacing: {
         120: "30rem",
+        160: "40rem",
         240: "45rem",
       },
       fontSize: {
@@ -27,6 +28,7 @@ module.exports = {
       },
     },
     colors: {
+      transparent: "transparent",
       white: {
         DEFAULT: "#fff",
       },

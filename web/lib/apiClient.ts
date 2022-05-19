@@ -1,4 +1,5 @@
 import { ApiResponse, ApiResponseStatus } from "../common/types";
+
 import { auth } from "./firebase";
 
 class ApiClient {
@@ -77,7 +78,11 @@ class ApiClient {
   }
 
   get<TResponseBody extends object>(path: string): Promise<TResponseBody> {
-    return this.customRequest<{}, TResponseBody>(path, "GET", null);
+    return this.customRequest<Record<string, never>, TResponseBody>(
+      path,
+      "GET",
+      null
+    );
   }
 }
 

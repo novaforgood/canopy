@@ -1,5 +1,6 @@
-import classNames from "classnames";
 import React, { HTMLAttributes } from "react";
+
+import classNames from "classnames";
 
 type TextProps = HTMLAttributes<HTMLDivElement> & {
   variant?:
@@ -26,7 +27,7 @@ export const Text = ({
   className,
   ...props
 }: TextProps) => {
-  let styles = classNames(
+  const styles = classNames(
     "font-sans",
     { "text-heading1 leading-tight": variant === "heading1" },
     { "text-heading2 leading-tight": variant === "heading2" },

@@ -1,4 +1,5 @@
 import { ReactNode, useState } from "react";
+
 import { Button, Modal, Text } from "../atomic";
 
 export interface ActionModalProps {
@@ -29,7 +30,7 @@ export function ActionModal({
           <button onClick={onClose}>x</button>
         </div>
         {children}
-        <div className="flex flex-col gap-4 items-center p-12 pt-0">
+        <div className="flex flex-col items-center p-12 pt-0">
           <Button
             rounded
             onClick={() => {
@@ -38,15 +39,9 @@ export function ActionModal({
           >
             {actionText}{" "}
           </Button>
-          <Text
-            underline
-            className="text-gray-600 hover:text-gray-500 cursor-pointer"
-            onClick={() => {
-              onSecondaryAction();
-            }}
-          >
+          <Button variant="secondary" rounded onClick={onSecondaryAction}>
             {secondaryActionText}
-          </Text>
+          </Button>
         </div>
       </div>
     </Modal>
