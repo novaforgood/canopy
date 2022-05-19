@@ -96,3 +96,12 @@ query ProfilesBySpaceId($space_id: uuid!) {
     created_at
   }
 }
+
+query PersonName($user_id: String!) {
+  profile {
+    user {
+      first_name
+      last_name
+    }
+  }
+}

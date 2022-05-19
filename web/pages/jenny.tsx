@@ -1,5 +1,12 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
+import { usePersonNameQuery } from "../generated/graphql";
+import { useCurrentProfile } from "../hooks/useCurrentProfile";
+
+// const { currentProfile } = useCurrentProfile();
+// const id = currentProfile?.id;
+
+// const [{ data: names }] = usePersonNameQuery({ id });
 
 const ppl = new Array(64).fill(0).map((i) => {
   return {
@@ -22,7 +29,7 @@ type Person = {
 };
 
 function Card(props: { person: Person }) {
-  console.log(props);
+  // console.log(props);
   const TOPICS = "Topics";
   return (
     <div className="w-72 border-gray-400 mb-10 border-x border-y rounded-md">
@@ -51,13 +58,60 @@ function Card(props: { person: Person }) {
   );
 }
 
+function SearchBar() {
+  const INTERESTS = [
+    "Interests",
+    "Anime",
+    "Kdramas",
+    "Sports",
+    "Basketball",
+    "Coding",
+  ];
+  const COMMUNITY = ["Community", "Friends", "Family", "Work", "School"];
+  const handleChange = () => {};
+  return (
+    <div className="flex items-center justify-between p-3">
+      <input
+        className="w-7/12 border-x border-y border-gray-400 p-3 rounded-md"
+        placeholder="Search by keyword"
+      />
+      <select
+        className="border-x border-y border-gray-400 p-3 rounded-md w-2/12"
+        onChange={handleChange}
+      >
+        {INTERESTS.map((item) => {
+          console.log(item);
+          return <option value={item}>{item}</option>;
+        })}
+      </select>
+      <select
+        className="border-x border-y border-gray-400 p-3 rounded-md w-2/12"
+        onChange={handleChange}
+      >
+        {COMMUNITY.map((item) => {
+          console.log(item);
+          return <option value={item}>{item}</option>;
+        })}
+      </select>
+      <button className="border-x border-y border-gray-400 p-3 rounded-md w-20 bg-gray-300">
+        Search
+      </button>
+    </div>
+  );
+}
+
 export default function JennyNuoPage() {
   return (
-    <div className="m-8 flex flex-row justify-around font-san flex-wrap">
-      {ppl.map((person) => {
-        // console.log(person);
-        return <Card person={person} />;
-      })}
+    <div>
+      <div className="ml-12 mr-12">
+        <SearchBar />
+      </div>
+      <div className="m-8 flex flex-row justify-around font-san flex-wrap">
+        {ppl.map((person) => {
+          // console.log(person);
+          return <Card person={person} />;
+        })}
+      </div>
     </div>
   );
 }
