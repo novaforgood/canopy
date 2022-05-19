@@ -1,4 +1,0 @@
-table:
-  schema: public
-  name: profile_types
-is_enum: true

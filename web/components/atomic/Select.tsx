@@ -29,7 +29,7 @@ interface SelectProps<T> {
   onSelect?: (selectedValue: T | null) => void;
   className?: string;
 }
-const Select = <T extends string | Date>({
+export const Select = <T extends string | Date>({
   options,
   value,
   onSelect = () => {},
@@ -109,5 +109,3 @@ const Select = <T extends string | Date>({
     </div>
   );
 };
-
-export default Select;
