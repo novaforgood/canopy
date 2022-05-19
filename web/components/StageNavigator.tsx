@@ -41,10 +41,7 @@ export function StageNavigator<TStageEnum extends string>(
         });
 
         const labelStyles = classNames({
-          "px-6 py-3 border-l-2 transition": true,
-          "border-gray-300": !isCurrent && !isHovered,
-          "border-gray-900": !isCurrent && isHovered,
-          "border-black": isCurrent,
+          "px-6 py-3 border-l-2 transition border-gray-300": true,
         });
 
         return (

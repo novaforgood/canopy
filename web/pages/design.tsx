@@ -232,9 +232,17 @@ function InputReference() {
   );
 }
 
-function DropzoneReference() {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+interface ImageUploadProps {
+  getRef?: (editor: AvatarEditor | null) => void;
+  width: number;
+  height: number;
+  showZoom?: boolean;
+}
+function ImageUpload(props: ImageUploadProps) {
+  const { getRef = () => {}, width, height, showZoom = false } = props;
+
   const [src, setSrc] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const [hovered, setHovered] = useState(false);
   const editor = useRef<AvatarEditor | null>(null);
   const [showReposition, setShowReposition] = useState(false);
@@ -242,32 +250,39 @@ function DropzoneReference() {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0.5, y: 0.5 });
 
-  const { getRootProps, getInputProps, isDragActive } = useSingleImageDropzone({
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    open: openFileUpload,
+  } = useSingleImageDropzone({
     onDropAccepted: (file) => {
       const url = URL.createObjectURL(file);
       setSrc(url);
-      setUploadedFile(file);
+      setLoaded(false);
     },
-    disabled: !!src,
+    noClick: !!src,
   });
 
   const canReposition = useCallback(() => {
-    if (!editor.current) return false;
-    const croppedRect = editor.current.getCroppingRect();
-    const aspectRatio = croppedRect
-      ? croppedRect.width / croppedRect.height
-      : 1;
-    console.log(croppedRect.width, croppedRect.height);
-    return scale > 1 || aspectRatio != 1;
-  }, [editor, scale]);
+    if (!editor.current || !loaded) return false;
+    const { height, width } = editor.current.state.image;
+    const aspectRatio = width / height;
+    return scale > 1 || Math.abs(aspectRatio - 1) > 0.01;
+  }, [loaded, scale]);
 
   useEffect(() => {
-    if (src) {
+    setPosition({ x: 0.5, y: 0.5 });
+    setScale(1);
+  }, [src]);
+
+  useEffect(() => {
+    if (loaded) {
       if (showRepositionActivated) {
         setShowReposition(canReposition());
       }
     }
-  }, [canReposition, showRepositionActivated, src]);
+  }, [canReposition, showRepositionActivated, loaded]);
 
   useEffect(() => {
     if (!showRepositionActivated) {
@@ -282,8 +297,8 @@ function DropzoneReference() {
     "border-teal-500 hover:border-teal-700": isDragActive,
   });
   return (
-    <>
-      <div style={{ width: 250, height: 250 }}>
+    <div className="flex flex-col items-center">
+      <div style={{ width: width, height: height }}>
         <div
           {...getRootProps()}
           className={styles}
@@ -294,20 +309,24 @@ function DropzoneReference() {
             setHovered(false);
           }}
           onMouseDown={() => {
-            setShowReposition(false);
-            setShowRepositionActivated(false);
+            if (showReposition) {
+              setShowReposition(false);
+              setShowRepositionActivated(false);
+            }
           }}
         >
           {src && (
             <AvatarEditor
               onLoadSuccess={() => {
                 setShowRepositionActivated(true);
+                setLoaded(true);
               }}
               ref={(ed) => {
                 editor.current = ed;
+                getRef(ed);
               }}
-              width={300}
-              height={300}
+              width={width}
+              height={height}
               style={{ width: "100%", height: "100%" }}
               image={src ?? ""}
               scale={scale}
@@ -328,40 +347,73 @@ function DropzoneReference() {
               </div>
             )
           ) : (
-            <div>Drop image here</div>
+            <>
+              <div>
+                <div>Drop image here</div>
+                <div>or click to upload</div>
+              </div>
+            </>
           )}
         </div>
       </div>
       <div style={{ width: 250 }}>
         {!!src && (
           <>
-            <input
-              className="appearance-none w-full h-1 bg-gray-200 rounded outline-none slider-thumb"
-              type="range"
-              min={1}
-              max={3}
-              step={0.001}
-              value={scale}
-              onChange={(e) => {
-                setScale(parseFloat(e.target.value));
-              }}
-            />
+            {showZoom && (
+              <div className="flex items-center gap-2 mt-8">
+                <button
+                  onClick={() => {
+                    // Decrement scale by 0.5
+                    setScale((prev) => Math.max(prev - 0.5, 1));
+                  }}
+                  className="flex-none flex items-center justify-center rounded-sm h-5 w-5 border border-gray-50 hover:bg-gray-50 shadow-md active:translate-y-px"
+                >
+                  -
+                </button>
+                <input
+                  className="appearance-none w-full h-1 bg-gray-200 rounded outline-none slider-thumb"
+                  type="range"
+                  min={1}
+                  max={3}
+                  step={0.001}
+                  value={scale}
+                  onChange={(e) => {
+                    setScale(parseFloat(e.target.value));
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    // Increment scale by 0.5
+                    setScale((prev) => Math.min(prev + 0.5, 3));
+                  }}
+                  className="flex-none flex items-center justify-center rounded-sm h-5 w-5 border border-gray-50 hover:bg-gray-50 shadow-md active:translate-y-px"
+                >
+                  +
+                </button>
+              </div>
+            )}
+            <div className="h-4"></div>
+            <div className="flex justify-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSrc(null);
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                onClick={() => {
+                  openFileUpload();
+                }}
+              >
+                Change
+              </Button>
+            </div>
           </>
         )}
       </div>
-
-      <div className="h-4"></div>
-      <Button
-        onClick={() => {
-          setUploadedFile(null);
-          setSrc(null);
-          setPosition({ x: 0.5, y: 0.5 });
-          setScale(1);
-        }}
-      >
-        Clear
-      </Button>
-    </>
+    </div>
   );
 }
 
@@ -445,7 +497,9 @@ export default function ComponentsPage() {
           <ModalReference />
 
           <SectionTitle title="Image Dropzone" />
-          <DropzoneReference />
+          <ImageUpload width={250} height={250} showZoom />
+          <div className="h-16"></div>
+          <ImageUpload width={500} height={250} showZoom />
 
           <div className="h-screen"></div>
         </div>

@@ -28,6 +28,7 @@ module.exports = {
       },
     },
     colors: {
+      transparent: "transparent",
       white: {
         DEFAULT: "#fff",
       },

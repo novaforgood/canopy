@@ -32,8 +32,6 @@ export function EditResponse(props: EditResponseProps) {
 
   const [responseHtmlInput, setResponseHtmlInput] = useState("");
 
-  console.log("initResponse", initResponse);
-
   const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => {
