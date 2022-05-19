@@ -30,7 +30,7 @@ export default function Login() {
     console.log(router.pathname);
   }, [router.pathname]);
 
-  const googleSignin = async () => {
+  const googleSignIn = async () => {
     setSigningIn(true);
     signInWithGoogle()
       .then(async () => {
@@ -85,7 +85,7 @@ export default function Login() {
         <div>Redirecting...</div>
       ) : (
         <>
-          <Button onClick={signInWithGoogle}>Sign in with Google</Button>
+          <Button onClick={googleSignIn}>Sign in with Google</Button>
           <div className="py-3">
             <label
               className="block uppercase tracking-wide text-slate-800 text-sm font-bold mb-2"
