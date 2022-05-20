@@ -2,6 +2,7 @@ import { DecodedIdToken } from "firebase-admin/auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import nc, { Middleware } from "next-connect";
 import { z, ZodType } from "zod";
+
 import { auth } from "./firebaseAdmin";
 import { makeApiFail } from "./response";
 
@@ -52,8 +53,10 @@ type CustomApiRequest<
   TAuth extends boolean,
   TValidation extends ZodType
 > = Omit<NextApiRequest, "token" | "body"> &
-  (TAuth extends true ? { token: DecodedIdToken } : {}) &
-  (TValidation extends undefined ? {} : { body: z.infer<TValidation> });
+  (TAuth extends true ? { token: DecodedIdToken } : Record<string, unknown>) &
+  (TValidation extends undefined
+    ? Record<string, unknown>
+    : { body: z.infer<TValidation> });
 
 export function applyMiddleware<
   TAuth extends boolean,

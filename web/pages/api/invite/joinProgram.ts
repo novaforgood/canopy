@@ -1,6 +1,5 @@
-import { gql } from "urql";
 import { z } from "zod";
-import { auth } from "../../../server/firebaseAdmin";
+
 import {
   executeGetInviteLinkQuery,
   executeInsertProfileMutation,
@@ -63,7 +62,6 @@ export default applyMiddleware({
             },
           ],
         },
-        listing_enabled: listingEnabled,
       },
     });
   if (insertError) {

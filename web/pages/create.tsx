@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
+
+import { useDebouncedValue, useSetState } from "@mantine/hooks";
 import { customAlphabet } from "nanoid";
-import { Button } from "../components/atomic/Button";
-import { Input } from "../components/atomic/Input";
-import { useCreateOwnerProfileInNewSpaceMutation } from "../generated/graphql";
-import { useUserData } from "../hooks/useUserData";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
+
+import { EnterName } from "../components/create-space/EnterName";
+import { EnterProfileSchema } from "../components/create-space/EnterProfileSchema";
+import { EnterSettings } from "../components/create-space/EnterSettings";
+import { StageNavigator } from "../components/StageNavigator";
+import { FadeTransition } from "../components/transitions/FadeTransition";
+import {
+  Space_Listing_Question_Insert_Input,
+  useCreateOwnerProfileInNewSpaceMutation,
+} from "../generated/graphql";
+import { useQueryParam } from "../hooks/useQueryParam";
+import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
+import { useUserData } from "../hooks/useUserData";
+import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 
 const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
 
@@ -28,58 +41,215 @@ function makeReadableError(message: string) {
   }
 }
 
-export default function CreatePage() {
-  const [_, createOwnerProfile] = useCreateOwnerProfileInNewSpaceMutation();
+enum CreateStage {
+  EnterName = "EnterName",
+  EnterProfileSchema = "EnterProfileSchema",
+  EnterSettings = "EnterSettings",
+}
 
-  const [error, setError] = useState<string | null>(null);
+const MAP_STAGE_TO_LABEL: Record<CreateStage, string> = {
+  [CreateStage.EnterName]: "Name",
+  [CreateStage.EnterProfileSchema]: "Mentor Profiles",
+  [CreateStage.EnterSettings]: "Directory Settings",
+};
 
+interface BackButtonProps {
+  onClick?: () => void;
+}
+function BackButton(props: BackButtonProps) {
+  const { onClick } = props;
   const router = useRouter();
 
-  const { userData } = useUserData();
-  const [name, setName] = useState("");
-
   return (
-    <div className="p-4">
-      <div className="text-xl">Create a space!</div>
-      <div className="h-4"></div>
-      <Input
-        value={name}
-        onValueChange={(value) => {
-          setName(value);
-          setError(null);
-        }}
-        placeholder="Name of your new space"
-      />
-      {error && <div className="text-red-500">{error}</div>}
-      <div className="h-4"></div>
-      <Button
-        // disabled={!name}
-        onClick={() => {
-          if (!userData?.id) {
-            return;
-          }
+    <button
+      className="text-gray-600 hover:underline"
+      onClick={() => {
+        if (onClick) {
+          onClick();
+        } else {
+          router.back();
+        }
+      }}
+    >
+      ← Back
+    </button>
+  );
+}
 
-          const generatedSlug = slugifyAndAppendRandomString(name);
-          createOwnerProfile({
-            space: {
-              name,
-              owner_id: userData.id,
-              slug: generatedSlug,
-            },
-            user_id: userData.id,
-            profile_listing_enabled: true,
-          }).then((result) => {
-            if (result.error) {
-              const msg = makeReadableError(result.error.message);
-              setError(msg);
-            } else {
-              router.push(`/space/${generatedSlug}`);
+const ALL_CREATE_STAGES = Object.values(CreateStage).map((val) => {
+  return {
+    value: val,
+    label: MAP_STAGE_TO_LABEL[val],
+  };
+});
+
+type CreateProgramState = {
+  enteredStages: CreateStage[];
+  spaceName: string;
+  spaceSlug: string;
+  listingQuestions: Space_Listing_Question_Insert_Input[];
+};
+
+const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
+  enteredStages: [CreateStage.EnterName],
+  spaceName: "",
+  spaceSlug: "",
+  listingQuestions: [
+    {
+      title: "About me",
+      char_count: 100,
+    },
+    {
+      title: "You can talk to me about",
+      char_count: 100,
+    },
+  ],
+};
+
+export default function CreatePage() {
+  const router = useRouter();
+  const currentStage = (useQueryParam("stage", "string") ??
+    CreateStage.EnterName) as CreateStage;
+  const { updateQueryParams } = useUpdateQueryParams();
+
+  const { userData } = useUserData();
+  const [_, createOwnerProfile] = useCreateOwnerProfileInNewSpaceMutation();
+
+  const [stageDisplayed, setStageDisplayed] = useState<CreateStage | null>(
+    null
+  );
+  useEffect(() => {
+    async function changeStageDisplay() {
+      setStageDisplayed(null);
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      setStageDisplayed(currentStage);
+    }
+    changeStageDisplay();
+  }, [currentStage]);
+
+  const loadedState = LocalStorage.get(
+    LocalStorageKey.CreateSpace
+  ) as CreateProgramState | null;
+
+  const [state, setState] = useSetState<CreateProgramState>({
+    ...DEFAULT_CREATE_PROGRAM_STATE,
+    ...loadedState,
+  });
+
+  // Update localstorage to match the current state
+  const [debouncedState] = useDebouncedValue(state, 400);
+  useEffect(() => {
+    LocalStorage.set(LocalStorageKey.CreateSpace, debouncedState);
+  }, [debouncedState]);
+
+  // Navigate to a stage
+  const navStage = (stage: CreateStage) => {
+    updateQueryParams({ stage });
+    setState((prev) => {
+      if (prev.enteredStages.includes(stage)) {
+        return prev;
+      } else {
+        return {
+          ...prev,
+          enteredStages: [...prev.enteredStages, stage],
+        };
+      }
+    });
+  };
+
+  if (!userData) {
+    return null;
+  }
+  return (
+    <div className="flex h-screen">
+      <div className="bg-gray-50 p-12 pt-40 h-screen flex-none">
+        <StageNavigator
+          currentStage={currentStage}
+          stages={ALL_CREATE_STAGES}
+          enabledStages={state.enteredStages}
+          onStageClick={(newStage) => {
+            navStage(newStage);
+          }}
+        />
+      </div>
+      <div className="px-16 py-20 w-full h-full overflow-y-auto">
+        <BackButton
+          onClick={() => {
+            switch (currentStage) {
+              case CreateStage.EnterName:
+                router.push("/");
+                break;
+              case CreateStage.EnterProfileSchema:
+                navStage(CreateStage.EnterName);
+                break;
+              case CreateStage.EnterSettings:
+                navStage(CreateStage.EnterProfileSchema);
+                break;
+              default:
+                break;
             }
-          });
-        }}
-      >
-        Create
-      </Button>
+          }}
+        />
+        <div className="relative w-full">
+          <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
+            <EnterName
+              data={{ spaceName: state.spaceName }}
+              onChange={(newData) => {
+                const slug = slugifyAndAppendRandomString(newData.spaceName);
+                setState({ ...newData, spaceSlug: slug });
+              }}
+              onComplete={() => {
+                navStage(CreateStage.EnterProfileSchema);
+              }}
+            />
+          </FadeTransition>
+          <FadeTransition
+            show={stageDisplayed === CreateStage.EnterProfileSchema}
+          >
+            <EnterProfileSchema
+              data={{ listingQuestions: state.listingQuestions }}
+              onChange={(newData) => {
+                setState({ ...newData });
+              }}
+              onComplete={() => {
+                navStage(CreateStage.EnterSettings);
+              }}
+            />
+          </FadeTransition>
+          <FadeTransition show={stageDisplayed === CreateStage.EnterSettings}>
+            <EnterSettings
+              data={{ spaceSlug: state.spaceSlug }}
+              onChange={(newData) => {
+                setState({ ...newData });
+              }}
+              onComplete={() => {
+                createOwnerProfile({
+                  space: {
+                    name: state.spaceName,
+                    owner_id: userData.id,
+                    slug: state.spaceSlug,
+                    space_listing_questions: {
+                      data: state.listingQuestions.map((question, index) => ({
+                        ...question,
+                        listing_order: index,
+                      })),
+                    },
+                  },
+                  user_id: userData.id,
+                }).then((result) => {
+                  if (result.error) {
+                    const msg = makeReadableError(result.error.message);
+                    toast.error(msg);
+                  } else {
+                    LocalStorage.delete(LocalStorageKey.CreateSpace);
+                    router.push(`/space/${state.spaceSlug}`);
+                  }
+                });
+              }}
+            />
+          </FadeTransition>
+        </div>
+      </div>
     </div>
   );
 }

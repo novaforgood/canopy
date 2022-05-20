@@ -1,12 +1,14 @@
 import { signOut } from "firebase/auth";
-import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
 import { Button } from "../components/atomic/Button";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
+
+import type { NextPage } from "next";
 
 function LandingPage() {
   const router = useRouter();
@@ -72,6 +74,7 @@ function LoggedInHomePage() {
       <div className="border shadow-md p-2">
         <p>Current User: {userData?.email}</p>
         <p>User ID: {userData?.id}</p>
+        <p>Email Verified: {auth.currentUser?.emailVerified ? "Yes" : "No"}</p>
       </div>
 
       <div className="h-4"></div>

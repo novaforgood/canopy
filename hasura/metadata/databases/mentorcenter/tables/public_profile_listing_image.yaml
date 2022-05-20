@@ -1,0 +1,10 @@
+table:
+  schema: public
+  name: profile_listing_image
+object_relationships:
+  - name: image
+    using:
+      foreign_key_constraint_on: image_id
+  - name: profile_listing
+    using:
+      foreign_key_constraint_on: profile_listing_id
