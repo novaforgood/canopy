@@ -8,6 +8,7 @@ import {
   useUpsertListingResponsesMutation,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Input, Text } from "../atomic";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
