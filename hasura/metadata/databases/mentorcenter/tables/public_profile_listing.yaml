@@ -64,6 +64,9 @@ select_permissions:
                     profiles:
                       user_id:
                         _eq: X-Hasura-User-Id
+          - profile:
+              user_id:
+                _eq: X-Hasura-User-Id
 update_permissions:
   - role: user
     permission:

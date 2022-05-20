@@ -120,6 +120,45 @@ query ProfilesBySpaceId($space_id: uuid!) {
   }
 }
 
+query SpaceTagCategories($space_id: uuid!) {
+  space_tag_category(where: { space_id: { _eq: $space_id } }) {
+    space_tags {
+      id
+      label
+    }
+    title
+    id
+  }
+}
+
+query ProfileListingToSpaceTag($profile_id: uuid!) {
+  profile_listing_to_space_tag(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
+    id
+    profile_listing_id
+    space_tag_id
+    space_tag {
+      id
+      label
+      space_tag_category_id
+    }
+  }
+}
+
+query SpaceTags($space_tag_category_id: uuid!) {
+  space_tag(where: { space_tag_category_id: {} }) {
+    id
+    profile_to_space_tags {
+      id
+    }
+    space_tag_category {
+      space_id
+      title
+    }
+  }
+}
+
 query ListingResponseByQuestionId($question_id: uuid!) {
   profile_listing_response(
     where: { space_listing_question: { id: { _eq: $question_id } } }
