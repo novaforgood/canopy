@@ -131,16 +131,18 @@ query SpaceTagCategories($space_id: uuid!) {
   }
 }
 
-query ProfileToSpaceTag($profile_id: uuid!) {
-  profile_to_space_tag(where: { profile_id: { _eq: $profile_id } }) {
+query ProfileListingToSpaceTag($profile_id: uuid!) {
+  profile_listing_to_space_tag(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
     id
-    profile_id
+    profile_listing_id
+    space_tag_id
     space_tag {
       id
       label
       space_tag_category_id
     }
-    space_tag_id
   }
 }
 

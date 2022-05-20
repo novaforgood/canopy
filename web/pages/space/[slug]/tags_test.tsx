@@ -2,7 +2,7 @@ import React from "react";
 import Tag from "../../../components/atomic/Tag";
 import {
   useSpaceTagCategoriesQuery,
-  useProfileToSpaceTagQuery,
+  useProfileListingToSpaceTagQuery,
 } from "../../../generated/graphql";
 
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
@@ -28,7 +28,7 @@ export default function tag_test() {
     variables: { space_id: currentSpace?.id ?? "" },
   });
 
-  const [{ data: profileTags }] = useProfileToSpaceTagQuery({
+  const [{ data: profileTags }] = useProfileListingToSpaceTagQuery({
     variables: {
       profile_id: currentProfile?.id ?? "",
     },
@@ -42,7 +42,7 @@ export default function tag_test() {
             <div className="text-xl">{category.title}</div>
             <div className="h-4"></div>
             <div className="flex gap-2 items-start">
-              {profileTags?.profile_to_space_tag.map((tag) => {
+              {profileTags?.profile_listing_to_space_tag.map((tag) => {
                 return (
                   <Tag
                     key={tag.space_tag.label}
