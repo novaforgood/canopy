@@ -16,7 +16,7 @@ type SimpleRichTextInputProps = Omit<EditorContentProps, "editor" | "ref"> & {
   characterLimit?: number;
   onUpdate?: (props: EditorEvents["update"]) => void;
   editable?: boolean;
-  content?: string;
+  initContent?: string;
   unstyled?: boolean;
 };
 
@@ -30,7 +30,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     placeholder,
     characterLimit,
     editable = true,
-    content,
+    initContent,
     unstyled = false,
     onUpdate = () => {},
     ...rest
@@ -43,7 +43,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     parseOptions: {
       preserveWhitespace: "full",
     },
-    content: content,
+    content: initContent,
     extensions: [
       StarterKit.configure({
         blockquote: false,
@@ -85,6 +85,13 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     }
     editor.setEditable(editable);
   }, [editor, editable]);
+
+  useEffect(() => {
+    if (!editor || !initContent) {
+      return;
+    }
+    editor.commands.setContent(initContent);
+  }, [editor, initContent]);
 
   return (
     <div className="w-full">

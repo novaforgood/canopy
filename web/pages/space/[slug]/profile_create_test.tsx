@@ -23,7 +23,7 @@ enum ListerStage {
 
 const MAP_STAGE_TO_LABEL: Record<ListerStage, string> = {
   [ListerStage.EnterBasicInfo]: "Basic Info",
-  [ListerStage.EnterResponses]: "Responses",
+  [ListerStage.EnterResponses]: "Profile",
   [ListerStage.EnterTags]: "Tags",
   [ListerStage.EnterContactInfo]: "Contact Info",
   [ListerStage.Review]: "Review",

@@ -1,4 +1,6 @@
-# Queries used in components/create-profile
+# Queries involving user profile listings
+
+## Profile image
 
 mutation InsertProfileImage($image_id: uuid!, $profile_id: uuid!) {
   insert_profile_listing_image_one(
@@ -44,6 +46,45 @@ query ProfileImage($profile_id: uuid!) {
     profile_listing_id
   }
 }
+
+## Questions and responses
+
+query ListingResponseByQuestionId($question_ids: [uuid!]!) {
+  profile_listing_response(
+    where: { space_listing_question: { id: { _in: $question_ids } } }
+  ) {
+    id
+    profile_listing_id
+    space_listing_question_id
+    response_html
+  }
+}
+
+mutation UpsertListingResponses(
+  $objects: [profile_listing_response_insert_input!]!
+) {
+  insert_profile_listing_response(
+    objects: $objects
+    on_conflict: {
+      constraint: profile_listing_response_space_listing_question_id_profile_list
+      update_columns: [response_html]
+    }
+  ) {
+    returning {
+      id
+      profile_listing_id
+      response_html
+      space_listing_question_id
+      profile_listing {
+        id
+        profile_id
+        public
+      }
+    }
+  }
+}
+
+## Social media links
 
 query ProfileListingSocials($profile_listing_id: uuid!) {
   profile_listing_social(

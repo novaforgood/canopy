@@ -27,7 +27,6 @@ export function ImageUploader(props: ImageUploaderProps) {
   } = props;
 
   const [loaded, setLoaded] = useState(false);
-  const [hovered, setHovered] = useState(false);
   const editor = useRef<AvatarEditor | null>(null);
   const [showReposition, setShowReposition] = useState(false);
   const [showRepositionActivated, setShowRepositionActivated] = useState(true);
@@ -86,12 +85,6 @@ export function ImageUploader(props: ImageUploaderProps) {
         <div
           {...getRootProps()}
           className={styles}
-          onMouseEnter={() => {
-            setHovered(true);
-          }}
-          onMouseLeave={() => {
-            setHovered(false);
-          }}
           onMouseDown={() => {
             if (showReposition) {
               setShowReposition(false);

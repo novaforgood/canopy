@@ -213,7 +213,6 @@ function InputReference() {
         <SimpleRichTextInput
           placeholder="Type in simple rich text input..."
           characterLimit={200}
-          value={value}
           onUpdate={({ editor }) => {
             setValue(editor.getHTML());
           }}

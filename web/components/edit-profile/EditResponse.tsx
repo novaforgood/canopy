@@ -25,7 +25,7 @@ export function EditResponse(props: EditResponseProps) {
   const { currentProfile } = useCurrentProfile();
   const [{ data: listingResponseData }, refetchListingResponse] =
     useListingResponseByQuestionIdQuery({
-      variables: { question_id: question.id },
+      variables: { question_ids: [question.id] },
     });
   const [_, upsertListingResponses] = useUpsertListingResponsesMutation();
 
@@ -79,7 +79,7 @@ export function EditResponse(props: EditResponseProps) {
           <div className="h-4"></div>
           <SimpleRichTextInput
             characterLimit={question.char_count}
-            content={initResponse?.response_html ?? ""}
+            initContent={initResponse?.response_html ?? ""}
             onUpdate={({ editor }) => {
               setResponseHtmlInput(editor.getHTML());
             }}
