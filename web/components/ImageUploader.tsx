@@ -12,12 +12,20 @@ interface ImageUploaderProps {
   width: number;
   height: number;
   showZoom?: boolean;
+  imageSrc: string | null;
+  onImageSrcChange?: (newValue: string | null) => void;
 }
 
 export function ImageUploader(props: ImageUploaderProps) {
-  const { getRef = () => {}, width, height, showZoom = false } = props;
+  const {
+    getRef = () => {},
+    width,
+    height,
+    showZoom = false,
+    imageSrc,
+    onImageSrcChange = () => {},
+  } = props;
 
-  const [src, setSrc] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [hovered, setHovered] = useState(false);
   const editor = useRef<AvatarEditor | null>(null);
@@ -34,10 +42,10 @@ export function ImageUploader(props: ImageUploaderProps) {
   } = useSingleImageDropzone({
     onDropAccepted: (file) => {
       const url = URL.createObjectURL(file);
-      setSrc(url);
+      onImageSrcChange(url);
       setLoaded(false);
     },
-    noClick: !!src,
+    noClick: !!imageSrc,
   });
 
   const canReposition = useCallback(() => {
@@ -50,7 +58,7 @@ export function ImageUploader(props: ImageUploaderProps) {
   useEffect(() => {
     setPosition({ x: 0.5, y: 0.5 });
     setScale(1);
-  }, [src]);
+  }, [imageSrc]);
 
   useEffect(() => {
     if (loaded) {
@@ -69,7 +77,7 @@ export function ImageUploader(props: ImageUploaderProps) {
   const styles = classNames({
     "w-full relative h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 cursor-pointer":
       true,
-    "hover:brightness-95": !src,
+    "hover:brightness-95": !imageSrc,
     "border-teal-500 hover:border-teal-700": isDragActive,
   });
   return (
@@ -91,7 +99,7 @@ export function ImageUploader(props: ImageUploaderProps) {
             }
           }}
         >
-          {src && (
+          {imageSrc && (
             <AvatarEditor
               onLoadSuccess={() => {
                 setShowRepositionActivated(true);
@@ -104,7 +112,7 @@ export function ImageUploader(props: ImageUploaderProps) {
               width={width}
               height={height}
               style={{ width: "100%", height: "100%" }}
-              image={src ?? ""}
+              image={imageSrc ?? ""}
               scale={scale}
               border={0}
               position={position}
@@ -114,7 +122,7 @@ export function ImageUploader(props: ImageUploaderProps) {
 
           <input {...getInputProps()} />
 
-          {src ? (
+          {imageSrc ? (
             showReposition && (
               <div className="absolute top-2 bg-black/50 py-1 px-2 pointer-events-none">
                 <Text variant="body2" className="text-white">
@@ -133,7 +141,7 @@ export function ImageUploader(props: ImageUploaderProps) {
         </div>
       </div>
       <div style={{ width: 250 }}>
-        {!!src && (
+        {!!imageSrc && (
           <>
             {showZoom && (
               <div className="flex items-center gap-2 mt-8">
@@ -173,7 +181,7 @@ export function ImageUploader(props: ImageUploaderProps) {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setSrc(null);
+                  onImageSrcChange(null);
                 }}
               >
                 Clear

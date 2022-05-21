@@ -195,6 +195,7 @@ function ModalReference() {
 function InputReference() {
   const [value, setValue] = useState("");
   const [editable, setEditable] = useState(true);
+
   return (
     <>
       <div className="text-lg font-bold mb-2 mt-8">Input</div>
@@ -227,6 +228,30 @@ function InputReference() {
           {editable ? "Make readonly" : "Make editable"}
         </Button>
       </div>
+    </>
+  );
+}
+
+function DropzoneReference() {
+  const [src1, setSrc1] = useState<string | null>(null);
+  const [src2, setSrc2] = useState<string | null>(null);
+  return (
+    <>
+      <ImageUploader
+        width={250}
+        height={250}
+        showZoom
+        imageSrc={src1}
+        onImageSrcChange={setSrc1}
+      />
+      <div className="h-16"></div>
+      <ImageUploader
+        width={500}
+        height={250}
+        showZoom
+        imageSrc={src2}
+        onImageSrcChange={setSrc2}
+      />
     </>
   );
 }
@@ -311,9 +336,7 @@ export default function ComponentsPage() {
           <ModalReference />
 
           <SectionTitle title="Image Dropzone" />
-          <ImageUploader width={250} height={250} showZoom />
-          <div className="h-16"></div>
-          <ImageUploader width={500} height={250} showZoom />
+          <DropzoneReference />
 
           <div className="h-screen"></div>
         </div>

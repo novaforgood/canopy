@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
@@ -12,8 +12,10 @@ import { StageDisplayWrapper } from "./StageDisplayWrapper";
 
 async function uploadImage(imageData: string) {
   const blob = await (await fetch(imageData)).blob();
+  console.log(imageData);
   const body = new FormData();
   body.append("upload", blob, "profile.png");
+  return true;
   return await apiClient.postForm<{ image: { id: string; url: string } }>(
     "/api/services/uploadImage",
     body
@@ -30,6 +32,8 @@ export function EnterBasicInfo(props: EnterNameProps) {
   const { userData } = useUserData();
 
   const editor = useRef<AvatarEditor | null>(null);
+
+  const [image, setImage] = useState<string | null>(null);
 
   return (
     <StageDisplayWrapper
@@ -72,6 +76,8 @@ export function EnterBasicInfo(props: EnterNameProps) {
         <div className="h-4"></div>
         <ImageUploader
           showZoom
+          imageSrc={image}
+          onImageSrcChange={setImage}
           width={300}
           height={300}
           getRef={(ref) => {
