@@ -1,3 +1,5 @@
+# Dump uncategorized queries here
+
 query User($id: String!) {
   user_by_pk(id: $id) {
     id
