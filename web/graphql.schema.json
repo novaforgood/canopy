@@ -4989,6 +4989,12 @@
             "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "profile_listing_social_type_profile_listing_id_key",
+            "description": "unique or primary key constraint",
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null

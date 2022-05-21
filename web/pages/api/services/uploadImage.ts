@@ -1,19 +1,20 @@
+import aws from "aws-sdk";
+import mime from "mime-types";
+import multer from "multer";
+import multerS3 from "multer-s3";
+import { Middleware } from "next-connect";
+import { NextApiRequest, NextApiResponse } from "next/types";
+import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
+
+import { requireServerEnv } from "../../../server/env";
+import { executeInsertImageMutation } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
 import {
   makeApiError,
   makeApiFail,
   makeApiSuccess,
 } from "../../../server/response";
-import aws from "aws-sdk";
-import multer from "multer";
-import multerS3 from "multer-s3";
-import { requireServerEnv } from "../../../server/env";
-import { v4 as uuidv4 } from "uuid";
-import { executeInsertImageMutation } from "../../../server/generated/serverGraphql";
-import { z } from "zod";
-import { Middleware } from "next-connect";
-import { NextApiRequest, NextApiResponse } from "next/types";
-import mime from "mime-types";
 
 export interface FileResponse {
   fieldname: string;
@@ -75,12 +76,16 @@ const upload = multer({
  * Given an invite link ID
  */
 export default applyMiddleware({
-  authenticated: false,
+  authenticated: true,
 })
   .use(upload.single("upload"))
   .post<{ file: FileResponse }>(async (req, res) => {
     const { data, error } = await executeInsertImageMutation({
-      data: { url: req.file.location, id: req.file.key.split(".")[0] },
+      data: {
+        url: req.file.location,
+        id: req.file.key.split(".")[0],
+        uploader_user_id: req.token.uid,
+      },
     });
     if (error) {
       throw makeApiError(error.message);
