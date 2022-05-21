@@ -195,14 +195,3 @@ mutation UpsertListingResponses(
     }
   }
 }
-
-query ProfileListingSocials($profile_listing_id: uuid!) {
-  profile_listing_social(
-    where: { profile_listing: { id: { _eq: $profile_listing_id } } }
-  ) {
-    id
-    profile_listing_id
-    type
-    link
-  }
-}
