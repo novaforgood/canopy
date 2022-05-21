@@ -1,5 +1,50 @@
 # Queries used in components/create-profile
 
+mutation InsertProfileImage($image_id: uuid!, $profile_id: uuid!) {
+  insert_profile_listing_image_one(
+    object: {
+      image_id: $image_id
+      profile_listing: {
+        data: { profile_id: $profile_id }
+        on_conflict: {
+          constraint: profile_listing_profile_id_key
+          update_columns: profile_id
+        }
+      }
+    }
+    on_conflict: {
+      constraint: profile_listing_image_profile_listing_id_key
+      update_columns: image_id
+    }
+  ) {
+    id
+    image_id
+    image {
+      id
+      url
+    }
+    profile_listing {
+      id
+      profile_id
+      public
+    }
+    profile_listing_id
+  }
+}
+
+query ProfileImage($profile_id: uuid!) {
+  profile_listing_image(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
+    id
+    image {
+      id
+      url
+    }
+    profile_listing_id
+  }
+}
+
 query ProfileListingSocials($profile_listing_id: uuid!) {
   profile_listing_social(
     where: { profile_listing: { id: { _eq: $profile_listing_id } } }

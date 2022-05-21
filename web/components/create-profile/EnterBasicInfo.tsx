@@ -1,8 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
 
+import {
+  useInsertProfileImageMutation,
+  useProfileImageQuery,
+} from "../../generated/graphql";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
 import { Text } from "../atomic";
@@ -15,7 +20,6 @@ async function uploadImage(imageData: string) {
   console.log(imageData);
   const body = new FormData();
   body.append("upload", blob, "profile.png");
-  return true;
   return await apiClient.postForm<{ image: { id: string; url: string } }>(
     "/api/services/uploadImage",
     body
@@ -30,15 +34,33 @@ export function EnterBasicInfo(props: EnterNameProps) {
   const { onComplete, onSkip } = props;
 
   const { userData } = useUserData();
+  const { currentProfile } = useCurrentProfile();
+
+  const [{ data: profileImageData }] = useProfileImageQuery({
+    variables: { profile_id: currentProfile?.id ?? "" },
+  });
+  const [_, insertProfileImage] = useInsertProfileImageMutation();
+  const profileImageUrl =
+    profileImageData?.profile_listing_image[0]?.image.url ?? null;
 
   const editor = useRef<AvatarEditor | null>(null);
 
   const [image, setImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (profileImageUrl) {
+      setImage(profileImageUrl);
+    }
+  }, [profileImageUrl]);
+
   return (
     <StageDisplayWrapper
       title="Basic information"
       onPrimaryAction={async () => {
+        if (!currentProfile) {
+          toast.error("Current profile not defined");
+          return;
+        }
         const imageData =
           editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
 
@@ -49,10 +71,16 @@ export function EnterBasicInfo(props: EnterNameProps) {
             return null;
           });
           if (!res) return;
+
+          const imageId = res.data.image.id;
+          await insertProfileImage({
+            image_id: imageId,
+            profile_id: currentProfile.id,
+          });
         }
 
         onComplete({
-          profileImageId: imageData,
+          profileImageId: "TODO: figure out what to return here",
         });
       }}
       onSecondaryAction={onSkip}
