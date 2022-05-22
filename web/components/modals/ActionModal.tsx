@@ -1,7 +1,6 @@
 import { ReactNode, useState } from "react";
 
 import { BxX } from "../../generated/icons/regular";
-import { BxsTagX } from "../../generated/icons/solid";
 import { Button, Modal, Text } from "../atomic";
 
 export interface ActionModalProps {
@@ -31,8 +30,8 @@ export function ActionModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-md">
         <div className="flex justify-end p-4 pb-0">
-          <button onClick={onClose}>
-            <BxX className="hover:text-gray-300" />
+          <button onClick={onClose} className="w-6 h-6">
+            <BxX className="hover:text-gray-700" />
           </button>
         </div>
         {children}

@@ -168,7 +168,7 @@ export function ProfileSocialsInput() {
         >
           <div className="flex flex-col gap-2 p-8 w-120">
             <div className="flex items-center gap-4">
-              <BxsEnvelope />
+              <BxsEnvelope className="h-7 w-7 flex-none" />
               <Input disabled value={userData?.email} className="w-full" />
             </div>
 
@@ -177,7 +177,7 @@ export function ProfileSocialsInput() {
 
               return (
                 <div className="flex items-center gap-4" key={idx}>
-                  {properties.icon}
+                  <div className="w-7 h-7 flex-none">{properties.icon}</div>
                   <TextInput
                     renderPrefix={properties.renderPrefix}
                     placeholder={properties.placeholder}
