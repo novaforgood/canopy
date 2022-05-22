@@ -88,7 +88,7 @@ export default function ListerOnboardingPage() {
             }
           }}
         /> */}
-      <div className="relative w-full">
+      <div className="relative w-full overflow-y-auto">
         <FadeTransition show={stageDisplayed === ListerStage.EnterBasicInfo}>
           <EnterBasicInfo
             onComplete={() => {

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Text } from "../../components/atomic";
+import { EditProfileListing } from "../EditProfileListing";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
 
@@ -24,10 +25,8 @@ export function Review(props: ReviewProps) {
           Review
         </Text>
         <div className="h-4"></div>
-        <Text variant="body1">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis
-          mattis lorem.
-        </Text>
+        <EditProfileListing />
+        <div className="h-8"></div>
       </div>
     </StageDisplayWrapper>
   );

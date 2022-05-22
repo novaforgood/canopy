@@ -87,9 +87,7 @@ export function EditResponse(props: EditResponseProps) {
         </div>
       </ActionModal>
       <div className="flex flex-col items-start pb-16">
-        <Text variant="subheading1">
-          {question.title} ({question.char_count} chars)
-        </Text>
+        <Text variant="subheading1">{question.title}</Text>
         <div className="h-2"></div>
 
         <HtmlDisplay html={initResponse?.response_html ?? ""} />
