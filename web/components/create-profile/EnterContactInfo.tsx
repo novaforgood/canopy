@@ -3,8 +3,8 @@ import React from "react";
 import { Text } from "../../components/atomic";
 import { useProfileListingSocialsQuery } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { EditProfileSocials } from "../edit-socials-info/EditProfileSocials";
 
-import { ProfileSocialsInput } from "./ProfileSocialsInput";
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
 
 interface EnterContactInfoProps {
@@ -27,7 +27,7 @@ export function EnterContactInfo(props: EnterContactInfoProps) {
           Email and social platforms
         </Text>
         <div className="h-4"></div>
-        <ProfileSocialsInput />
+        <EditProfileSocials />
       </div>
     </StageDisplayWrapper>
   );

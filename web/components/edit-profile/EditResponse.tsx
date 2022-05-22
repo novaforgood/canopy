@@ -7,9 +7,11 @@ import {
   useListingResponseByQuestionIdQuery,
   useUpsertListingResponsesMutation,
 } from "../../generated/graphql";
+import { BxsPencil } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Input, Text } from "../atomic";
+import { EditButton } from "../EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
 import { ActionModal } from "../modals/ActionModal";
@@ -87,14 +89,14 @@ export function EditResponse(props: EditResponseProps) {
         </div>
       </ActionModal>
       <div className="flex flex-col items-start pb-16">
-        <Text variant="subheading1">{question.title}</Text>
+        <Text variant="subheading1">
+          {question.title}
+          <EditButton onClick={openModal} className="mb-1 ml-1" />
+        </Text>
+
         <div className="h-2"></div>
 
         <HtmlDisplay html={initResponse?.response_html ?? ""} />
-        <div className="h-4"></div>
-        <Button variant="outline" rounded onClick={openModal}>
-          Edit section
-        </Button>
 
         <div className="h-2"></div>
       </div>
