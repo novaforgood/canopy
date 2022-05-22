@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "build:graphql": "graphql-codegen --config graphql-codegen.config.js",
+    "build:icons": "npm run build:icons:solid && npm run build:icons:regular && npm run build:icons:logos",
     "build:icons:solid": "svgr node_modules/boxicons/svg/solid --out-dir ./generated/icons/solid --config-file svgr.config.js",
+    "build:icons:regular": "svgr node_modules/boxicons/svg/regular --out-dir ./generated/icons/regular --config-file svgr.config.js",
     "build:icons:logos": "svgr node_modules/boxicons/svg/logos --out-dir ./generated/icons/logos --config-file svgr.config.js",
-    "postinstall": "npm run build:graphql && npm run build:icons:solid && npm run build:icons:logos",
+    "postinstall": "npm run build:graphql && npm run build:icons",
     "introspect": "npx env-cmd graphql-codegen --config graphql-introspect.config.js",
     "start": "next start",
     "lint": "next lint"
