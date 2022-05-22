@@ -88,6 +88,10 @@ function ButtonsReference() {
       title: "Floating",
       props: { floating: true },
     },
+    {
+      title: "Loading",
+      props: { loading: true },
+    },
   ];
 
   return (
@@ -150,8 +154,10 @@ function ModalReference() {
           setIsOpen3(false);
         }}
         actionText="Primary action"
-        onAction={() => {
+        onAction={async () => {
           toast.success("Primary action clicked");
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          toast.success("Modal closed");
           setIsOpen3(false);
         }}
         secondaryActionText="Secondary action"

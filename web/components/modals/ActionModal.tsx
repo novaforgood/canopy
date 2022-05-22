@@ -7,9 +7,9 @@ export interface ActionModalProps {
   isOpen: boolean;
 
   actionText: string;
-  onAction: () => void;
+  onAction: () => Promise<void> | void;
   secondaryActionText?: string;
-  onSecondaryAction?: () => void;
+  onSecondaryAction?: () => Promise<void> | void;
 
   onClose?: () => void;
 }
@@ -19,10 +19,12 @@ export function ActionModal({
   isOpen,
   onClose = () => {},
   actionText,
-  onAction,
+  onAction = () => {},
   secondaryActionText,
   onSecondaryAction = () => {},
 }: ActionModalProps) {
+  const [loadingAction, setLoadingAction] = useState(false);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="bg-white rounded-md">
@@ -33,8 +35,11 @@ export function ActionModal({
         <div className="flex flex-col items-center p-12 pt-0">
           <Button
             rounded
-            onClick={() => {
-              onAction();
+            loading={loadingAction}
+            onClick={async () => {
+              setLoadingAction(true);
+              await onAction();
+              setLoadingAction(false);
             }}
           >
             {actionText}{" "}

@@ -149,7 +149,7 @@ export function ProfileSocialsInput() {
           actionText="Save"
           onAction={handleSaveSocials}
           secondaryActionText="Cancel"
-          onSecondaryAction={() => {
+          onSecondaryAction={async () => {
             handlers.close();
           }}
         >
