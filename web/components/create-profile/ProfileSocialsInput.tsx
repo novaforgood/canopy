@@ -20,6 +20,7 @@ import {
 import { BxsEnvelope } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useUserData } from "../../hooks/useUserData";
+import { TextInput } from "../inputs/TextInput";
 
 const ALL_SOCIAL_TYPES = Object.values(SocialEnum);
 
@@ -27,17 +28,20 @@ type SocialProperties = {
   icon: ReactNode;
   label: string;
   placeholder: string;
+  renderPrefix?: () => JSX.Element;
 };
 const MAP_SOCIAL_TYPE_TO_PROPERTIES: Record<SocialEnum, SocialProperties> = {
   [SocialEnum.Twitter]: {
     icon: <BxlTwitter />,
     label: "Twitter",
     placeholder: "Twitter username",
+    renderPrefix: () => <div>@</div>,
   },
   [SocialEnum.Instagram]: {
     icon: <BxlInstagram />,
     label: "Instagram",
     placeholder: "Instagram username",
+    renderPrefix: () => <div>@</div>,
   },
   [SocialEnum.LinkedIn]: {
     icon: <BxlLinkedin />,
@@ -156,11 +160,7 @@ export function ProfileSocialsInput() {
           <div className="flex flex-col gap-2 p-8 w-120">
             <div className="flex items-center gap-4">
               <BxsEnvelope />
-              <Input
-                disabled
-                value={userData?.email}
-                className="w-full"
-              ></Input>
+              <Input disabled value={userData?.email} className="w-full" />
             </div>
 
             {ALL_SOCIAL_TYPES.map((socialType, idx) => {
@@ -169,7 +169,8 @@ export function ProfileSocialsInput() {
               return (
                 <div className="flex items-center gap-4" key={idx}>
                   {properties.icon}
-                  <Input
+                  <TextInput
+                    renderPrefix={properties.renderPrefix}
                     placeholder={properties.placeholder}
                     className="w-full"
                     value={socials[socialType] ?? ""}

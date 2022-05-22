@@ -208,6 +208,11 @@ function InputReference() {
       <Input placeholder="Type here..." />
       <div className="h-4"></div>
       <TextInput placeholder="Type here..." label="With a label" />
+      <div className="h-4"></div>
+      <TextInput
+        placeholder="Type here..."
+        renderPrefix={() => <div>Prefix</div>}
+      />
 
       <div className="text-lg font-bold mb-2 mt-8">Textarea</div>
       <Textarea placeholder="Type in textarea..." />
