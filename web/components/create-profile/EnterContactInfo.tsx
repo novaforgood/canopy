@@ -1,6 +1,8 @@
 import React from "react";
 
 import { Text } from "../../components/atomic";
+import { useProfileListingSocialsQuery } from "../../generated/graphql";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 
 import { ProfileSocialsInput } from "./ProfileSocialsInput";
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
