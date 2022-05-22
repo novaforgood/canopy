@@ -116,22 +116,31 @@ export function ProfileSocialsInput() {
 
   return (
     <>
-      <div className="flex flex-col items-start gap-2">
-        <div className="flex items-center gap-4">
-          <Text className="text-right w-24">Email</Text>
-          <Text className="py-1 px-4 border rounded-md">
-            {userData?.email ?? ""}
-          </Text>
+      <div className="flex flex-col items-start gap-2 w-120">
+        <div className="flex items-center gap-4 w-full">
+          <Text className="text-right w-24 flex-none">Email</Text>
+
+          <TextInput
+            className="w-full"
+            value={userData?.email ?? ""}
+            disabled
+          />
         </div>
         {profileListingSocialsData?.profile_listing_social?.map(
           (profileListingSocial) => {
             const { type, link } = profileListingSocial;
-            const { icon, label, placeholder } =
+            const { icon, label, placeholder, renderPrefix } =
               MAP_SOCIAL_TYPE_TO_PROPERTIES[type];
             return (
-              <div key={type} className="flex items-center gap-4">
-                <Text className="text-right w-24">{label}</Text>
-                <Text className="py-1 px-4 border rounded-md">{link}</Text>
+              <div key={type} className="flex items-center gap-4 w-full">
+                <Text className="text-right w-24 flex-none">{label}</Text>
+                <TextInput
+                  renderPrefix={renderPrefix}
+                  placeholder={placeholder}
+                  className="w-full"
+                  value={link}
+                  disabled
+                />
               </div>
             );
           }
