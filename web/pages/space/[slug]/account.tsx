@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 
 import { InviteLinksList } from "../../../components/admin/InviteLinksList";
 import { MembersList } from "../../../components/admin/MembersList";
-import { Button } from "../../../components/atomic";
+import { Button, Text } from "../../../components/atomic";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../components/EditProfileListing";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 
-export default function SpaceHomepage() {
+export default function AdminPage() {
   const router = useRouter();
 
   const { currentSpace } = useCurrentSpace();
@@ -26,16 +26,14 @@ export default function SpaceHomepage() {
 
   return (
     <div className="p-4">
-      <div className="text-2xl">
-        Welcome to <b>{currentSpace.name}</b>!
-      </div>
-      <div>There is nothing here lol</div>
+      <Text variant="heading2" bold>
+        My account
+      </Text>
       <Breadcrumbs />
 
-      <div className="flex gap-2">
-        <a href={`${router.asPath}/admin`}>Admin page</a>
-        <a href={`${router.asPath}/account`}>Account</a>
-      </div>
+      <div className="h-8"></div>
+      <div className="text-xl font-bold">Edit my profile</div>
+      <EditProfileListing />
     </div>
   );
 }
