@@ -39,6 +39,5 @@ export const MAP_SOCIAL_TYPE_TO_PROPERTIES: Record<
     icon: <BxlLinkedin />,
     label: "LinkedIn",
     placeholder: "https://linkedin.com/in/username",
-    getLink: (value) => value,
   },
 } as const;

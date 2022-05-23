@@ -43,7 +43,7 @@ export function ProfileSocialsDisplay() {
 
   return (
     <>
-      <div className="flex flex-wrap items-start gap-2">
+      <div className="flex flex-wrap items-start gap-3">
         <IconLink icon={<BxsEnvelope />} href={`mailto:${userData?.email}`} />
         {profileListingSocialsData?.profile_listing_social?.map(
           (profileListingSocial) => {
