@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useEffect, useMemo } from "react";
+import { Fragment } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
 import { useElementSize } from "@mantine/hooks";
@@ -6,36 +6,19 @@ import classNames from "classnames";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 
-import { InviteLinksList } from "../../../components/admin/InviteLinksList";
-import { MembersList } from "../../../components/admin/MembersList";
-import { Button, Text } from "../../../components/atomic";
-import { Breadcrumbs } from "../../../components/Breadcrumbs";
-import { EditProfileListing } from "../../../components/EditProfileListing";
+import { Text } from "../../../components/atomic";
+import { SidePadding } from "../../../components/SidePadding";
 import { useAllProfilesOfUserQuery } from "../../../generated/graphql";
 import {
   BxCaretDown,
   BxLogOut,
   BxTransfer,
 } from "../../../generated/icons/regular";
-import {
-  BxsCaretDownCircle,
-  BxsUserAccount,
-} from "../../../generated/icons/solid";
+import { BxsUserAccount } from "../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { useUserData } from "../../../hooks/useUserData";
 import { auth } from "../../../lib/firebase";
-
-interface SidePaddingProps {
-  children: ReactNode;
-}
-function SidePadding({ children }: SidePaddingProps) {
-  return (
-    <div className="w-full px-2 flex flex-col items-center">
-      <div className="max-w-5xl w-full">{children}</div>
-    </div>
-  );
-}
 
 function Dropdown() {
   const { userData } = useUserData();
