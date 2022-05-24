@@ -1,5 +1,0 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- INSERT INTO profile_listing_social_type VALUES
--- ('Instagram', 'instagram.com'),
--- ('Twitter', 'twitter.com');
