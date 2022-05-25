@@ -2,8 +2,10 @@ import { signOut } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Button } from "../components/atomic/Button";
+import { Button, Text } from "../components/atomic";
+import { SidePadding } from "../components/SidePadding";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
+import { BxExit } from "../generated/icons/regular";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
@@ -67,48 +69,49 @@ function LoggedInHomePage() {
   });
   const router = useRouter();
   return (
-    <div className="p-4">
-      <h1>Logged In Home Page</h1>
-      <p>This is the logged in home page.</p>
-      <div className="h-4"></div>
-      <div className="border shadow-md p-2">
-        <p>Current User: {userData?.email}</p>
-        <p>User ID: {userData?.id}</p>
-        <p>Email Verified: {auth.currentUser?.emailVerified ? "Yes" : "No"}</p>
-      </div>
+    <div>
+      <SidePadding>
+        <div className="flex flex-col items-center pt-12">
+          <Text variant="heading4">Welcome to Canopy!</Text>
 
-      <div className="h-4"></div>
+          <div className="h-12"></div>
 
-      <div className="text-xl">Spaces:</div>
-      <div className="h-4"></div>
-      <div className="flex flex-col gap-2 items-start">
-        {profileData?.profile.map((profile) => {
-          return (
-            <Button
-              key={profile.id}
-              className="p-2 border"
-              onClick={() => {
-                router.push(`/space/${profile.space.slug}`);
-              }}
-            >
-              <span>
-                Go to space: <b>{profile.space.name}</b>
-              </span>
-            </Button>
-          );
-        })}
-        <Button
-          onClick={() => {
-            router.push("/create");
-          }}
-        >
-          Create new space
-        </Button>
-      </div>
-      <div className="h-16"></div>
-      <Button onClick={logout}>Log out</Button>
+          <div className="flex flex-col gap-8 items-start w-120">
+            {profileData?.profile.map((profile) => {
+              return (
+                <div
+                  className="flex justify-between items-center w-full"
+                  key={profile.id}
+                >
+                  <Text variant="heading4">{profile.space.name}</Text>
+                  <button
+                    className="w-6 h-6 hover:text-gray-700"
+                    onClick={() => {
+                      router.push(`/space/${profile.space.slug}`);
+                    }}
+                  >
+                    <BxExit />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          <div className="h-12"></div>
+          <Button
+            onClick={() => {
+              router.push("/create");
+            }}
+          >
+            Create new space
+          </Button>
+          <div className="h-16"></div>
+          <Button onClick={logout} variant="outline">
+            Log out
+          </Button>
 
-      <div className="h-4"></div>
+          <div className="h-4"></div>
+        </div>
+      </SidePadding>
     </div>
   );
 }

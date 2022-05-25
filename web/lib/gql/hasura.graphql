@@ -1,7 +1,11 @@
+# Dump uncategorized queries here
+
 query User($id: String!) {
   user_by_pk(id: $id) {
     id
     email
+    first_name
+    last_name
   }
 }
 
@@ -11,6 +15,10 @@ query AllProfilesOfUser($user_id: String!) {
     profile_roles {
       id
       profile_role
+    }
+    profile_listing {
+      id
+      public
     }
     flattened_profile_roles {
       id
@@ -149,46 +157,9 @@ query ProfileListingToSpaceTag($profile_id: uuid!) {
 query SpaceTags($space_tag_category_id: uuid!) {
   space_tag(where: { space_tag_category_id: {} }) {
     id
-    profile_to_space_tags {
-      id
-    }
     space_tag_category {
       space_id
       title
-    }
-  }
-}
-
-query ListingResponseByQuestionId($question_id: uuid!) {
-  profile_listing_response(
-    where: { space_listing_question: { id: { _eq: $question_id } } }
-  ) {
-    id
-    profile_listing_id
-    response_html
-  }
-}
-
-mutation UpsertListingResponses(
-  $objects: [profile_listing_response_insert_input!]!
-) {
-  insert_profile_listing_response(
-    objects: $objects
-    on_conflict: {
-      constraint: profile_listing_response_space_listing_question_id_profile_list
-      update_columns: [response_html]
-    }
-  ) {
-    returning {
-      id
-      profile_listing_id
-      response_html
-      space_listing_question_id
-      profile_listing {
-        id
-        profile_id
-        public
-      }
     }
   }
 }

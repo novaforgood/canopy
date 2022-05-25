@@ -7,8 +7,11 @@ import {
   useListingResponseByQuestionIdQuery,
   useUpsertListingResponsesMutation,
 } from "../../generated/graphql";
+import { BxsPencil } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Input, Text } from "../atomic";
+import { EditButton } from "../EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
 import { ActionModal } from "../modals/ActionModal";
@@ -24,7 +27,7 @@ export function EditResponse(props: EditResponseProps) {
   const { currentProfile } = useCurrentProfile();
   const [{ data: listingResponseData }, refetchListingResponse] =
     useListingResponseByQuestionIdQuery({
-      variables: { question_id: question.id },
+      variables: { question_ids: [question.id] },
     });
   const [_, upsertListingResponses] = useUpsertListingResponsesMutation();
 
@@ -78,7 +81,7 @@ export function EditResponse(props: EditResponseProps) {
           <div className="h-4"></div>
           <SimpleRichTextInput
             characterLimit={question.char_count}
-            content={initResponse?.response_html ?? ""}
+            initContent={initResponse?.response_html ?? ""}
             onUpdate={({ editor }) => {
               setResponseHtmlInput(editor.getHTML());
             }}
@@ -87,15 +90,13 @@ export function EditResponse(props: EditResponseProps) {
       </ActionModal>
       <div className="flex flex-col items-start pb-16">
         <Text variant="subheading1">
-          {question.title} ({question.char_count} chars)
+          {question.title}
+          <EditButton onClick={openModal} className="mb-1 ml-1" />
         </Text>
+
         <div className="h-2"></div>
 
         <HtmlDisplay html={initResponse?.response_html ?? ""} />
-        <div className="h-4"></div>
-        <Button variant="outline" rounded onClick={openModal}>
-          Edit section
-        </Button>
 
         <div className="h-2"></div>
       </div>
