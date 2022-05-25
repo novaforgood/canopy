@@ -2,13 +2,14 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
 import { usePersonNameQuery } from "../generated/graphql";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
+import { useUserData } from "../hooks/useUserData";
+import { useAllProfilesOfUserQuery } from "../generated/graphql";
 
-// const { currentProfile } = useCurrentProfile();
 // const id = currentProfile?.id;
 
 // const [{ data: names }] = usePersonNameQuery({ id });
 
-const ppl = new Array(64).fill(0).map((i) => {
+const ppl = new Array(4).fill(0).map((i) => {
   return {
     name: faker.name.firstName(),
     lname: faker.name.lastName(),
@@ -29,7 +30,12 @@ type Person = {
 };
 
 function Card(props: { person: Person }) {
-  // console.log(props);
+  const { userData } = useUserData();
+  const [{ data: profileData }] = useAllProfilesOfUserQuery({
+    variables: { user_id: userData?.id ?? "" },
+  });
+  console.log(profileData?.profile);
+  console.log("whore");
   const TOPICS = "Topics";
   return (
     <div className="w-72 border-gray-400 mb-10 border-x border-y rounded-md">
@@ -80,7 +86,7 @@ function SearchBar() {
         onChange={handleChange}
       >
         {INTERESTS.map((item) => {
-          console.log(item);
+          // console.log(item);
           return <option value={item}>{item}</option>;
         })}
       </select>
@@ -89,7 +95,7 @@ function SearchBar() {
         onChange={handleChange}
       >
         {COMMUNITY.map((item) => {
-          console.log(item);
+          // console.log(item);
           return <option value={item}>{item}</option>;
         })}
       </select>
