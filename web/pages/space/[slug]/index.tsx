@@ -1,125 +1,172 @@
-import { useClipboard } from "@mantine/hooks";
-import { format } from "date-fns";
+import { Fragment } from "react";
+
+import { Menu, Transition } from "@headlessui/react";
+import { useElementSize } from "@mantine/hooks";
+import classNames from "classnames";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useMemo } from "react";
-import toast from "react-hot-toast";
-import { Button } from "../../../components/atomic/Button";
+
+import { Text } from "../../../components/atomic";
+import { SidePadding } from "../../../components/SidePadding";
+import { useAllProfilesOfUserQuery } from "../../../generated/graphql";
 import {
-  Space_Invite_Link_Type_Enum,
-  useCreateInviteLinkMutation,
-  useInviteLinksQuery,
-  useProfilesBySpaceIdQuery,
-} from "../../../generated/graphql";
+  BxCaretDown,
+  BxLogOut,
+  BxTransfer,
+} from "../../../generated/icons/regular";
+import { BxsUserAccount } from "../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { useUserData } from "../../../hooks/useUserData";
+import { auth } from "../../../lib/firebase";
 
-function CopyLink({ link }: { link: string }) {
-  const clipboard = useClipboard({ timeout: 500 });
-
-  return (
-    <div className="flex gap-4">
-      <button
-        onClick={() => {
-          clipboard.copy(link);
-        }}
-      >
-        {clipboard.copied ? "Copied!" : "Copy"}
-      </button>
-      <a href={link}>{link}</a>
-    </div>
-  );
-}
-
-function CreateInviteLink() {
+function Dropdown() {
+  const { userData } = useUserData();
   const { currentSpace } = useCurrentSpace();
 
-  const [_, createInviteLink] = useCreateInviteLinkMutation();
+  const router = useRouter();
 
-  const [{ data: inviteLinksData }, refetchInviteLinks] = useInviteLinksQuery({
-    variables: { space_id: currentSpace?.id ?? "" },
+  const [{ data: allProfilesData }] = useAllProfilesOfUserQuery({
+    variables: { user_id: userData?.id ?? "" },
   });
 
-  if (!currentSpace) {
-    return <div>404 - Space not found</div>;
-  }
-
   return (
-    <div className="">
-      <div className="text-xl font-bold">Invite Links</div>
-      <div className="flex flex-col gap-2">
-        {inviteLinksData?.space_invite_link?.map((inviteLink) => {
-          const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
-          return (
-            <div key={inviteLink.id}>
-              <CopyLink link={link} />
-              <div className="ml-16">
-                Expires{" "}
-                {format(new Date(inviteLink.expires_at), "MMM dd yyyy, h:mm a")}
-              </div>
+    <Menu as="div" className="relative inline-block text-left">
+      {({ open }) => {
+        const caretStyles = classNames({
+          "h-7 w-7 transition": true,
+          "rotate-180": open,
+        });
+
+        return (
+          <>
+            <Transition
+              show={open}
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 top-full mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md border border-gray-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Item>
+                  {({ active }) => {
+                    const styles = classNames({
+                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                        true,
+                      "bg-white": !active,
+                      "bg-gray-50": active,
+                    });
+                    return (
+                      <button
+                        className={styles}
+                        onClick={() => {
+                          router.push(`/space/${currentSpace?.slug}/account`);
+                        }}
+                      >
+                        <BxsUserAccount className="w-5 h-5 mr-2" />
+                        My Account
+                      </button>
+                    );
+                  }}
+                </Menu.Item>
+                {allProfilesData?.profile.map((profile) => {
+                  return (
+                    <Menu.Item key={profile.id}>
+                      {({ active }) => {
+                        const styles = classNames({
+                          "group flex w-full items-center rounded-md px-2 py-3 text-sm whitespace-nowrap truncate":
+                            true,
+                          "bg-white": !active,
+                          "bg-gray-50": active,
+                        });
+                        return (
+                          <button
+                            className={styles}
+                            onClick={() => {
+                              router.push(`/space/${profile.space.slug}`);
+                            }}
+                          >
+                            <BxTransfer className="w-5 h-5 mr-2 flex-none" />
+                            {profile.space.name}
+                          </button>
+                        );
+                      }}
+                    </Menu.Item>
+                  );
+                })}
+
+                <Menu.Item>
+                  {({ active }) => {
+                    const styles = classNames({
+                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                        true,
+                      "bg-white": !active,
+                      "bg-gray-50": active,
+                    });
+                    return (
+                      <button
+                        className={styles}
+                        onClick={() => {
+                          signOut(auth);
+                        }}
+                      >
+                        <BxLogOut className="h-5 w-5 mr-2" />
+                        Log Out
+                      </button>
+                    );
+                  }}
+                </Menu.Item>
+              </Menu.Items>
+            </Transition>
+
+            <div>
+              <Menu.Button className="focus:outline-none">
+                <div className="flex items-center gap-2">
+                  <Text>
+                    {userData?.first_name} {userData?.last_name}
+                  </Text>
+                  <BxCaretDown className={caretStyles} />
+                </div>
+              </Menu.Button>
             </div>
-          );
-        })}
-      </div>
-      <Button
-        onClick={async () => {
-          const { data, error } = await createInviteLink({
-            space_id: currentSpace.id,
-            type: Space_Invite_Link_Type_Enum.Member,
-            expires_at: new Date(
-              Date.now() + 1000 * 60 * 60 * 24 * 7
-            ).toISOString(), // One week
-          });
-
-          if (error) {
-            toast.error(error.message);
-          } else {
-            toast.success("Invite link created");
-            refetchInviteLinks();
-          }
-        }}
-      >
-        Create Invite Link
-      </Button>
+          </>
+        );
+      }}
+    </Menu>
+  );
+}
+function Navbar() {
+  return (
+    <div className="flex items-center justify-between mt-12">
+      <div></div>
+      <Dropdown />
     </div>
   );
 }
 
-function ShowAllUsers() {
+function SpaceLandingScreen() {
   const { currentSpace } = useCurrentSpace();
 
-  const [{ data: profilesData }] = useProfilesBySpaceIdQuery({
-    variables: { space_id: currentSpace?.id ?? "" },
-  });
+  const { ref, width } = useElementSize();
 
-  if (!currentSpace) {
-    return <div>404 - Space not found</div>;
-  }
+  const desiredHeight = (width * 3) / 4;
 
   return (
-    <div className="">
-      <div className="text-xl font-bold">Users</div>
-      <div className="grid grid-cols-4">
-        <strong>Email</strong>
-        <strong>Roles</strong>
-        <strong>Listing Enabled</strong>
-        <strong>Created At</strong>
-        {profilesData?.profile?.map((profile) => {
-          return (
-            <Fragment key={profile.id}>
-              <div>{profile.user.email}</div>
-              <div>
-                {profile.profile_roles
-                  .map((role) => role.profile_role)
-                  .join(", ")}
-              </div>
-              <div>{profile.listing_enabled ? "true" : "false"}</div>
-              <div>
-                {format(new Date(profile.created_at), "MMM dd yyyy, h:mm a")}
-              </div>
-            </Fragment>
-          );
-        })}
+    <div className="flex items-center">
+      <div className="flex flex-col flex-1 p-4">
+        <Text variant="heading1">{currentSpace?.name}</Text>
+        <div className="h-10"></div>
+        <Text>Lorem ipsum</Text>
+      </div>
+      <div className="flex-1 self-stretch p-8">
+        <div
+          ref={ref}
+          className="h-full w-full bg-gray-50"
+          style={{ height: desiredHeight }}
+        ></div>
       </div>
     </div>
   );
@@ -140,23 +187,15 @@ export default function SpaceHomepage() {
   }
 
   return (
-    <div className="p-4">
-      <div className="text-2xl">
-        Welcome to <b>{currentSpace.name}</b>!
-      </div>
-      <div>There is nothing here lol</div>
-      <Button
-        onClick={() => {
-          router.push("/");
-        }}
-      >
-        Go back to home
-      </Button>
-      <div className="h-8"></div>
-      <CreateInviteLink />
-      <div className="h-8"></div>
-
-      <ShowAllUsers />
+    <div>
+      <SidePadding>
+        <Navbar />
+        <SpaceLandingScreen />
+        <div className="flex gap-2">
+          <a href={`${router.asPath}/admin`}>Admin page</a>
+          <a href={`${router.asPath}/account`}>Account</a>
+        </div>
+      </SidePadding>
     </div>
   );
 }

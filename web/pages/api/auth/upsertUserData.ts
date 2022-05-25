@@ -7,11 +7,13 @@ export default applyMiddleware({
   authenticated: true,
 }).post(async (req, res) => {
   auth.getUser(req.token.uid).then(async (user) => {
+    const firstName = user.displayName?.split(" ")[0] ?? "";
+    const lastName = user.displayName?.split(" ").slice(1).join(" ") ?? "";
     await executeUpsertUserMutation({
       id: user.uid,
       email: user.email ?? "",
-      first_name: user.displayName?.split(" ")[0] ?? "",
-      last_name: user.displayName?.split(" ")[1] ?? "",
+      first_name: firstName,
+      last_name: lastName,
     });
   });
 

@@ -1,4 +1,5 @@
 import { createClient } from "urql";
+
 import { requireServerEnv } from "./env";
 
 export const serverUrqlClient = createClient({

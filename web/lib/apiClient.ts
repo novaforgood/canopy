@@ -1,4 +1,5 @@
 import { ApiResponse, ApiResponseStatus } from "../common/types";
+
 import { auth } from "./firebase";
 
 class ApiClient {
@@ -31,24 +32,46 @@ class ApiClient {
         Authorization: sessionJwt ? `Bearer ${sessionJwt}` : "",
       },
       body: body ? JSON.stringify(body) : undefined,
-    })
-      .then(async (response) => {
-        const ret: ApiResponse<TResponseBody> = await response.json();
+    }).then(async (response) => {
+      const ret: ApiResponse<TResponseBody> = await response.json();
 
-        if (ret.status === ApiResponseStatus.Fail) {
-          throw new Error(ret.message);
-        }
-        if (ret.status === ApiResponseStatus.Error) {
-          throw new Error(ret.message);
-        }
-        if (!response.ok) {
-          throw new Error(JSON.stringify(ret));
-        }
-        return ret.data;
-      })
-      .catch((error) => {
-        throw error;
-      });
+      if (ret.status === ApiResponseStatus.Fail) {
+        throw new Error(ret.message);
+      }
+      if (ret.status === ApiResponseStatus.Error) {
+        throw new Error(ret.message);
+      }
+      if (!response.ok) {
+        throw new Error(JSON.stringify(ret));
+      }
+      return ret.data;
+    });
+  }
+
+  async postForm<TResponse extends object>(path: string, body: FormData) {
+    const sessionJwt = await this.getSessionJwt?.();
+
+    return await fetch(`${this.baseUrl}${path}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: sessionJwt ? `Bearer ${sessionJwt}` : "",
+      },
+      body: body,
+    }).then(async (response) => {
+      const ret: ApiResponse<TResponse> = await response.json();
+      if (ret.status === ApiResponseStatus.Fail) {
+        throw new Error(ret.message);
+      }
+      if (ret.status === ApiResponseStatus.Error) {
+        throw new Error(ret.message);
+      }
+      if (!response.ok) {
+        console.log(response);
+        throw new Error("Internal server error");
+      }
+      return ret;
+    });
   }
 
   post<TRequestBody extends object, TResponseBody extends object>(
@@ -77,7 +100,11 @@ class ApiClient {
   }
 
   get<TResponseBody extends object>(path: string): Promise<TResponseBody> {
-    return this.customRequest<{}, TResponseBody>(path, "GET", null);
+    return this.customRequest<Record<string, never>, TResponseBody>(
+      path,
+      "GET",
+      null
+    );
   }
 }
 

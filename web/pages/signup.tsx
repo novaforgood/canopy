@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -5,8 +7,8 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { Router, useRouter } from "next/router";
-import { useState } from "react";
 import { toast } from "react-hot-toast";
+
 import { Button } from "../components/atomic/Button";
 import { Input } from "../components/atomic/Input";
 import { auth } from "../lib/firebase";
@@ -39,7 +41,7 @@ const signUpUser = async (
     });
 };
 
-export default function signup() {
+export default function SignUpPage() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",

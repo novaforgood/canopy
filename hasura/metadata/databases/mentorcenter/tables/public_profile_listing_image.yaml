@@ -1,0 +1,60 @@
+table:
+  schema: public
+  name: profile_listing_image
+object_relationships:
+  - name: image
+    using:
+      foreign_key_constraint_on: image_id
+  - name: profile_listing
+    using:
+      foreign_key_constraint_on: profile_listing_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - profile_listing:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id
+      columns:
+        - image_id
+        - profile_listing_id
+      backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - image_id
+        - profile_listing_id
+      filter:
+        _or:
+          - profile_listing:
+              profile:
+                space:
+                  profiles:
+                    user_id:
+                      _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - image_id
+        - profile_listing_id
+      filter:
+        _or:
+          - profile_listing:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - profile_listing:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id

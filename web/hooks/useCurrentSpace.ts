@@ -1,5 +1,7 @@
-import { useRouter } from "next/router";
 import { useMemo } from "react";
+
+import { useRouter } from "next/router";
+
 import { useSpaceBySlugQuery } from "../generated/graphql";
 
 export function useCurrentSpace() {
