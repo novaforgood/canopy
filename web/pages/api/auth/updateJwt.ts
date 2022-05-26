@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { auth } from "../../../server/firebaseAdmin";
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiSuccess } from "../../../server/response";

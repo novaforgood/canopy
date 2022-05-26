@@ -1,11 +1,14 @@
-import classNames from "classnames";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+
+import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
 import { tuple } from "zod";
+
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
+import { ImageUploader } from "../components/ImageUploader";
+import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
+import { TextInput } from "../components/inputs/TextInput";
 import { ActionModal } from "../components/modals/ActionModal";
-import { SimpleRichTextInput } from "../components/SimpleRichTextInput";
-import { useSingleImageDropzone } from "../hooks/useSingleImageDropzone";
 import { theme } from "../tailwind.config";
 
 // https://github.com/tailwindlabs/tailwindcss.com/blob/master/src/components/ColorPaletteReference.js
@@ -13,9 +16,9 @@ export function ColorPaletteReference() {
   return (
     <div className="grid grid-cols-1 gap-8">
       {Object.entries(theme.colors).map(([color, colorVariants], i) => {
-        let title = color;
+        const title = color;
 
-        let palette = Object.entries(colorVariants).map(
+        const palette = Object.entries(colorVariants).map(
           ([variant, hexCode]) => ({
             name: variant,
             value: hexCode,
@@ -52,7 +55,7 @@ export function ColorPaletteReference() {
                           {name}
                         </div>
                         <div className="text-slate-500 font-mono lowercase dark:text-slate-400">
-                          {value.replace(/^#[a-f0-9]+/gi, (m: any) =>
+                          {value.replace(/^#[a-f0-9]+/gi, (m: string) =>
                             m.toUpperCase()
                           )}
                         </div>
@@ -70,7 +73,7 @@ export function ColorPaletteReference() {
 }
 
 function ButtonsReference() {
-  const variants = ["primary", "outline"] as const;
+  const variants = ["primary", "outline", "secondary"] as const;
   const propsets = [
     { title: "Normal", props: {} },
     {
@@ -85,10 +88,14 @@ function ButtonsReference() {
       title: "Floating",
       props: { floating: true },
     },
+    {
+      title: "Loading",
+      props: { loading: true },
+    },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-8">
+    <div className="grid grid-cols-3 gap-8">
       {variants.map((variant) => (
         <div key={variant} className="font-bold text-lg">
           <div className="bg-teal-50 w-auto">{variant}</div>
@@ -147,8 +154,10 @@ function ModalReference() {
           setIsOpen3(false);
         }}
         actionText="Primary action"
-        onAction={() => {
+        onAction={async () => {
           toast.success("Primary action clicked");
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          toast.success("Modal closed");
           setIsOpen3(false);
         }}
         secondaryActionText="Secondary action"
@@ -157,7 +166,7 @@ function ModalReference() {
           setIsOpen3(false);
         }}
       >
-        <div className="w-120 h-40 bg-teal-50">content</div>
+        <div className="bg-teal-50">content</div>
       </ActionModal>
 
       <Button
@@ -192,22 +201,29 @@ function ModalReference() {
 function InputReference() {
   const [value, setValue] = useState("");
   const [editable, setEditable] = useState(true);
+
   return (
     <>
-      <div className="text-lg font-bold mb-2 mt-4">Input</div>
+      <div className="text-lg font-bold mb-2 mt-8">Input</div>
       <Input placeholder="Type here..." />
+      <div className="h-4"></div>
+      <TextInput placeholder="Type here..." label="With a label" />
+      <div className="h-4"></div>
+      <TextInput
+        placeholder="Type here..."
+        renderPrefix={() => <div>Prefix</div>}
+      />
 
-      <div className="text-lg font-bold mb-2 mt-4">Textarea</div>
+      <div className="text-lg font-bold mb-2 mt-8">Textarea</div>
       <Textarea placeholder="Type in textarea..." />
 
       <div>
-        <div className="text-lg font-bold mb-2 mt-4">
+        <div className="text-lg font-bold mb-2 mt-8">
           Simple Rich Text Input
         </div>
         <SimpleRichTextInput
           placeholder="Type in simple rich text input..."
           characterLimit={200}
-          value={value}
           onUpdate={({ editor }) => {
             setValue(editor.getHTML());
           }}
@@ -227,59 +243,25 @@ function InputReference() {
 }
 
 function DropzoneReference() {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [src, setSrc] = useState<string | null>(null);
-  const [hovered, setHovered] = useState(false);
-
-  const { getRootProps, getInputProps, isDragActive } = useSingleImageDropzone({
-    onDropAccepted: (file) => {
-      const url = URL.createObjectURL(file);
-      setSrc(url);
-      setUploadedFile(file);
-    },
-  });
-
-  const styles = classNames({
-    "w-full h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 hover:bg-gray-50 cursor-pointer":
-      true,
-    "hover:brightness-90": src,
-    "border-teal-500 hover:border-teal-700": isDragActive,
-  });
+  const [src1, setSrc1] = useState<string | null>(null);
+  const [src2, setSrc2] = useState<string | null>(null);
   return (
     <>
-      <div className="h-64 w-64">
-        <div
-          {...getRootProps()}
-          className={styles}
-          style={{
-            backgroundImage: src ? `url(${src})` : undefined,
-            backgroundSize: "cover",
-            backgroundClip: "padding-box",
-          }}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          <input {...getInputProps()} />
-          {src ? (
-            hovered && (
-              <div className="bg-black/30 flex justify-center items-center w-full h-full text-white">
-                Change image
-              </div>
-            )
-          ) : (
-            <div className="">Drop image here</div>
-          )}
-        </div>
-      </div>
-      <div className="h-4"></div>
-      <Button
-        onClick={() => {
-          setUploadedFile(null);
-          setSrc(null);
-        }}
-      >
-        Clear
-      </Button>
+      <ImageUploader
+        width={250}
+        height={250}
+        showZoom
+        imageSrc={src1}
+        onImageSrcChange={setSrc1}
+      />
+      <div className="h-16"></div>
+      <ImageUploader
+        width={500}
+        height={250}
+        showZoom
+        imageSrc={src2}
+        onImageSrcChange={setSrc2}
+      />
     </>
   );
 }
@@ -311,7 +293,7 @@ export default function ComponentsPage() {
   }, []);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex w-full h-screen">
       <div className="h-full p-4 pr-16 flex-none text-white bg-gray-900">
         <div className="text-xl font-bold mb-8">Components</div>
         <div className="flex flex-col gap-1">
@@ -332,7 +314,7 @@ export default function ComponentsPage() {
           })}
         </div>
       </div>
-      <div className="h-full w-full p-4 overflow-y-auto flex flex-col items-center">
+      <div className="h-screen flex-1 p-4 overflow-y-auto flex flex-col items-center">
         <div className="max-w-full xl:max-w-3xl">
           <SectionTitle title="Colors" />
           <ColorPaletteReference />

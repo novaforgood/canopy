@@ -1,0 +1,25 @@
+table:
+  schema: public
+  name: profile_listing_to_space_tag
+object_relationships:
+  - name: profile_listing
+    using:
+      foreign_key_constraint_on: profile_listing_id
+  - name: space_tag
+    using:
+      foreign_key_constraint_on: space_tag_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - profile_listing_id
+        - space_tag_id
+      filter:
+        _or:
+          - profile_listing:
+              profile:
+                space:
+                  profiles:
+                    user_id:
+                      _eq: X-Hasura-User-Id

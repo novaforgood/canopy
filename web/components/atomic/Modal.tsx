@@ -1,5 +1,3 @@
-import { Dialog, Transition } from "@headlessui/react";
-import classNames from "classnames";
 import React, {
   Fragment,
   HTMLAttributes,
@@ -7,6 +5,9 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
+
+import { Dialog, Transition } from "@headlessui/react";
+import classNames from "classnames";
 import { createPortal } from "react-dom";
 
 type ModalProps = HTMLAttributes<HTMLDivElement> & {

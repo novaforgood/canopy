@@ -1,5 +1,10 @@
-import { useMemo } from "react";
-import { useAllProfilesOfUserQuery } from "../generated/graphql";
+import { useCallback, useMemo } from "react";
+
+import {
+  Profile_Role_Enum,
+  useAllProfilesOfUserQuery,
+} from "../generated/graphql";
+
 import { useQueryParam } from "./useQueryParam";
 import { useUserData } from "./useUserData";
 
@@ -18,5 +23,17 @@ export function useCurrentProfile() {
     [allProfilesData, slug]
   );
 
-  return useMemo(() => ({ currentProfile }), [currentProfile]);
+  const currentProfileHasRole = useCallback(
+    (role: Profile_Role_Enum) => {
+      return currentProfile?.flattened_profile_roles
+        .map((role) => role.profile_role)
+        .includes(role);
+    },
+    [currentProfile]
+  );
+
+  return useMemo(
+    () => ({ currentProfile, currentProfileHasRole }),
+    [currentProfile, currentProfileHasRole]
+  );
 }

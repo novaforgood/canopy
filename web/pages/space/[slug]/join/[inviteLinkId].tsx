@@ -1,7 +1,9 @@
+import { useCallback, useEffect } from "react";
+
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
+
 import { Button } from "../../../../components/atomic/Button";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
@@ -17,10 +19,17 @@ export default function SpaceHomepage() {
   const inviteLinkId = useQueryParam("inviteLinkId", "string");
 
   const joinSpace = useCallback(async () => {
+    if (!inviteLinkId) {
+      return;
+    }
+
     await apiClient
-      .post<any, { newProfileId: string }>("/api/invite/joinProgram", {
-        inviteLinkId,
-      })
+      .post<{ inviteLinkId: string }, { newProfileId: string }>(
+        "/api/invite/joinProgram",
+        {
+          inviteLinkId,
+        }
+      )
       .then((response) => {
         toast.success("Good job");
       })

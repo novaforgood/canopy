@@ -1,7 +1,11 @@
+# Dump uncategorized queries here
+
 query User($id: String!) {
   user_by_pk(id: $id) {
     id
     email
+    first_name
+    last_name
   }
 }
 
@@ -9,12 +13,28 @@ query AllProfilesOfUser($user_id: String!) {
   profile(where: { user_id: { _eq: $user_id } }) {
     id
     profile_roles {
+      id
+      profile_role
+    }
+    profile_listing {
+      id
+      public
+    }
+    flattened_profile_roles {
+      id
+      profile_id
       profile_role
     }
     space {
       id
       name
       slug
+    }
+    user {
+      id
+      email
+      first_name
+      last_name
     }
   }
 }
@@ -24,6 +44,13 @@ query SpaceBySlug($slug: String!) {
     id
     name
     slug
+    space_listing_questions(order_by: { listing_order: asc }) {
+      char_count
+      id
+      space_id
+      title
+      listing_order
+    }
   }
 }
 
@@ -40,6 +67,7 @@ mutation CreateOwnerProfileInNewSpace(
   ) {
     id
     space_id
+    user_id
     space {
       id
       name
@@ -52,7 +80,6 @@ mutation CreateOwnerProfileInNewSpace(
         title
       }
     }
-    user_id
   }
 }
 
@@ -86,15 +113,53 @@ query ProfilesBySpaceId($space_id: uuid!) {
   profile(where: { space_id: { _eq: $space_id } }) {
     id
     user {
+      id
       first_name
       last_name
       email
     }
     profile_roles {
+      id
       profile_role
     }
     space_id
     user_id
     created_at
+  }
+}
+
+query SpaceTagCategories($space_id: uuid!) {
+  space_tag_category(where: { space_id: { _eq: $space_id } }) {
+    space_tags {
+      id
+      label
+    }
+    title
+    id
+  }
+}
+
+query ProfileListingToSpaceTag($profile_id: uuid!) {
+  profile_listing_to_space_tag(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
+    id
+    profile_listing_id
+    space_tag_id
+    space_tag {
+      id
+      label
+      space_tag_category_id
+    }
+  }
+}
+
+query SpaceTags($space_tag_category_id: uuid!) {
+  space_tag(where: { space_tag_category_id: {} }) {
+    id
+    space_tag_category {
+      space_id
+      title
+    }
   }
 }
