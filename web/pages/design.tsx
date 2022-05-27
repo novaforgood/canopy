@@ -10,6 +10,7 @@ import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
 import { TextInput } from "../components/inputs/TextInput";
 import { ActionModal } from "../components/modals/ActionModal";
 import { theme } from "../tailwind.config";
+import { CustomPage } from "../types";
 
 // https://github.com/tailwindlabs/tailwindcss.com/blob/master/src/components/ColorPaletteReference.js
 export function ColorPaletteReference() {
@@ -277,7 +278,7 @@ function SectionTitle({ title }: { title: string }) {
   );
 }
 
-export default function ComponentsPage() {
+const ComponentsPage: CustomPage = () => {
   const [headers, setHeaders] = useState<
     { title: string; link: string; element: HTMLDivElement }[]
   >([]);
@@ -353,4 +354,7 @@ export default function ComponentsPage() {
       </div>
     </div>
   );
-}
+};
+
+ComponentsPage.requiresAuthentication = false;
+export default ComponentsPage;

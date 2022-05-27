@@ -14,6 +14,10 @@ import { getUrqlClient } from "../lib/urql";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
+import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { usePrevious } from "../hooks/usePrevious";
+import AuthWrapper from "../components/AuthWrapper";
+import {CustomPage} from "../types";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -98,12 +102,20 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-function AppWrapper({ Component, ...pageProps }: AppProps) {
+type CustomAppProps = AppProps & {
+  Component: CustomPage;
+};
+
+function AppWrapper({ Component, ...pageProps }: CustomAppProps) {
   return (
     <RecoilRoot>
       <AuthProvider>
         <UrqlProvider>
-          <App {...pageProps} Component={Component} />
+          <AuthWrapper
+            requiresAuthentication={Component.requiresAuthentication}
+          >
+            <App {...pageProps} Component={Component} />
+          </AuthWrapper>
         </UrqlProvider>
       </AuthProvider>
     </RecoilRoot>
