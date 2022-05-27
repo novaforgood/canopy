@@ -1,26 +1,27 @@
 import React from "react";
+
+import { profile } from "console";
+
+import { faker } from "@faker-js/faker";
+
 import Tag from "../../../components/atomic/Tag";
 import {
   useSpaceTagCategoriesQuery,
   useProfileListingToSpaceTagQuery,
 } from "../../../generated/graphql";
-
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { Profile_Role_Constraint } from "../../../server/generated/serverGraphql";
-import { profile } from "console";
 
-const { faker } = require("@faker-js/faker");
-
-let space_tags = new Array(8).fill(0).map(() => {
+const space_tags = new Array(8).fill(0).map(() => {
   return { tag: faker.lorem.word() };
 });
 
-let categories = new Array(2).fill(0).map(() => {
+const categories = new Array(2).fill(0).map(() => {
   return { space_tags };
 });
 
-export default function tag_test() {
+export default function TagTest() {
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
