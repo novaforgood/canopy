@@ -1,7 +1,5 @@
 import React from "react";
 
-import { profile } from "console";
-
 import { faker } from "@faker-js/faker";
 
 import Tag from "../../../components/atomic/Tag";
@@ -11,7 +9,6 @@ import {
 } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { Profile_Role_Constraint } from "../../../server/generated/serverGraphql";
 
 const space_tags = new Array(8).fill(0).map(() => {
   return { tag: faker.lorem.word() };
