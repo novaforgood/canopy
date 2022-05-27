@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:graphql": "graphql-codegen --config graphql-codegen.config.js",
-    "build:icons": "svgr node_modules/boxicons/svg --out-dir ./generated/icons --config-file svgr.config.js --no-dimensions",
+    "build:icons": "svgr node_modules/boxicons/svg --out-dir ./generated/icons --config-file svgr.config.js --no-dimensions --silent",
     "postinstall": "npm run build:graphql && npm run build:icons",
     "introspect": "npx env-cmd graphql-codegen --config graphql-introspect.config.js",
     "start": "next start",
