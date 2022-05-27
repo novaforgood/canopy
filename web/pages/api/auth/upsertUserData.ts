@@ -1,3 +1,4 @@
+import { requireServerEnv } from "../../../server/env";
 import { auth } from "../../../server/firebaseAdmin";
 import { executeUpsertUserMutation } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
