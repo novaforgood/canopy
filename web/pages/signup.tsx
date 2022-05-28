@@ -14,6 +14,7 @@ import { auth } from "../lib/firebase";
 import { CustomPage } from "../types";
 import { TextInput } from "../components/inputs/TextInput";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { useSetState } from "@mantine/hooks";
 
 const signUpUser = async (
   firstName: string,
@@ -21,6 +22,8 @@ const signUpUser = async (
   email: string,
   password: string
 ) => {
+  // signup user with firebase and upsert to our DB
+  // send email verification
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCred) => {
       const user = userCred.user;
@@ -44,7 +47,7 @@ const signUpUser = async (
 };
 
 const SignUpPage: CustomPage = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useSetState({
     firstName: "",
     lastName: "",
     email: "",
@@ -65,7 +68,7 @@ const SignUpPage: CustomPage = () => {
               type="text"
               placeholder="Enter your first name"
               onChange={(e) => {
-                setFormData({ ...formData, firstName: e.target.value });
+                setFormData({ firstName: e.target.value });
               }}
             />
           </div>
@@ -75,7 +78,7 @@ const SignUpPage: CustomPage = () => {
               type="text"
               placeholder="Enter your last name"
               onChange={(e) => {
-                setFormData({ ...formData, lastName: e.target.value });
+                setFormData({ lastName: e.target.value });
               }}
             />
           </div>
@@ -84,7 +87,7 @@ const SignUpPage: CustomPage = () => {
               label="Email"
               type="text"
               onChange={(e) => {
-                setFormData({ ...formData, email: e.target.value });
+                setFormData({ email: e.target.value });
               }}
             />
           </div>
@@ -93,7 +96,7 @@ const SignUpPage: CustomPage = () => {
               label="Password"
               type="password"
               onChange={(e) => {
-                setFormData({ ...formData, password: e.target.value });
+                setFormData({ password: e.target.value });
               }}
             />
           </div>

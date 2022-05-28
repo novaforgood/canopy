@@ -16,21 +16,26 @@ import { CustomPage } from "../types";
 const LoginPage: CustomPage = () => {
   const { signInWithGoogle } = useSignIn();
   const [signingIn, setSigningIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
   const { userData } = useUserData();
+
+  // determine where to redirect to after login
   const [paths, _] = useState(router.asPath.split("redirect="));
   const redirect = paths.length > 1 ? paths[1] : "/";
-  console.log("paths", paths);
-  console.log("REDIRECT: ", redirect);
 
   const [formData, setFormData] = useSetState({ email: "", password: "" });
 
-  const googleSignIn = async () => {
-    setSigningIn(true);
-    setIsLoading(true);
+  // prevent users from accessing login page if they are already logged in
+  useEffect(() => {
+    if (userData) {
+      router.push("/");
+    }
+  }, [userData]);
 
+  const googleSignIn = async () => {
+    // sign in with google and upsert data to our DB
+    setSigningIn(true);
     signInWithGoogle()
       .then(async () => {
         const user = await auth.currentUser;
@@ -50,15 +55,13 @@ const LoginPage: CustomPage = () => {
         handleError(e);
       })
       .finally(() => {
-        setIsLoading(true);
         setSigningIn(false);
       });
   };
 
   const signInManually = async (email: string, password: string) => {
+    // sign in using firebase auth and upsert to our DB
     setSigningIn(true);
-    setIsLoading(true);
-
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCred) => {
         const tokenResult = await userCred.user.getIdTokenResult();
@@ -81,9 +84,7 @@ const LoginPage: CustomPage = () => {
 
   return (
     <div className="p-4">
-      {userData && !isLoading ? (
-        <Button onClick={() => router.push("/")}>Go Home</Button>
-      ) : signingIn ? (
+      {signingIn ? (
         <div>Signing in... </div>
       ) : isLoggedIn ? (
         <div>Redirecting...</div>
