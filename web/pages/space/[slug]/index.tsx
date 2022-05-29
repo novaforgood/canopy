@@ -9,8 +9,12 @@ import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 export default function SpaceHomepage() {
   const router = useRouter();
 
-  const { currentSpace } = useCurrentSpace();
-  const { currentProfile } = useCurrentProfile();
+  const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
+  const { currentProfile, fetchingCurrentProfile } = useCurrentProfile();
+
+  if (fetchingCurrentProfile || fetchingCurrentSpace) {
+    return <div>Loading...</div>;
+  }
 
   if (!currentSpace) {
     return <div>404 - Space not found</div>;

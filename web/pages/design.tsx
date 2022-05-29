@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, SVGProps, useEffect, useState } from "react";
 
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
@@ -9,6 +9,8 @@ import { ImageUploader } from "../components/ImageUploader";
 import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
 import { TextInput } from "../components/inputs/TextInput";
 import { ActionModal } from "../components/modals/ActionModal";
+import { ProfileImage } from "../components/ProfileImage";
+import { BxUser } from "../generated/icons/regular";
 import { theme } from "../tailwind.config";
 import { CustomPage } from "../types";
 
@@ -348,6 +350,8 @@ const ComponentsPage: CustomPage = () => {
 
           <SectionTitle title="Image Dropzone" />
           <DropzoneReference />
+
+          <ProfileImage className="h-10 w-10" />
 
           <div className="h-screen"></div>
         </div>

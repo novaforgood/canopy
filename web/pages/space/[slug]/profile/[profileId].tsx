@@ -7,6 +7,7 @@ import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
 import { Navbar } from "../../../../components/Navbar";
+import { ProfileImage } from "../../../../components/ProfileImage";
 import { SidePadding } from "../../../../components/SidePadding";
 import { SpaceLandingPage } from "../../../../components/space-homepage/SpaceLandingPage";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
@@ -46,10 +47,10 @@ export default function SpaceHomepage() {
           <div className="h-20 bg-gray-100 rounded-t-lg"></div>
           <div className="px-20 -mt-8">
             <div className="flex items-center gap-12">
-              <img
+              <ProfileImage
                 src={listing.profile_listing_image?.image.url}
                 alt={`${first_name} ${last_name}`}
-                className="rounded-full h-48 w-48 bg-gray-400 border border-gray-500 object-cover"
+                className="h-48 w-48"
               />
               <div className="flex flex-col mt-4">
                 <Text variant="heading3">

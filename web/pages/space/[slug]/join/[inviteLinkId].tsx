@@ -42,7 +42,7 @@ export default function SpaceHomepage() {
     return <div>404 - Space not found</div>;
   }
   if (!inviteLinkId) {
-    return <div>404 - Invite link not found</div>;
+    return <div>404 - Invite link ID not found</div>;
   }
 
   if (currentProfile) {

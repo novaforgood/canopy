@@ -11,9 +11,10 @@ import { useUserData } from "./useUserData";
 export function useCurrentProfile() {
   const { userData } = useUserData();
   const slug = useQueryParam("slug", "string");
-  const [{ data: allProfilesData }] = useAllProfilesOfUserQuery({
-    variables: { user_id: userData?.id ?? "" },
-  });
+  const [{ data: allProfilesData, fetching: fetchingCurrentProfile }] =
+    useAllProfilesOfUserQuery({
+      variables: { user_id: userData?.id ?? "" },
+    });
 
   const currentProfile = useMemo(
     () =>
@@ -33,7 +34,7 @@ export function useCurrentProfile() {
   );
 
   return useMemo(
-    () => ({ currentProfile, currentProfileHasRole }),
-    [currentProfile, currentProfileHasRole]
+    () => ({ currentProfile, currentProfileHasRole, fetchingCurrentProfile }),
+    [currentProfile, currentProfileHasRole, fetchingCurrentProfile]
   );
 }
