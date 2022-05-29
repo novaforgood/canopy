@@ -4,6 +4,7 @@ import { Profile_Role_Enum, useProfileImageQuery } from "../generated/graphql";
 import { BxsPencil } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { useUserData } from "../hooks/useUserData";
 
 import { Button, Text } from "./atomic";
 import { EditResponse } from "./edit-profile/EditResponse";
@@ -14,6 +15,7 @@ import { EditButton } from "./EditButton";
 export function EditProfileListing() {
   const { currentProfile, currentProfileHasRole } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
+  const { userData } = useUserData();
 
   const [{ data: profileImageData }] = useProfileImageQuery({
     variables: { profile_id: currentProfile?.id ?? "" },
@@ -81,7 +83,10 @@ export function EditProfileListing() {
                   Introduce me
                 </Button>
                 <div className="h-8"></div>
-                <ProfileSocialsDisplay />
+                <ProfileSocialsDisplay
+                  profileListingId={currentProfile.profile_listing?.id ?? ""}
+                  email={userData?.email}
+                />
                 <ProfileSocialsModal
                   isOpen={socialsOpened}
                   onClose={socialsHandlers.close}

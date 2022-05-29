@@ -15,6 +15,13 @@ object_relationships:
         column_mapping:
           id: profile_listing_id
 array_relationships:
+  - name: profile_listing_responses
+    using:
+      foreign_key_constraint_on:
+        column: profile_listing_id
+        table:
+          schema: public
+          name: profile_listing_response
   - name: profile_listing_socials
     using:
       foreign_key_constraint_on:

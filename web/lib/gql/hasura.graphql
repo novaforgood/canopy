@@ -164,18 +164,59 @@ query SpaceTags($space_tag_category_id: uuid!) {
   }
 }
 
-query allUsersInSpace($space_id: uuid!) {
-  space(where: { id: { _eq: $space_id } }) {
-    name
-    owner_id
-    profiles {
+query ProfileListingsInSpace($space_id: uuid!) {
+  profile_listing(where: { profile: { space_id: { _eq: $space_id } } }) {
+    id
+    profile_listing_image {
+      id
+      image {
+        id
+        url
+      }
+    }
+    profile {
       id
       user {
-        email
-        first_name
-        last_name
         id
+        last_name
+        first_name
+        email
       }
+    }
+  }
+}
+
+query ProfileById($profile_id: uuid!) {
+  profile_by_pk(id: $profile_id) {
+    profile_listing {
+      id
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+      profile_listing_socials {
+        id
+        link
+        type
+      }
+      profile_listing_responses {
+        id
+        response_html
+        space_listing_question {
+          id
+          title
+        }
+      }
+      public
+    }
+    user {
+      id
+      first_name
+      last_name
+      email
     }
   }
 }
