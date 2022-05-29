@@ -163,3 +163,19 @@ query SpaceTags($space_tag_category_id: uuid!) {
     }
   }
 }
+
+query allUsersInSpace($space_id: uuid!) {
+  space(where: { id: { _eq: $space_id } }) {
+    name
+    owner_id
+    profiles {
+      id
+      user {
+        email
+        first_name
+        last_name
+        id
+      }
+    }
+  }
+}
