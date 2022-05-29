@@ -1,14 +1,20 @@
 import { Fragment } from "react";
 
+import { faker } from "@faker-js/faker";
 import { Menu, Transition } from "@headlessui/react";
 import { useElementSize } from "@mantine/hooks";
+import { LexRuntime } from "aws-sdk";
 import classNames from "classnames";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 
 import { Text } from "../../../components/atomic";
+import { Card } from "../../../components/Card";
 import { SidePadding } from "../../../components/SidePadding";
-import { useAllProfilesOfUserQuery } from "../../../generated/graphql";
+import {
+  useAllProfilesOfUserQuery,
+  useAllUsersInSpaceQuery,
+} from "../../../generated/graphql";
 import {
   BxCaretDown,
   BxLogOut,
@@ -154,19 +160,66 @@ function SpaceLandingScreen() {
 
   const desiredHeight = (width * 3) / 4;
 
+  const { userData } = useUserData();
+  const [{ data: profileData }] = useAllProfilesOfUserQuery({
+    variables: { user_id: userData?.id ?? "" },
+  });
+
+  const [{ data: allUsers }] = useAllUsersInSpaceQuery({
+    variables: { space_id: currentSpace?.id ?? "" },
+  });
+
+  console.log(allUsers);
+
+  const numCards = allUsers?.space[0].profiles.length;
+  console.log("numcards: " + numCards);
+
+  // const users = new Array(numCards).fi
+
+  // console.log("here are ur users: " + users);
+
+  // const users = new Array(numCards);
+
+  // for (let i = 0; i < numCards; i++) {
+  //   console.log("i is " + i);
+  //   console.log(allUsers?.space[0].profiles[i].user.first_name);
+  //   console.log(allUsers?.space[0].profiles[i].user.last_name);
+  // }
+
+  const ppl = new Array(numCards).fill(0).map((element, index) => {
+    console.log("i is " + index);
+    console.log(allUsers?.space[0].profiles[index].user.first_name);
+    return {
+      name: allUsers?.space[0].profiles[index].user.first_name ?? "",
+      lname: allUsers?.space[0].profiles[index].user.last_name ?? "",
+      job: "User",
+      // job: profileData?.profile[i].user.__typename,
+      company: faker.company.companyName(),
+      pic: faker.image.avatar(),
+      description: faker.lorem.paragraph(),
+    };
+  });
+
   return (
-    <div className="flex items-center">
-      <div className="flex flex-col flex-1 p-4">
-        <Text variant="heading1">{currentSpace?.name}</Text>
-        <div className="h-10"></div>
-        <Text>Lorem ipsum</Text>
+    <div>
+      <div className="flex items-center">
+        <div className="flex flex-col flex-1 p-4">
+          <Text variant="heading1">{currentSpace?.name}</Text>
+          <div className="h-10"></div>
+          <Text>Lorem ipsum</Text>
+        </div>
+        <div className="flex-1 self-stretch p-8">
+          <div
+            ref={ref}
+            className="h-full w-full bg-gray-50"
+            style={{ height: desiredHeight }}
+          ></div>
+        </div>
       </div>
-      <div className="flex-1 self-stretch p-8">
-        <div
-          ref={ref}
-          className="h-full w-full bg-gray-50"
-          style={{ height: desiredHeight }}
-        ></div>
+      <div className="m-8 flex flex-row justify-around font-san flex-wrap">
+        {ppl.map((person, idx) => {
+          return <Card person={person} key={idx} />;
+        })}
       </div>
     </div>
   );
