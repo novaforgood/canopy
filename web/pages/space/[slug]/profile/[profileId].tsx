@@ -48,8 +48,9 @@ export default function SpaceHomepage() {
             <div className="flex items-center gap-12">
               <img
                 src={listing.profile_listing_image?.image.url}
+                alt={`${first_name} ${last_name}`}
                 className="rounded-full h-48 w-48 bg-gray-400 border border-gray-500 object-cover"
-              ></img>
+              />
               <div className="flex flex-col mt-4">
                 <Text variant="heading3">
                   {first_name} {last_name}

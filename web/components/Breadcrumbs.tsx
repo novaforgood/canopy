@@ -9,7 +9,7 @@ import { Text } from "./atomic";
 
 type BreadcrumbItem = {
   title: ReactNode;
-  href: string;
+  href: string | null;
 };
 
 const convertBreadcrumb = (string: string) => {
@@ -43,6 +43,11 @@ export function Breadcrumbs() {
               title: `${first_name} ${last_name}`,
               href: `/space/${linkPath[i - 1]}/profile/${profileId}`,
             };
+          } else if (path === "profile") {
+            return {
+              title: "profile",
+              href: null,
+            };
           } else {
             return {
               title: path,
@@ -57,7 +62,7 @@ export function Breadcrumbs() {
 
       setBreadcrumbs(pathArray);
     }
-  }, [router]);
+  }, [profileData?.profile_by_pk, profileId, router]);
 
   if (!breadcrumbs) {
     return null;
@@ -69,7 +74,11 @@ export function Breadcrumbs() {
         return (
           <>
             <div key={i} className="flex-none">
-              <a href={item.href}>{item.title}</a>
+              {item.href ? (
+                <a href={item.href}>{item.title}</a>
+              ) : (
+                <div className="text-gray-600 cursor-default">{item.title}</div>
+              )}
             </div>
             <Text>/</Text>
           </>

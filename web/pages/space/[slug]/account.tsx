@@ -7,6 +7,8 @@ import { MembersList } from "../../../components/admin/MembersList";
 import { Button, Text } from "../../../components/atomic";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../components/EditProfileListing";
+import { Navbar } from "../../../components/Navbar";
+import { SidePadding } from "../../../components/SidePadding";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 
@@ -25,15 +27,17 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="p-4">
-      <Text variant="heading2" bold>
-        My account
-      </Text>
+    <SidePadding>
+      <Navbar />
+      <div className="h-16"></div>
       <Breadcrumbs />
+      <div className="h-16"></div>
 
-      <div className="h-8"></div>
-      <div className="text-xl font-bold">Edit my profile</div>
+      <Text variant="subheading1">Edit my profile</Text>
+
+      <div className="h-4"></div>
       <EditProfileListing />
-    </div>
+      <div className="h-32"></div>
+    </SidePadding>
   );
 }
