@@ -5,14 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:all": "npm run build:graphql && npm run build:icons",
     "build:graphql": "graphql-codegen --config graphql-codegen.config.js",
-    "build:icons": "svgr node_modules/boxicons/svg --out-dir ./generated/icons --config-file svgr.config.js --no-dimensions",
-    "postinstall": "npm run build:graphql && npm run build:icons",
+    "build:icons": "svgr node_modules/boxicons/svg --out-dir ./generated/icons --config-file svgr.config.js --no-dimensions --silent",
     "introspect": "npx env-cmd graphql-codegen --config graphql-introspect.config.js",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.1.0",
     "@headlessui/react": "^1.6.0",
     "@mantine/hooks": "^4.2.1",
     "@tiptap/core": "^2.0.0-beta.175",
@@ -35,7 +36,7 @@
     "multer": "^1.4.4",
     "multer-s3": "^2.10.0",
     "nanoid": "^3.3.3",
-    "next": "12.1.5",
+    "next": "^12.1.6",
     "next-connect": "^0.12.2",
     "npm": "^8.10.0",
     "react": "18.0.0",
