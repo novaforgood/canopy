@@ -1,12 +1,15 @@
 import { Fragment } from "react";
 
+import { faker } from "@faker-js/faker";
 import { Menu, Transition } from "@headlessui/react";
 import { useElementSize } from "@mantine/hooks";
+import { LexRuntime } from "aws-sdk";
 import classNames from "classnames";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 
 import { Text } from "../../../components/atomic";
+import { Card } from "../../../components/Card";
 import { SidePadding } from "../../../components/SidePadding";
 import {
   useAllProfilesOfUserQuery,
@@ -22,9 +25,6 @@ import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { useUserData } from "../../../hooks/useUserData";
 import { auth } from "../../../lib/firebase";
-import { Card } from "../../../components/Card";
-import { faker } from "@faker-js/faker";
-import { LexRuntime } from "aws-sdk";
 
 function Dropdown() {
   const { userData } = useUserData();
@@ -190,8 +190,8 @@ function SpaceLandingScreen() {
     console.log("i is " + index);
     console.log(allUsers?.space[0].profiles[index].user.first_name);
     return {
-      name: allUsers?.space[0].profiles[index].user.first_name,
-      lname: allUsers?.space[0].profiles[index].user.last_name,
+      name: allUsers?.space[0].profiles[index].user.first_name ?? "",
+      lname: allUsers?.space[0].profiles[index].user.last_name ?? "",
       job: "User",
       // job: profileData?.profile[i].user.__typename,
       company: faker.company.companyName(),
@@ -217,8 +217,8 @@ function SpaceLandingScreen() {
         </div>
       </div>
       <div className="m-8 flex flex-row justify-around font-san flex-wrap">
-        {ppl.map((person) => {
-          return <Card person={person} />;
+        {ppl.map((person, idx) => {
+          return <Card person={person} key={idx} />;
         })}
       </div>
     </div>
