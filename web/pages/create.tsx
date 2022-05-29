@@ -18,6 +18,7 @@ import { useQueryParam } from "../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
 import { useUserData } from "../hooks/useUserData";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
+import { CustomPage } from "../types";
 
 const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
 
@@ -106,7 +107,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   ],
 };
 
-export default function CreatePage() {
+const CreatePage: CustomPage = () => {
   const router = useRouter();
   const currentStage = (useQueryParam("stage", "string") ??
     CreateStage.EnterName) as CreateStage;
@@ -253,3 +254,6 @@ export default function CreatePage() {
     </div>
   );
 }
+
+CreatePage.requiresAuthentication = true;
+export default CreatePage;

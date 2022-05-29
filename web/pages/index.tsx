@@ -11,6 +11,7 @@ import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
 
 import type { NextPage } from "next";
+import { CustomPage } from "../types";
 
 function LandingPage() {
   const router = useRouter();
@@ -32,10 +33,10 @@ function LandingPage() {
           {
             <Button
               onClick={() => {
-                router.push("/jeff");
+                router.push("/signup");
               }}
             >
-              Sign up
+              Sign up with email
             </Button>
           }
         </div>
@@ -116,10 +117,11 @@ function LoggedInHomePage() {
   );
 }
 
-const Home: NextPage = () => {
+const HomePage: CustomPage = () => {
   const isLoggedIn = useIsLoggedIn();
 
   return <div>{isLoggedIn ? <LoggedInHomePage /> : <LandingPage />}</div>;
 };
 
-export default Home;
+HomePage.requiresAuthentication = false;
+export default HomePage;
