@@ -1,4 +1,4 @@
-import { cloneElement, ReactElement, ReactNode } from "react";
+import { cloneElement, ReactElement, ReactNode, useId } from "react";
 
 import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
@@ -14,12 +14,15 @@ export function TextInput(props: TextInputProps) {
   const { label, renderPrefix, ...rest } = props;
 
   const { ref, width, height } = useElementSize();
-
-  console.log(width, height);
+  const uuid = useId();
 
   return (
     <div className="flex flex-col w-full">
-      {label && <label className="block text-sm font-bold mb-1">{label}</label>}
+      {label && (
+        <label htmlFor={uuid} className="block text-sm font-bold mb-1">
+          {label}
+        </label>
+      )}
       <div className="relative">
         {renderPrefix && (
           <div className="absolute inset-y-0 left-0 pl-3 text-gray-700 flex items-center pointer-events-none">
@@ -29,6 +32,7 @@ export function TextInput(props: TextInputProps) {
 
         <Input
           {...rest}
+          id={uuid}
           style={{ paddingLeft: renderPrefix ? width + 16 : undefined }}
         />
       </div>
