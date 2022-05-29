@@ -1,6 +1,7 @@
 import React from "react";
-import { useUserData } from "../hooks/useUserData";
+
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
+import { useUserData } from "../hooks/useUserData";
 
 type Person = {
   name: string;

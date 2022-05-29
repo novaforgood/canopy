@@ -1,7 +1,9 @@
 import React, { ReactNode, useEffect, useState } from "react";
+
 import { faker } from "@faker-js/faker";
-import { useCurrentProfile } from "../hooks/useCurrentProfile";
+
 import { Card } from "../components/Card";
+import { useCurrentProfile } from "../hooks/useCurrentProfile";
 
 // const id = currentProfile?.id;
 
@@ -39,18 +41,26 @@ function SearchBar() {
         className="border-x border-y border-gray-400 p-3 rounded-md w-2/12"
         onChange={handleChange}
       >
-        {INTERESTS.map((item) => {
+        {INTERESTS.map((item, idx) => {
           // console.log(item);
-          return <option value={item}>{item}</option>;
+          return (
+            <option value={item} key={idx}>
+              {item}
+            </option>
+          );
         })}
       </select>
       <select
         className="border-x border-y border-gray-400 p-3 rounded-md w-2/12"
         onChange={handleChange}
       >
-        {COMMUNITY.map((item) => {
+        {COMMUNITY.map((item, idx) => {
           // console.log(item);
-          return <option value={item}>{item}</option>;
+          return (
+            <option value={item} key={idx}>
+              {item}
+            </option>
+          );
         })}
       </select>
       <button className="border-x border-y border-gray-400 p-3 rounded-md w-20 bg-gray-300">
@@ -67,9 +77,9 @@ export default function JennyNuoPage() {
         <SearchBar />
       </div>
       <div className="m-8 flex flex-row justify-around font-san flex-wrap">
-        {ppl.map((person) => {
+        {ppl.map((person, idx) => {
           // console.log(person);
-          return <Card person={person} />;
+          return <Card person={person} key={idx} />;
         })}
       </div>
     </div>
