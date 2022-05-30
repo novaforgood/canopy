@@ -8,6 +8,7 @@ export interface ActionModalProps {
   isOpen: boolean;
 
   actionText: string;
+  actionDisabled?: boolean;
   onAction: () => Promise<void> | void;
   secondaryActionText?: string;
   onSecondaryAction?: () => Promise<void> | void;
@@ -20,6 +21,7 @@ export function ActionModal({
   isOpen,
   onClose = () => {},
   actionText,
+  actionDisabled = false,
   onAction = () => {},
   secondaryActionText,
   onSecondaryAction = () => {},
@@ -38,6 +40,7 @@ export function ActionModal({
         <div className="flex flex-col items-center p-12 pt-0">
           <Button
             rounded
+            disabled={actionDisabled}
             loading={loadingAction}
             onClick={async () => {
               setLoadingAction(true);

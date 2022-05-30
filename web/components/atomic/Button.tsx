@@ -68,6 +68,7 @@ export const Button = ({
     [primaryStyles]: variant === "primary",
     [outlineStyles]: variant === "outline",
     [secondaryStyles]: variant === "secondary",
+    transition: true,
     ["rounded-md"]: !rounded,
     ["rounded-full"]: rounded,
     ["cursor-not-allowed"]: disabled,

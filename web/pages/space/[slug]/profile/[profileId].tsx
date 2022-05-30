@@ -4,6 +4,7 @@ import { faker } from "@faker-js/faker";
 import { useDisclosure } from "@mantine/hooks";
 import { LexRuntime } from "aws-sdk";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import { Button, Select, Text, Textarea } from "../../../../components/atomic";
 import { SelectAutocomplete } from "../../../../components/atomic/SelectAutocomplete";
@@ -60,8 +61,14 @@ function IntroduceModal(props: IntroduceModalProps) {
         actionText={"Send introduction"}
         onClose={onClose}
         onAction={async () => {
+          if (!avail) {
+            toast.error("Please enter your availability");
+            return;
+          }
+
           onClose();
         }}
+        actionDisabled={!avail || !timezone}
         secondaryActionText={"Cancel"}
         onSecondaryAction={onClose}
       >
@@ -80,7 +87,7 @@ function IntroduceModal(props: IntroduceModalProps) {
             </div>
             <div className="w-full flex flex-col">
               <Text className="text-gray-600 mb-2">
-                Please add your general availability
+                Please add your general availability*
               </Text>
               <Textarea
                 value={avail}
@@ -90,7 +97,7 @@ function IntroduceModal(props: IntroduceModalProps) {
             </div>
             <div className="w-full flex flex-col items-start">
               <Text className="text-gray-600 mb-2">
-                Please select your timezone
+                Please select your timezone*
               </Text>
               <SelectAutocomplete
                 options={getTimezoneSelectOptions()}

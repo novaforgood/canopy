@@ -1,8 +1,6 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 
 import { Combobox, Transition } from "@headlessui/react";
-
-import { BxCheck } from "../../generated/icons/regular";
 
 const UpDownArrow: React.FC = () => {
   return (
