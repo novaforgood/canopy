@@ -16,18 +16,22 @@ insert_permissions:
                   _eq: X-Hasura-User-Id
           - _and:
               - profile:
-                  space:
-                    profiles:
-                      _and:
-                        - user_id:
-                            _eq: X-Hasura-User-Id
-                        - profile_roles:
-                            profile_role:
-                              _eq: Admin
-              - profile:
-                  profile_roles:
-                    profile_role:
-                      _neq: Admin
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - profile_role:
+                          _eq: Admin
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+              - profile_role:
+                  _neq: Admin
       columns:
         - profile_id
         - profile_role
@@ -46,6 +50,36 @@ select_permissions:
                 profiles:
                   user_id:
                     _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - profile_role
+      filter:
+        _or:
+          - profile:
+              space:
+                owner_id:
+                  _eq: X-Hasura-User-Id
+          - _and:
+              - profile:
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - profile_role:
+                          _eq: Admin
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+              - profile_role:
+                  _neq: Admin
+      check: null
 delete_permissions:
   - role: user
     permission:
@@ -57,15 +91,19 @@ delete_permissions:
                   _eq: X-Hasura-User-Id
           - _and:
               - profile:
-                  space:
-                    profiles:
-                      _and:
-                        - user_id:
-                            _eq: X-Hasura-User-Id
-                        - profile_roles:
-                            profile_role:
-                              _eq: Admin
-              - profile:
-                  profile_roles:
-                    profile_role:
-                      _neq: Admin
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - profile_role:
+                          _eq: Admin
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+              - profile_role:
+                  _neq: Admin
