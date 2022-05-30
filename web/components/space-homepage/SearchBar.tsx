@@ -25,7 +25,7 @@ export function SearchBar() {
                 };
               })}
             /> */}
-      <button className="flex-none bg-gray-300 flex justify-center items-center self-stretch w-16 rounded-md hover:brightness-105 active:translate-y-px">
+      <button className="flex-none bg-gray-300 flex justify-center items-center self-stretch w-16 rounded-md hover:brightness-105 active:translate-y-px transition">
         <BxSearch className="h-7 w-7 text-white" />
       </button>
     </div>
