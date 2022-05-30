@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+import { EmailType } from "../../../common/types";
 import {
   executeGetInviteLinkQuery,
+  executeGetProfileQuery,
   executeInsertProfileMutation,
   GetInviteLinkDocument,
   Profile_Role_Enum,
@@ -13,66 +15,88 @@ import {
   makeApiFail,
   makeApiSuccess,
 } from "../../../server/response";
+import { sendgridMail } from "../../../server/sendgrid";
 
-/**
- * Given an invite link ID
- */
+const connectEmailSchema = z.object({
+  type: z.literal(EmailType.Connect),
+  payload: z.object({
+    senderProfileId: z.string(),
+    receiverProfileId: z.string(),
+    introMessage: z.string().optional(),
+    availability: z.string(),
+    timezone: z.string(),
+  }),
+});
+
 export default applyMiddleware({
   authenticated: true,
-  validationSchema: z.object({
-    inviteLinkId: z.string(),
-  }),
+  validationSchema: connectEmailSchema,
 }).post(async (req, res) => {
-  // Fetch invite link info from the database
-  const { inviteLinkId } = req.body;
-  const { data: inviteLinkData, error: inviteLinkError } =
-    await executeGetInviteLinkQuery({ invite_link_id: inviteLinkId });
-  if (inviteLinkError) {
-    throw makeApiFail(inviteLinkError.message);
-  }
-  const inviteLink = inviteLinkData?.space_invite_link_by_pk;
-  if (!inviteLink) {
-    throw makeApiFail("Invite link not found");
-  }
+  console.log("Sending email");
+  switch (req.body.type) {
+    case EmailType.Connect: {
+      const {
+        senderProfileId,
+        receiverProfileId,
+        introMessage,
+        availability,
+        timezone,
+      } = req.body.payload;
 
-  // Check if invite link has expired
-  const { expires_at } = inviteLink;
-  const expireDate = new Date(expires_at);
+      const [
+        { data: senderData, error: senderError },
+        { data: receiverData, error: receiverError },
+      ] = await Promise.all([
+        executeGetProfileQuery({ profile_id: senderProfileId }),
+        executeGetProfileQuery({ profile_id: receiverProfileId }),
+      ]);
+      if (
+        senderError ||
+        receiverError ||
+        !senderData?.profile_by_pk ||
+        !receiverData?.profile_by_pk
+      ) {
+        throw makeApiFail(
+          senderError?.message ??
+            receiverError?.message ??
+            "Sender or receiver not found"
+        );
+      }
 
-  if (expireDate < new Date()) {
-    throw makeApiFail("Invite link has expired");
-  }
+      const sender = senderData.profile_by_pk.user;
+      const receiver = receiverData.profile_by_pk.user;
 
-  // If not expired, accept invite link and add user to program
-  const listingEnabled =
-    inviteLink.type === Space_Invite_Link_Type_Enum.MemberListingEnabled
-      ? true
-      : false;
-  const { error: insertError, data: insertData } =
-    await executeInsertProfileMutation({
-      data: {
-        user_id: req.token.uid,
-        space_id: inviteLink.space_id,
-        profile_roles: {
-          data: [
-            {
-              profile_role: listingEnabled
-                ? Profile_Role_Enum.MemberWhoCanList
-                : Profile_Role_Enum.Member,
+      if (sender.email === receiver.email) {
+        throw makeApiFail("Cannot connect to yourself");
+      }
+
+      await sendgridMail
+        .send({
+          from: "connect@joincanopy.org",
+          cc: [sender.email],
+          to: receiver.email,
+          templateId: "d-511fd4076eaf47269c1f3f1783c449ad",
+          dynamicTemplateData: {
+            sender: {
+              firstName: sender.first_name,
+              lastName: sender.last_name,
             },
-          ],
-        },
-      },
-    });
-  if (insertError) {
-    throw makeApiError(insertError.message);
+            receiver: {
+              firstName: receiver.first_name,
+              lastName: receiver.last_name,
+            },
+            introMessage,
+            availability,
+            timezone,
+          },
+        })
+        .catch((err) => {
+          throw makeApiError(err.message);
+        });
+      break;
+    }
   }
 
-  const newProfileId = insertData?.insert_profile_one?.id;
-  if (!newProfileId) {
-    throw makeApiError("Failed to insert new profile");
-  }
-
-  const response = makeApiSuccess({ newProfileId });
+  const response = makeApiSuccess({ detail: "E-mail sent!" });
   res.status(response.code).json(response);
 });

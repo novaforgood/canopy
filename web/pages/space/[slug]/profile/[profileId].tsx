@@ -6,6 +6,7 @@ import { LexRuntime } from "aws-sdk";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
+import { EmailType } from "../../../../common/types";
 import { Button, Select, Text, Textarea } from "../../../../components/atomic";
 import { SelectAutocomplete } from "../../../../components/atomic/SelectAutocomplete";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
@@ -19,6 +20,8 @@ import { SpaceLandingPage } from "../../../../components/space-homepage/SpaceLan
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
+import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { apiClient } from "../../../../lib/apiClient";
 import { getTimezoneSelectOptions } from "../../../../lib/timezone";
 
 const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -26,11 +29,12 @@ const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 interface IntroduceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  profileId: string;
+  profileId: string | null;
 }
 function IntroduceModal(props: IntroduceModalProps) {
   const { isOpen, onClose, profileId } = props;
 
+  const { currentProfile } = useCurrentProfile();
   const [introMsg, setIntroMsg] = useState("");
   const [avail, setAvail] = useState("");
 
@@ -66,7 +70,33 @@ function IntroduceModal(props: IntroduceModalProps) {
             return;
           }
 
-          onClose();
+          if (!currentProfile) {
+            toast.error("Please login to send an intro");
+            return;
+          }
+
+          if (!profileId) {
+            toast.error("Please select a profile to send an intro");
+            return;
+          }
+
+          await apiClient
+            .post("/api/services/sendEmail", {
+              type: EmailType.Connect,
+              payload: {
+                senderProfileId: currentProfile.id,
+                receiverProfileId: profileId,
+                introMessage: introMsg,
+                availability: avail,
+                timezone,
+              },
+            })
+            .catch((err) => {
+              toast.error(err.message);
+            })
+            .then(() => {
+              onClose();
+            });
         }}
         actionDisabled={!avail || !timezone}
         secondaryActionText={"Cancel"}
@@ -120,7 +150,7 @@ export default function SpaceHomepage() {
 
   const [open, handlers] = useDisclosure(false);
 
-  const profileId = router.query.profileId as string;
+  const profileId = useQueryParam("profileId", "string");
   const [{ data: profileData }] = useProfileByIdQuery({
     variables: { profile_id: profileId ?? "" },
   });
