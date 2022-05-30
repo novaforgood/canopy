@@ -9,6 +9,7 @@ import {
   useProfilesBySpaceIdQuery,
   useUpdateProfileRoleMutation,
 } from "../../generated/graphql";
+import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Select } from "../atomic";
 
@@ -35,6 +36,8 @@ function MemberRow(props: MemberRowProps) {
     variables: { profile_id: profileId },
   });
 
+  const { currentSpace } = useCurrentSpace();
+
   const [_, updateProfileRole] = useUpdateProfileRoleMutation();
   const profile = data?.profile_by_pk;
 
@@ -48,8 +51,11 @@ function MemberRow(props: MemberRowProps) {
 
   return (
     <Fragment>
-      <div>
-        {first_name} {last_name}
+      <div className="flex items-center">
+        {first_name} {last_name}{" "}
+        {currentSpace?.owner_id === profile.user.id && (
+          <BxsCrown className="h-4 w-4 ml-2" />
+        )}
       </div>
       <div>{email}</div>
       <Select
