@@ -95,6 +95,7 @@ function IntroduceModal(props: IntroduceModalProps) {
               toast.error(err.message);
             })
             .then(() => {
+              toast.success("Intro sent!");
               onClose();
             });
         }}

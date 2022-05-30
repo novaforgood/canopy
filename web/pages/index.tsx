@@ -9,9 +9,9 @@ import { BxExit } from "../generated/icons/regular";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
+import { CustomPage } from "../types";
 
 import type { NextPage } from "next";
-import { CustomPage } from "../types";
 
 function LandingPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ function LandingPage() {
                 router.push("/signup");
               }}
             >
-              Sign up with email
+              Sign up
             </Button>
           }
         </div>

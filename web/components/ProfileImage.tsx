@@ -35,7 +35,7 @@ export function ProfileImage(props: ProfileImageProps) {
   const { src, alt = "Profile", className, rounded = true } = props;
 
   const styles = classNames({
-    "rounded-full border border-gray-100": true,
+    "border border-gray-100": true,
     "rounded-full": rounded,
     "bg-gray-200 text-gray-50 flex items-center justify-center": !src,
     [`${className}`]: true,

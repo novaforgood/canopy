@@ -34,10 +34,10 @@ const LoginPage: CustomPage = () => {
 
   // prevent users from accessing login page if they are already logged in
   useEffect(() => {
-    if (userData) {
+    if (isLoggedIn) {
       router.push("/");
     }
-  }, [userData]);
+  }, [isLoggedIn, router]);
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
@@ -97,10 +97,10 @@ const LoginPage: CustomPage = () => {
       ) : (
         <TwoThirdsPageLayout>
           <div className="h-full flex flex-col items-start justify-center px-16">
-            <Text variant="heading2">Join Rainbow Directory</Text>
+            <Text variant="heading2">Join Canopy</Text>
             <div className="h-8"></div>
             <button
-              className="border rounded-md w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition"
+              className="border rounded-md w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
               onClick={googleSignIn}
             >
               <BxlGoogle className="h-6 w-6" />
@@ -148,6 +148,13 @@ const LoginPage: CustomPage = () => {
             >
               Login
             </Button>
+            <div className="h-8"></div>
+            <Text>
+              Need an account?{" "}
+              <a className="underline" href="/signup">
+                Sign up
+              </a>
+            </Text>
             <div className="h-16"></div>
           </div>
         </TwoThirdsPageLayout>
