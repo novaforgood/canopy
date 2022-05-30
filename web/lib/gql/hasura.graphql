@@ -232,3 +232,14 @@ query ProfileById($profile_id: uuid!) {
     }
   }
 }
+
+mutation UpdateProfileRole($profile_role: profile_role_enum!, $row_id: uuid!) {
+  update_profile_to_profile_role_by_pk(
+    pk_columns: { id: $row_id }
+    _set: { profile_role: $profile_role }
+  ) {
+    profile_role
+    id
+    profile_id
+  }
+}
