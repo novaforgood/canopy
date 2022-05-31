@@ -1,26 +1,145 @@
-import { useDisclosure } from "@mantine/hooks";
+import { useEffect, useRef, useState } from "react";
 
-import { Profile_Role_Enum, useProfileImageQuery } from "../generated/graphql";
+import { useDisclosure } from "@mantine/hooks";
+import AvatarEditor from "react-avatar-editor";
+import toast from "react-hot-toast";
+
+import {
+  Profile_Role_Enum,
+  useInsertProfileImageMutation,
+  useProfileImageQuery,
+} from "../generated/graphql";
 import { BxsPencil } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
+import { uploadImage } from "../lib/image";
 
 import { Button, Text } from "./atomic";
 import { EditResponse } from "./edit-profile/EditResponse";
 import { ProfileSocialsDisplay } from "./edit-socials-info/ProfileSocialsDisplay";
 import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
 import { EditButton } from "./EditButton";
+import { ImageUploader } from "./ImageUploader";
+import { ActionModal } from "./modals/ActionModal";
+import { ProfileImage } from "./ProfileImage";
 import PublishedToggleSwitch from "./PublishedToggleSwitch";
 
-export function EditProfileListing() {
-  const { currentProfile, currentProfileHasRole } = useCurrentProfile();
-  const { currentSpace } = useCurrentSpace();
-  const { userData } = useUserData();
+interface EditProfileImageModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function EditProfileImageModal(props: EditProfileImageModalProps) {
+  const { isOpen, onClose } = props;
+
+  const { currentProfile } = useCurrentProfile();
 
   const [{ data: profileImageData }] = useProfileImageQuery({
     variables: { profile_id: currentProfile?.id ?? "" },
   });
+  const [_, insertProfileImage] = useInsertProfileImageMutation();
+  const profileImageUrl =
+    profileImageData?.profile_listing_image[0]?.image.url ?? null;
+
+  const editor = useRef<AvatarEditor | null>(null);
+
+  const [image, setImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (profileImageUrl) {
+      setImage(profileImageUrl);
+    }
+  }, [profileImageUrl]);
+
+  return (
+    <ActionModal
+      isOpen={isOpen}
+      actionText={"Save"}
+      onClose={onClose}
+      onAction={async () => {
+        if (!currentProfile) {
+          toast.error("Current profile not defined");
+          return;
+        }
+        const imageData =
+          editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
+
+        // If image exists, upload it
+        if (imageData) {
+          const res = await uploadImage(imageData).catch((err) => {
+            toast.error(err.message);
+            return null;
+          });
+          if (!res) return;
+
+          const imageId = res.data.image.id;
+          await insertProfileImage({
+            image_id: imageId,
+            profile_id: currentProfile.id,
+          });
+          onClose();
+        } else {
+          toast.error("No image selected");
+        }
+      }}
+      secondaryActionText={"Cancel"}
+      onSecondaryAction={onClose}
+    >
+      <div className="flex flex-col items-center px-8">
+        <div className="h-4"></div>
+        <Text variant="heading4">Change Profile Image</Text>
+        <div className="h-8"></div>
+
+        <ImageUploader
+          showZoom
+          showRoundedCrop
+          imageSrc={image}
+          onImageSrcChange={setImage}
+          width={300}
+          height={300}
+          getRef={(ref) => {
+            editor.current = ref;
+          }}
+        />
+        <div className="h-8"></div>
+      </div>
+    </ActionModal>
+  );
+}
+
+function EditProfileImage() {
+  const { currentProfile } = useCurrentProfile();
+
+  const [{ data: profileImageData }] = useProfileImageQuery({
+    variables: { profile_id: currentProfile?.id ?? "" },
+  });
+
+  const [opened, handlers] = useDisclosure(false);
+
+  const profileImageUrl =
+    profileImageData?.profile_listing_image[0]?.image.url ?? null;
+
+  return (
+    <>
+      <div className="h-40 w-40 rounded-full relative">
+        <ProfileImage className="h-40 w-40" src={profileImageUrl} />
+        <button
+          onClick={handlers.open}
+          className="absolute top-0 left-0 h-full w-full rounded-full bg-black/50 text-white/80 
+          opacity-0 hover:opacity-100 transition flex items-center p-2 text-center"
+        >
+          <Text>Change Profile Image</Text>
+        </button>
+      </div>
+      <EditProfileImageModal isOpen={opened} onClose={handlers.close} />
+    </>
+  );
+}
+export function EditProfileListing() {
+  const { currentProfile, currentProfileHasRole } = useCurrentProfile();
+  const { currentSpace } = useCurrentSpace();
+  const { userData } = useUserData();
 
   const [socialsOpened, socialsHandlers] = useDisclosure(false);
 
@@ -32,8 +151,6 @@ export function EditProfileListing() {
   }
 
   const { first_name, last_name, email, id } = currentProfile.user;
-  const profileImageUrl =
-    profileImageData?.profile_listing_image[0]?.image.url ?? null;
 
   return (
     <div className="">
@@ -45,13 +162,7 @@ export function EditProfileListing() {
         <div className="h-20 bg-gray-100 rounded-t-lg"></div>
         <div className="px-12 -mt-4">
           <div className="flex items-center gap-12">
-            <div
-              className="rounded-full h-40 w-40 bg-gray-400 border border-gray-500"
-              style={{
-                backgroundImage: `url(${profileImageUrl})`,
-                backgroundSize: "cover",
-              }}
-            ></div>
+            <EditProfileImage />
             <div className="flex flex-col mt-4">
               <Text variant="heading4">
                 {first_name} {last_name}

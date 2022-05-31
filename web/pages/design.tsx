@@ -257,6 +257,7 @@ function DropzoneReference() {
         width={250}
         height={250}
         showZoom
+        showRoundedCrop
         imageSrc={src1}
         onImageSrcChange={setSrc1}
       />

@@ -1,4 +1,4 @@
-import { SVGProps } from "react";
+import { ImgHTMLAttributes, SVGProps } from "react";
 
 import classNames from "classnames";
 
@@ -24,26 +24,29 @@ function UserSvg(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export interface ProfileImageProps {
-  src?: string;
+export type ProfileImageProps = Omit<
+  ImgHTMLAttributes<HTMLImageElement>,
+  "src"
+> & {
+  src?: string | null;
   alt?: string;
   className?: string;
   rounded?: boolean;
-}
+};
 
 export function ProfileImage(props: ProfileImageProps) {
-  const { src, alt = "Profile", className, rounded = true } = props;
+  const { src, alt = "Profile", className, rounded = true, ...rest } = props;
 
   const styles = classNames({
-    "border border-gray-100": true,
+    "border border-gray-200 bg-gray-100": true,
     "rounded-full": rounded,
     "bg-gray-200 text-gray-50 flex items-center justify-center": !src,
     [`${className}`]: true,
   });
   return src ? (
-    <img src={src} alt={alt} className={styles} />
+    <img src={src} alt={alt} className={styles} {...rest} />
   ) : (
-    <div className={styles}>
+    <div className={styles} {...rest}>
       <UserSvg className="w-2/3 h-2/3" />
     </div>
   );
