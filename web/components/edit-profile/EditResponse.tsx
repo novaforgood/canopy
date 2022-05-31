@@ -27,7 +27,10 @@ export function EditResponse(props: EditResponseProps) {
   const { currentProfile } = useCurrentProfile();
   const [{ data: listingResponseData }, refetchListingResponse] =
     useListingResponseByQuestionIdQuery({
-      variables: { question_ids: [question.id] },
+      variables: {
+        question_ids: [question.id],
+        profile_listing_id: currentProfile?.profile_listing?.id ?? "",
+      },
     });
   const [_, upsertListingResponses] = useUpsertListingResponsesMutation();
 

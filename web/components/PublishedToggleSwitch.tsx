@@ -6,6 +6,8 @@ import {
   useProfileListingQuery,
   useUpdateProfileListingMutation,
 } from "../generated/graphql";
+import { BxsHide, BxsShow } from "../generated/icons/solid";
+import { useCurrentSpace } from "../hooks/useCurrentSpace";
 
 interface PublishedToggleSwitchProps {
   profileListingId: string;
@@ -14,6 +16,8 @@ export default function PublishedToggleSwitch(
   props: PublishedToggleSwitchProps
 ) {
   const { profileListingId } = props;
+
+  const { currentSpace } = useCurrentSpace();
 
   const [{ data: profileListingData }] = useProfileListingQuery({
     variables: { profile_listing_id: profileListingId },
@@ -27,7 +31,6 @@ export default function PublishedToggleSwitch(
 
   const profileIsPublic = profileListingData.profile_listing_by_pk.public;
 
-  console.log(profileIsPublic);
   return (
     <div className="flex gap-4 items-center">
       <Switch
@@ -42,6 +45,13 @@ export default function PublishedToggleSwitch(
               loading: "Loading",
               success: `Profile is now ${newVal ? "public" : "private"}`,
               error: "Error when setting profile public status",
+            },
+            {
+              icon: newVal ? (
+                <BxsShow className="h-6 w-6" />
+              ) : (
+                <BxsHide className="h-6 w-6" />
+              ),
             }
           );
         }}
@@ -58,7 +68,9 @@ export default function PublishedToggleSwitch(
         </span>
       </Switch>
       {profileIsPublic && (
-        <Text>This profile is public to all members of RainbowDirectory. </Text>
+        <Text>
+          This profile is visible to all members of {currentSpace?.name}.
+        </Text>
       )}
     </div>
   );
