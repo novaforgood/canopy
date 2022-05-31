@@ -18,12 +18,12 @@ function SpaceSplashPage() {
 
   return (
     <div className="flex items-center">
-      <div className="flex flex-col flex-1 p-4">
+      <div className="flex flex-col flex-1">
         <Text variant="heading1">{currentSpace?.name}</Text>
         <div className="h-10"></div>
         <Text>Lorem ipsum</Text>
       </div>
-      <div className="flex-1 self-stretch p-8">
+      <div className="flex-1 self-stretch">
         <div
           ref={ref}
           className="h-full w-full bg-gray-50"
@@ -47,10 +47,12 @@ export function SpaceLandingPage() {
 
   return (
     <div>
+      <div className="h-16"></div>
       <SpaceSplashPage />
+      <div className="h-16"></div>
       <SearchBar />
       <div className="h-8"></div>
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-4 gap-4">
         {allProfileListings.map((listing, idx) => {
           const { first_name, last_name } = listing.profile.user;
 

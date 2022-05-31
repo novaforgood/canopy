@@ -173,7 +173,9 @@ query SpaceTags($space_tag_category_id: uuid!) {
 }
 
 query ProfileListingsInSpace($space_id: uuid!) {
-  profile_listing(where: { profile: { space_id: { _eq: $space_id } } }) {
+  profile_listing(
+    where: { public: { _eq: true }, profile: { space_id: { _eq: $space_id } } }
+  ) {
     id
     profile_listing_image {
       id
@@ -242,5 +244,83 @@ mutation UpdateProfileRole($profile_role: profile_role_enum!, $row_id: uuid!) {
     profile_role
     id
     profile_id
+  }
+}
+
+query ProfileListing($profile_listing_id: uuid!) {
+  profile_listing_by_pk(id: $profile_listing_id) {
+    id
+    profile_listing_image {
+      id
+      image {
+        id
+        url
+      }
+    }
+    profile_listing_socials {
+      id
+      link
+      type
+    }
+    profile_listing_responses {
+      id
+      response_html
+      space_listing_question {
+        id
+        title
+      }
+    }
+    profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+    }
+    public
+  }
+}
+
+mutation UpdateProfileListing(
+  $profile_listing_id: uuid!
+  $profile_listing: profile_listing_set_input!
+) {
+  update_profile_listing_by_pk(
+    pk_columns: { id: $profile_listing_id }
+    _set: $profile_listing
+  ) {
+    id
+    profile_listing_image {
+      id
+      image {
+        id
+        url
+      }
+    }
+    profile_listing_socials {
+      id
+      link
+      type
+    }
+    profile_listing_responses {
+      id
+      response_html
+      space_listing_question {
+        id
+        title
+      }
+    }
+    profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+    }
+    public
   }
 }

@@ -40,7 +40,7 @@ export function MemberRow(props: MemberRowProps) {
       <div className="flex items-center">
         {first_name} {last_name}{" "}
         {currentSpace?.owner_id === profile.user.id && (
-          <BxsCrown className="h-4 w-4 ml-2" />
+          <BxsCrown className="h-4 w-4 ml-2 text-gray-600" />
         )}
       </div>
       <div>{email}</div>

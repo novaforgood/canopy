@@ -25,11 +25,9 @@ export default function SpaceHomepage() {
   }
 
   return (
-    <div>
-      <SidePadding>
-        <Navbar />
-        <SpaceLandingPage />
-      </SidePadding>
-    </div>
+    <SidePadding>
+      <Navbar />
+      <SpaceLandingPage />
+    </SidePadding>
   );
 }
