@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../../../../components/atomic";
+import { TwoThirdsPageLayout } from "../../../../components/TwoThirdsPageLayout";
 import {
   InviteLinksQuery,
   Space_Invite_Link_Type_Enum,
@@ -13,7 +14,6 @@ import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { apiClient } from "../../../../lib/apiClient";
-import { TwoThirdsPageLayout } from "../../../TwoThirdsPageLayout";
 
 function AlreadyPartOfSpace() {
   const router = useRouter();

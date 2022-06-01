@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { Button, Text } from "../components/atomic";
 import { Input } from "../components/atomic/Input";
 import { TextInput } from "../components/inputs/TextInput";
+import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
 import { useUserQuery } from "../generated/graphql";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
@@ -17,8 +18,6 @@ import { useUserData } from "../hooks/useUserData";
 import { handleError } from "../lib/error";
 import { auth } from "../lib/firebase";
 import { CustomPage } from "../types";
-
-import { TwoThirdsPageLayout } from "./TwoThirdsPageLayout";
 
 const LoginPage: CustomPage = () => {
   const { signInWithGoogle } = useSignIn();

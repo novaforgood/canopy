@@ -12,13 +12,12 @@ import { toast } from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
 import { TextInput } from "../components/inputs/TextInput";
+import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { auth } from "../lib/firebase";
 import { CustomPage } from "../types";
-
-import { TwoThirdsPageLayout } from "./TwoThirdsPageLayout";
 
 const SignUpPage: CustomPage = () => {
   const [formData, setFormData] = useSetState({

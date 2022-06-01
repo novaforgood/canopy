@@ -4,6 +4,7 @@ export interface TwoThirdsPageLayoutProps {
   children: ReactNode;
   renderLeft?: () => ReactNode;
 }
+
 export function TwoThirdsPageLayout(props: TwoThirdsPageLayoutProps) {
   const { children, renderLeft = () => null } = props;
   return (

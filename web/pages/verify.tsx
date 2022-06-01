@@ -5,12 +5,11 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
+import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
 import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { auth } from "../lib/firebase";
 import { CustomPage } from "../types";
-
-import { TwoThirdsPageLayout } from "./TwoThirdsPageLayout";
 
 function VerifyYourEmail() {
   const router = useRouter();
