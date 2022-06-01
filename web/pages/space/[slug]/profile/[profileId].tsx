@@ -176,7 +176,7 @@ export default function SpaceHomepage() {
         <div className="h-8"></div>
 
         <div className="border border-black rounded-lg w-full flex flex-col pb-12">
-          <div className="h-20 bg-gray-100 rounded-t-lg"></div>
+          <div className="h-32 bg-gray-100 rounded-t-lg"></div>
           <div className="px-20 -mt-8">
             <div className="flex items-center gap-12">
               <ProfileImage

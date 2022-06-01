@@ -9,6 +9,8 @@ import {
 import { BxsHide, BxsShow } from "../generated/icons/solid";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 
+import { FadeTransition } from "./transitions/FadeTransition";
+
 interface PublishedToggleSwitchProps {
   profileListingId: string;
 }
@@ -67,10 +69,12 @@ export default function PublishedToggleSwitch(
           <div>{`${profileIsPublic ? "Public" : "Private"}`}</div>
         </span>
       </Switch>
-      {profileIsPublic && (
+      {profileIsPublic ? (
         <Text>
           This profile is visible to all members of {currentSpace?.name}.
         </Text>
+      ) : (
+        <Text>This profile is only visible to you.</Text>
       )}
     </div>
   );
