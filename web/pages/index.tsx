@@ -1,5 +1,4 @@
 import { signOut } from "firebase/auth";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../components/atomic";
@@ -18,7 +17,7 @@ function LandingPage() {
   return (
     <div className="w-full p-8 md:h-screen">
       <div className="w-full items-center justify-between md:flex">
-        <img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" />
+        <img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" alt="pepe" />
         <div className="flex" justify-end="true">
           {
             <Button

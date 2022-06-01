@@ -11,6 +11,7 @@ import { TextInput } from "../components/inputs/TextInput";
 import { useUserQuery } from "../generated/graphql";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { useSignIn } from "../hooks/useSignIn";
 import { useUserData } from "../hooks/useUserData";
 import { handleError } from "../lib/error";
@@ -27,8 +28,7 @@ const LoginPage: CustomPage = () => {
   const { userData } = useUserData();
 
   // determine where to redirect to after login
-  const [paths, _] = useState(router.asPath.split("redirect="));
-  const redirect = paths.length > 1 ? paths[1] : "/";
+  const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
 
   const [formData, setFormData] = useSetState({ email: "", password: "" });
 
@@ -58,7 +58,7 @@ const LoginPage: CustomPage = () => {
               authorization: `Bearer ${idToken}`,
             },
           });
-          await router.push(redirect);
+          await redirectUsingQueryParam("/");
         }
       })
       .catch((e) => {
@@ -84,7 +84,7 @@ const LoginPage: CustomPage = () => {
               authorization: `Bearer ${tokenResult.token}`,
             },
           });
-          await router.push(redirect);
+          await redirectUsingQueryParam("/");
         }
       })
       .catch((e) => {
