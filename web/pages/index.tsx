@@ -122,5 +122,6 @@ const HomePage: CustomPage = () => {
   return <div>{isLoggedIn ? <LoggedInHomePage /> : <LandingPage />}</div>;
 };
 
-HomePage.requiresAuthentication = false;
+HomePage.requiredAuthorizations = [];
+
 export default HomePage;

@@ -364,5 +364,6 @@ const ComponentsPage: CustomPage = () => {
   );
 };
 
-ComponentsPage.requiresAuthentication = false;
+ComponentsPage.requiredAuthorizations = [];
+
 export default ComponentsPage;

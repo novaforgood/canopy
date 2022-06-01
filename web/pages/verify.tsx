@@ -8,6 +8,7 @@ import { Button, Text } from "../components/atomic";
 import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { auth } from "../lib/firebase";
+import { CustomPage } from "../types";
 
 import { TwoThirdsPageLayout } from "./TwoThirdsPageLayout";
 
@@ -112,12 +113,14 @@ function VerifyYourEmail() {
   );
 }
 
-const VerifyPage = () => {
+const VerifyPage: CustomPage = () => {
   return (
     <div>
       <VerifyYourEmail />
     </div>
   );
 };
+
+VerifyPage.requiredAuthorizations = [];
 
 export default VerifyPage;

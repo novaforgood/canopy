@@ -45,8 +45,10 @@ export function ProfileCard(props: ProfileCardProps) {
           />
         </div>
       </div>
-      <div className="px-4 flex flex-col items-start">
-        <div className="pb-2 pt-4 text-2xl font-semibold">{name}</div>
+      <div className="px-4 flex flex-col items-start w-full">
+        <div className="pb-2 pt-4 text-2xl font-semibold text-left truncate w-full">
+          {name}
+        </div>
         <div className="mb-4 text-md pb-4">{subtitle}</div>
         <div className="pb-2">
           <i>{descriptionTitle}</i>

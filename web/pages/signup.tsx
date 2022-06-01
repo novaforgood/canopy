@@ -174,5 +174,6 @@ const SignUpPage: CustomPage = () => {
   );
 };
 
-SignUpPage.requiresAuthentication = false;
+SignUpPage.requiredAuthorizations = [];
+
 export default SignUpPage;

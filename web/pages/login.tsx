@@ -172,5 +172,6 @@ const LoginPage: CustomPage = () => {
   );
 };
 
-LoginPage.requiresAuthentication = false;
+LoginPage.requiredAuthorizations = [];
+
 export default LoginPage;
