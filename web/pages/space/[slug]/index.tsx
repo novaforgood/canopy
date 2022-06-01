@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 
+import { PageNotFound } from "../../../components/error-screens/PageNotFound";
 import { Navbar } from "../../../components/Navbar";
 import { SidePadding } from "../../../components/SidePadding";
 import { SpaceLandingPage } from "../../../components/space-homepage/SpaceLandingPage";
@@ -16,12 +17,8 @@ export default function SpaceHomepage() {
     return <div>Loading...</div>;
   }
 
-  if (!currentSpace) {
-    return <div>404 - Space not found</div>;
-  }
-
-  if (!currentProfile) {
-    return <div>Ur not in this space lol</div>;
+  if (!currentSpace || !currentProfile) {
+    return <PageNotFound />;
   }
 
   return (

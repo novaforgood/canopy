@@ -26,7 +26,7 @@ export function InviteLinksList() {
   const [_, createInviteLink] = useCreateInviteLinkMutation();
 
   const [linkType, setLinkType] = useState<Space_Invite_Link_Type_Enum | null>(
-    Space_Invite_Link_Type_Enum.Member
+    null
   );
 
   const [{ data: inviteLinksData }, refetchInviteLinks] = useInviteLinksQuery({
@@ -77,7 +77,15 @@ export function InviteLinksList() {
       </div>
       <div className="h-8"></div>
       <div className="flex items-center gap-4">
+        <Select
+          placeholder="Select link type"
+          className="w-64"
+          options={INVITE_LINK_OPTIONS}
+          value={linkType}
+          onSelect={setLinkType}
+        ></Select>
         <Button
+          disabled={!linkType}
           onClick={async () => {
             if (!linkType) {
               toast.error("Please select a link type");
@@ -102,12 +110,6 @@ export function InviteLinksList() {
         >
           Create Invite Link
         </Button>
-        <Select
-          className="w-64"
-          options={INVITE_LINK_OPTIONS}
-          value={linkType}
-          onSelect={setLinkType}
-        ></Select>
       </div>
     </div>
   );

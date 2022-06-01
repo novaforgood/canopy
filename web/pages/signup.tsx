@@ -19,36 +19,6 @@ import { CustomPage } from "../types";
 
 import { TwoThirdsPageLayout } from "./TwoThirdsPageLayout";
 
-const signUpUser = async (
-  firstName: string,
-  lastName: string,
-  email: string,
-  password: string
-) => {
-  // signup user with firebase and upsert to our DB
-  // send email verification
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCred) => {
-      const user = userCred.user;
-      const tokenResult = await user.getIdTokenResult();
-      const name = `${firstName} ${lastName}`;
-      await updateProfile(user, {
-        displayName: name,
-      });
-      await fetch(`/api/auth/upsertUserData`, {
-        method: "POST",
-        headers: {
-          authorization: `Bearer ${tokenResult.token}`,
-        },
-      });
-      await sendEmailVerification(user);
-    })
-    .catch((e) => {
-      toast.error(e.code + ": " + e.message);
-      signOut(auth);
-    });
-};
-
 const SignUpPage: CustomPage = () => {
   const [formData, setFormData] = useSetState({
     firstName: "",
@@ -59,11 +29,51 @@ const SignUpPage: CustomPage = () => {
   const router = useRouter();
   const isLoggedIn = useIsLoggedIn();
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.push("/");
+  const [loading, setLoading] = useState(false);
+
+  const signUp = async () => {
+    if (!formData.firstName) {
+      toast.error("First name is required");
+      return;
     }
-  }, [isLoggedIn, router]);
+    if (!formData.lastName) {
+      toast.error("Last name is required");
+      return;
+    }
+    setLoading(true);
+
+    const { email, password, firstName, lastName } = formData;
+
+    // signup user with firebase and upsert to our DB
+    // send email verification
+    return createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCred) => {
+        const user = userCred.user;
+        const tokenResult = await user.getIdTokenResult();
+        const name = `${firstName} ${lastName}`;
+        await updateProfile(user, {
+          displayName: name,
+        });
+
+        if (userCred.user.emailVerified) {
+          await fetch(`/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${tokenResult.token}`,
+            },
+          });
+        } else {
+          router.push("/verify");
+        }
+      })
+      .catch((e) => {
+        toast.error(e.message);
+        signOut(auth);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <div className="h-screen">
@@ -127,14 +137,20 @@ const SignUpPage: CustomPage = () => {
                 onChange={(e) => {
                   setFormData({ password: e.target.value });
                 }}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    signUp();
+                  }
+                }}
               />
             </div>
 
             <div className="h-8"></div>
             <Button
               rounded
-              onClick={(e) => {
-                // signInManually(formData.email, formData.password);
+              loading={loading}
+              onClick={async (e) => {
+                await signUp();
               }}
             >
               Create account
@@ -149,68 +165,6 @@ const SignUpPage: CustomPage = () => {
             <div className="h-16"></div>
           </div>
         </TwoThirdsPageLayout>
-        // <div className="w-full  max-w-lg rounded p-4 flex flex-wrap -mx-3">
-        //   <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-        //     <TextInput
-        //       label="First Name"
-        //       type="text"
-        //       placeholder="Enter your first name"
-        //       onChange={(e) => {
-        //         setFormData({ firstName: e.target.value });
-        //       }}
-        //     />
-        //   </div>
-        //   <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-        //     <TextInput
-        //       label="Last Name"
-        //       type="text"
-        //       placeholder="Enter your last name"
-        //       onChange={(e) => {
-        //         setFormData({ lastName: e.target.value });
-        //       }}
-        //     />
-        //   </div>
-        //   <div className="w-full md:w-full px-3 mb-6 md:mb-0">
-        //     <TextInput
-        //       label="Email"
-        //       type="text"
-        //       onChange={(e) => {
-        //         setFormData({ email: e.target.value });
-        //       }}
-        //     />
-        //   </div>
-        //   <div className="w-full md:w-full px-3 mb-12 md:mb-0">
-        //     <TextInput
-        //       label="Password"
-        //       type="password"
-        //       onChange={(e) => {
-        //         setFormData({ password: e.target.value });
-        //       }}
-        //     />
-        //   </div>
-        //   <div className="w-full md:w-full px-3 mb-6 md:mb-0 justify-center ">
-        //     <Button
-        //       onClick={(e) => {
-        //         if (
-        //           formData.firstName.length >= 2 &&
-        //           formData.lastName.length >= 2
-        //         ) {
-        //           signUpUser(
-        //             formData.firstName,
-        //             formData.lastName,
-        //             formData.email,
-        //             formData.password
-        //           );
-        //           router.push("/");
-        //         } else {
-        //           alert("Please enter valid first and last name");
-        //         }
-        //       }}
-        //     >
-        //       Submit
-        //     </Button>
-        //   </div>
-        // </div>
       )}
     </div>
   );

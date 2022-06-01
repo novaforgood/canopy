@@ -28,12 +28,14 @@ interface SelectProps<T> {
   value: T | null;
   onSelect?: (selectedValue: T | null) => void;
   className?: string;
+  placeholder?: string;
 }
 export const Select = <T extends string | Date>({
   options,
   value,
   onSelect = () => {},
   className,
+  placeholder,
 }: SelectProps<T>) => {
   const valueToLabel = (value: T | null) => {
     if (value === null) {
@@ -52,6 +54,11 @@ export const Select = <T extends string | Date>({
     [`${className}`]: className,
   });
 
+  const placeholderStyles = classNames({
+    "block truncate": true,
+    "text-gray-600": !value,
+  });
+
   return (
     <div className={styles}>
       <Listbox
@@ -68,7 +75,9 @@ export const Select = <T extends string | Date>({
             className="relative w-full px-2 py-1 text-left border border-inactive rounded cursor-pointer
             focus:outline-none focus:ring-2 focus:ring-inactive focus:border-inactive flex justify-between items-center"
           >
-            <span className="block truncate">{valueToLabel(value)}</span>
+            <span className={placeholderStyles}>
+              {value ? valueToLabel(value) : placeholder}
+            </span>
             <UpDownArrow />
           </Listbox.Button>
           <Transition

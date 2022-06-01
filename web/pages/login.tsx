@@ -43,19 +43,23 @@ const LoginPage: CustomPage = () => {
     // sign in with google and upsert data to our DB
     setSigningIn(true);
     signInWithGoogle()
-      .then(async () => {
-        const user = await auth.currentUser;
-        if (!user) {
-          throw new Error("Could not get user after sign-in");
+      .then(async (userCred) => {
+        if (!userCred.user.emailVerified) {
+          router.push("/verify");
+        } else {
+          const user = await auth.currentUser;
+          if (!user) {
+            throw new Error("Could not get user after sign-in");
+          }
+          const idToken = await user.getIdToken();
+          await fetch(`/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${idToken}`,
+            },
+          });
+          await router.push(redirect);
         }
-        const idToken = await user.getIdToken();
-        await fetch(`/api/auth/upsertUserData`, {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${idToken}`,
-          },
-        });
-        await router.push(redirect);
       })
       .catch((e) => {
         handleError(e);
@@ -70,14 +74,18 @@ const LoginPage: CustomPage = () => {
     setSigningIn(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCred) => {
-        const tokenResult = await userCred.user.getIdTokenResult();
-        await fetch(`/api/auth/upsertUserData`, {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${tokenResult.token}`,
-          },
-        });
-        await router.push(redirect);
+        if (!userCred.user.emailVerified) {
+          router.push("/verify");
+        } else {
+          const tokenResult = await userCred.user.getIdTokenResult();
+          await fetch(`/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${tokenResult.token}`,
+            },
+          });
+          await router.push(redirect);
+        }
       })
       .catch((e) => {
         toast.error(e.code + ": " + e.message);
@@ -141,6 +149,7 @@ const LoginPage: CustomPage = () => {
 
             <div className="h-16"></div>
             <Button
+              loading={signingIn}
               rounded
               onClick={(e) => {
                 signInManually(formData.email, formData.password);
