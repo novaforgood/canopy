@@ -35,9 +35,9 @@ const LoginPage: CustomPage = () => {
   // prevent users from accessing login page if they are already logged in
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/");
+      redirectUsingQueryParam("/");
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, redirectUsingQueryParam]);
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
@@ -45,7 +45,7 @@ const LoginPage: CustomPage = () => {
     signInWithGoogle()
       .then(async (userCred) => {
         if (!userCred.user.emailVerified) {
-          router.push("/verify");
+          router.push("/verify", { query: router.query });
         } else {
           const user = await auth.currentUser;
           if (!user) {
@@ -75,7 +75,7 @@ const LoginPage: CustomPage = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCred) => {
         if (!userCred.user.emailVerified) {
-          router.push("/verify");
+          router.push("/verify", { query: router.query });
         } else {
           const tokenResult = await userCred.user.getIdTokenResult();
           await fetch(`/api/auth/upsertUserData`, {

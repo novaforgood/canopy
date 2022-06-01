@@ -6,12 +6,15 @@ import toast from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
 import { BxRefresh } from "../generated/icons/regular";
+import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { auth } from "../lib/firebase";
 
 import { TwoThirdsPageLayout } from "./TwoThirdsPageLayout";
 
 function VerifyYourEmail() {
   const router = useRouter();
+
+  const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
 
   const [verified, setVerified] = useState(false);
 
@@ -32,7 +35,7 @@ function VerifyYourEmail() {
           },
         })
           .then(() => {
-            router.push("/");
+            return redirectUsingQueryParam("/");
           })
           .catch((e) => {
             toast.error(e.message);
@@ -41,7 +44,7 @@ function VerifyYourEmail() {
         await sendEmailVerification(auth.currentUser);
       }
     }
-  }, [router]);
+  }, [redirectUsingQueryParam]);
 
   useEffect(() => {
     // Send verification email
@@ -83,6 +86,7 @@ function VerifyYourEmail() {
             <Button
               variant="outline"
               rounded
+              loading={loadingResendVerification}
               onClick={async () => {
                 setLoadingResendVerification(true);
                 await sendVerification()

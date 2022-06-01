@@ -14,6 +14,7 @@ import { Button, Text } from "../components/atomic";
 import { TextInput } from "../components/inputs/TextInput";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { auth } from "../lib/firebase";
 import { CustomPage } from "../types";
 
@@ -30,6 +31,8 @@ const SignUpPage: CustomPage = () => {
   const isLoggedIn = useIsLoggedIn();
 
   const [loading, setLoading] = useState(false);
+
+  const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
 
   const signUp = async () => {
     if (!formData.firstName) {
@@ -62,8 +65,9 @@ const SignUpPage: CustomPage = () => {
               authorization: `Bearer ${tokenResult.token}`,
             },
           });
+          await redirectUsingQueryParam("/");
         } else {
-          router.push("/verify");
+          router.push("/verify", { query: router.query });
         }
       })
       .catch((e) => {
