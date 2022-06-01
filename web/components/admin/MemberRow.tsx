@@ -10,6 +10,7 @@ import {
 import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Select } from "../atomic";
+import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 
 import { MAP_ROLE_TO_TITLE, ROLE_SELECT_OPTIONS } from "./roles";
 interface MemberRowProps {
@@ -44,7 +45,7 @@ export function MemberRow(props: MemberRowProps) {
         )}
       </div>
       <div>{email}</div>
-      <Select
+      <SelectAutocomplete
         className="w-48"
         options={ROLE_SELECT_OPTIONS}
         value={role.profile_role}
