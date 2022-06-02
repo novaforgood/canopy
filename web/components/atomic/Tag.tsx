@@ -12,7 +12,7 @@ const Tag = ({ variant = "solid", className, onClick, ...props }: TagProps) => {
     "hover:cursor-default": !onClick,
     "bg-tertiary border-tertiary": variant === "solid",
     "inline-block border-primary": variant === "outline",
-    "inline-block text-white bg-primary border-primary": variant === "dark",
+    "inline-block text-white bg-black border-black": variant === "dark",
     [`${className}`]: true,
   });
   return <div {...props} onClick={onClick} className={styles}></div>; // There should also be an option to have the 'X'
