@@ -1,8 +1,8 @@
-# Canopy
-
 <p align="center">
 	<img src="/web/public/assets/canopyLogo.svg" width="200"/>
 </p>
+
+# Canopy
 
 ## Setup dev environment
 
