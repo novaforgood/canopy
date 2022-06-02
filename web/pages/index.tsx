@@ -15,12 +15,13 @@ import type { NextPage } from "next";
 function LandingPage() {
   const router = useRouter();
   return (
-    <div className="w-full p-8 md:h-screen">
+    <div className="w-full py-8 px-32 md:h-screen">
       <div className="w-full items-center justify-between md:flex">
-        <img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" alt="pepe" />
+        <img src={"/assets/canopyLogo.svg"} alt="Canopy Logo" />
         <div className="flex" justify-end="true">
           {
             <Button
+              variant="outline"
               onClick={() => {
                 router.push("/login");
               }}
@@ -35,24 +36,30 @@ function LandingPage() {
                 router.push("/signup");
               }}
             >
-              Sign up
+              Sign up to connect
             </Button>
           }
         </div>
       </div>
-      <div className="flex justify-between gap-100 pt-10 md:px-36 md:pt-36">
-        <div>
-          Mentor Center makes mentorship accessible and manageable for any
-          community. Only login button works for now.
-          <Button
-            className="h-14 px-4 md:w-80"
-            onClick={() => {
-              router.push("/jeff");
-            }}
-          >
-            Join Beta
-          </Button>
-        </div>
+      <div className="flex flex-col justify-start items-start pt-40 max-w-xl">
+        <Text variant="heading1">
+          Helping communities grow tight-knit support networks
+        </Text>
+        <div className="h-8"></div>
+        <Text>
+          Whether you’re running a mentorship program or simply helping your
+          friends stay connected, Canopy helps you create and customize your own
+          community directory.
+        </Text>
+        <div className="h-16"></div>
+        <Button
+          rounded
+          onClick={() => {
+            router.push("/signup");
+          }}
+        >
+          Get started
+        </Button>
       </div>
     </div>
   );
