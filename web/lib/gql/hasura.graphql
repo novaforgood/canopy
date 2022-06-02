@@ -19,6 +19,13 @@ query AllProfilesOfUser($user_id: String!) {
     profile_listing {
       id
       public
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
     }
     flattened_profile_roles {
       id
@@ -44,6 +51,7 @@ query SpaceBySlug($slug: String!) {
     id
     name
     slug
+    owner_id
     space_listing_questions(order_by: { listing_order: asc }) {
       char_count
       id
@@ -164,18 +172,155 @@ query SpaceTags($space_tag_category_id: uuid!) {
   }
 }
 
-query allUsersInSpace($space_id: uuid!) {
-  space(where: { id: { _eq: $space_id } }) {
-    name
-    owner_id
-    profiles {
+query ProfileListingsInSpace($space_id: uuid!) {
+  profile_listing(
+    where: { public: { _eq: true }, profile: { space_id: { _eq: $space_id } } }
+  ) {
+    id
+    profile_listing_image {
       id
-      user {
-        email
-        first_name
-        last_name
+      image {
         id
+        url
       }
     }
+    profile {
+      id
+      user {
+        id
+        last_name
+        first_name
+        email
+      }
+    }
+  }
+}
+
+query ProfileById($profile_id: uuid!) {
+  profile_by_pk(id: $profile_id) {
+    created_at
+    profile_listing {
+      id
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+      profile_listing_socials {
+        id
+        link
+        type
+      }
+      profile_listing_responses {
+        id
+        response_html
+        space_listing_question {
+          id
+          title
+        }
+      }
+      public
+    }
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+    profile_roles {
+      id
+      profile_role
+    }
+  }
+}
+
+mutation UpdateProfileRole($profile_role: profile_role_enum!, $row_id: uuid!) {
+  update_profile_to_profile_role_by_pk(
+    pk_columns: { id: $row_id }
+    _set: { profile_role: $profile_role }
+  ) {
+    profile_role
+    id
+    profile_id
+  }
+}
+
+query ProfileListing($profile_listing_id: uuid!) {
+  profile_listing_by_pk(id: $profile_listing_id) {
+    id
+    profile_listing_image {
+      id
+      image {
+        id
+        url
+      }
+    }
+    profile_listing_socials {
+      id
+      link
+      type
+    }
+    profile_listing_responses {
+      id
+      response_html
+      space_listing_question {
+        id
+        title
+      }
+    }
+    profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+    }
+    public
+  }
+}
+
+mutation UpdateProfileListing(
+  $profile_listing_id: uuid!
+  $profile_listing: profile_listing_set_input!
+) {
+  update_profile_listing_by_pk(
+    pk_columns: { id: $profile_listing_id }
+    _set: $profile_listing
+  ) {
+    id
+    profile_listing_image {
+      id
+      image {
+        id
+        url
+      }
+    }
+    profile_listing_socials {
+      id
+      link
+      type
+    }
+    profile_listing_responses {
+      id
+      response_html
+      space_listing_question {
+        id
+        title
+      }
+    }
+    profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+    }
+    public
   }
 }

@@ -1,14 +1,17 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, SVGProps, useEffect, useState } from "react";
 
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
 import { tuple } from "zod";
 
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
+import ToggleSwitch from "../components/atomic/Switch";
 import { ImageUploader } from "../components/ImageUploader";
 import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
 import { TextInput } from "../components/inputs/TextInput";
 import { ActionModal } from "../components/modals/ActionModal";
+import { ProfileImage } from "../components/ProfileImage";
+import { BxUser } from "../generated/icons/regular";
 import { theme } from "../tailwind.config";
 import { CustomPage } from "../types";
 
@@ -203,8 +206,10 @@ function InputReference() {
   const [value, setValue] = useState("");
   const [editable, setEditable] = useState(true);
 
+  const [bool, setBool] = useState(false);
   return (
     <>
+      <ToggleSwitch enabled={bool} onChange={setBool} />
       <div className="text-lg font-bold mb-2 mt-8">Input</div>
       <Input placeholder="Type here..." />
       <div className="h-4"></div>
@@ -252,6 +257,7 @@ function DropzoneReference() {
         width={250}
         height={250}
         showZoom
+        showRoundedCrop
         imageSrc={src1}
         onImageSrcChange={setSrc1}
       />
@@ -349,6 +355,8 @@ const ComponentsPage: CustomPage = () => {
           <SectionTitle title="Image Dropzone" />
           <DropzoneReference />
 
+          <ProfileImage className="h-10 w-10" />
+
           <div className="h-screen"></div>
         </div>
       </div>
@@ -356,5 +364,6 @@ const ComponentsPage: CustomPage = () => {
   );
 };
 
-ComponentsPage.requiresAuthentication = false;
+ComponentsPage.requiredAuthorizations = [];
+
 export default ComponentsPage;

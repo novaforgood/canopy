@@ -35,9 +35,10 @@ export function EnterResponses(props: EnterResponsesProps) {
     return {
       variables: {
         question_ids: spaceListingQuestions.map((q) => q.id),
+        profile_listing_id: currentProfile?.profile_listing?.id ?? "",
       },
     };
-  }, [spaceListingQuestions]);
+  }, [currentProfile?.profile_listing?.id, spaceListingQuestions]);
 
   const [{ data: listingResponseData }, refetchListingResponse] =
     useListingResponseByQuestionIdQuery(questionIdsVariables);

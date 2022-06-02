@@ -1,9 +1,12 @@
 import { Fragment } from "react";
 
-import { format } from "date-fns";
-
-import { useProfilesBySpaceIdQuery } from "../../generated/graphql";
+import {
+  Profile_Role_Enum,
+  useProfilesBySpaceIdQuery,
+} from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+
+import { MemberRow } from "./MemberRow";
 
 export function MembersList() {
   const { currentSpace } = useCurrentSpace();
@@ -18,22 +21,15 @@ export function MembersList() {
 
   return (
     <div className="">
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-4 gap-2 items-center">
+        <strong>Name</strong>
         <strong>Email</strong>
-        <strong>Roles</strong>
+        <strong>Role</strong>
         <strong>Created At</strong>
         {profilesData?.profile?.map((profile) => {
           return (
             <Fragment key={profile.id}>
-              <div>{profile.user.email}</div>
-              <div>
-                {profile.profile_roles
-                  .map((role) => role.profile_role)
-                  .join(", ")}
-              </div>
-              <div>
-                {format(new Date(profile.created_at), "MMM dd yyyy, h:mm a")}
-              </div>
+              <MemberRow profileId={profile.id} />
             </Fragment>
           );
         })}

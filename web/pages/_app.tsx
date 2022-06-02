@@ -5,7 +5,10 @@ import { Toaster } from "react-hot-toast";
 import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
 import { Provider } from "urql";
 
+import AuthWrapper from "../components/AuthWrapper";
 import { useSpaceBySlugQuery } from "../generated/graphql";
+import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { usePrevious } from "../hooks/usePrevious";
 import { loadSession } from "../lib";
 import { auth } from "../lib/firebase";
 import { sessionAtom } from "../lib/recoil";
@@ -14,10 +17,7 @@ import { getUrqlClient } from "../lib/urql";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import { useCurrentSpace } from "../hooks/useCurrentSpace";
-import { usePrevious } from "../hooks/usePrevious";
-import AuthWrapper from "../components/AuthWrapper";
-import {CustomPage} from "../types";
+import { CustomPage } from "../types";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -112,7 +112,7 @@ function AppWrapper({ Component, ...pageProps }: CustomAppProps) {
       <AuthProvider>
         <UrqlProvider>
           <AuthWrapper
-            requiresAuthentication={Component.requiresAuthentication}
+            requiredAuthorizations={Component.requiredAuthorizations}
           >
             <App {...pageProps} Component={Component} />
           </AuthWrapper>

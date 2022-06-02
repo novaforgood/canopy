@@ -10,6 +10,7 @@ import { EnterTags } from "../../../components/create-profile/EnterTags";
 import { Review } from "../../../components/create-profile/Review";
 import { StageNavigator } from "../../../components/StageNavigator";
 import { FadeTransition } from "../../../components/transitions/FadeTransition";
+import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../../../hooks/useUpdateQueryParams";
 
@@ -42,6 +43,7 @@ export default function ListerOnboardingPage() {
     ListerStage.EnterBasicInfo) as ListerStage;
   const { updateQueryParams } = useUpdateQueryParams();
 
+  const { currentSpace } = useCurrentSpace();
   const [stageDisplayed, setStageDisplayed] = useState<ListerStage | null>(
     null
   );
@@ -132,10 +134,10 @@ export default function ListerOnboardingPage() {
         <FadeTransition show={stageDisplayed === ListerStage.Review}>
           <Review
             onComplete={() => {
-              navStage(ListerStage.EnterBasicInfo);
+              router.push(`/space/${currentSpace?.id}`);
             }}
             onSkip={() => {
-              navStage(ListerStage.EnterBasicInfo);
+              router.push(`/space/${currentSpace?.id}`);
             }}
           />
         </FadeTransition>

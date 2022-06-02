@@ -10,21 +10,12 @@ import {
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
+import { uploadImage } from "../../lib/image";
 import { Text } from "../atomic";
 import { ImageUploader } from "../ImageUploader";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
 
-async function uploadImage(imageData: string) {
-  const blob = await (await fetch(imageData)).blob();
-  console.log(imageData);
-  const body = new FormData();
-  body.append("upload", blob, "profile.png");
-  return await apiClient.postForm<{ image: { id: string; url: string } }>(
-    "/api/services/uploadImage",
-    body
-  );
-}
 interface EnterNameProps {
   onComplete: (data: { profileImageId: string | null }) => void;
   onSkip: () => void;
@@ -103,6 +94,7 @@ export function EnterBasicInfo(props: EnterNameProps) {
         </Text>
         <div className="h-4"></div>
         <ImageUploader
+          showRoundedCrop
           showZoom
           imageSrc={image}
           onImageSrcChange={setImage}

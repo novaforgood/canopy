@@ -1,5 +1,4 @@
 import { signOut } from "firebase/auth";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../components/atomic";
@@ -9,16 +8,16 @@ import { BxExit } from "../generated/icons/regular";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { auth } from "../lib/firebase";
+import { CustomPage } from "../types";
 
 import type { NextPage } from "next";
-import { CustomPage } from "../types";
 
 function LandingPage() {
   const router = useRouter();
   return (
     <div className="w-full p-8 md:h-screen">
       <div className="w-full items-center justify-between md:flex">
-        <img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" />
+        <img src="https://c.tenor.com/D6IwAVg5qM4AAAAM/forme.gif" alt="pepe" />
         <div className="flex" justify-end="true">
           {
             <Button
@@ -36,7 +35,7 @@ function LandingPage() {
                 router.push("/signup");
               }}
             >
-              Sign up with email
+              Sign up
             </Button>
           }
         </div>
@@ -123,5 +122,6 @@ const HomePage: CustomPage = () => {
   return <div>{isLoggedIn ? <LoggedInHomePage /> : <LandingPage />}</div>;
 };
 
-HomePage.requiresAuthentication = false;
+HomePage.requiredAuthorizations = [];
+
 export default HomePage;

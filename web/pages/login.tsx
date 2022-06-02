@@ -1,12 +1,18 @@
+import { ReactNode, useEffect, useState } from "react";
+
 import { useSetState } from "@mantine/hooks";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "../components/atomic/Button";
+
+import { Button, Text } from "../components/atomic";
 import { Input } from "../components/atomic/Input";
+import { TextInput } from "../components/inputs/TextInput";
+import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
 import { useUserQuery } from "../generated/graphql";
+import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { useSignIn } from "../hooks/useSignIn";
 import { useUserData } from "../hooks/useUserData";
 import { handleError } from "../lib/error";
@@ -21,35 +27,38 @@ const LoginPage: CustomPage = () => {
   const { userData } = useUserData();
 
   // determine where to redirect to after login
-  const [paths, _] = useState(router.asPath.split("redirect="));
-  const redirect = paths.length > 1 ? paths[1] : "/";
+  const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
 
   const [formData, setFormData] = useSetState({ email: "", password: "" });
 
   // prevent users from accessing login page if they are already logged in
   useEffect(() => {
-    if (userData) {
-      router.push("/");
+    if (isLoggedIn) {
+      redirectUsingQueryParam("/");
     }
-  }, [userData]);
+  }, [isLoggedIn, redirectUsingQueryParam]);
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
     setSigningIn(true);
     signInWithGoogle()
-      .then(async () => {
-        const user = await auth.currentUser;
-        if (!user) {
-          throw new Error("Could not get user after sign-in");
+      .then(async (userCred) => {
+        if (!userCred.user.emailVerified) {
+          router.push("/verify", { query: router.query });
+        } else {
+          const user = await auth.currentUser;
+          if (!user) {
+            throw new Error("Could not get user after sign-in");
+          }
+          const idToken = await user.getIdToken();
+          await fetch(`/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${idToken}`,
+            },
+          });
+          await redirectUsingQueryParam("/");
         }
-        const idToken = await user.getIdToken();
-        await fetch(`/api/auth/upsertUserData`, {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${idToken}`,
-          },
-        });
-        await router.push(redirect);
       })
       .catch((e) => {
         handleError(e);
@@ -64,14 +73,18 @@ const LoginPage: CustomPage = () => {
     setSigningIn(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCred) => {
-        const tokenResult = await userCred.user.getIdTokenResult();
-        await fetch(`/api/auth/upsertUserData`, {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${tokenResult.token}`,
-          },
-        });
-        await router.push(redirect);
+        if (!userCred.user.emailVerified) {
+          router.push("/verify", { query: router.query });
+        } else {
+          const tokenResult = await userCred.user.getIdTokenResult();
+          await fetch(`/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${tokenResult.token}`,
+            },
+          });
+          await redirectUsingQueryParam("/");
+        }
       })
       .catch((e) => {
         toast.error(e.code + ": " + e.message);
@@ -83,56 +96,81 @@ const LoginPage: CustomPage = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="h-screen">
       {signingIn ? (
         <div>Signing in... </div>
       ) : isLoggedIn ? (
         <div>Redirecting...</div>
       ) : (
-        <>
-          <Button onClick={googleSignIn}>Sign in with Google</Button>
-          <div className="py-3">
-            <label
-              className="block uppercase tracking-wide text-slate-800 text-sm font-bold mb-2"
-              htmlFor="email"
+        <TwoThirdsPageLayout>
+          <div className="h-full flex flex-col items-start justify-center px-16">
+            <Text variant="heading2">Join Canopy</Text>
+            <div className="h-8"></div>
+            <button
+              className="border rounded-md w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
+              onClick={googleSignIn}
             >
-              Email
-            </label>
-            <Input
-              className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3"
-              id="email"
+              <BxlGoogle className="h-6 w-6" />
+              Continue with Google
+            </button>
+
+            <div className="h-8"></div>
+            <div className="w-96 flex items-center gap-4">
+              <div className="flex-1 h-0.5 bg-gray-50"></div>
+              <div className="text-gray-300">or</div>
+              <div className="flex-1 h-0.5 bg-gray-50"></div>
+            </div>
+            <div className="h-8"></div>
+
+            <TextInput
+              className="w-96"
+              label="Email"
               type="text"
               onChange={(e) => {
                 setFormData({ email: e.target.value });
               }}
             />
-            <label
-              className="block uppercase tracking-wide text-slate-800 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <Input
-              className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3"
-              id="password"
+            <div className="h-4"></div>
+
+            <TextInput
+              className="w-96"
+              label="Password"
               type="password"
               onChange={(e) => {
                 setFormData({ password: e.target.value });
               }}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  signInManually(formData.email, formData.password);
+                }
+              }}
             />
+
+            <div className="h-16"></div>
             <Button
+              loading={signingIn}
+              rounded
               onClick={(e) => {
                 signInManually(formData.email, formData.password);
               }}
             >
               Login
             </Button>
+            <div className="h-8"></div>
+            <Text>
+              Need an account?{" "}
+              <a className="underline" href="/signup">
+                Sign up
+              </a>
+            </Text>
+            <div className="h-16"></div>
           </div>
-        </>
+        </TwoThirdsPageLayout>
       )}
     </div>
   );
 };
 
-LoginPage.requiresAuthentication = false;
+LoginPage.requiredAuthorizations = [];
+
 export default LoginPage;

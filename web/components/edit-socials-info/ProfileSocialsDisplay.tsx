@@ -29,13 +29,17 @@ function IconLink(props: {
   );
 }
 
-export function ProfileSocialsDisplay() {
-  const { userData } = useUserData();
+interface ProfileSocialsDisplayProps {
+  profileListingId: string;
+  email?: string;
+}
 
-  const { currentProfile } = useCurrentProfile();
+export function ProfileSocialsDisplay(props: ProfileSocialsDisplayProps) {
+  const { profileListingId, email } = props;
+
   const [{ data: profileListingSocialsData }] = useProfileListingSocialsQuery({
     variables: {
-      profile_listing_id: currentProfile?.profile_listing?.id ?? "",
+      profile_listing_id: profileListingId,
     },
   });
 
@@ -44,7 +48,7 @@ export function ProfileSocialsDisplay() {
   return (
     <>
       <div className="flex flex-wrap items-start gap-3">
-        <IconLink icon={<BxsEnvelope />} href={`mailto:${userData?.email}`} />
+        {email && <IconLink icon={<BxsEnvelope />} href={`mailto:${email}`} />}
         {profileListingSocialsData?.profile_listing_social?.map(
           (profileListingSocial) => {
             const { type, link } = profileListingSocial;

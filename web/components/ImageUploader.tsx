@@ -12,6 +12,7 @@ interface ImageUploaderProps {
   width: number;
   height: number;
   showZoom?: boolean;
+  showRoundedCrop?: boolean;
   imageSrc: string | null;
   onImageSrcChange?: (newValue: string | null) => void;
 }
@@ -19,6 +20,7 @@ interface ImageUploaderProps {
 export function ImageUploader(props: ImageUploaderProps) {
   const {
     getRef = () => {},
+    showRoundedCrop = false,
     width,
     height,
     showZoom = false,
@@ -112,6 +114,10 @@ export function ImageUploader(props: ImageUploaderProps) {
               position={position}
               onPositionChange={(pos) => setPosition(pos)}
             />
+          )}
+
+          {imageSrc && showRoundedCrop && (
+            <div className="pointer-events-none absolute h-full w-full rounded-full border border-gray-500"></div>
           )}
 
           <input {...getInputProps()} />

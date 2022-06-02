@@ -2,13 +2,14 @@ import { ReactNode, useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 
+import { useProfileByIdQuery } from "../generated/graphql";
 import { BxsHome } from "../generated/icons/solid";
 
 import { Text } from "./atomic";
 
 type BreadcrumbItem = {
   title: ReactNode;
-  href: string;
+  href: string | null;
 };
 
 const convertBreadcrumb = (string: string) => {
@@ -24,6 +25,11 @@ export function Breadcrumbs() {
   const router = useRouter();
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
 
+  const profileId = router.query.profileId as string;
+  const [{ data: profileData }] = useProfileByIdQuery({
+    variables: { profile_id: profileId ?? "" },
+  });
+
   useEffect(() => {
     if (router) {
       const linkPath = router.asPath.split("/");
@@ -31,10 +37,23 @@ export function Breadcrumbs() {
 
       const pathArray: BreadcrumbItem[] = linkPath
         .map((path, i) => {
-          return {
-            title: path,
-            href: "/" + linkPath.slice(0, i + 1).join("/"),
-          };
+          if (path === profileId && profileData?.profile_by_pk) {
+            const { first_name, last_name } = profileData.profile_by_pk.user;
+            return {
+              title: `${first_name} ${last_name}`,
+              href: `/space/${linkPath[i - 1]}/profile/${profileId}`,
+            };
+          } else if (path === "profile") {
+            return {
+              title: "profile",
+              href: null,
+            };
+          } else {
+            return {
+              title: path,
+              href: "/" + linkPath.slice(0, i + 1).join("/"),
+            };
+          }
         })
         .slice(1);
 
@@ -43,7 +62,7 @@ export function Breadcrumbs() {
 
       setBreadcrumbs(pathArray);
     }
-  }, [router]);
+  }, [profileData?.profile_by_pk, profileId, router]);
 
   if (!breadcrumbs) {
     return null;
@@ -55,7 +74,11 @@ export function Breadcrumbs() {
         return (
           <>
             <div key={i} className="flex-none">
-              <a href={item.href}>{item.title}</a>
+              {item.href ? (
+                <a href={item.href}>{item.title}</a>
+              ) : (
+                <div className="text-gray-600 cursor-default">{item.title}</div>
+              )}
             </div>
             <Text>/</Text>
           </>

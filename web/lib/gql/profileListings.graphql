@@ -49,9 +49,15 @@ query ProfileImage($profile_id: uuid!) {
 
 ## Questions and responses
 
-query ListingResponseByQuestionId($question_ids: [uuid!]!) {
+query ListingResponseByQuestionId(
+  $question_ids: [uuid!]!
+  $profile_listing_id: uuid!
+) {
   profile_listing_response(
-    where: { space_listing_question: { id: { _in: $question_ids } } }
+    where: {
+      space_listing_question: { id: { _in: $question_ids } }
+      profile_listing_id: { _eq: $profile_listing_id }
+    }
   ) {
     id
     profile_listing_id

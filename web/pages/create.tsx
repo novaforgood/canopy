@@ -253,7 +253,6 @@ const CreatePage: CustomPage = () => {
       </div>
     </div>
   );
-}
+};
 
-CreatePage.requiresAuthentication = true;
 export default CreatePage;

@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   executeGetInviteLinkQuery,
   executeInsertProfileMutation,
-  GetInviteLinkDocument,
   Profile_Role_Enum,
   Space_Invite_Link_Type_Enum,
 } from "../../../server/generated/serverGraphql";
@@ -73,6 +72,6 @@ export default applyMiddleware({
     throw makeApiError("Failed to insert new profile");
   }
 
-  const response = makeApiSuccess({ newProfileId });
+  const response = makeApiSuccess({ newProfileId, inviteLink: inviteLink });
   res.status(response.code).json(response);
 });

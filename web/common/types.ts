@@ -30,3 +30,7 @@ export type ApiResponse<TData> =
   | ApiResponseSuccess<TData>
   | ApiResponseFail
   | ApiResponseError;
+
+export enum EmailType {
+  Connect = `Connect`,
+}

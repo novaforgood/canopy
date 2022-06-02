@@ -1,28 +1,33 @@
-import { auth } from "../lib/firebase";
-import { AppProps } from "next/app";
-import LoginPage from "../pages/login";
-import router, { useRouter } from "next/router";
 import { Fragment } from "react";
+
+import { AppProps } from "next/app";
+import router, { useRouter } from "next/router";
+
+import { Profile_Role_Enum } from "../generated/graphql";
+import { auth } from "../lib/firebase";
+import LoginPage from "../pages/login";
+
+import {
+  AuthenticationStatus,
+  RequiredAuthorization,
+} from "./requiredAuthorization";
 
 interface AuthWrapperProps {
   children: React.ReactNode;
-  requiresAuthentication?: boolean;
+  requiredAuthorizations?: RequiredAuthorization[];
 }
 export default function AuthWrapper({
   children,
-  requiresAuthentication = false,
+  requiredAuthorizations = [AuthenticationStatus.LoggedIn],
 }: AuthWrapperProps) {
   const router = useRouter();
   const user = auth.currentUser;
-  const path = router.pathname.replace("/", "");
 
   // If the user is not logged in, redirect to the login page.
-  if (requiresAuthentication && !user) {
-    router.push(`/login?redirect=${path}`);
+  if (requiredAuthorizations.includes(AuthenticationStatus.LoggedIn) && !user) {
+    router.push(`/login?redirect=${router.asPath}`);
   }
 
-  // return original children if the user is logged in.
-  return user || !requiresAuthentication ? (
-    <Fragment>{children}</Fragment>
-  ) : null;
+  // return original children if the user is logged ian.
+  return <Fragment>{children}</Fragment>;
 }
