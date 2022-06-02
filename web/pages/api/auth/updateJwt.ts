@@ -4,6 +4,8 @@ import { auth } from "../../../server/firebaseAdmin";
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiSuccess } from "../../../server/response";
 
+const PLACEHOLDER_UUID = "00000000-0000-0000-0000-000000000000";
+
 export default applyMiddleware({
   authenticated: true,
   validationSchema: z.object({
@@ -16,7 +18,7 @@ export default applyMiddleware({
         "x-hasura-default-role": "user",
         "x-hasura-allowed-roles": ["user"],
         "x-hasura-user-id": req.token.uid,
-        "x-hasura-space-id": req.body.spaceId ?? "",
+        "x-hasura-space-id": req.body.spaceId ?? PLACEHOLDER_UUID,
       },
     })
     .catch((e) => {
