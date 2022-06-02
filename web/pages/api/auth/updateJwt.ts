@@ -16,7 +16,7 @@ export default applyMiddleware({
         "x-hasura-default-role": "user",
         "x-hasura-allowed-roles": ["user"],
         "x-hasura-user-id": req.token.uid,
-        "x-hasura-space-id": req.body.spaceId,
+        "x-hasura-space-id": req.body.spaceId ?? "",
       },
     })
     .catch((e) => {
