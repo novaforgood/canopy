@@ -2,7 +2,6 @@ import { Fragment } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";
-import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 
 import {
@@ -14,7 +13,7 @@ import { BxsUserAccount, BxsWrench } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
-import { auth } from "../lib/firebase";
+import { signOut } from "../lib/firebase";
 
 import { Text } from "./atomic";
 import { ProfileImage } from "./ProfileImage";
@@ -144,7 +143,7 @@ export function Dropdown() {
                       <button
                         className={styles}
                         onClick={() => {
-                          signOut(auth);
+                          signOut();
                         }}
                       >
                         <BxLogOut className="h-5 w-5 mr-2" />

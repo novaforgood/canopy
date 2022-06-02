@@ -55,7 +55,7 @@ const LoginPage: CustomPage = () => {
           toast.error("Account not created yet. Please sign up first!");
         } else if (!userCred.user.emailVerified) {
           // User has signed in before but has not verified email
-          router.push("/verify", { query: router.query });
+          router.push({ pathname: "/verify", query: router.query });
         } else {
           const idToken = await userCred.user.getIdToken();
           await fetch(`/api/auth/upsertUserData`, {
@@ -82,7 +82,7 @@ const LoginPage: CustomPage = () => {
     signInWithEmailAndPassword(email, password)
       .then(async (userCred) => {
         if (!userCred.user.emailVerified) {
-          router.push("/verify", { query: router.query });
+          router.push({ pathname: "/verify", query: router.query });
         } else {
           const tokenResult = await userCred.user.getIdTokenResult();
           await fetch(`/api/auth/upsertUserData`, {
@@ -125,7 +125,7 @@ const LoginPage: CustomPage = () => {
             </button>
 
             <div className="h-8"></div>
-            <div className="w-96 flex items-center gap-4">
+            <div className="w-96 flex items-center gap-4 select-none">
               <div className="flex-1 h-0.5 bg-gray-50"></div>
               <div className="text-gray-300">or</div>
               <div className="flex-1 h-0.5 bg-gray-50"></div>

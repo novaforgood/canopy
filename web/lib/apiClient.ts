@@ -1,6 +1,6 @@
 import { ApiResponse, ApiResponseStatus } from "../common/types";
 
-import { auth } from "./firebase";
+import { getCurrentUser } from "./firebase";
 
 class ApiClient {
   readonly baseUrl: string;
@@ -110,5 +110,5 @@ class ApiClient {
 
 export const apiClient = new ApiClient({
   baseUrl: "",
-  getSessionJwt: async () => auth.currentUser?.getIdToken() ?? "",
+  getSessionJwt: async () => getCurrentUser()?.getIdToken() ?? "",
 });

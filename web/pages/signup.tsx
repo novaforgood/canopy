@@ -52,27 +52,44 @@ const SignUpPage: CustomPage = () => {
     // send email verification
     return createUserWithEmailAndPassword(email, password)
       .then(async (userCred) => {
-        const user = userCred.user;
-        const tokenResult = await user.getIdTokenResult();
-        const name = `${firstName} ${lastName}`;
-        await updateProfile(user, {
-          displayName: name,
-        });
-
-        if (userCred.user.emailVerified) {
-          await fetch(`/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${tokenResult.token}`,
-            },
-          });
-          await redirectUsingQueryParam("/");
+        const { creationTime, lastSignInTime } = userCred.user.metadata;
+        const isNewUser = creationTime === lastSignInTime;
+        if (!isNewUser) {
+          // If not a new user, sign them out and tell them to log in
+          toast.error(
+            "Account already exists under this email. Please log in."
+          );
+          await signOut();
         } else {
-          router.push("/verify", { query: router.query });
+          const user = userCred.user;
+          const tokenResult = await user.getIdTokenResult();
+          const name = `${firstName} ${lastName}`;
+          await updateProfile(user, {
+            displayName: name,
+          });
+
+          if (userCred.user.emailVerified) {
+            await fetch(`/api/auth/upsertUserData`, {
+              method: "POST",
+              headers: {
+                authorization: `Bearer ${tokenResult.token}`,
+              },
+            });
+            await redirectUsingQueryParam("/");
+          } else {
+            console.log(router.query);
+            await router.push({ pathname: "/verify", query: router.query });
+          }
         }
       })
       .catch((e) => {
-        toast.error(e.message);
+        if (e.message.includes("already-in-use")) {
+          toast.error(
+            "Account already exists under this email. Please log in."
+          );
+        } else {
+          toast.error(e.message);
+        }
         signOut();
       })
       .finally(() => {
@@ -125,7 +142,7 @@ const SignUpPage: CustomPage = () => {
             </button>
 
             <div className="h-8"></div>
-            <div className="w-96 flex items-center gap-4">
+            <div className="w-96 flex items-center gap-4 select-none">
               <div className="flex-1 h-0.5 bg-gray-50"></div>
               <div className="text-gray-300">or</div>
               <div className="flex-1 h-0.5 bg-gray-50"></div>
@@ -169,9 +186,9 @@ const SignUpPage: CustomPage = () => {
                 onChange={(e) => {
                   setFormData({ password: e.target.value });
                 }}
-                onKeyUp={(e) => {
+                onKeyUp={async (e) => {
                   if (e.key === "Enter") {
-                    signUp();
+                    await signUp();
                   }
                 }}
               />

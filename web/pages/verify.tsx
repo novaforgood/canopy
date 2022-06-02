@@ -61,7 +61,7 @@ function VerifyYourEmail() {
           <>
             <Text variant="heading2">Email verified!</Text>
             <div className="h-8"></div>
-            <Text>Redirecting to home...</Text>
+            <Text>Redirecting...</Text>
           </>
         ) : (
           <>
@@ -79,7 +79,7 @@ function VerifyYourEmail() {
               variant="primary"
               rounded
               onClick={() => {
-                router.reload();
+                window.location.reload();
               }}
             >
               Refresh <BxRefresh className="h-6 w-6 ml-2 -mr-2" />
@@ -104,7 +104,7 @@ function VerifyYourEmail() {
                 setLoadingResendVerification(false);
               }}
             >
-              Resend verification link
+              Resend verification email
             </Button>
             <div className="h-40"></div>
           </>
