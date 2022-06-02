@@ -7,17 +7,16 @@ import { Provider } from "urql";
 
 import AuthWrapper from "../components/AuthWrapper";
 import { useSpaceBySlugQuery } from "../generated/graphql";
-import { useCurrentSpace } from "../hooks/useCurrentSpace";
-import { usePrevious } from "../hooks/usePrevious";
 import { loadSession } from "../lib";
-import { auth } from "../lib/firebase";
+import { handleError } from "../lib/error";
+import { onAuthStateChanged } from "../lib/firebase";
 import { sessionAtom } from "../lib/recoil";
 import { getUrqlClient } from "../lib/urql";
+import { CustomPage } from "../types";
 
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import { CustomPage } from "../types";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -40,7 +39,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [session, setSession] = useRecoilState(sessionAtom);
 
   useEffect(() => {
-    const unsubscribeListener = auth.onAuthStateChanged(async (user) => {
+    const unsubscribeListener = onAuthStateChanged(async () => {
       // Whenever auth state changes, we no longer know what the session is.
       // We must wait for this handler to run to completion, resolving
       // the session to either authenticated or null.

@@ -5,7 +5,6 @@ import router, { useRouter } from "next/router";
 
 import { Profile_Role_Enum } from "../generated/graphql";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
-import { auth } from "../lib/firebase";
 import LoginPage from "../pages/login";
 
 import {

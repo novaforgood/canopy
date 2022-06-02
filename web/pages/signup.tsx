@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useSetState } from "@mantine/hooks";
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
+import { updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 
@@ -17,7 +12,12 @@ import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { queryToString } from "../lib";
-import { auth } from "../lib/firebase";
+import { handleError } from "../lib/error";
+import {
+  createUserWithEmailAndPassword,
+  signInWithGoogle,
+  signOut,
+} from "../lib/firebase";
 import { CustomPage } from "../types";
 
 const SignUpPage: CustomPage = () => {
@@ -31,6 +31,7 @@ const SignUpPage: CustomPage = () => {
   const isLoggedIn = useIsLoggedIn();
 
   const [loading, setLoading] = useState(false);
+  const [signingInWithGoogle, setSigningInWithGoogle] = useState(false);
 
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
 
@@ -49,7 +50,7 @@ const SignUpPage: CustomPage = () => {
 
     // signup user with firebase and upsert to our DB
     // send email verification
-    return createUserWithEmailAndPassword(auth, email, password)
+    return createUserWithEmailAndPassword(email, password)
       .then(async (userCred) => {
         const user = userCred.user;
         const tokenResult = await user.getIdTokenResult();
@@ -72,7 +73,7 @@ const SignUpPage: CustomPage = () => {
       })
       .catch((e) => {
         toast.error(e.message);
-        signOut(auth);
+        signOut();
       })
       .finally(() => {
         setLoading(false);
@@ -92,7 +93,32 @@ const SignUpPage: CustomPage = () => {
             <div className="h-8"></div>
             <button
               className="border rounded-md w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
-              onClick={() => {}}
+              onClick={() => {
+                setSigningInWithGoogle(true);
+                signInWithGoogle()
+                  .then(async (userCred) => {
+                    const isNewUser =
+                      userCred.user.metadata.creationTime ===
+                      userCred.user.metadata.lastSignInTime;
+
+                    if (isNewUser) {
+                      await redirectUsingQueryParam("/");
+                    } else {
+                      // User already has an account
+                      toast.error(
+                        "An account with this email already exists. Please log in."
+                      );
+                      signOut();
+                    }
+                  })
+                  .catch((e) => {
+                    toast.error(e.message);
+                    handleError(e);
+                  })
+                  .finally(() => {
+                    setSigningInWithGoogle(false);
+                  });
+              }}
             >
               <BxlGoogle className="h-6 w-6" />
               Continue with Google

@@ -1,4 +1,3 @@
-import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../components/atomic";
@@ -7,7 +6,7 @@ import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { BxExit } from "../generated/icons/regular";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
-import { auth } from "../lib/firebase";
+import { signOut } from "../lib/firebase";
 import { CustomPage } from "../types";
 
 import type { NextPage } from "next";
@@ -15,7 +14,7 @@ import type { NextPage } from "next";
 function LandingPage() {
   const router = useRouter();
   return (
-    <div className="w-full py-8 px-32 md:h-screen">
+    <div className="w-full py-16 px-32 md:h-screen">
       <div className="w-full items-center justify-between md:flex">
         <img src={"/assets/canopyLogo.svg"} alt="Canopy Logo" />
         <div className="flex" justify-end="true">
@@ -65,10 +64,6 @@ function LandingPage() {
   );
 }
 
-const logout = () => {
-  signOut(auth);
-};
-
 function LoggedInHomePage() {
   const { userData } = useUserData();
   const [{ data: profileData }] = useAllProfilesOfUserQuery({
@@ -112,7 +107,7 @@ function LoggedInHomePage() {
             Create new space
           </Button>
           <div className="h-16"></div>
-          <Button onClick={logout} variant="outline">
+          <Button onClick={signOut} variant="outline">
             Log out
           </Button>
 

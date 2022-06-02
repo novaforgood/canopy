@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 
 import { useSetState } from "@mantine/hooks";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
@@ -13,15 +12,17 @@ import { useUserQuery } from "../generated/graphql";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
-import { useSignIn } from "../hooks/useSignIn";
 import { useUserData } from "../hooks/useUserData";
 import { queryToString } from "../lib";
 import { handleError } from "../lib/error";
-import { auth } from "../lib/firebase";
+import {
+  signInWithEmailAndPassword,
+  signInWithGoogle,
+  signOut,
+} from "../lib/firebase";
 import { CustomPage } from "../types";
 
 const LoginPage: CustomPage = () => {
-  const { signInWithGoogle } = useSignIn();
   const [signingIn, setSigningIn] = useState(false);
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
@@ -44,14 +45,19 @@ const LoginPage: CustomPage = () => {
     setSigningIn(true);
     signInWithGoogle()
       .then(async (userCred) => {
-        if (!userCred.user.emailVerified) {
+        const isNewUser =
+          userCred.user.metadata.creationTime ===
+          userCred.user.metadata.lastSignInTime;
+
+        if (isNewUser) {
+          // User has never signed in before
+          await userCred.user.delete();
+          toast.error("Account not created yet. Please sign up first!");
+        } else if (!userCred.user.emailVerified) {
+          // User has signed in before but has not verified email
           router.push("/verify", { query: router.query });
         } else {
-          const user = await auth.currentUser;
-          if (!user) {
-            throw new Error("Could not get user after sign-in");
-          }
-          const idToken = await user.getIdToken();
+          const idToken = await userCred.user.getIdToken();
           await fetch(`/api/auth/upsertUserData`, {
             method: "POST",
             headers: {
@@ -62,6 +68,7 @@ const LoginPage: CustomPage = () => {
         }
       })
       .catch((e) => {
+        toast.error(e.message);
         handleError(e);
       })
       .finally(() => {
@@ -72,7 +79,7 @@ const LoginPage: CustomPage = () => {
   const signInManually = async (email: string, password: string) => {
     // sign in using firebase auth and upsert to our DB
     setSigningIn(true);
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(email, password)
       .then(async (userCred) => {
         if (!userCred.user.emailVerified) {
           router.push("/verify", { query: router.query });
@@ -89,14 +96,12 @@ const LoginPage: CustomPage = () => {
       })
       .catch((e) => {
         toast.error(e.code + ": " + e.message);
-        signOut(auth);
+        signOut();
       })
       .finally(() => {
         setSigningIn(false);
       });
   };
-
-  console.log(router);
 
   return (
     <div className="h-screen">

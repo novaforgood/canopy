@@ -8,7 +8,7 @@ import { Button, Text } from "../components/atomic";
 import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
 import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
-import { auth } from "../lib/firebase";
+import { getCurrentUser } from "../lib/firebase";
 import { CustomPage } from "../types";
 
 function VerifyYourEmail() {
@@ -22,8 +22,9 @@ function VerifyYourEmail() {
     useState(false);
 
   const sendVerification = useCallback(async () => {
-    if (auth.currentUser) {
-      if (auth.currentUser.emailVerified) {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      if (currentUser.emailVerified) {
         // Upsert user then redirect to home
 
         setVerified(true);
@@ -31,7 +32,7 @@ function VerifyYourEmail() {
         await fetch(`/api/auth/upsertUserData`, {
           method: "POST",
           headers: {
-            authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
+            authorization: `Bearer ${await currentUser.getIdToken()}`,
           },
         })
           .then(() => {
@@ -41,7 +42,7 @@ function VerifyYourEmail() {
             toast.error(e.message);
           });
       } else {
-        await sendEmailVerification(auth.currentUser);
+        await sendEmailVerification(currentUser);
       }
     }
   }, [redirectUsingQueryParam]);
@@ -50,6 +51,8 @@ function VerifyYourEmail() {
     // Send verification email
     sendVerification();
   }, [sendVerification]);
+
+  const currentUser = getCurrentUser();
 
   return (
     <TwoThirdsPageLayout>
@@ -66,8 +69,7 @@ function VerifyYourEmail() {
             <div className="h-8"></div>
             <Text>
               Please click on the confirmation link to your email:{" "}
-              {auth.currentUser?.email} in order to proceed with account
-              creation.
+              {currentUser?.email} in order to proceed with account creation.
             </Text>
             <Text className="mt-4">
               {"Once you've verified your email, refresh this page to log in."}
