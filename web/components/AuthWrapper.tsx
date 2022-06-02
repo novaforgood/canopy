@@ -4,6 +4,7 @@ import { AppProps } from "next/app";
 import router, { useRouter } from "next/router";
 
 import { Profile_Role_Enum } from "../generated/graphql";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { auth } from "../lib/firebase";
 import LoginPage from "../pages/login";
 
@@ -21,11 +22,19 @@ export default function AuthWrapper({
   requiredAuthorizations = [AuthenticationStatus.LoggedIn],
 }: AuthWrapperProps) {
   const router = useRouter();
-  const user = auth.currentUser;
+
+  const isLoggedIn = useIsLoggedIn();
 
   // If the user is not logged in, redirect to the login page.
-  if (requiredAuthorizations.includes(AuthenticationStatus.LoggedIn) && !user) {
-    router.push(`/login?redirect=${router.asPath}`);
+  if (
+    requiredAuthorizations.includes(AuthenticationStatus.LoggedIn) &&
+    !isLoggedIn
+  ) {
+    const prefix = router.asPath.split("?")[0];
+    if (prefix !== "/login") {
+      router.push(`/login?redirect=${router.asPath}`);
+      return <div>Redirecting to login...</div>;
+    }
   }
 
   // return original children if the user is logged ian.

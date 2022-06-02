@@ -13,6 +13,8 @@ export default function SpaceHomepage() {
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const { currentProfile, fetchingCurrentProfile } = useCurrentProfile();
 
+  console.log(fetchingCurrentProfile, fetchingCurrentSpace);
+  console.log(currentProfile, currentSpace);
   if (fetchingCurrentProfile || fetchingCurrentSpace) {
     return <div>Loading...</div>;
   }

@@ -31,3 +31,11 @@ export async function loadSession(
     return null;
   }
 }
+
+export function queryToString(
+  query: Record<string, string | string[] | undefined>
+) {
+  return Object.keys(query)
+    .map((key) => `${key}=${query[key]?.toString()}`)
+    .join("&");
+}

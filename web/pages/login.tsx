@@ -15,6 +15,7 @@ import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { useSignIn } from "../hooks/useSignIn";
 import { useUserData } from "../hooks/useUserData";
+import { queryToString } from "../lib";
 import { handleError } from "../lib/error";
 import { auth } from "../lib/firebase";
 import { CustomPage } from "../types";
@@ -95,6 +96,8 @@ const LoginPage: CustomPage = () => {
       });
   };
 
+  console.log(router);
+
   return (
     <div className="h-screen">
       {signingIn ? (
@@ -104,7 +107,9 @@ const LoginPage: CustomPage = () => {
       ) : (
         <TwoThirdsPageLayout>
           <div className="h-full flex flex-col items-start justify-center px-16">
-            <Text variant="heading2">Join Canopy</Text>
+            <Text variant="heading3">
+              Login{router.query.redirect && " to continue"}
+            </Text>
             <div className="h-8"></div>
             <button
               className="border rounded-md w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
@@ -159,7 +164,10 @@ const LoginPage: CustomPage = () => {
             <div className="h-8"></div>
             <Text>
               Need an account?{" "}
-              <a className="underline" href="/signup">
+              <a
+                className="underline"
+                href={`/signup?${queryToString(router.query)}`}
+              >
                 Sign up
               </a>
             </Text>

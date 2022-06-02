@@ -16,6 +16,7 @@ import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
+import { queryToString } from "../lib";
 import { auth } from "../lib/firebase";
 import { CustomPage } from "../types";
 
@@ -85,7 +86,9 @@ const SignUpPage: CustomPage = () => {
       ) : (
         <TwoThirdsPageLayout>
           <div className="h-full flex flex-col items-start justify-center px-16">
-            <Text variant="heading2">Join Canopy</Text>
+            <Text variant="heading3">
+              Sign up{router.query.redirect && " to continue"}
+            </Text>
             <div className="h-8"></div>
             <button
               className="border rounded-md w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
@@ -161,7 +164,10 @@ const SignUpPage: CustomPage = () => {
             <div className="h-8"></div>
             <Text>
               Already have an account?{" "}
-              <a className="underline" href="/login">
+              <a
+                className="underline"
+                href={`/login?${queryToString(router.query)}`}
+              >
                 Login
               </a>
             </Text>
