@@ -1,4 +1,10 @@
-# Mentor Center v3
+# Canopy
+
+Helping communities grow tight-knit support networks
+
+<p align="center">
+	<img src="/web/public/assets/canopyLogo.svg" width="200"/>
+</p>
 
 ## Setup dev environment
 
