@@ -9,8 +9,6 @@ import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
 import { CustomPage } from "../types";
 
-import type { NextPage } from "next";
-
 function LandingPage() {
   const router = useRouter();
   return (

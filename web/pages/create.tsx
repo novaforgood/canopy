@@ -87,6 +87,7 @@ const ALL_CREATE_STAGES = Object.values(CreateStage).map((val) => {
 type CreateProgramState = {
   enteredStages: CreateStage[];
   spaceName: string;
+  spaceDescription: string;
   spaceSlug: string;
   listingQuestions: Space_Listing_Question_Insert_Input[];
 };
@@ -94,6 +95,7 @@ type CreateProgramState = {
 const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   enteredStages: [CreateStage.EnterName],
   spaceName: "",
+  spaceDescription: "",
   spaceSlug: "",
   listingQuestions: [
     {
@@ -191,10 +193,13 @@ const CreatePage: CustomPage = () => {
             }
           }}
         />
-        <div className="relative w-full">
+        <div className="relative w-full h-full">
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
-              data={{ spaceName: state.spaceName }}
+              data={{
+                spaceName: state.spaceName,
+                spaceDescription: state.spaceDescription,
+              }}
               onChange={(newData) => {
                 const slug = slugifyAndAppendRandomString(newData.spaceName);
                 setState({ ...newData, spaceSlug: slug });
