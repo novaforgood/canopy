@@ -54,6 +54,10 @@ export function SpaceLandingPage() {
         {allProfileListings.map((listing, idx) => {
           const { first_name, last_name } = listing.profile.user;
 
+          const tagNames =
+            listing.profile_listing_to_space_tags?.map(
+              (tag) => tag.space_tag.label
+            ) ?? [];
           return (
             <ProfileCard
               key={idx}
@@ -64,7 +68,7 @@ export function SpaceLandingPage() {
               imageUrl={listing.profile_listing_image?.image.url}
               subtitle={listing.headline}
               descriptionTitle={"Topics"}
-              description={"(Tags here)"}
+              description={tagNames.join(", ")}
             />
           );
         })}
