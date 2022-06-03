@@ -62,7 +62,7 @@ export function SpaceLandingPage() {
               }}
               name={`${first_name} ${last_name}`}
               imageUrl={listing.profile_listing_image?.image.url}
-              subtitle={"Subtitle"}
+              subtitle={listing.headline}
               descriptionTitle={"Topics"}
               description={"(Tags here)"}
             />

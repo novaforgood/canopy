@@ -4,7 +4,6 @@ import classNames from "classnames";
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   onValueChange?: (value: string) => void;
-  prefix?: React.ReactNode;
 };
 
 export const Input = ({

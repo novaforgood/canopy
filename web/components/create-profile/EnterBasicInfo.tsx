@@ -4,15 +4,18 @@ import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
 
 import {
+  Profile_Listing_Update_Column,
   useInsertProfileImageMutation,
   useProfileImageQuery,
+  useUpsertProfileListingMutation,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
 import { uploadImage } from "../../lib/image";
-import { Text } from "../atomic";
+import { Input, Text, Textarea } from "../atomic";
 import { ImageUploader } from "../ImageUploader";
+import { TextInput } from "../inputs/TextInput";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
 
@@ -34,15 +37,23 @@ export function EnterBasicInfo(props: EnterNameProps) {
   const profileImageUrl =
     profileImageData?.profile_listing_image[0]?.image.url ?? null;
 
+  const [__, upsertProfileListing] = useUpsertProfileListingMutation();
+
   const editor = useRef<AvatarEditor | null>(null);
 
   const [image, setImage] = useState<string | null>(null);
-
   useEffect(() => {
     if (profileImageUrl) {
       setImage(profileImageUrl);
     }
   }, [profileImageUrl]);
+
+  const [headline, setHeadline] = useState("");
+  useEffect(() => {
+    if (currentProfile?.profile_listing?.headline) {
+      setHeadline(currentProfile.profile_listing.headline);
+    }
+  }, [currentProfile?.profile_listing?.headline]);
 
   return (
     <StageDisplayWrapper
@@ -67,6 +78,16 @@ export function EnterBasicInfo(props: EnterNameProps) {
           await insertProfileImage({
             image_id: imageId,
             profile_id: currentProfile.id,
+          });
+        }
+
+        if (headline) {
+          await upsertProfileListing({
+            profile_listing: {
+              headline,
+              profile_id: currentProfile.id,
+            },
+            update_columns: [Profile_Listing_Update_Column.Headline],
           });
         }
 
@@ -104,6 +125,25 @@ export function EnterBasicInfo(props: EnterNameProps) {
             editor.current = ref;
           }}
         />
+
+        <div className="h-8"></div>
+
+        <Text variant="subheading2" className="text-gray-600 font-bold">
+          Your headline
+        </Text>
+        <div className="h-2"></div>
+        <Text className="text-gray-600">
+          How would you describe yourself in a few words?
+        </Text>
+        <div className="h-6"></div>
+        <div className="w-120">
+          <TextInput
+            value={headline}
+            onValueChange={setHeadline}
+            characterLimit={100}
+            placeholder='Examples: "English Teacher at Taylor Middle School"'
+          />
+        </div>
       </div>
     </StageDisplayWrapper>
   );

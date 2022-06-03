@@ -19,6 +19,7 @@ query AllProfilesOfUser($user_id: String!) {
     profile_listing {
       id
       public
+      headline
       profile_listing_image {
         id
         image {
@@ -193,6 +194,8 @@ query ProfileListingsInSpace($space_id: uuid!) {
     where: { public: { _eq: true }, profile: { space_id: { _eq: $space_id } } }
   ) {
     id
+    public
+    headline
     profile_listing_image {
       id
       image {
@@ -217,6 +220,8 @@ query ProfileById($profile_id: uuid!) {
     created_at
     profile_listing {
       id
+      public
+      headline
       profile_listing_image {
         id
         image {
@@ -237,7 +242,6 @@ query ProfileById($profile_id: uuid!) {
           title
         }
       }
-      public
     }
     user {
       id
@@ -299,15 +303,19 @@ query ProfileListing($profile_listing_id: uuid!) {
   }
 }
 
-mutation UpsertProfileListing($profile_listing: profile_listing_insert_input!) {
+mutation UpsertProfileListing(
+  $profile_listing: profile_listing_insert_input!
+  $update_columns: [profile_listing_update_column!]!
+) {
   insert_profile_listing_one(
     object: $profile_listing
     on_conflict: {
       constraint: profile_listing_profile_id_key
-      update_columns: [public]
+      update_columns: $update_columns
     }
   ) {
     id
     public
+    headline
   }
 }

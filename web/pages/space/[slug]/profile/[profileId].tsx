@@ -189,9 +189,7 @@ export default function SpaceHomepage() {
                   {first_name} {last_name}
                 </Text>
                 <div className="h-1"></div>
-                <Text variant="body1">
-                  Hello! This is my profile summary or bio.
-                </Text>
+                <Text variant="body1">{listing.headline}</Text>
               </div>
             </div>
             <div className="h-16"></div>

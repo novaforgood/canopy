@@ -104,7 +104,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
       <EditorContent {...rest} editor={editor} />
       {characterLimit && (
         <div className="mt-1 flex justify-end text-gray-400 break-words w-full">
-          {editor?.storage.characterCount.characters()} / {characterLimit}{" "}
+          {editor?.storage.characterCount.characters()}/{characterLimit}{" "}
           characters
         </div>
       )}

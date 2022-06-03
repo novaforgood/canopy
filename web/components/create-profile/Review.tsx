@@ -4,7 +4,10 @@ import { useDisclosure } from "@mantine/hooks";
 import toast from "react-hot-toast";
 
 import { Button, Modal, Text } from "../../components/atomic";
-import { useUpsertProfileListingMutation } from "../../generated/graphql";
+import {
+  Profile_Listing_Update_Column,
+  useUpsertProfileListingMutation,
+} from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { EditProfileListing } from "../EditProfileListing";
 
@@ -66,6 +69,7 @@ export function Review(props: ReviewProps) {
                   profile_id: currentProfile.id,
                   public: true,
                 },
+                update_columns: [Profile_Listing_Update_Column.Public],
               });
               setLoadingPublish(false);
               publishModalHandlers.open();
