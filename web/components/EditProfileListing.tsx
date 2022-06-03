@@ -43,7 +43,12 @@ function EditProfileImage() {
     </>
   );
 }
-export function EditProfileListing() {
+interface EditProfileListingProps {
+  showPublishedToggle?: boolean;
+}
+export function EditProfileListing(props: EditProfileListingProps) {
+  const { showPublishedToggle = true } = props;
+
   const { currentProfile, currentProfileHasRole } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
   const { userData } = useUserData();
@@ -61,9 +66,11 @@ export function EditProfileListing() {
 
   return (
     <div className="">
-      <PublishedToggleSwitch
-        profileListingId={currentProfile.profile_listing?.id ?? ""}
-      />
+      {showPublishedToggle && (
+        <PublishedToggleSwitch
+          profileListingId={currentProfile.profile_listing?.id ?? ""}
+        />
+      )}
       <div className="h-4"></div>
       <div className="max-w-3xl border border-black rounded-lg w-full flex flex-col pb-12">
         <div className="h-20 bg-gray-100 rounded-t-lg"></div>
