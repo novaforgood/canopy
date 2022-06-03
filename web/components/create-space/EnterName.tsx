@@ -16,6 +16,7 @@ const SPACE_NAME_PLACEHOLDER = "Space Name";
 type EnterNameData = {
   spaceName: string;
   spaceDescription: string;
+  coverImage: { id: string; url: string } | null;
 };
 interface EnterNameProps {
   onComplete: () => void;
@@ -100,7 +101,10 @@ export function EnterName(props: EnterNameProps) {
             </Text>
             <div className="text-xs">{data.spaceDescription}</div>
           </div>
-          <SpaceCoverPhoto className="flex-1 bg-gray-50" />
+          <SpaceCoverPhoto
+            className="flex-1 bg-gray-50"
+            src={data.coverImage?.url}
+          />
         </div>
         <div className="w-full h-0.5 bg-gray-50 my-8"></div>
         <div className="grid grid-cols-4 gap-4 w-full">

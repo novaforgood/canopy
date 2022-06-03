@@ -52,8 +52,8 @@ enum CreateStage {
 
 const MAP_STAGE_TO_LABEL: Record<CreateStage, string> = {
   [CreateStage.EnterName]: "Name",
-  [CreateStage.EnterCoverPhoto]: "Cover photo",
-  [CreateStage.EnterProfileSchema]: "Mentor Profiles",
+  [CreateStage.EnterCoverPhoto]: "Cover Photo",
+  [CreateStage.EnterProfileSchema]: "Profile Page Format",
   [CreateStage.EnterSettings]: "Directory Settings",
 };
 
@@ -205,6 +205,7 @@ const CreatePage: CustomPage = () => {
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
               data={{
+                coverImage: state.coverImage,
                 spaceName: state.spaceName,
                 spaceDescription: state.spaceDescription,
               }}

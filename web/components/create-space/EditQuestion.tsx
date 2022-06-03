@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 
 import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
 import { Input, Text } from "../atomic";
+import { EditButton } from "../EditButton";
 import { ActionModal } from "../modals/ActionModal";
+
+const LOREM_IPSUM_PREFIX =
+  "Your community members will write their responses here. ";
+const LOREM_IPSUM =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Non tellus orci ac auctor augue mauris augue neque gravida. Quis blandit turpis cursus in hac habitasse platea. Aliquet lectus proin nibh nisl condimentum. Iaculis at erat pellentesque adipiscing commodo elit at imperdiet. Lectus mauris ultrices eros in cursus turpis massa. Dui id ornare arcu odio ut sem nulla. Egestas diam in arcu cursus euismod quis viverra nibh. Sit amet cursus sit amet dictum sit amet justo donec. In eu mi bibendum neque egestas congue quisque. Fermentum dui faucibus in ornare quam viverra orci sagittis. Orci a scelerisque purus semper eget duis at tellus at. Adipiscing enim eu turpis egestas pretium aenean. Tempus quam pellentesque nec nam aliquam sem. Pretium lectus quam id leo in vitae. Sed faucibus turpis in eu mi bibendum. Tortor pretium viverra suspendisse potenti nullam ac tortor vitae.";
 
 type EditQuestionProps = {
   question: Space_Listing_Question_Insert_Input;
@@ -59,18 +65,30 @@ export function EditQuestion(props: EditQuestionProps) {
           />
         </div>
       </ActionModal>
-      <div
-        className="flex flex-col pb-16 hover:ring cursor-pointer"
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
+      <div className="flex flex-col pb-16">
         <Text variant="subheading1">
-          {question.title} ({question.char_count} chars)
+          {question.title} ({question.char_count} chars){" "}
+          <EditButton
+            className="mb-1 ml-1"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          />
         </Text>
-        <div className="h-2"></div>
-        <Text variant="body1" className="text-gray-600">
-          Your community members will write their responses here.
+        <div className="h-1"></div>
+        <Text variant="body2" className="text-gray-600">
+          {LOREM_IPSUM_PREFIX}
+          <Text variant="body2" className="text-gray-200">
+            {LOREM_IPSUM.substring(
+              0,
+              question.char_count
+                ? Math.max(0, question.char_count - LOREM_IPSUM_PREFIX.length)
+                : 0
+            )}
+          </Text>
+        </Text>
+        <Text variant="body2" className="mt-2">
+          Character limit: {question.char_count}
         </Text>
       </div>
     </>
