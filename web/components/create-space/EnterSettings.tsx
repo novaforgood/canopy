@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Button, Input, Text } from "../atomic";
 import { TextInput } from "../inputs/TextInput";
@@ -7,13 +7,15 @@ type EnterSettingsData = {
   spaceSlug: string;
 };
 interface EnterSettingsProps {
-  onComplete: () => void;
+  onComplete: () => void | Promise<void>;
   data: EnterSettingsData;
   onChange: (newData: EnterSettingsData) => void;
 }
 
 export function EnterSettings(props: EnterSettingsProps) {
   const { onComplete = () => {}, data, onChange = () => {} } = props;
+
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="flex flex-col items-start w-full">
@@ -39,8 +41,11 @@ export function EnterSettings(props: EnterSettingsProps) {
         // disabled={!name}
         floating
         rounded
-        onClick={() => {
-          onComplete();
+        loading={loading}
+        onClick={async () => {
+          setLoading(true);
+          await onComplete();
+          setLoading(false);
         }}
       >
         Create program

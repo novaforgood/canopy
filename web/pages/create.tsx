@@ -266,7 +266,7 @@ const CreatePage: CustomPage = () => {
               onChange={(newData) => {
                 setState({ ...newData });
               }}
-              onComplete={() => {
+              onComplete={async () => {
                 createOwnerProfile({
                   space: {
                     name: state.spaceName,
@@ -280,9 +280,11 @@ const CreatePage: CustomPage = () => {
                       })),
                     },
 
-                    space_cover_image: {
-                      data: { image_id: state.coverImage?.id },
-                    },
+                    space_cover_image: state.coverImage
+                      ? {
+                          data: { image_id: state.coverImage.id },
+                        }
+                      : undefined,
                     space_tag_categories: {
                       data: state.tagCategories,
                     },
