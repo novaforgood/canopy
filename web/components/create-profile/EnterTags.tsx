@@ -1,11 +1,17 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+
+import toast from "react-hot-toast";
 
 import { Text } from "../../components/atomic";
 import {
   useSpaceTagCategoriesQuery,
   useProfileListingToSpaceTagQuery,
   useSpaceTagsQuery,
+  useSetProfileListingTagsMutation,
+  Profile_Listing_Constraint,
+  Profile_Listing_Update_Column,
 } from "../../generated/graphql";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { Tag } from "../Tag";
@@ -21,6 +27,8 @@ export function EnterTags(props: EnterTagsProps) {
   const { onComplete, onSkip } = props;
 
   const { currentSpace } = useCurrentSpace();
+  const { currentProfile } = useCurrentProfile();
+
   const [{ data: spaceTagCategoriesData }] = useSpaceTagCategoriesQuery({
     variables: { space_id: currentSpace?.id ?? "" },
   });
@@ -28,12 +36,44 @@ export function EnterTags(props: EnterTagsProps) {
     return spaceTagCategoriesData?.space_tag_category ?? [];
   }, [spaceTagCategoriesData?.space_tag_category]);
 
+  const [_, setProfileListingTags] = useSetProfileListingTagsMutation();
+
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+
+  const initSpaceTags =
+    currentProfile?.profile_listing?.profile_listing_to_space_tags;
+  useEffect(() => {
+    if (initSpaceTags) {
+      setSelectedTags(new Set(initSpaceTags.map((item) => item.space_tag_id)));
+    }
+  }, [initSpaceTags]);
 
   return (
     <StageDisplayWrapper
       title="Tags"
-      onPrimaryAction={onComplete}
+      onPrimaryAction={async () => {
+        if (!currentProfile) {
+          toast.error("No current profile");
+          return;
+        }
+        await setProfileListingTags({
+          profile_id: currentProfile.id,
+          inputs: Array.from(selectedTags).map((tagId) => ({
+            space_tag_id: tagId,
+            profile_listing: {
+              data: {
+                profile_id: currentProfile.id,
+              },
+              on_conflict: {
+                constraint:
+                  Profile_Listing_Constraint.ProfileListingProfileIdKey,
+                update_columns: [Profile_Listing_Update_Column.ProfileId],
+              },
+            },
+          })),
+        });
+        onComplete();
+      }}
       onSecondaryAction={onSkip}
     >
       <div className="flex flex-col items-start gap-16">
@@ -48,10 +88,12 @@ export function EnterTags(props: EnterTagsProps) {
               <div className="flex items-center gap-16">
                 <div className="w-72">
                   <SelectAutocomplete
-                    options={category.space_tags.map((tag) => ({
-                      label: tag.label,
-                      value: tag.id,
-                    }))}
+                    options={category.space_tags
+                      .map((tag) => ({
+                        label: tag.label,
+                        value: tag.id,
+                      }))
+                      .filter((tag) => !selectedTags.has(tag.value))}
                     value={null}
                     onSelect={(value) => {
                       if (!value) return;

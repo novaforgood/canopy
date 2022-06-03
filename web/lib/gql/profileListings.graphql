@@ -130,3 +130,42 @@ mutation UpdateListingSocials(
     }
   }
 }
+
+## Tags
+
+mutation SetProfileListingTags(
+  $profile_id: uuid!
+  $inputs: [profile_listing_to_space_tag_insert_input!]!
+) {
+  delete_profile_listing_to_space_tag(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
+    returning {
+      id
+      space_tag {
+        id
+        label
+        space_tag_category_id
+      }
+      profile_listing {
+        id
+        profile_id
+      }
+    }
+  }
+  insert_profile_listing_to_space_tag(objects: $inputs) {
+    returning {
+      id
+      profile_listing_id
+      space_tag {
+        id
+        label
+        space_tag_category_id
+      }
+      profile_listing {
+        id
+        profile_id
+      }
+    }
+  }
+}

@@ -27,7 +27,12 @@ query AllProfilesOfUser($user_id: String!) {
           url
         }
       }
+      profile_listing_to_space_tags {
+        id
+        space_tag_id
+      }
     }
+
     flattened_profile_roles {
       id
       profile_id

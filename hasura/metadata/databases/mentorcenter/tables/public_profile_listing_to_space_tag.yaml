@@ -8,6 +8,19 @@ object_relationships:
   - name: space_tag
     using:
       foreign_key_constraint_on: space_tag_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - profile_listing:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id
+      columns:
+        - profile_listing_id
+        - space_tag_id
+      backend_only: false
 select_permissions:
   - role: user
     permission:
@@ -23,3 +36,25 @@ select_permissions:
                   profiles:
                     user_id:
                       _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - profile_listing_id
+        - space_tag_id
+      filter:
+        _or:
+          - profile_listing:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - profile_listing:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id

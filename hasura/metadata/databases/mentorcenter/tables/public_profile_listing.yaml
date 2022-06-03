@@ -29,6 +29,13 @@ array_relationships:
         table:
           schema: public
           name: profile_listing_social
+  - name: profile_listing_to_space_tags
+    using:
+      foreign_key_constraint_on:
+        column: profile_listing_id
+        table:
+          schema: public
+          name: profile_listing_to_space_tag
 insert_permissions:
   - role: user
     permission:

@@ -1,11 +1,11 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 
 import { Button, Text } from "../../components/atomic";
 
 interface StageDisplayWrapperProps {
   children: ReactNode;
   title: string;
-  onPrimaryAction?: () => void;
+  onPrimaryAction?: () => void | Promise<void>;
   onSecondaryAction?: () => void;
   showActions?: boolean;
 }
@@ -19,6 +19,7 @@ export function StageDisplayWrapper(props: StageDisplayWrapperProps) {
     showActions = true,
   } = props;
 
+  const [loading, setLoading] = useState(false);
   return (
     <div className="py-20 pl-16 flex flex-col justify-between min-h-screen">
       <div>
@@ -27,7 +28,15 @@ export function StageDisplayWrapper(props: StageDisplayWrapperProps) {
       </div>
       {showActions && (
         <div className="flex">
-          <Button variant="primary" rounded onClick={onPrimaryAction}>
+          <Button
+            variant="primary"
+            rounded
+            onClick={async () => {
+              setLoading(true);
+              await onPrimaryAction();
+              setLoading(false);
+            }}
+          >
             Save and continue
           </Button>
           <Button variant="secondary" onClick={onSecondaryAction}>
