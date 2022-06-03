@@ -83,7 +83,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
               </Text>
               <div className="h-1"></div>
               <Text variant="body1">
-                Hello! This is my profile summary or bio.
+                {currentProfile.profile_listing?.headline}
               </Text>
             </div>
           </div>
