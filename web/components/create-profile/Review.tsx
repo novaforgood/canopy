@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { Button, Text } from "../../components/atomic";
+import { useDisclosure } from "@mantine/hooks";
+import toast from "react-hot-toast";
+
+import { Button, Modal, Text } from "../../components/atomic";
+import { useUpsertProfileListingMutation } from "../../generated/graphql";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { EditProfileListing } from "../EditProfileListing";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
@@ -8,11 +13,19 @@ import { StepDisplay } from "./StepDisplay";
 
 interface ReviewProps {
   onComplete: () => void;
-  onSkip: () => void;
 }
 
 export function Review(props: ReviewProps) {
-  const { onComplete, onSkip } = props;
+  const { onComplete } = props;
+
+  const { currentProfile } = useCurrentProfile();
+
+  const [_, upsertProfileListing] = useUpsertProfileListingMutation();
+
+  const [publishModalOpened, publishModalHandlers] = useDisclosure(false);
+  const [loadingPublish, setLoadingPublish] = useState(false);
+
+  const [savedModalOpened, savedModalHandlers] = useDisclosure(false);
 
   return (
     <StageDisplayWrapper
@@ -41,6 +54,22 @@ export function Review(props: ReviewProps) {
             variant="primary"
             rounded
             className="w-64 flex items-center justify-center"
+            loading={loadingPublish}
+            onClick={async () => {
+              if (!currentProfile) {
+                toast.error("No current profile");
+                return;
+              }
+              setLoadingPublish(true);
+              await upsertProfileListing({
+                profile_listing: {
+                  profile_id: currentProfile.id,
+                  public: true,
+                },
+              });
+              setLoadingPublish(false);
+              publishModalHandlers.open();
+            }}
           >
             Publish my profile
           </Button>
@@ -48,6 +77,7 @@ export function Review(props: ReviewProps) {
             variant="outline"
             rounded
             className="w-64 flex items-center justify-center"
+            onClick={savedModalHandlers.open}
           >
             Save without publishing
           </Button>
@@ -56,6 +86,36 @@ export function Review(props: ReviewProps) {
         <Text variant="body2" className="text-gray-600">
           Remember, you can edit your profile in “My Account” at any time.
         </Text>
+
+        <Modal isOpen={publishModalOpened} onClose={() => {}}>
+          <div className="bg-white px-12 py-16 rounded-md">
+            <div className="w-56 flex flex-col items-center">
+              <Text variant="heading4">Your profile is live!</Text>
+              <div className="h-8"></div>
+              <Text>Check out the homepage to see your published profile.</Text>
+              <div className="h-12"></div>
+              <Button onClick={onComplete} rounded>
+                Go to homepage
+              </Button>
+            </div>
+          </div>
+        </Modal>
+
+        <Modal isOpen={savedModalOpened} onClose={() => {}}>
+          <div className="bg-white px-12 py-16 rounded-md">
+            <div className="w-56 flex flex-col items-center">
+              <Text variant="heading4">Profile saved!</Text>
+              <div className="h-8"></div>
+              <Text>
+                Check out the homepage to see other profiles in the space.
+              </Text>
+              <div className="h-12"></div>
+              <Button onClick={onComplete} rounded>
+                Go to homepage
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </StageDisplayWrapper>
   );

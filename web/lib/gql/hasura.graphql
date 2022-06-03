@@ -299,44 +299,15 @@ query ProfileListing($profile_listing_id: uuid!) {
   }
 }
 
-mutation UpdateProfileListing(
-  $profile_listing_id: uuid!
-  $profile_listing: profile_listing_set_input!
-) {
-  update_profile_listing_by_pk(
-    pk_columns: { id: $profile_listing_id }
-    _set: $profile_listing
+mutation UpsertProfileListing($profile_listing: profile_listing_insert_input!) {
+  insert_profile_listing_one(
+    object: $profile_listing
+    on_conflict: {
+      constraint: profile_listing_profile_id_key
+      update_columns: [public]
+    }
   ) {
     id
-    profile_listing_image {
-      id
-      image {
-        id
-        url
-      }
-    }
-    profile_listing_socials {
-      id
-      link
-      type
-    }
-    profile_listing_responses {
-      id
-      response_html
-      space_listing_question {
-        id
-        title
-      }
-    }
-    profile {
-      id
-      user {
-        id
-        first_name
-        last_name
-        email
-      }
-    }
     public
   }
 }

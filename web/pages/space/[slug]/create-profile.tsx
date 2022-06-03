@@ -196,10 +196,7 @@ export default function ListerOnboardingPage() {
         <FadeTransition show={stageDisplayed === ListerStage.Review}>
           <Review
             onComplete={() => {
-              router.push(`/space/${currentSpace?.id}`);
-            }}
-            onSkip={() => {
-              router.push(`/space/${currentSpace?.id}`);
+              router.push(`/space/${currentSpace?.slug}`);
             }}
           />
         </FadeTransition>
