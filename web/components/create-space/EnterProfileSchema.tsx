@@ -58,11 +58,31 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
                         ],
                       });
                     }}
+                    onDelete={() => {
+                      onChange({
+                        listingQuestions: [
+                          ...data.listingQuestions.slice(0, index),
+                          ...data.listingQuestions.slice(index + 1),
+                        ],
+                      });
+                    }}
                     key={index}
                   />
                 );
               })}
-              <AddSectionButton />
+              <AddSectionButton
+                onClick={() => {
+                  onChange({
+                    listingQuestions: [
+                      ...data.listingQuestions,
+                      {
+                        title: "New Profile Question",
+                        char_count: 200,
+                      },
+                    ],
+                  });
+                }}
+              />
             </div>
             <div>
               <div className="h-24 bg-gray-50 p-4 rounded-md">Tags go here</div>
