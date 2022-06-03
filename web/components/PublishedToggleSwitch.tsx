@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 import { Text } from "../components/atomic";
 import {
+  Profile_Listing_Update_Column,
   useProfileListingQuery,
   useUpsertProfileListingMutation,
 } from "../generated/graphql";
@@ -48,6 +49,7 @@ export default function PublishedToggleSwitch(
                 public: newVal,
                 profile_id: currentProfile.id,
               },
+              update_columns: [Profile_Listing_Update_Column.Public],
             }),
             {
               loading: "Loading",
