@@ -180,8 +180,9 @@ query ProfileListingToSpaceTag($profile_id: uuid!) {
 }
 
 query SpaceTags($space_tag_category_id: uuid!) {
-  space_tag(where: { space_tag_category_id: {} }) {
+  space_tag(where: { space_tag_category_id: { _eq: $space_tag_category_id } }) {
     id
+    label
     space_tag_category {
       space_id
       title
