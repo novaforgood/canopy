@@ -1,6 +1,14 @@
 table:
   schema: public
   name: space
+object_relationships:
+  - name: space_cover_image
+    using:
+      foreign_key_constraint_on:
+        column: space_id
+        table:
+          schema: public
+          name: space_cover_image
 array_relationships:
   - name: profiles
     using:

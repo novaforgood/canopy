@@ -264,6 +264,9 @@ const CreatePage: CustomPage = () => {
                         listing_order: index,
                       })),
                     },
+                    space_cover_image: {
+                      data: { image_id: state.coverImage?.id },
+                    },
                   },
                   user_id: userData.id,
                 }).then((result) => {

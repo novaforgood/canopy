@@ -87,6 +87,13 @@ mutation CreateOwnerProfileInNewSpace(
         space_id
         title
       }
+      space_cover_image {
+        id
+        image {
+          id
+          url
+        }
+      }
     }
   }
 }
