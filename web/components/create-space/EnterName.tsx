@@ -7,6 +7,7 @@ import { useCreateOwnerProfileInNewSpaceMutation } from "../../generated/graphql
 import { BxCaretDown } from "../../generated/icons/regular";
 import { useUserData } from "../../hooks/useUserData";
 import { Button, Input, Text, Textarea } from "../atomic";
+import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 const ARRAY_LENGTH_8 = new Array(8).fill(0);
 
@@ -99,7 +100,7 @@ export function EnterName(props: EnterNameProps) {
             </Text>
             <div className="text-xs">{data.spaceDescription}</div>
           </div>
-          <div className="h-32 flex-1 shrink-0 bg-gray-50 rounded-md"></div>
+          <SpaceCoverPhoto className="flex-1 bg-gray-50" />
         </div>
         <div className="w-full h-0.5 bg-gray-50 my-8"></div>
         <div className="grid grid-cols-4 gap-4 w-full">

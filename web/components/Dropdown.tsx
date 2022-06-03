@@ -9,7 +9,11 @@ import {
   useAllProfilesOfUserQuery,
 } from "../generated/graphql";
 import { BxCaretDown, BxLogOut, BxTransfer } from "../generated/icons/regular";
-import { BxsUserAccount, BxsWrench } from "../generated/icons/solid";
+import {
+  BxsAddToQueue,
+  BxsUserAccount,
+  BxsWrench,
+} from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
@@ -130,6 +134,30 @@ export function Dropdown() {
                     </Menu.Item>
                   );
                 })}
+
+                <Menu.Item>
+                  {({ active }) => {
+                    const styles = classNames({
+                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                        true,
+                      "bg-white": !active,
+                      "bg-gray-50": active,
+                    });
+                    return (
+                      <button
+                        className={styles}
+                        onClick={() => {
+                          router.push(`/create`);
+                        }}
+                      >
+                        <BxsAddToQueue className="w-5 h-5 mr-2" />
+                        <Text bold variant="body2">
+                          Create a space
+                        </Text>
+                      </button>
+                    );
+                  }}
+                </Menu.Item>
 
                 <Menu.Item>
                   {({ active }) => {

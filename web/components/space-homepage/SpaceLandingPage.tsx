@@ -1,4 +1,5 @@
-import { useElementSize } from "@mantine/hooks";
+import { ImgHTMLAttributes } from "react";
+
 import { useRouter } from "next/router";
 
 import { useProfileListingsInSpaceQuery } from "../../generated/graphql";
@@ -6,15 +7,12 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
 import { Text } from "../atomic";
 import { ProfileCard } from "../ProfileCard";
+import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 import { SearchBar } from "./SearchBar";
 
 function SpaceSplashPage() {
   const { currentSpace } = useCurrentSpace();
-
-  const { ref, width } = useElementSize();
-
-  const desiredHeight = (width * 3) / 4;
 
   return (
     <div className="flex items-center">
@@ -24,11 +22,7 @@ function SpaceSplashPage() {
         <Text>Lorem ipsum</Text>
       </div>
       <div className="flex-1 self-stretch">
-        <div
-          ref={ref}
-          className="h-full w-full bg-gray-50"
-          style={{ height: desiredHeight }}
-        ></div>
+        <SpaceCoverPhoto className="h-full w-full bg-gray-50"></SpaceCoverPhoto>
       </div>
     </div>
   );
