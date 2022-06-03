@@ -31,6 +31,7 @@ insert_permissions:
         owner_id:
           _eq: X-Hasura-User-Id
       columns:
+        - description_html
         - name
         - owner_id
         - slug
@@ -39,9 +40,28 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - created_at
+        - description_html
+        - id
         - name
         - owner_id
         - slug
-        - created_at
-        - id
       filter: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - description_html
+        - name
+        - owner_id
+        - slug
+      filter:
+        owner_id:
+          _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        owner_id:
+          _eq: X-Hasura-User-Id

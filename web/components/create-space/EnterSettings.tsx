@@ -43,7 +43,7 @@ export function EnterSettings(props: EnterSettingsProps) {
           onComplete();
         }}
       >
-        Save and continue
+        Create program
       </Button>
     </div>
   );

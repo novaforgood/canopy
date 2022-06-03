@@ -50,6 +50,7 @@ query SpaceBySlug($slug: String!) {
   space(where: { slug: { _eq: $slug } }) {
     id
     name
+    description_html
     slug
     owner_id
     space_listing_questions(order_by: { listing_order: asc }) {
@@ -58,6 +59,13 @@ query SpaceBySlug($slug: String!) {
       space_id
       title
       listing_order
+    }
+    space_cover_image {
+      id
+      image {
+        id
+        url
+      }
     }
   }
 }
@@ -79,6 +87,7 @@ mutation CreateOwnerProfileInNewSpace(
     space {
       id
       name
+      description_html
       slug
       owner_id
       space_listing_questions {

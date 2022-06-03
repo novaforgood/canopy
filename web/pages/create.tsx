@@ -105,11 +105,11 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   listingQuestions: [
     {
       title: "About me",
-      char_count: 100,
+      char_count: 200,
     },
     {
       title: "You can talk to me about",
-      char_count: 100,
+      char_count: 200,
     },
   ],
 };
@@ -256,6 +256,7 @@ const CreatePage: CustomPage = () => {
                 createOwnerProfile({
                   space: {
                     name: state.spaceName,
+                    description_html: state.spaceDescription ?? undefined,
                     owner_id: userData.id,
                     slug: state.spaceSlug,
                     space_listing_questions: {

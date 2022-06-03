@@ -8,6 +8,7 @@ import { BxCaretDown } from "../../generated/icons/regular";
 import { BxsCloudUpload } from "../../generated/icons/solid";
 import { uploadImage } from "../../lib/image";
 import { Button, Input, Text } from "../atomic";
+import { HtmlDisplay } from "../HtmlDisplay";
 import { ImageUploader } from "../ImageUploader";
 import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
@@ -136,7 +137,7 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
         <div className="flex w-full items-center gap-4">
           <div className="flex-1 flex flex-col items-start gap-2 p-2">
             <Text variant="heading4">{data.spaceName}</Text>
-            <div className="text-xs">{data.spaceDescription}</div>
+            <HtmlDisplay html={data.spaceDescription} className="text-xs" />
           </div>
           <SpaceCoverPhoto
             className="flex-1 bg-teal-50 animate-pulse"

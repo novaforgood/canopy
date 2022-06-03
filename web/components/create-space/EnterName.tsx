@@ -7,6 +7,8 @@ import { useCreateOwnerProfileInNewSpaceMutation } from "../../generated/graphql
 import { BxCaretDown } from "../../generated/icons/regular";
 import { useUserData } from "../../hooks/useUserData";
 import { Button, Input, Text, Textarea } from "../atomic";
+import { HtmlDisplay } from "../HtmlDisplay";
+import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
 import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 const ARRAY_LENGTH_8 = new Array(8).fill(0);
@@ -37,12 +39,12 @@ export function EnterName(props: EnterNameProps) {
     <div className="flex gap-20 justify-start items-start h-full">
       <div className="flex flex-col items-start justify-between h-full w-full">
         <div className="h-10"></div>
-        <Text variant="heading3">What is the name of your community?</Text>
-        <div className="h-2"></div>
-        <Text variant="subheading2" className="text-gray-600">
+        <Text variant="heading4">What is the name of your community?</Text>
+        <div className="h-1"></div>
+        <Text variant="body1" className="text-gray-600">
           This will become the name of your directory.
         </Text>
-        <div className="h-8"></div>
+        <div className="h-6"></div>
         <Input
           className="w-120"
           value={data.spaceName}
@@ -52,19 +54,20 @@ export function EnterName(props: EnterNameProps) {
           placeholder="Ex. Rainbow Buddies, UCLA SWE, etc."
         />
         <div className="h-24"></div>
-        <Text variant="heading3">Tell us about your community.</Text>
-        <div className="h-2"></div>
-        <Text variant="subheading2" className="text-gray-600">
+        <Text variant="heading4">Tell us about your community.</Text>
+        <div className="h-1"></div>
+        <Text variant="body1" className="text-gray-600">
           This will become the description on your directory homepage (you can
           change this anytime).
         </Text>
-        <div className="h-8"></div>
-        <Textarea
+        <div className="h-6"></div>
+        <SimpleRichTextInput
           className="w-120"
           value={data.spaceDescription}
-          onValueChange={(value) => {
-            onChange({ ...data, spaceDescription: value });
+          onUpdate={({ editor }) => {
+            onChange({ ...data, spaceDescription: editor.getHTML() });
           }}
+          characterLimit={300}
           placeholder="Ex. A community of people who love bunnies."
         />
         <div className="h-20"></div>
@@ -99,7 +102,7 @@ export function EnterName(props: EnterNameProps) {
             <Text variant="heading4">
               {data.spaceName || SPACE_NAME_PLACEHOLDER}
             </Text>
-            <div className="text-xs">{data.spaceDescription}</div>
+            <HtmlDisplay html={data.spaceDescription} className="text-xs" />
           </div>
           <SpaceCoverPhoto
             className="flex-1 bg-gray-50"
