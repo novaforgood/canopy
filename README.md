@@ -1,4 +1,5 @@
-<p align="center">
+<br/><br/>
+<p align="center" style="marginTop:>
 	<img src="/web/public/assets/canopyLogo.svg" width="200"/>
 </p>
 
