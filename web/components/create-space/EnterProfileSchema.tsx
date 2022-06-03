@@ -1,13 +1,18 @@
 import React from "react";
 
-import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
+import {
+  Space_Listing_Question_Insert_Input,
+  Space_Tag_Category_Insert_Input,
+} from "../../generated/graphql";
 import { Button, Text } from "../atomic";
 
 import { AddSectionButton } from "./AddSectionButton";
 import { EditQuestion } from "./EditQuestion";
+import { EditTagCategory } from "./EditTagCategory";
 
 type EnterProfileSchemaData = {
   listingQuestions: Space_Listing_Question_Insert_Input[];
+  tagCategories: Space_Tag_Category_Insert_Input[];
 };
 
 export interface EnterProfileSchemaProps {
@@ -56,6 +61,7 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
                           newQuestion,
                           ...data.listingQuestions.slice(index + 1),
                         ],
+                        tagCategories: data.tagCategories,
                       });
                     }}
                     onDelete={() => {
@@ -64,6 +70,7 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
                           ...data.listingQuestions.slice(0, index),
                           ...data.listingQuestions.slice(index + 1),
                         ],
+                        tagCategories: data.tagCategories,
                       });
                     }}
                     key={index}
@@ -80,14 +87,55 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
                         char_count: 200,
                       },
                     ],
+                    tagCategories: data.tagCategories,
                   });
                 }}
               />
             </div>
-            <div>
-              <div className="h-24 bg-gray-50 p-4 rounded-md">Tags go here</div>
+            <div className="flex flex-col">
+              <div className="bg-gray-50 rounded-md p-4">
+                {data.tagCategories.map((tagCategory, index) => {
+                  return (
+                    <EditTagCategory
+                      tagCategory={tagCategory}
+                      onSave={(newTagCategory) => {
+                        onChange({
+                          tagCategories: [
+                            ...data.tagCategories.slice(0, index),
+                            newTagCategory,
+                            ...data.tagCategories.slice(index + 1),
+                          ],
+                          listingQuestions: data.listingQuestions,
+                        });
+                      }}
+                      onDelete={() => {
+                        onChange({
+                          tagCategories: [
+                            ...data.tagCategories.slice(0, index),
+                            ...data.tagCategories.slice(index + 1),
+                          ],
+                          listingQuestions: data.listingQuestions,
+                        });
+                      }}
+                      key={index}
+                    />
+                  );
+                })}
+              </div>
               <div className="h-2"></div>
-              <AddSectionButton />
+              <AddSectionButton
+                onClick={() => {
+                  onChange({
+                    tagCategories: [
+                      ...data.tagCategories,
+                      {
+                        title: "New Tag Category",
+                      },
+                    ],
+                    listingQuestions: data.listingQuestions,
+                  });
+                }}
+              />
             </div>
           </div>
         </div>
