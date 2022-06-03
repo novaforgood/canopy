@@ -1,34 +1,32 @@
-import { useElementSize } from "@mantine/hooks";
+import { ImgHTMLAttributes } from "react";
+
 import { useRouter } from "next/router";
 
 import { useProfileListingsInSpaceQuery } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
 import { Text } from "../atomic";
+import { HtmlDisplay } from "../HtmlDisplay";
 import { ProfileCard } from "../ProfileCard";
+import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 import { SearchBar } from "./SearchBar";
 
 function SpaceSplashPage() {
   const { currentSpace } = useCurrentSpace();
 
-  const { ref, width } = useElementSize();
-
-  const desiredHeight = (width * 3) / 4;
-
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-8">
       <div className="flex flex-col flex-1">
         <Text variant="heading1">{currentSpace?.name}</Text>
-        <div className="h-10"></div>
-        <Text>Lorem ipsum</Text>
+        <div className="h-8"></div>
+        <HtmlDisplay html={currentSpace?.description_html ?? ""} />
       </div>
       <div className="flex-1 self-stretch">
-        <div
-          ref={ref}
+        <SpaceCoverPhoto
           className="h-full w-full bg-gray-50"
-          style={{ height: desiredHeight }}
-        ></div>
+          src={currentSpace?.space_cover_image?.image.url}
+        ></SpaceCoverPhoto>
       </div>
     </div>
   );
@@ -64,7 +62,7 @@ export function SpaceLandingPage() {
               }}
               name={`${first_name} ${last_name}`}
               imageUrl={listing.profile_listing_image?.image.url}
-              subtitle={"Subtitle"}
+              subtitle={listing.headline}
               descriptionTitle={"Topics"}
               description={"(Tags here)"}
             />

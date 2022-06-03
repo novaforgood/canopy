@@ -9,7 +9,7 @@ export function Navbar() {
 
   return (
     <div className="flex items-center justify-between mt-12">
-      <Text variant="heading3">{currentSpace?.name}</Text>
+      <Text variant="heading4">{currentSpace?.name}</Text>
       <Dropdown />
     </div>
   );

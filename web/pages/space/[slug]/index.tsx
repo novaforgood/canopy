@@ -8,8 +8,6 @@ import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 
 export default function SpaceHomepage() {
-  const router = useRouter();
-
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const { currentProfile, fetchingCurrentProfile } = useCurrentProfile();
 

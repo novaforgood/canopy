@@ -10,6 +10,7 @@ import {
   EditorEvents,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import classNames from "classnames";
 
 type SimpleRichTextInputProps = Omit<EditorContentProps, "editor" | "ref"> & {
   placeholder?: string;
@@ -33,6 +34,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     initContent,
     unstyled = false,
     onUpdate = () => {},
+    className,
     ...rest
   } = props;
 
@@ -93,12 +95,16 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     editor.commands.setContent(initContent);
   }, [editor, initContent]);
 
+  const styles = classNames({
+    "w-full": true,
+    [`${className}`]: true,
+  });
   return (
-    <div className="w-full">
+    <div className={styles}>
       <EditorContent {...rest} editor={editor} />
       {characterLimit && (
-        <div className="mt-1 flex justify-end text-gray-400 break-words">
-          {editor?.storage.characterCount.characters()} / {characterLimit}{" "}
+        <div className="mt-1 flex justify-end text-gray-400 break-words w-full">
+          {editor?.storage.characterCount.characters()}/{characterLimit}{" "}
           characters
         </div>
       )}

@@ -19,6 +19,7 @@ query AllProfilesOfUser($user_id: String!) {
     profile_listing {
       id
       public
+      headline
       profile_listing_image {
         id
         image {
@@ -50,6 +51,7 @@ query SpaceBySlug($slug: String!) {
   space(where: { slug: { _eq: $slug } }) {
     id
     name
+    description_html
     slug
     owner_id
     space_listing_questions(order_by: { listing_order: asc }) {
@@ -58,6 +60,13 @@ query SpaceBySlug($slug: String!) {
       space_id
       title
       listing_order
+    }
+    space_cover_image {
+      id
+      image {
+        id
+        url
+      }
     }
   }
 }
@@ -79,6 +88,7 @@ mutation CreateOwnerProfileInNewSpace(
     space {
       id
       name
+      description_html
       slug
       owner_id
       space_listing_questions {
@@ -86,6 +96,13 @@ mutation CreateOwnerProfileInNewSpace(
         id
         space_id
         title
+      }
+      space_cover_image {
+        id
+        image {
+          id
+          url
+        }
       }
     }
   }
@@ -177,6 +194,8 @@ query ProfileListingsInSpace($space_id: uuid!) {
     where: { public: { _eq: true }, profile: { space_id: { _eq: $space_id } } }
   ) {
     id
+    public
+    headline
     profile_listing_image {
       id
       image {
@@ -201,6 +220,8 @@ query ProfileById($profile_id: uuid!) {
     created_at
     profile_listing {
       id
+      public
+      headline
       profile_listing_image {
         id
         image {
@@ -221,7 +242,6 @@ query ProfileById($profile_id: uuid!) {
           title
         }
       }
-      public
     }
     user {
       id
@@ -283,44 +303,19 @@ query ProfileListing($profile_listing_id: uuid!) {
   }
 }
 
-mutation UpdateProfileListing(
-  $profile_listing_id: uuid!
-  $profile_listing: profile_listing_set_input!
+mutation UpsertProfileListing(
+  $profile_listing: profile_listing_insert_input!
+  $update_columns: [profile_listing_update_column!]!
 ) {
-  update_profile_listing_by_pk(
-    pk_columns: { id: $profile_listing_id }
-    _set: $profile_listing
+  insert_profile_listing_one(
+    object: $profile_listing
+    on_conflict: {
+      constraint: profile_listing_profile_id_key
+      update_columns: $update_columns
+    }
   ) {
     id
-    profile_listing_image {
-      id
-      image {
-        id
-        url
-      }
-    }
-    profile_listing_socials {
-      id
-      link
-      type
-    }
-    profile_listing_responses {
-      id
-      response_html
-      space_listing_question {
-        id
-        title
-      }
-    }
-    profile {
-      id
-      user {
-        id
-        first_name
-        last_name
-        email
-      }
-    }
     public
+    headline
   }
 }

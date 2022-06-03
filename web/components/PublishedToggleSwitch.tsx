@@ -3,13 +3,13 @@ import toast from "react-hot-toast";
 
 import { Text } from "../components/atomic";
 import {
+  Profile_Listing_Update_Column,
   useProfileListingQuery,
-  useUpdateProfileListingMutation,
+  useUpsertProfileListingMutation,
 } from "../generated/graphql";
 import { BxsHide, BxsShow } from "../generated/icons/solid";
+import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
-
-import { FadeTransition } from "./transitions/FadeTransition";
 
 interface PublishedToggleSwitchProps {
   profileListingId: string;
@@ -20,12 +20,13 @@ export default function PublishedToggleSwitch(
   const { profileListingId } = props;
 
   const { currentSpace } = useCurrentSpace();
+  const { currentProfile } = useCurrentProfile();
 
   const [{ data: profileListingData }] = useProfileListingQuery({
     variables: { profile_listing_id: profileListingId },
   });
 
-  const [_, updateProfileListing] = useUpdateProfileListingMutation();
+  const [_, upsertProfileListing] = useUpsertProfileListingMutation();
 
   if (!profileListingData?.profile_listing_by_pk) {
     return null;
@@ -38,10 +39,17 @@ export default function PublishedToggleSwitch(
       <Switch
         checked={profileIsPublic}
         onChange={async (newVal) => {
+          if (!currentProfile) {
+            toast.error("No current profile");
+            return;
+          }
           toast.promise(
-            updateProfileListing({
-              profile_listing_id: profileListingId,
-              profile_listing: { public: newVal },
+            upsertProfileListing({
+              profile_listing: {
+                public: newVal,
+                profile_id: currentProfile.id,
+              },
+              update_columns: [Profile_Listing_Update_Column.Public],
             }),
             {
               loading: "Loading",

@@ -10,7 +10,7 @@ import { ProfileImage } from "./ProfileImage";
 interface ProfileCardProps {
   imageUrl?: string;
   name: string;
-  subtitle: string;
+  subtitle?: string | null;
   descriptionTitle: string;
   description: string;
   onClick?: () => void;
@@ -49,7 +49,7 @@ export function ProfileCard(props: ProfileCardProps) {
         <div className="pb-2 pt-4 text-2xl font-semibold text-left truncate w-full">
           {name}
         </div>
-        <div className="mb-4 text-md pb-4">{subtitle}</div>
+        <div className="mb-4 text-md pb-4">{subtitle ?? "‎"}</div>
         <div className="pb-2">
           <i>{descriptionTitle}</i>
         </div>

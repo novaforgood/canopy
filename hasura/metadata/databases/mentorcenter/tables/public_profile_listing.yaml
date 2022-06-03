@@ -51,6 +51,7 @@ insert_permissions:
                     schema: public
                     name: profile_to_profile_role_flattened
       columns:
+        - headline
         - profile_id
         - public
       backend_only: false
@@ -58,6 +59,7 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - headline
         - id
         - profile_id
         - public
@@ -78,6 +80,7 @@ update_permissions:
   - role: user
     permission:
       columns:
+        - headline
         - profile_id
         - public
       filter:

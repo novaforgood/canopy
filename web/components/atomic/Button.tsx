@@ -43,22 +43,21 @@ export const Button = ({
   disabled = loading || disabled;
 
   const secondaryStyles = classNames({
-    ["underline border border-transparent rounded-md px-7 py-1.5 flex items-center"]:
+    ["underline border border-transparent rounded-md px-8 py-3 flex items-center"]:
       true,
     ["hover:text-gray-500 text-gray-600"]: !disabled,
     ["text-gray-400"]: disabled,
-    [`${className}`]: className,
   });
 
   const primaryStyles = classNames({
-    ["border border-black px-7 py-1.5 flex items-center"]: true,
+    ["border border-black px-8 py-3 flex items-center"]: true,
     ["text-white"]: variant === "primary",
     ["bg-gray-900 hover:bg-black"]: !disabled,
     ["bg-gray-700 border-gray-700"]: disabled,
   });
 
   const outlineStyles = classNames({
-    ["border border-black px-7 py-1.5 flex items-center"]: true,
+    ["border border-black px-8 py-3 flex items-center"]: true,
     ["bg-white"]: !disabled,
     ["hover:brightness-95"]: !disabled,
     ["border-gray-500 text-gray-500"]: disabled,
@@ -74,6 +73,7 @@ export const Button = ({
     ["cursor-not-allowed"]: disabled,
     ["active:translate-y-px"]: !disabled,
     ["drop-shadow-md active:drop-shadow-none"]: floating,
+    [`${className}`]: className,
   });
 
   return (

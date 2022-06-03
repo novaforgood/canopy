@@ -5,6 +5,7 @@ import { customAlphabet } from "nanoid";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
+import { EnterCoverPhoto } from "../components/create-space/EnterCoverPhoto";
 import { EnterName } from "../components/create-space/EnterName";
 import { EnterProfileSchema } from "../components/create-space/EnterProfileSchema";
 import { EnterSettings } from "../components/create-space/EnterSettings";
@@ -44,13 +45,15 @@ function makeReadableError(message: string) {
 
 enum CreateStage {
   EnterName = "EnterName",
+  EnterCoverPhoto = "EnterCoverPhoto",
   EnterProfileSchema = "EnterProfileSchema",
   EnterSettings = "EnterSettings",
 }
 
 const MAP_STAGE_TO_LABEL: Record<CreateStage, string> = {
   [CreateStage.EnterName]: "Name",
-  [CreateStage.EnterProfileSchema]: "Mentor Profiles",
+  [CreateStage.EnterCoverPhoto]: "Cover Photo",
+  [CreateStage.EnterProfileSchema]: "Profile Page Format",
   [CreateStage.EnterSettings]: "Directory Settings",
 };
 
@@ -87,22 +90,26 @@ const ALL_CREATE_STAGES = Object.values(CreateStage).map((val) => {
 type CreateProgramState = {
   enteredStages: CreateStage[];
   spaceName: string;
+  spaceDescription: string;
   spaceSlug: string;
+  coverImage: { id: string; url: string } | null;
   listingQuestions: Space_Listing_Question_Insert_Input[];
 };
 
 const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   enteredStages: [CreateStage.EnterName],
   spaceName: "",
+  spaceDescription: "",
   spaceSlug: "",
+  coverImage: null,
   listingQuestions: [
     {
       title: "About me",
-      char_count: 100,
+      char_count: 200,
     },
     {
       title: "You can talk to me about",
-      char_count: 100,
+      char_count: 200,
     },
   ],
 };
@@ -173,15 +180,18 @@ const CreatePage: CustomPage = () => {
           }}
         />
       </div>
-      <div className="px-16 py-20 w-full h-full overflow-y-auto">
+      <div className="px-16 py-20 w-full h-screen flex flex-col items-start overflow-y-auto">
         <BackButton
           onClick={() => {
             switch (currentStage) {
               case CreateStage.EnterName:
                 router.push("/");
                 break;
-              case CreateStage.EnterProfileSchema:
+              case CreateStage.EnterCoverPhoto:
                 navStage(CreateStage.EnterName);
+                break;
+              case CreateStage.EnterProfileSchema:
+                navStage(CreateStage.EnterCoverPhoto);
                 break;
               case CreateStage.EnterSettings:
                 navStage(CreateStage.EnterProfileSchema);
@@ -191,16 +201,35 @@ const CreatePage: CustomPage = () => {
             }
           }}
         />
-        <div className="relative w-full">
+        <div className="relative w-full h-full">
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
-              data={{ spaceName: state.spaceName }}
+              data={{
+                coverImage: state.coverImage,
+                spaceName: state.spaceName,
+                spaceDescription: state.spaceDescription,
+              }}
               onChange={(newData) => {
                 const slug = slugifyAndAppendRandomString(newData.spaceName);
                 setState({ ...newData, spaceSlug: slug });
               }}
               onComplete={() => {
+                navStage(CreateStage.EnterCoverPhoto);
+              }}
+            />
+          </FadeTransition>
+          <FadeTransition show={stageDisplayed === CreateStage.EnterCoverPhoto}>
+            <EnterCoverPhoto
+              onComplete={() => {
                 navStage(CreateStage.EnterProfileSchema);
+              }}
+              onChange={(newData) => {
+                setState({ ...newData });
+              }}
+              data={{
+                coverImage: state.coverImage,
+                spaceName: state.spaceName,
+                spaceDescription: state.spaceDescription,
               }}
             />
           </FadeTransition>
@@ -227,6 +256,7 @@ const CreatePage: CustomPage = () => {
                 createOwnerProfile({
                   space: {
                     name: state.spaceName,
+                    description_html: state.spaceDescription ?? undefined,
                     owner_id: userData.id,
                     slug: state.spaceSlug,
                     space_listing_questions: {
@@ -234,6 +264,9 @@ const CreatePage: CustomPage = () => {
                         ...question,
                         listing_order: index,
                       })),
+                    },
+                    space_cover_image: {
+                      data: { image_id: state.coverImage?.id },
                     },
                   },
                   user_id: userData.id,

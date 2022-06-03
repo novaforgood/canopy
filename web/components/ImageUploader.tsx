@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import classNames from "classnames";
 import AvatarEditor from "react-avatar-editor";
 
+import { BxsCloudUpload } from "../generated/icons/solid";
 import { useSingleImageDropzone } from "../hooks/useSingleImageDropzone";
 
 import { Text, Button } from "./atomic";
@@ -13,8 +14,12 @@ interface ImageUploaderProps {
   height: number;
   showZoom?: boolean;
   showRoundedCrop?: boolean;
+  renderUploadIcon?: () => ReactNode;
   imageSrc: string | null;
   onImageSrcChange?: (newValue: string | null) => void;
+  onPositionChange?: (newValue: { x: number; y: number }) => void;
+  onScaleChange?: (newValue: number) => void;
+  onLoadSuccess?: () => void;
 }
 
 export function ImageUploader(props: ImageUploaderProps) {
@@ -24,8 +29,12 @@ export function ImageUploader(props: ImageUploaderProps) {
     width,
     height,
     showZoom = false,
+    renderUploadIcon = () => null,
     imageSrc,
     onImageSrcChange = () => {},
+    onPositionChange = () => {},
+    onScaleChange = () => {},
+    onLoadSuccess = () => {},
   } = props;
 
   const [loaded, setLoaded] = useState(false);
@@ -98,6 +107,7 @@ export function ImageUploader(props: ImageUploaderProps) {
             <AvatarEditor
               crossOrigin="anonymous"
               onLoadSuccess={() => {
+                onLoadSuccess();
                 setShowRepositionActivated(true);
                 setLoaded(true);
               }}
@@ -112,7 +122,10 @@ export function ImageUploader(props: ImageUploaderProps) {
               scale={scale}
               border={0}
               position={position}
-              onPositionChange={(pos) => setPosition(pos)}
+              onPositionChange={(pos) => {
+                onPositionChange(pos);
+                setPosition(pos);
+              }}
             />
           )}
 
@@ -132,7 +145,8 @@ export function ImageUploader(props: ImageUploaderProps) {
             )
           ) : (
             <>
-              <div>
+              <div className="flex flex-col items-center">
+                {renderUploadIcon()}
                 <div>Drop image here</div>
                 <div>or click to upload</div>
               </div>
@@ -148,7 +162,11 @@ export function ImageUploader(props: ImageUploaderProps) {
                 <button
                   onClick={() => {
                     // Decrement scale by 0.5
-                    setScale((prev) => Math.max(prev - 0.5, 1));
+                    setScale((prev) => {
+                      const newVal = Math.max(prev - 0.5, 1);
+                      onScaleChange(newVal);
+                      return newVal;
+                    });
                   }}
                   className="flex-none flex items-center justify-center rounded-sm h-5 w-5 border border-gray-50 hover:bg-gray-50 shadow-md active:translate-y-px"
                 >
@@ -162,13 +180,18 @@ export function ImageUploader(props: ImageUploaderProps) {
                   step={0.001}
                   value={scale}
                   onChange={(e) => {
+                    onScaleChange(parseFloat(e.target.value));
                     setScale(parseFloat(e.target.value));
                   }}
                 />
                 <button
                   onClick={() => {
                     // Increment scale by 0.5
-                    setScale((prev) => Math.min(prev + 0.5, 3));
+                    setScale((prev) => {
+                      const newVal = Math.min(prev + 0.5, 3);
+                      onScaleChange(newVal);
+                      return newVal;
+                    });
                   }}
                   className="flex-none flex items-center justify-center rounded-sm h-5 w-5 border border-gray-50 hover:bg-gray-50 shadow-md active:translate-y-px"
                 >

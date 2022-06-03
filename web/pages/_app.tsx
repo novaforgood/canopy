@@ -67,7 +67,7 @@ function App({ Component, pageProps }: AppProps) {
     pause: true,
     variables: { slug: spaceSlug },
   });
-  const spaceId = spaceData?.space[0].id;
+  const spaceId = spaceData?.space[0]?.id;
 
   // When a new spaceId is set, we need to refetch the invite links.
   useEffect(() => {

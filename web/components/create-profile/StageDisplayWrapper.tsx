@@ -7,6 +7,7 @@ interface StageDisplayWrapperProps {
   title: string;
   onPrimaryAction?: () => void;
   onSecondaryAction?: () => void;
+  showActions?: boolean;
 }
 
 export function StageDisplayWrapper(props: StageDisplayWrapperProps) {
@@ -15,22 +16,25 @@ export function StageDisplayWrapper(props: StageDisplayWrapperProps) {
     title,
     onPrimaryAction = () => {},
     onSecondaryAction = () => {},
+    showActions = true,
   } = props;
 
   return (
     <div className="py-20 pl-16 flex flex-col justify-between min-h-screen">
       <div>
-        <Text variant="heading2">{title}</Text>
+        <Text variant="heading3">{title}</Text>
         {children}
       </div>
-      <div className="flex">
-        <Button variant="primary" rounded onClick={onPrimaryAction}>
-          Save and continue
-        </Button>
-        <Button variant="secondary" onClick={onSecondaryAction}>
-          Skip
-        </Button>
-      </div>
+      {showActions && (
+        <div className="flex">
+          <Button variant="primary" rounded onClick={onPrimaryAction}>
+            Save and continue
+          </Button>
+          <Button variant="secondary" onClick={onSecondaryAction}>
+            Skip
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
