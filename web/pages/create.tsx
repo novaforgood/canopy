@@ -5,6 +5,7 @@ import { customAlphabet } from "nanoid";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
+import { EnterCoverPhoto } from "../components/create-space/EnterCoverPhoto";
 import { EnterName } from "../components/create-space/EnterName";
 import { EnterProfileSchema } from "../components/create-space/EnterProfileSchema";
 import { EnterSettings } from "../components/create-space/EnterSettings";
@@ -44,12 +45,14 @@ function makeReadableError(message: string) {
 
 enum CreateStage {
   EnterName = "EnterName",
+  EnterCoverPhoto = "EnterCoverPhoto",
   EnterProfileSchema = "EnterProfileSchema",
   EnterSettings = "EnterSettings",
 }
 
 const MAP_STAGE_TO_LABEL: Record<CreateStage, string> = {
   [CreateStage.EnterName]: "Name",
+  [CreateStage.EnterCoverPhoto]: "Cover photo",
   [CreateStage.EnterProfileSchema]: "Mentor Profiles",
   [CreateStage.EnterSettings]: "Directory Settings",
 };
@@ -89,6 +92,7 @@ type CreateProgramState = {
   spaceName: string;
   spaceDescription: string;
   spaceSlug: string;
+  coverImage: { id: string; url: string } | null;
   listingQuestions: Space_Listing_Question_Insert_Input[];
 };
 
@@ -97,6 +101,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   spaceName: "",
   spaceDescription: "",
   spaceSlug: "",
+  coverImage: null,
   listingQuestions: [
     {
       title: "About me",
@@ -175,15 +180,18 @@ const CreatePage: CustomPage = () => {
           }}
         />
       </div>
-      <div className="px-16 py-20 w-full h-full overflow-y-auto">
+      <div className="px-16 py-20 w-full h-screen flex flex-col items-start overflow-y-auto">
         <BackButton
           onClick={() => {
             switch (currentStage) {
               case CreateStage.EnterName:
                 router.push("/");
                 break;
-              case CreateStage.EnterProfileSchema:
+              case CreateStage.EnterCoverPhoto:
                 navStage(CreateStage.EnterName);
+                break;
+              case CreateStage.EnterProfileSchema:
+                navStage(CreateStage.EnterCoverPhoto);
                 break;
               case CreateStage.EnterSettings:
                 navStage(CreateStage.EnterProfileSchema);
@@ -205,7 +213,22 @@ const CreatePage: CustomPage = () => {
                 setState({ ...newData, spaceSlug: slug });
               }}
               onComplete={() => {
+                navStage(CreateStage.EnterCoverPhoto);
+              }}
+            />
+          </FadeTransition>
+          <FadeTransition show={stageDisplayed === CreateStage.EnterCoverPhoto}>
+            <EnterCoverPhoto
+              onComplete={() => {
                 navStage(CreateStage.EnterProfileSchema);
+              }}
+              onChange={(newData) => {
+                setState({ ...newData });
+              }}
+              data={{
+                coverImage: state.coverImage,
+                spaceName: state.spaceName,
+                spaceDescription: state.spaceDescription,
               }}
             />
           </FadeTransition>

@@ -75,7 +75,6 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
 
       <div className="h-12"></div>
       <Button
-        // disabled={!name}
         rounded
         onClick={() => {
           onComplete();
@@ -83,6 +82,7 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
       >
         Save and continue
       </Button>
+      <div className="h-20"></div>
     </div>
   );
 }

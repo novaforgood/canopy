@@ -33,7 +33,7 @@ export function EnterName(props: EnterNameProps) {
   const { userData } = useUserData();
 
   return (
-    <div className="flex gap-20 justify-start h-full">
+    <div className="flex gap-20 justify-start items-start h-full">
       <div className="flex flex-col items-start justify-between h-full w-full">
         <div className="h-10"></div>
         <Text variant="heading3">What is the name of your community?</Text>
