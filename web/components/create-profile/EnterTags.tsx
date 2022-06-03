@@ -1,16 +1,16 @@
 import React, { useMemo, useState } from "react";
 
 import { Text } from "../../components/atomic";
-import Tag from "../../components/atomic/Tag";
-
-import { StageDisplayWrapper } from "./StageDisplayWrapper";
 import {
   useSpaceTagCategoriesQuery,
   useProfileListingToSpaceTagQuery,
   useSpaceTagsQuery,
 } from "../../generated/graphql";
-
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { Tag } from "../Tag";
+
+import { StageDisplayWrapper } from "./StageDisplayWrapper";
 
 export interface EnterTagsProps {
   onComplete: () => void;
@@ -28,8 +28,7 @@ export function EnterTags(props: EnterTagsProps) {
     return spaceTagCategoriesData?.space_tag_category ?? [];
   }, [spaceTagCategoriesData?.space_tag_category]);
 
-  const selectedTags = new Set();
-  const [selectedTagsState, setSelectedTags] = useState(selectedTags);
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
   return (
     <StageDisplayWrapper
@@ -37,65 +36,55 @@ export function EnterTags(props: EnterTagsProps) {
       onPrimaryAction={onComplete}
       onSecondaryAction={onSkip}
     >
-      <div className="flex flex-col items-start">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <div className="flex flex-col items-start">
-              {spaceCategories.map((category) => {
-                return (
-                  <div
-                    className="flex flex-col items-start mt- w-160"
-                    key={category.id}
-                  >
-                    <Text
-                      variant="subheading2"
-                      className="text-gray-600 font-bold"
-                    >
-                      {category.title}
-                    </Text>
-                    <div className="flex gap-2 py-3">
-                      {category.space_tags.map((tag) => {
-                        const tagIsSelected = selectedTagsState.has(tag.label);
-                        return (
-                          <Tag
-                            key={tag.id}
-                            className="shadow-md"
-                            variant={tagIsSelected ? "dark" : "outline"}
-                            onClick={() => {
-                              if (tagIsSelected) {
-                                const removeTag = () => {
-                                  setSelectedTags(
-                                    (prev) =>
-                                      new Set(
-                                        [...selectedTagsState].filter(
-                                          (x) => x !== tag.label
-                                        )
-                                      )
-                                  );
-                                };
-                                removeTag();
-                              } else {
-                                const addTags = () => {
-                                  setSelectedTags(
-                                    (previousState) =>
-                                      new Set([...selectedTagsState, tag.label])
-                                  );
-                                };
-                                addTags();
-                              }
-                            }}
-                          >
-                            <span>{tag.label}</span>
-                          </Tag>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+      <div className="flex flex-col items-start gap-16">
+        <div className="h-8"></div>
+        {spaceCategories.map((category) => {
+          return (
+            <div className="flex flex-col items-start" key={category.id}>
+              <Text variant="subheading2" className="text-gray-600 font-bold">
+                {category.title}
+              </Text>
+              <div className="h-4"></div>
+              <div className="flex items-center gap-16">
+                <div className="w-72">
+                  <SelectAutocomplete
+                    options={category.space_tags.map((tag) => ({
+                      label: tag.label,
+                      value: tag.id,
+                    }))}
+                    value={null}
+                    onSelect={(value) => {
+                      if (!value) return;
+                      setSelectedTags((prev) => {
+                        return new Set([...Array.from(prev), value]);
+                      });
+                    }}
+                  />
+                </div>
+
+                <div className="flex gap-2 py-3">
+                  {category.space_tags.map((tag) => {
+                    const selected = selectedTags.has(tag.id);
+
+                    return selected ? (
+                      <Tag
+                        key={tag.id}
+                        text={tag.label}
+                        onDeleteClick={() => {
+                          setSelectedTags((prev) => {
+                            const newSet = new Set(Array.from(prev));
+                            newSet.delete(tag.id);
+                            return newSet;
+                          });
+                        }}
+                      ></Tag>
+                    ) : null;
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </StageDisplayWrapper>
   );
