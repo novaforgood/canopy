@@ -1,0 +1,94 @@
+table:
+  schema: public
+  name: space_cover_image
+object_relationships:
+  - name: image
+    using:
+      foreign_key_constraint_on: image_id
+  - name: space
+    using:
+      foreign_key_constraint_on: space_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - profile_role:
+                          _eq: Admin
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+          - space:
+              owner_id:
+                _eq: X-Hasura-User-Id
+      columns:
+        - image_id
+        - space_id
+      backend_only: false
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - space_id
+        - image_id
+      filter: {}
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - image_id
+      filter:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - profile_role:
+                          _eq: Admin
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+          - space:
+              owner_id:
+                _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - profile_role:
+                          _eq: Admin
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+          - space:
+              owner_id:
+                _eq: X-Hasura-User-Id
