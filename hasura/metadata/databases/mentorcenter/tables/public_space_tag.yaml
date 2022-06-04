@@ -31,6 +31,7 @@ insert_permissions:
                 owner_id:
                   _eq: X-Hasura-User-Id
       columns:
+        - deleted
         - id
         - label
         - space_tag_category_id
@@ -39,8 +40,9 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - label
+        - deleted
         - id
+        - label
         - space_tag_category_id
       filter:
         _or:
@@ -53,6 +55,7 @@ update_permissions:
   - role: user
     permission:
       columns:
+        - deleted
         - label
       filter:
         _or:
