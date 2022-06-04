@@ -33,8 +33,6 @@ export function getUrqlClient(jwt: string) {
         keys: {
           profile_to_profile_role_flattened: (data) =>
             `${data.profile_id}-${data.profile_role}`,
-          profile_listing_to_space_tag: (data) =>
-            `${data.profile_listing_id}-${data.space_tag_id}`,
         },
       }),
       fetchExchange,

@@ -37,6 +37,7 @@ insert_permissions:
               owner_id:
                 _eq: X-Hasura-User-Id
       columns:
+        - id
         - listing_order
         - space_id
         - title

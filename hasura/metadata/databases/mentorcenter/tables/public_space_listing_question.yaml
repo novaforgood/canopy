@@ -27,6 +27,7 @@ insert_permissions:
                 name: profile_to_profile_role_flattened
       columns:
         - char_count
+        - id
         - listing_order
         - space_id
         - title

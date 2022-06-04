@@ -31,6 +31,7 @@ insert_permissions:
                 owner_id:
                   _eq: X-Hasura-User-Id
       columns:
+        - id
         - label
         - space_tag_category_id
       backend_only: false
