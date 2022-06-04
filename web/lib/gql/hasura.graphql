@@ -79,6 +79,7 @@ query SpaceBySlug($slug: String!) {
       id
       title
       deleted
+      space_id
       space_tags {
         id
         label
@@ -115,10 +116,7 @@ mutation CreateOwnerProfileInNewSpace(
       description_html
       slug
       owner_id
-      space_listing_questions(
-        order_by: { listing_order: asc }
-        where: { deleted: { _eq: false } }
-      ) {
+      space_listing_questions(order_by: { listing_order: asc }) {
         char_count
         id
         space_id
@@ -381,6 +379,7 @@ mutation UpsertSpaceProfileSchema(
   ) {
     returning {
       id
+      space_id
       listing_order
       char_count
       title
@@ -400,7 +399,7 @@ mutation UpsertSpaceProfileSchema(
       space_id
       title
       deleted
-      space_tags(where: { deleted: { _eq: false } }) {
+      space_tags {
         id
         label
         deleted

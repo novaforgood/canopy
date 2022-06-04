@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { useUpsertSpaceProfileSchemaMutation } from "../../generated/graphql";
+import toast from "react-hot-toast";
+
+import {
+  Space_Tag_Constraint,
+  Space_Tag_Update_Column,
+  useUpsertSpaceProfileSchemaMutation,
+} from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button } from "../atomic";
 
@@ -15,34 +21,65 @@ export function EditProfileFormat() {
   });
 
   useEffect(() => {
-    if (!currentSpace) return;
+    if (
+      !currentSpace?.space_listing_questions ||
+      !currentSpace?.space_tag_categories
+    )
+      return;
 
     setData({
-      listingQuestions: currentSpace.space_listing_questions ?? [],
+      listingQuestions: currentSpace.space_listing_questions,
       tagCategories:
         currentSpace.space_tag_categories.map((category) => ({
           ...category,
           space_tags: { data: category.space_tags },
         })) ?? [],
     });
-  }, [currentSpace]);
+  }, [
+    currentSpace?.space_listing_questions,
+    currentSpace?.space_tag_categories,
+  ]);
 
+  const [loading, setLoading] = useState(false);
   const [_, upsertSpaceProfileSchema] = useUpsertSpaceProfileSchemaMutation();
   const saveChanges = useCallback(async () => {
+    setLoading(true);
     await upsertSpaceProfileSchema({
-      space_listing_questions: data.listingQuestions,
-      space_tag_categories: data.tagCategories.map((category) => ({
-        ...category,
-        space_tags: undefined,
+      space_listing_questions: data.listingQuestions.map((question, index) => ({
+        ...question,
+        listing_order: index,
       })),
-    });
+      space_tag_categories: data.tagCategories.map((category, index) => ({
+        ...category,
+        listing_order: index,
+        space_tags: category.space_tags
+          ? {
+              data: category.space_tags.data,
+              on_conflict: {
+                constraint: Space_Tag_Constraint.SpaceTagPkey,
+                update_columns: [
+                  Space_Tag_Update_Column.Label,
+                  Space_Tag_Update_Column.Deleted,
+                ],
+              },
+            }
+          : undefined,
+      })),
+    })
+      .catch((err) => {
+        toast.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [data.listingQuestions, data.tagCategories, upsertSpaceProfileSchema]);
 
   return (
     <div className="w-full">
-      <Button rounded onClick={saveChanges}>
+      <Button rounded onClick={saveChanges} loading={loading}>
         Save changes
       </Button>
+      <div className="h-4"></div>
       <EditProfileSchema data={data} onChange={setData} />
     </div>
   );

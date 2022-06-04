@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { Space_Tag_Category_Insert_Input } from "../../generated/graphql";
+import {
+  Space_Tag_Category_Insert_Input,
+  Space_Tag_Insert_Input,
+} from "../../generated/graphql";
 import { Input, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
 import { EditButton } from "../EditButton";
@@ -20,8 +23,12 @@ export function EditTagCategory(props: EditTagCategoryProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const [title, setTitle] = useState(tagCategory.title ?? "");
-  const [tags, setTags] = useState(tagCategory.space_tags?.data ?? []);
+  const [tags, setTags] = useState<Space_Tag_Insert_Input[]>(
+    tagCategory.space_tags?.data ?? []
+  );
   const [newTag, setNewTag] = useState("");
+
+  console.log(tags, "Tags");
 
   useEffect(() => {
     if (isOpen) {
@@ -76,7 +83,10 @@ export function EditTagCategory(props: EditTagCategoryProps) {
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 if (newTag.length > 0) {
-                  setTags((prev) => [...prev, { label: newTag }]);
+                  setTags((prev) => [
+                    ...prev,
+                    { label: newTag, deleted: false },
+                  ]);
                   setNewTag("");
                 }
               }
@@ -84,15 +94,23 @@ export function EditTagCategory(props: EditTagCategoryProps) {
           />
           <div className="h-4"></div>
           <div className="flex flex-wrap items-start gap-2">
-            {tags.map((tag, index) => (
-              <Tag
-                key={index}
-                text={tag.label ?? ""}
-                onDeleteClick={() => {
-                  setTags((prev) => prev.filter((t, i) => i !== index));
-                }}
-              />
-            ))}
+            {tags
+              .filter((tag) => !tag.deleted)
+              .map((tag, index) => (
+                <Tag
+                  key={index}
+                  text={tag.label ?? ""}
+                  onDeleteClick={() => {
+                    const delArr = tag.id ? [{ ...tag, deleted: true }] : [];
+
+                    setTags((prev) => [
+                      ...prev.slice(0, index),
+                      ...delArr,
+                      ...prev.slice(index + 1),
+                    ]);
+                  }}
+                />
+              ))}
           </div>
         </div>
       </ActionModal>
@@ -109,9 +127,11 @@ export function EditTagCategory(props: EditTagCategoryProps) {
         </Text>
         <div className="h-2"></div>
         <div className="flex flex-wrap items-start gap-2">
-          {tagCategory.space_tags?.data.map((tag, index) => (
-            <Tag key={index} text={tag.label ?? ""} />
-          ))}
+          {tagCategory.space_tags?.data
+            .filter((tag) => !tag.deleted)
+            .map((tag, index) => (
+              <Tag key={index} text={tag.label ?? ""} />
+            ))}
         </div>
       </div>
     </>

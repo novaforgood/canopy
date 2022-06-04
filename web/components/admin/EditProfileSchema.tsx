@@ -1,9 +1,12 @@
 import React from "react";
 
+import toast from "react-hot-toast";
+
 import {
   Space_Listing_Question_Insert_Input,
   Space_Tag_Category_Insert_Input,
 } from "../../generated/graphql";
+import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Text } from "../atomic";
 import { AddSectionButton } from "../create-space/AddSectionButton";
 import { EditQuestion } from "../create-space/EditQuestion";
@@ -21,6 +24,8 @@ interface EditProfileSchemaProps {
 
 export function EditProfileSchema(props: EditProfileSchemaProps) {
   const { data, onChange } = props;
+
+  const { currentSpace } = useCurrentSpace();
 
   console.log(data);
   return (
@@ -76,12 +81,19 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
               })}
             <AddSectionButton
               onClick={() => {
+                if (!currentSpace) {
+                  toast.error("currentSpace not present");
+                  return;
+                }
+
                 onChange({
                   listingQuestions: [
                     ...data.listingQuestions,
                     {
+                      space_id: currentSpace.id,
                       title: "New Profile Question",
                       char_count: 200,
+                      deleted: false,
                     },
                   ],
                   tagCategories: data.tagCategories,
@@ -128,10 +140,18 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
             <div className="h-2"></div>
             <AddSectionButton
               onClick={() => {
+                if (!currentSpace) {
+                  toast.error("currentSpace not present");
+                  return;
+                }
                 onChange({
                   tagCategories: [
                     ...data.tagCategories,
-                    { title: "New Tag Category" },
+                    {
+                      title: "New Tag Category",
+                      deleted: false,
+                      space_id: currentSpace.id,
+                    },
                   ],
                   listingQuestions: data.listingQuestions,
                 });
