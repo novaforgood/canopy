@@ -91,12 +91,12 @@ function IntroduceModal(props: IntroduceModalProps) {
                 timezone,
               },
             })
-            .catch((err) => {
-              toast.error(err.message);
-            })
             .then(() => {
               toast.success("Intro sent!");
               onClose();
+            })
+            .catch((err) => {
+              toast.error(err.message);
             });
         }}
         actionDisabled={!avail || !timezone}
@@ -148,6 +148,7 @@ export default function SpaceHomepage() {
   const router = useRouter();
 
   const { currentSpace } = useCurrentSpace();
+  const { currentProfile } = useCurrentProfile();
 
   const [open, handlers] = useDisclosure(false);
 
@@ -218,7 +219,11 @@ export default function SpaceHomepage() {
                   <div className="h-4"></div>
                   <Text>Need some help? {"We'll"} introduce you.</Text>
                   <div className="h-4"></div>
-                  <Button rounded onClick={handlers.open}>
+                  <Button
+                    rounded
+                    onClick={handlers.open}
+                    disabled={profileId === currentProfile?.id}
+                  >
                     Introduce me
                   </Button>
                   <div className="h-8"></div>

@@ -59,3 +59,14 @@ query GetProfile($profile_id: uuid!) {
     }
   }
 }
+
+mutation InsertConnectionRequest($data: connection_request_insert_input!) {
+  insert_connection_request_one(object: $data) {
+    id
+    sender_profile_id
+    receiver_profile_id
+    created_at
+    confirmed_at
+    confirmed
+  }
+}
