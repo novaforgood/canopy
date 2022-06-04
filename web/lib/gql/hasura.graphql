@@ -59,16 +59,24 @@ query SpaceBySlug($slug: String!) {
     description_html
     slug
     owner_id
-    space_listing_questions(order_by: { listing_order: asc }) {
+    space_listing_questions(
+      order_by: { listing_order: asc }
+      where: { deleted: { _eq: false } }
+    ) {
       char_count
       id
       space_id
       title
       listing_order
+      deleted
     }
-    space_tag_categories {
+    space_tag_categories(
+      order_by: { listing_order: asc }
+      where: { deleted: { _eq: false } }
+    ) {
       id
       title
+      deleted
       space_tags {
         id
         label
@@ -104,11 +112,15 @@ mutation CreateOwnerProfileInNewSpace(
       description_html
       slug
       owner_id
-      space_listing_questions {
+      space_listing_questions(
+        order_by: { listing_order: asc }
+        where: { deleted: { _eq: false } }
+      ) {
         char_count
         id
         space_id
         title
+        deleted
       }
       space_cover_image {
         id
@@ -170,6 +182,7 @@ query SpaceTagCategories($space_id: uuid!) {
   space_tag_category(where: { space_id: { _eq: $space_id } }) {
     id
     title
+    deleted
     space_tags {
       id
       label
@@ -353,6 +366,7 @@ mutation UpsertSpaceListingQuestions {
       listing_order
       char_count
       title
+      deleted
     }
   }
 }
@@ -370,6 +384,7 @@ mutation UpsertSpaceTagCategories {
       listing_order
       space_id
       title
+      deleted
       space_tags {
         id
         label

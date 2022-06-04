@@ -22,6 +22,7 @@ interface EditProfileSchemaProps {
 export function EditProfileSchema(props: EditProfileSchemaProps) {
   const { data, onChange } = props;
 
+  console.log(data);
   return (
     <div className="border border-black rounded-lg w-full flex flex-col pb-12">
       <div className="h-20 bg-gray-100 rounded-t-lg"></div>
@@ -40,33 +41,39 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="pt-4">
-            {data.listingQuestions.map((question, index) => {
-              return (
-                <EditQuestion
-                  question={question}
-                  onSave={(newQuestion) => {
-                    onChange({
-                      listingQuestions: [
-                        ...data.listingQuestions.slice(0, index),
-                        newQuestion,
-                        ...data.listingQuestions.slice(index + 1),
-                      ],
-                      tagCategories: data.tagCategories,
-                    });
-                  }}
-                  onDelete={() => {
-                    onChange({
-                      listingQuestions: [
-                        ...data.listingQuestions.slice(0, index),
-                        ...data.listingQuestions.slice(index + 1),
-                      ],
-                      tagCategories: data.tagCategories,
-                    });
-                  }}
-                  key={index}
-                />
-              );
-            })}
+            {data.listingQuestions
+              .filter((item) => item.deleted === false)
+              .map((question, index) => {
+                return (
+                  <EditQuestion
+                    question={question}
+                    onSave={(newQuestion) => {
+                      onChange({
+                        listingQuestions: [
+                          ...data.listingQuestions.slice(0, index),
+                          newQuestion,
+                          ...data.listingQuestions.slice(index + 1),
+                        ],
+                        tagCategories: data.tagCategories,
+                      });
+                    }}
+                    onDelete={() => {
+                      const delArr = question.id
+                        ? [{ ...question, deleted: true }]
+                        : [];
+                      onChange({
+                        listingQuestions: [
+                          ...data.listingQuestions.slice(0, index),
+                          ...delArr,
+                          ...data.listingQuestions.slice(index + 1),
+                        ],
+                        tagCategories: data.tagCategories,
+                      });
+                    }}
+                    key={index}
+                  />
+                );
+              })}
             <AddSectionButton
               onClick={() => {
                 onChange({
@@ -84,33 +91,39 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
           </div>
           <div className="flex flex-col">
             <div className="bg-gray-50 rounded-md p-4">
-              {data.tagCategories.map((tagCategory, index) => {
-                return (
-                  <EditTagCategory
-                    tagCategory={tagCategory}
-                    onSave={(newTagCategory) => {
-                      onChange({
-                        tagCategories: [
-                          ...data.tagCategories.slice(0, index),
-                          newTagCategory,
-                          ...data.tagCategories.slice(index + 1),
-                        ],
-                        listingQuestions: data.listingQuestions,
-                      });
-                    }}
-                    onDelete={() => {
-                      onChange({
-                        tagCategories: [
-                          ...data.tagCategories.slice(0, index),
-                          ...data.tagCategories.slice(index + 1),
-                        ],
-                        listingQuestions: data.listingQuestions,
-                      });
-                    }}
-                    key={index}
-                  />
-                );
-              })}
+              {data.tagCategories
+                .filter((item) => item.deleted === false)
+                .map((tagCategory, index) => {
+                  return (
+                    <EditTagCategory
+                      tagCategory={tagCategory}
+                      onSave={(newTagCategory) => {
+                        onChange({
+                          tagCategories: [
+                            ...data.tagCategories.slice(0, index),
+                            newTagCategory,
+                            ...data.tagCategories.slice(index + 1),
+                          ],
+                          listingQuestions: data.listingQuestions,
+                        });
+                      }}
+                      onDelete={() => {
+                        const delArr = tagCategory.id
+                          ? [{ ...tagCategory, deleted: true }]
+                          : [];
+                        onChange({
+                          tagCategories: [
+                            ...data.tagCategories.slice(0, index),
+                            ...delArr,
+                            ...data.tagCategories.slice(index + 1),
+                          ],
+                          listingQuestions: data.listingQuestions,
+                        });
+                      }}
+                      key={index}
+                    />
+                  );
+                })}
             </div>
             <div className="h-2"></div>
             <AddSectionButton
