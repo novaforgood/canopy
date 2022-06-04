@@ -27,6 +27,7 @@ insert_permissions:
                 name: profile_to_profile_role_flattened
       columns:
         - char_count
+        - deleted
         - id
         - listing_order
         - space_id
@@ -37,6 +38,7 @@ select_permissions:
     permission:
       columns:
         - char_count
+        - deleted
         - id
         - listing_order
         - space_id
@@ -52,6 +54,7 @@ update_permissions:
     permission:
       columns:
         - char_count
+        - deleted
         - listing_order
         - title
       filter:

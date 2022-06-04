@@ -37,6 +37,7 @@ insert_permissions:
               owner_id:
                 _eq: X-Hasura-User-Id
       columns:
+        - deleted
         - id
         - listing_order
         - space_id
@@ -46,6 +47,7 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - deleted
         - id
         - listing_order
         - space_id
@@ -60,6 +62,7 @@ update_permissions:
   - role: user
     permission:
       columns:
+        - deleted
         - listing_order
         - title
       filter:
