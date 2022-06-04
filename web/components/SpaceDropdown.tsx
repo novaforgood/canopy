@@ -8,9 +8,15 @@ import {
   Profile_Role_Enum,
   useAllProfilesOfUserQuery,
 } from "../generated/graphql";
-import { BxCaretDown, BxLogOut, BxTransfer } from "../generated/icons/regular";
+import {
+  BxCaretDown,
+  BxLogOut,
+  BxTransfer,
+  BxWrench,
+} from "../generated/icons/regular";
 import {
   BxsAddToQueue,
+  BxsCrown,
   BxsUserAccount,
   BxsWrench,
 } from "../generated/icons/solid";
@@ -68,15 +74,26 @@ export function SpaceDropdown() {
                           "bg-white": !active,
                           "bg-gray-50": active,
                         });
+
+                        const hasAdminstatus = profile.flattened_profile_roles
+                          .map((role) => role.profile_role)
+                          .includes(Profile_Role_Enum.Admin);
+
                         return (
                           <button
                             className={styles}
                             onClick={() => {
-                              router.push(`/space/${profile.space.slug}`);
+                              router.push(
+                                `/space/${profile.space.slug}` +
+                                  (hasAdminstatus ? "/admin" : "")
+                              );
                             }}
                           >
                             <BxTransfer className="w-5 h-5 mr-2 flex-none" />
-                            {profile.space.name}
+                            {profile.space.name}{" "}
+                            {hasAdminstatus && (
+                              <BxsCrown className="w-3 h-3 text-gray-400 ml-1.5 shrink-0" />
+                            )}
                           </button>
                         );
                       }}

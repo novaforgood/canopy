@@ -66,6 +66,14 @@ query SpaceBySlug($slug: String!) {
       title
       listing_order
     }
+    space_tag_categories {
+      id
+      title
+      space_tags {
+        id
+        label
+      }
+    }
     space_cover_image {
       id
       image {
@@ -160,12 +168,12 @@ query ProfilesBySpaceId($space_id: uuid!) {
 
 query SpaceTagCategories($space_id: uuid!) {
   space_tag_category(where: { space_id: { _eq: $space_id } }) {
+    id
+    title
     space_tags {
       id
       label
     }
-    title
-    id
   }
 }
 

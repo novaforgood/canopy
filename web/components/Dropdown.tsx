@@ -138,14 +138,14 @@ export function Dropdown() {
             <div>
               <Menu.Button className="focus:outline-none">
                 <div className="flex items-center gap-2">
+                  <Text className="mr-1">
+                    {userData?.first_name} {userData?.last_name}
+                  </Text>
                   <ProfileImage
                     src={img}
                     alt="Profile image"
                     className="h-10 w-10"
                   />
-                  {/* <Text className="mr-2">
-                    {userData?.first_name} {userData?.last_name}
-                  </Text> */}
                   <BxCaretDown className={caretStyles} />
                 </div>
               </Menu.Button>
