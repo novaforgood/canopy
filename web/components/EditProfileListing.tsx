@@ -97,15 +97,23 @@ export function EditProfileListing(props: EditProfileListingProps) {
               })}
             </div>
             <div>
-              <div className="bg-gray-50 p-4 rounded-md flex flex-col items-start gap-12">
-                {currentSpace.space_tag_categories.map((category) => {
-                  console.log(category);
-                  return (
-                    <EditProfileTags key={category.id} tagCategory={category} />
-                  );
-                })}
-              </div>
-              <div className="h-8"></div>
+              {currentSpace.space_tag_categories.length > 0 && (
+                <>
+                  <div className="bg-gray-50 p-4 rounded-md flex flex-col items-start gap-12">
+                    {currentSpace.space_tag_categories.map((category) => {
+                      console.log(category);
+                      return (
+                        <EditProfileTags
+                          key={category.id}
+                          tagCategory={category}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="h-8"></div>
+                </>
+              )}
+
               <div className="bg-gray-50 p-4 rounded-md">
                 <Text variant="subheading1">
                   Contact me

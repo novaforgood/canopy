@@ -71,3 +71,23 @@ update_permissions:
                 schema: public
                 name: profile_to_profile_role_flattened
       check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - space:
+              owner_id:
+                _eq: X-Hasura-User-Id
+          - _exists:
+              _where:
+                _and:
+                  - user_id:
+                      _eq: X-Hasura-User-Id
+                  - space_id:
+                      _eq: X-Hasura-Space-Id
+                  - profile_role:
+                      _eq: Admin
+              _table:
+                schema: public
+                name: profile_to_profile_role_flattened

@@ -286,7 +286,10 @@ const CreatePage: CustomPage = () => {
                         }
                       : undefined,
                     space_tag_categories: {
-                      data: state.tagCategories,
+                      data: state.tagCategories.map((question, index) => ({
+                        ...question,
+                        listing_order: index,
+                      })),
                     },
                   },
                   user_id: userData.id,

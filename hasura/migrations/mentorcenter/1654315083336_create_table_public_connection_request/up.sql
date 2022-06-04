@@ -1,0 +1,2 @@
+CREATE TABLE "public"."connection_request" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "created_at" timestamptz NOT NULL DEFAULT now(), "confirmed_at" timestamptz, "sender_profile_id" uuid NOT NULL, "receiver_profile_id" uuid NOT NULL, "confirmed" boolean NOT NULL DEFAULT false, PRIMARY KEY ("id") , FOREIGN KEY ("sender_profile_id") REFERENCES "public"."profile"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("receiver_profile_id") REFERENCES "public"."profile"("id") ON UPDATE restrict ON DELETE restrict);
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
