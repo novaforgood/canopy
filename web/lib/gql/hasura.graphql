@@ -80,6 +80,7 @@ query SpaceBySlug($slug: String!) {
       title
       deleted
       space_id
+      listing_order
       space_tags {
         id
         label

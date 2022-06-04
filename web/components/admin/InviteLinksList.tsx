@@ -41,6 +41,7 @@ export function InviteLinksList() {
   }
   return (
     <div className="">
+      <div className="h-8"></div>
       <div className="flex flex-col gap-2">
         {inviteLinksData?.space_invite_link?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;

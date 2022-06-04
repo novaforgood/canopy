@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import {
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
+  Space_Tag,
+  Space_Tag_Category,
   useSetProfileListingTagsMutation,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
@@ -14,17 +16,13 @@ import { EditButton } from "../EditButton";
 import { ActionModal } from "../modals/ActionModal";
 import { Tag } from "../Tag";
 
-type TagCategory = {
-  id: string;
-  title: string;
-  space_tags: {
-    id: string;
-    label: string;
-  }[];
-};
-
 type EditProfileTagsProps = {
-  tagCategory: TagCategory;
+  tagCategory: Omit<Space_Tag_Category, "space" | "space_tags"> & {
+    space_tags: Omit<
+      Space_Tag,
+      "space_tag_category" | "space_tag_category_id"
+    >[];
+  };
 };
 
 export function EditProfileTags(props: EditProfileTagsProps) {
@@ -89,6 +87,8 @@ export function EditProfileTags(props: EditProfileTagsProps) {
           <div className="w-72">
             <SelectAutocomplete
               options={tagCategory.space_tags
+                .filter((item) => item.deleted === false)
+
                 .map((tag) => ({
                   label: tag.label,
                   value: tag.id,
