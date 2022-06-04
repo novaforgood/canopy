@@ -22,7 +22,7 @@ import { signOut } from "../lib/firebase";
 import { Text } from "./atomic";
 import { ProfileImage } from "./ProfileImage";
 
-export function Dropdown() {
+export function SpaceDropdown() {
   const { userData } = useUserData();
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
@@ -30,8 +30,6 @@ export function Dropdown() {
   const img = currentProfile?.profile_listing?.profile_listing_image?.image.url;
 
   const { currentProfileHasRole } = useCurrentProfile();
-
-  const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
 
   const router = useRouter();
 
@@ -59,55 +57,32 @@ export function Dropdown() {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute z-10 right-0 top-full mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md border border-gray-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <Menu.Item>
-                  {({ active }) => {
-                    const styles = classNames({
-                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                        true,
-                      "bg-white": !active,
-                      "bg-gray-50": active,
-                    });
-                    return (
-                      <button
-                        className={styles}
-                        onClick={() => {
-                          router.push(`/space/${currentSpace?.slug}/account`);
-                        }}
-                      >
-                        <BxsUserAccount className="w-5 h-5 mr-2" />
-                        <Text bold variant="body2">
-                          My account
-                        </Text>
-                      </button>
-                    );
-                  }}
-                </Menu.Item>
-                {isAdmin && (
-                  <Menu.Item>
-                    {({ active }) => {
-                      const styles = classNames({
-                        "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                          true,
-                        "bg-white": !active,
-                        "bg-gray-50": active,
-                      });
-                      return (
-                        <button
-                          className={styles}
-                          onClick={() => {
-                            router.push(`/space/${currentSpace?.slug}/admin`);
-                          }}
-                        >
-                          <BxsWrench className="w-5 h-5 mr-2" />
-                          <Text bold variant="body2">
-                            Admin page
-                          </Text>
-                        </button>
-                      );
-                    }}
-                  </Menu.Item>
-                )}
+              <Menu.Items className="absolute z-10 left-0 top-full mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md border border-gray-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                {allProfilesData?.profile.map((profile) => {
+                  return (
+                    <Menu.Item key={profile.id}>
+                      {({ active }) => {
+                        const styles = classNames({
+                          "group flex w-full items-center rounded-md px-2 py-3 text-sm whitespace-nowrap truncate":
+                            true,
+                          "bg-white": !active,
+                          "bg-gray-50": active,
+                        });
+                        return (
+                          <button
+                            className={styles}
+                            onClick={() => {
+                              router.push(`/space/${profile.space.slug}`);
+                            }}
+                          >
+                            <BxTransfer className="w-5 h-5 mr-2 flex-none" />
+                            {profile.space.name}
+                          </button>
+                        );
+                      }}
+                    </Menu.Item>
+                  );
+                })}
 
                 <Menu.Item>
                   {({ active }) => {
@@ -121,12 +96,12 @@ export function Dropdown() {
                       <button
                         className={styles}
                         onClick={() => {
-                          signOut();
+                          router.push(`/create`);
                         }}
                       >
-                        <BxLogOut className="h-5 w-5 mr-2" />
+                        <BxsAddToQueue className="w-5 h-5 mr-2" />
                         <Text bold variant="body2">
-                          Log out
+                          Create a space
                         </Text>
                       </button>
                     );
@@ -137,15 +112,8 @@ export function Dropdown() {
 
             <div>
               <Menu.Button className="focus:outline-none">
-                <div className="flex items-center gap-2">
-                  <ProfileImage
-                    src={img}
-                    alt="Profile image"
-                    className="h-10 w-10"
-                  />
-                  {/* <Text className="mr-2">
-                    {userData?.first_name} {userData?.last_name}
-                  </Text> */}
+                <div className="flex items-center gap-4">
+                  <Text variant="heading4">{currentSpace?.name}</Text>
                   <BxCaretDown className={caretStyles} />
                 </div>
               </Menu.Button>
