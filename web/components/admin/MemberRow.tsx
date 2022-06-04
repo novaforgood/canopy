@@ -62,7 +62,7 @@ export function MemberRow(props: MemberRowProps) {
           }
         }}
       />
-      <div>{format(new Date(profile.created_at), "MMM dd yyyy, h:mm a")}</div>
+      {/* <div>{format(new Date(profile.created_at), "MMM dd yyyy, h:mm a")}</div> */}
     </Fragment>
   );
 }
