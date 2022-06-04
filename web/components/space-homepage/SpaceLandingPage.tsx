@@ -3,6 +3,7 @@ import { createFactory, ImgHTMLAttributes, useState } from "react";
 import { useRouter } from "next/router";
 
 import { useProfileListingsInSpaceQuery } from "../../generated/graphql";
+import { BxFilter } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
 import { Text } from "../atomic";
@@ -43,23 +44,33 @@ function FilterBar(props: FilterBarProps) {
   const { currentSpace } = useCurrentSpace();
 
   return (
-    <div className="flex">
-      {currentSpace?.space_tag_categories.map((category) => {
-        return (
-          <SelectAutocomplete
-            key={category.id}
-            options={category.space_tags.map((tag) => ({
-              value: tag.id,
-              label: tag.label,
-            }))}
-            value={null}
-            onSelect={(newTagId) => {
-              if (newTagId)
-                onChange(new Set([...Array.from(selectedTagIds), newTagId]));
-            }}
-          />
-        );
-      })}
+    <div className="flex items-center gap-4">
+      {/* <BxFilter className="w-10 h-10" /> */}
+      <Text>Filter by:</Text>
+      {currentSpace?.space_tag_categories
+        .filter((category) => !category.deleted)
+        .map((category) => {
+          return (
+            <div className="w-64" key={category.id}>
+              <SelectAutocomplete
+                placeholder={category.title}
+                options={category.space_tags
+                  .filter((category) => !category.deleted)
+                  .map((tag) => ({
+                    value: tag.id,
+                    label: tag.label,
+                  }))}
+                value={null}
+                onSelect={(newTagId) => {
+                  if (newTagId)
+                    onChange(
+                      new Set([...Array.from(selectedTagIds), newTagId])
+                    );
+                }}
+              />
+            </div>
+          );
+        })}
     </div>
   );
 }
@@ -85,8 +96,8 @@ export function SpaceLandingPage() {
     <div>
       <div className="h-16"></div>
       <SpaceSplashPage />
-      <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-16"></div>
+      <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
       <div className="grid grid-cols-4 gap-4">
         {allProfileListings.map((listing, idx) => {
