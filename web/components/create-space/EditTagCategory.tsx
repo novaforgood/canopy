@@ -36,7 +36,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
       <ActionModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        actionText="Save"
+        actionText="Set"
         onAction={() => {
           onSave({
             ...tagCategory,

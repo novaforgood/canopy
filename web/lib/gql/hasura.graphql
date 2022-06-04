@@ -339,3 +339,42 @@ mutation UpsertProfileListing(
     headline
   }
 }
+
+mutation UpsertSpaceListingQuestions {
+  insert_space_listing_question(
+    objects: {}
+    on_conflict: {
+      constraint: space_listing_question_pkey
+      update_columns: [char_count, listing_order, title]
+    }
+  ) {
+    returning {
+      id
+      listing_order
+      char_count
+      title
+    }
+  }
+}
+
+mutation UpsertSpaceTagCategories {
+  insert_space_tag_category(
+    objects: {}
+    on_conflict: {
+      constraint: space_tag_category_pkey
+      update_columns: [listing_order, title]
+    }
+  ) {
+    returning {
+      id
+      listing_order
+      space_id
+      title
+      space_tags {
+        id
+        label
+        space_tag_category_id
+      }
+    }
+  }
+}

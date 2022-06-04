@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
+import { EditProfileFormat } from "../../../components/admin/EditProfileFormat";
 import { InviteLinksList } from "../../../components/admin/InviteLinksList";
 import { MembersList } from "../../../components/admin/MembersList";
 import { Button, Text } from "../../../components/atomic";
@@ -34,10 +35,6 @@ function SetPrivacySettings() {
   return <div className="">Privacy settings, bitch</div>;
 }
 
-function EditProfileFormat() {
-  return <div className="">Edit profile format</div>;
-}
-
 enum ManageSpaceTabs {
   Members = "Members",
   PrivacySettings = "Privacy Settings",
@@ -59,9 +56,11 @@ const MAP_TAB_TO_TITLE = {
 const ALL_TABS = Object.values(ManageSpaceTabs);
 
 function ManageSpace() {
-  const [tab, setTab] = useState<ManageSpaceTabs>(ManageSpaceTabs.Members);
+  const [selectedTab, setSelectedTab] = useState<ManageSpaceTabs>(
+    ManageSpaceTabs.Members
+  );
 
-  const Component = MAP_TAB_TO_COMPONENT[tab];
+  const Component = MAP_TAB_TO_COMPONENT[selectedTab];
   return (
     <RoundedCard className="w-full">
       <div className="flex items-center gap-2">
@@ -72,15 +71,19 @@ function ManageSpace() {
       <div className="flex items-start w-full">
         <div className="flex flex-col items-start whitespace-nowrap">
           <div className="flex flex-col items-end gap-3 w-full">
-            {ALL_TABS.map((t) => {
+            {ALL_TABS.map((tab) => {
               const styles = classNames({
                 "flex items-center": true,
-                "text-gray-600": tab !== t,
+                "text-gray-600": selectedTab !== tab,
               });
               return (
-                <button key={t} onClick={() => setTab(t)} className={styles}>
-                  <Text variant="body1">{MAP_TAB_TO_TITLE[t]}</Text>
-                  {tab === t ? (
+                <button
+                  key={tab}
+                  onClick={() => setSelectedTab(tab)}
+                  className={styles}
+                >
+                  <Text variant="body1">{MAP_TAB_TO_TITLE[tab]}</Text>
+                  {selectedTab === tab ? (
                     <BxRightArrowAlt className="h-6 w-6" />
                   ) : (
                     <div className="h-6 w-6"></div>
@@ -91,9 +94,9 @@ function ManageSpace() {
           </div>
         </div>
 
-        <div className="self-stretch w-0.25 bg-gray-100 shrink-0 ml-4 mr-6"></div>
-        <div className="min-h-screen">
-          <Text variant="heading4">{MAP_TAB_TO_TITLE[tab]}</Text>
+        <div className="self-stretch w-0.25 bg-gray-300 shrink-0 mx-8"></div>
+        <div className="min-h-screen w-full">
+          <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-8"></div>
           <Component />
         </div>
