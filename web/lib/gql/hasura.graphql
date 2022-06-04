@@ -203,10 +203,8 @@ query SpaceTags($space_tag_category_id: uuid!) {
   }
 }
 
-query ProfileListingsInSpace($space_id: uuid!) {
-  profile_listing(
-    where: { public: { _eq: true }, profile: { space_id: { _eq: $space_id } } }
-  ) {
+query ProfileListingsInSpace($where: profile_listing_bool_exp) {
+  profile_listing(where: $where) {
     id
     public
     headline

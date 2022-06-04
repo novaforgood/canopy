@@ -1,4 +1,4 @@
-import { ImgHTMLAttributes } from "react";
+import { createFactory, ImgHTMLAttributes, useState } from "react";
 
 import { useRouter } from "next/router";
 
@@ -6,6 +6,7 @@ import { useProfileListingsInSpaceQuery } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
 import { Text } from "../atomic";
+import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { ProfileCard } from "../ProfileCard";
 import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
@@ -32,23 +33,60 @@ function SpaceSplashPage() {
   );
 }
 
+interface FilterBarProps {
+  selectedTagIds: Set<string>;
+  onChange: (newTagIds: Set<string>) => void;
+}
+function FilterBar(props: FilterBarProps) {
+  const { selectedTagIds, onChange } = props;
+
+  const { currentSpace } = useCurrentSpace();
+
+  return (
+    <div className="flex">
+      {currentSpace?.space_tag_categories.map((category) => {
+        return (
+          <SelectAutocomplete
+            key={category.id}
+            options={category.space_tags.map((tag) => ({
+              value: tag.id,
+              label: tag.label,
+            }))}
+            value={null}
+            onSelect={(newTagId) => {
+              if (newTagId)
+                onChange(new Set([...Array.from(selectedTagIds), newTagId]));
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export function SpaceLandingPage() {
   const { currentSpace } = useCurrentSpace();
 
   const router = useRouter();
 
   const [{ data: profileListingData }] = useProfileListingsInSpaceQuery({
-    variables: { space_id: currentSpace?.id ?? "" },
+    variables: {
+      where: {
+        profile: { space_id: { _eq: currentSpace?.id } },
+        public: { _eq: true },
+      },
+    },
   });
 
   const allProfileListings = profileListingData?.profile_listing ?? [];
 
+  const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
   return (
     <div>
       <div className="h-16"></div>
       <SpaceSplashPage />
+      <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-16"></div>
-      <SearchBar />
       <div className="h-8"></div>
       <div className="grid grid-cols-4 gap-4">
         {allProfileListings.map((listing, idx) => {
