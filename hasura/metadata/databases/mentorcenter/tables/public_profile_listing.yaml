@@ -63,6 +63,20 @@ insert_permissions:
         - public
       backend_only: false
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - public
+        - headline
+        - id
+        - profile_id
+      filter:
+        _or:
+          - profile:
+              space:
+                attributes:
+                  _contains:
+                    public: true
   - role: user
     permission:
       columns:
