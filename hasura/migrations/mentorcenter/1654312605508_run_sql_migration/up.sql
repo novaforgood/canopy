@@ -1,1 +1,0 @@
-DELETE FROM profile_listing_to_space_tag;

@@ -1,3 +1,0 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- DELETE FROM profile_listing_to_space_tag;
