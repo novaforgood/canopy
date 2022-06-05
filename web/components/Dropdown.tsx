@@ -8,7 +8,12 @@ import {
   Profile_Role_Enum,
   useAllProfilesOfUserQuery,
 } from "../generated/graphql";
-import { BxCaretDown, BxLogOut, BxTransfer } from "../generated/icons/regular";
+import {
+  BxCaretDown,
+  BxLogIn,
+  BxLogOut,
+  BxTransfer,
+} from "../generated/icons/regular";
 import {
   BxsAddToQueue,
   BxsUserAccount,
@@ -16,6 +21,7 @@ import {
 } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
 
@@ -34,6 +40,8 @@ export function Dropdown() {
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
 
   const router = useRouter();
+
+  const isLoggedIn = useIsLoggedIn();
 
   const [{ data: allProfilesData }] = useAllProfilesOfUserQuery({
     variables: { user_id: userData?.id ?? "" },
@@ -60,28 +68,79 @@ export function Dropdown() {
               leaveTo="transform opacity-0 scale-95"
             >
               <Menu.Items className="absolute z-10 right-0 top-full mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md border border-gray-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <Menu.Item>
-                  {({ active }) => {
-                    const styles = classNames({
-                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                        true,
-                      "bg-white": !active,
-                      "bg-gray-50": active,
-                    });
-                    return (
-                      <button
-                        className={styles}
-                        onClick={() => {
-                          router.push(`/space/${currentSpace?.slug}/account`);
+                {isLoggedIn ? (
+                  <>
+                    <Menu.Item>
+                      {({ active }) => {
+                        const styles = classNames({
+                          "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                            true,
+                          "bg-white": !active,
+                          "bg-gray-50": active,
+                        });
+                        return (
+                          <button
+                            className={styles}
+                            onClick={() => {
+                              router.push(
+                                `/space/${currentSpace?.slug}/account`
+                              );
+                            }}
+                          >
+                            <BxsUserAccount className="w-5 h-5 mr-2" />
+                            <Text variant="body2">My account</Text>
+                          </button>
+                        );
+                      }}
+                    </Menu.Item>
+                    {isAdmin && (
+                      <Menu.Item>
+                        {({ active }) => {
+                          const styles = classNames({
+                            "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                              true,
+                            "bg-white": !active,
+                            "bg-gray-50": active,
+                          });
+                          return (
+                            <button
+                              className={styles}
+                              onClick={() => {
+                                router.push(
+                                  `/space/${currentSpace?.slug}/admin`
+                                );
+                              }}
+                            >
+                              <BxsWrench className="w-5 h-5 mr-2" />
+                              <Text variant="body2">Admin page</Text>
+                            </button>
+                          );
                         }}
-                      >
-                        <BxsUserAccount className="w-5 h-5 mr-2" />
-                        <Text variant="body2">My account</Text>
-                      </button>
-                    );
-                  }}
-                </Menu.Item>
-                {isAdmin && (
+                      </Menu.Item>
+                    )}
+                    <Menu.Item>
+                      {({ active }) => {
+                        const styles = classNames({
+                          "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                            true,
+                          "bg-white": !active,
+                          "bg-gray-50": active,
+                        });
+                        return (
+                          <button
+                            className={styles}
+                            onClick={() => {
+                              signOut();
+                            }}
+                          >
+                            <BxLogOut className="h-5 w-5 mr-2" />
+                            <Text variant="body2">Log out</Text>
+                          </button>
+                        );
+                      }}
+                    </Menu.Item>
+                  </>
+                ) : (
                   <Menu.Item>
                     {({ active }) => {
                       const styles = classNames({
@@ -94,38 +153,16 @@ export function Dropdown() {
                         <button
                           className={styles}
                           onClick={() => {
-                            router.push(`/space/${currentSpace?.slug}/admin`);
+                            router.push("/login");
                           }}
                         >
-                          <BxsWrench className="w-5 h-5 mr-2" />
-                          <Text variant="body2">Admin page</Text>
+                          <BxLogIn className="h-5 w-5 mr-2" />
+                          <Text variant="body2">Log in</Text>
                         </button>
                       );
                     }}
                   </Menu.Item>
                 )}
-
-                <Menu.Item>
-                  {({ active }) => {
-                    const styles = classNames({
-                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                        true,
-                      "bg-white": !active,
-                      "bg-gray-50": active,
-                    });
-                    return (
-                      <button
-                        className={styles}
-                        onClick={() => {
-                          signOut();
-                        }}
-                      >
-                        <BxLogOut className="h-5 w-5 mr-2" />
-                        <Text variant="body2">Log out</Text>
-                      </button>
-                    );
-                  }}
-                </Menu.Item>
               </Menu.Items>
             </Transition>
 
