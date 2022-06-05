@@ -4,7 +4,7 @@ interface ToggleSwitchProps {
   enabled: boolean;
   onChange: (enabled: boolean) => void;
 }
-export default function ToggleSwitch(props: ToggleSwitchProps) {
+export function ToggleSwitch(props: ToggleSwitchProps) {
   const { enabled, onChange } = props;
 
   return (

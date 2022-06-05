@@ -28,6 +28,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   rounded?: boolean;
   floating?: boolean;
   variant?: "primary" | "outline" | "secondary";
+  size?: "small" | "medium";
 };
 
 export const Button = ({
@@ -38,26 +39,26 @@ export const Button = ({
   rounded = false,
   floating = false,
   variant = "primary",
+  size = "medium",
   ...props
 }: ButtonProps) => {
   disabled = loading || disabled;
 
   const secondaryStyles = classNames({
-    ["underline border border-transparent rounded-md px-8 py-3 flex items-center"]:
-      true,
+    ["underline border border-transparent"]: true,
     ["hover:text-gray-500 text-gray-600"]: !disabled,
     ["text-gray-400"]: disabled,
   });
 
   const primaryStyles = classNames({
-    ["border border-black px-8 py-3 flex items-center"]: true,
+    ["border border-black"]: true,
     ["text-white"]: variant === "primary",
     ["bg-gray-900 hover:bg-black"]: !disabled,
     ["bg-gray-700 border-gray-700"]: disabled,
   });
 
   const outlineStyles = classNames({
-    ["border border-black px-8 py-3 flex items-center"]: true,
+    ["border border-black"]: true,
     ["bg-white"]: !disabled,
     ["hover:brightness-95"]: !disabled,
     ["border-gray-500 text-gray-500"]: disabled,
@@ -67,7 +68,10 @@ export const Button = ({
     [primaryStyles]: variant === "primary",
     [outlineStyles]: variant === "outline",
     [secondaryStyles]: variant === "secondary",
-    transition: true,
+    ["transition flex items-center"]: true,
+    ["px-8 py-3"]: size === "medium",
+    ["px-6 py-1.5 text-sm"]: size === "small",
+
     ["rounded-md"]: !rounded,
     ["rounded-full"]: rounded,
     ["cursor-not-allowed"]: disabled,

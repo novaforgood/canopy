@@ -30,7 +30,9 @@ module.exports = {
       },
     },
     colors: {
-      transparent: "transparent",
+      transparent: {
+        DEFAULT: "transparent",
+      },
       white: {
         DEFAULT: "#fff",
       },
