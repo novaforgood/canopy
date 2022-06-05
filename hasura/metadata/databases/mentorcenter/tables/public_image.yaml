@@ -10,6 +10,13 @@ array_relationships:
           schema: public
           name: profile_listing_image
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - uploader_user_id
+        - url
+        - id
+      filter: {}
   - role: user
     permission:
       columns:

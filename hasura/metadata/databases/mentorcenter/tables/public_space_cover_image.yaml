@@ -36,6 +36,18 @@ insert_permissions:
         - space_id
       backend_only: false
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - id
+        - space_id
+        - image_id
+      filter:
+        _or:
+          - space:
+              attributes:
+                _contains:
+                  public: true
   - role: user
     permission:
       columns:

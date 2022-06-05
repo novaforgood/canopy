@@ -34,6 +34,22 @@ insert_permissions:
         - title
       backend_only: false
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - id
+        - space_id
+        - title
+        - char_count
+        - listing_order
+        - deleted
+        - updated_at
+      filter:
+        _or:
+          - space:
+              attributes:
+                _contains:
+                  public: true
   - role: user
     permission:
       columns:

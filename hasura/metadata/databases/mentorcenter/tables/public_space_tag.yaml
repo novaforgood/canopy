@@ -37,6 +37,20 @@ insert_permissions:
         - space_tag_category_id
       backend_only: false
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - id
+        - space_tag_category_id
+        - label
+        - deleted
+      filter:
+        _or:
+          - space_tag_category:
+              space:
+                attributes:
+                  _contains:
+                    public: true
   - role: user
     permission:
       columns:

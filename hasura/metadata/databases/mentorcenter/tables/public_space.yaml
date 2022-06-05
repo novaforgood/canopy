@@ -38,26 +38,48 @@ insert_permissions:
         owner_id:
           _eq: X-Hasura-User-Id
       columns:
+        - attributes
         - description_html
         - name
         - owner_id
         - slug
       backend_only: false
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - attributes
+        - description_html
+        - name
+        - owner_id
+        - slug
+        - created_at
+        - id
+      filter:
+        _or:
+          - attributes:
+              _contains:
+                public: true
   - role: user
     permission:
       columns:
+        - attributes
         - created_at
         - description_html
         - id
         - name
         - owner_id
         - slug
-      filter: {}
+      filter:
+        _or:
+          - profiles:
+              user_id:
+                _eq: X-Hasura-User-Id
 update_permissions:
   - role: user
     permission:
       columns:
+        - attributes
         - description_html
         - name
         - owner_id
