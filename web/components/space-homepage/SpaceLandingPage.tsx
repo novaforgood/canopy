@@ -14,6 +14,7 @@ import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { ProfileCard } from "../ProfileCard";
 import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
+import { Tag } from "../Tag";
 
 import { SearchBar } from "./SearchBar";
 
@@ -47,32 +48,60 @@ function FilterBar(props: FilterBarProps) {
   const { currentSpace } = useCurrentSpace();
 
   return (
-    <div className="flex items-center gap-4">
-      <Text>Filter by:</Text>
-      {currentSpace?.space_tag_categories
-        .filter((category) => !category.deleted)
-        .map((category) => {
+    <div>
+      <div className="flex items-center gap-4">
+        <Text>Filter by:</Text>
+        {currentSpace?.space_tag_categories
+          .filter((category) => !category.deleted)
+          .map((category) => {
+            return (
+              <div className="w-64" key={category.id}>
+                <SelectAutocomplete
+                  placeholder={category.title}
+                  options={category.space_tags
+                    .filter((category) => !category.deleted)
+                    .map((tag) => ({
+                      value: tag.id,
+                      label: tag.label,
+                    }))}
+                  value={null}
+                  onSelect={(newTagId) => {
+                    if (newTagId)
+                      onChange(
+                        new Set([...Array.from(selectedTagIds), newTagId])
+                      );
+                  }}
+                />
+              </div>
+            );
+          })}
+      </div>
+      <div className="h-4"></div>
+      <div className="flex">
+        {currentSpace?.space_tag_categories.map((category) => {
           return (
-            <div className="w-64" key={category.id}>
-              <SelectAutocomplete
-                placeholder={category.title}
-                options={category.space_tags
-                  .filter((category) => !category.deleted)
-                  .map((tag) => ({
-                    value: tag.id,
-                    label: tag.label,
-                  }))}
-                value={null}
-                onSelect={(newTagId) => {
-                  if (newTagId)
-                    onChange(
-                      new Set([...Array.from(selectedTagIds), newTagId])
-                    );
-                }}
-              />
-            </div>
+            <>
+              {category.space_tags.map((tag) =>
+                selectedTagIds.has(tag.id) ? (
+                  <Tag
+                    text={tag.label}
+                    key={tag.id}
+                    onDeleteClick={() => {
+                      onChange(
+                        new Set(
+                          Array.from(selectedTagIds).filter(
+                            (id) => id !== tag.id
+                          )
+                        )
+                      );
+                    }}
+                  />
+                ) : null
+              )}
+            </>
           );
         })}
+      </div>
     </div>
   );
 }
@@ -81,6 +110,8 @@ export function SpaceLandingPage() {
   const { currentSpace } = useCurrentSpace();
 
   const router = useRouter();
+
+  const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
 
   const [{ data: profileListingData }] = useProfileListingsInSpaceQuery({
     variables: {
@@ -92,13 +123,23 @@ export function SpaceLandingPage() {
           },
         },
         public: { _eq: true },
+
+        profile_listing_to_space_tags:
+          selectedTagIds.size > 0
+            ? {
+                space_tag: {
+                  id: {
+                    _in: Array.from(selectedTagIds),
+                  },
+                },
+              }
+            : undefined,
       },
     },
   });
 
   const allProfileListings = profileListingData?.profile_listing ?? [];
 
-  const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
   return (
     <div>
       <div className="h-16"></div>
