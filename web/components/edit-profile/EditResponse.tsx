@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   Profile_Listing_Constraint,
@@ -7,10 +7,8 @@ import {
   useListingResponseByQuestionIdQuery,
   useUpsertListingResponsesMutation,
 } from "../../generated/graphql";
-import { BxsPencil } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { Button, Input, Text } from "../atomic";
+import { Text } from "../atomic";
 import { EditButton } from "../EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
@@ -91,7 +89,7 @@ export function EditResponse(props: EditResponseProps) {
           />
         </div>
       </ActionModal>
-      <div className="flex flex-col items-start pb-16">
+      <div className="flex flex-col items-start">
         <Text variant="subheading1">
           {question.title}
           <EditButton onClick={openModal} className="mb-1 ml-1" />

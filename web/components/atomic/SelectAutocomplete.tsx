@@ -28,10 +28,11 @@ interface SelectProps<T> {
   value: T | null;
   onSelect?: (selectedValue: T | null) => void;
   className?: string;
+  placeholder?: string;
 }
 
 export function SelectAutocomplete<T extends string>(props: SelectProps<T>) {
-  const { options, value, onSelect = () => {}, className } = props;
+  const { options, value, onSelect = () => {}, className, placeholder } = props;
   const [query, setQuery] = useState("");
 
   const filteredOptions =
@@ -66,6 +67,7 @@ export function SelectAutocomplete<T extends string>(props: SelectProps<T>) {
           onChange={(event) => setQuery(event.target.value)}
           value={query}
           ref={inputRef}
+          placeholder={placeholder}
         />
         <Combobox.Button
           className="absolute top-0 left-0 w-full h-full flex justify-end items-center pr-2"

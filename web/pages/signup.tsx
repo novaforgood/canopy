@@ -119,6 +119,13 @@ const SignUpPage: CustomPage = () => {
                       userCred.user.metadata.lastSignInTime;
 
                     if (isNewUser) {
+                      const idToken = await userCred.user.getIdToken();
+                      await fetch(`/api/auth/upsertUserData`, {
+                        method: "POST",
+                        headers: {
+                          authorization: `Bearer ${idToken}`,
+                        },
+                      });
                       await redirectUsingQueryParam("/");
                     } else {
                       // User already has an account

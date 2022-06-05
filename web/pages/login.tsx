@@ -132,29 +132,33 @@ const LoginPage: CustomPage = () => {
             </div>
             <div className="h-8"></div>
 
-            <TextInput
-              className="w-96"
-              label="Email"
-              type="text"
-              onChange={(e) => {
-                setFormData({ email: e.target.value });
-              }}
-            />
+            <div className="w-96">
+              <TextInput
+                label="Email"
+                type="text"
+                onChange={(e) => {
+                  setFormData({ email: e.target.value });
+                }}
+              />
+            </div>
+
             <div className="h-4"></div>
 
-            <TextInput
-              className="w-96"
-              label="Password"
-              type="password"
-              onChange={(e) => {
-                setFormData({ password: e.target.value });
-              }}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  signInManually(formData.email, formData.password);
-                }
-              }}
-            />
+            <div className="w-96">
+              <TextInput
+                className="w-96"
+                label="Password"
+                type="password"
+                onChange={(e) => {
+                  setFormData({ password: e.target.value });
+                }}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    signInManually(formData.email, formData.password);
+                  }
+                }}
+              />
+            </div>
 
             <div className="h-16"></div>
             <Button

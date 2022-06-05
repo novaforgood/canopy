@@ -38,7 +38,7 @@ export function EditQuestion(props: EditQuestionProps) {
       <ActionModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        actionText="Save"
+        actionText="Set"
         onAction={() => {
           onSave({
             ...question,

@@ -8,6 +8,7 @@ import { useUserData } from "../hooks/useUserData";
 
 import { Button, Text } from "./atomic";
 import { EditProfileImageModal } from "./edit-profile/EditProfileImageModal";
+import { EditProfileTags } from "./edit-profile/EditProfileTags";
 import { EditResponse } from "./edit-profile/EditResponse";
 import { ProfileSocialsDisplay } from "./edit-socials-info/ProfileSocialsDisplay";
 import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
@@ -90,14 +91,33 @@ export function EditProfileListing(props: EditProfileListingProps) {
           <div className="h-16"></div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              {currentSpace.space_listing_questions.map((question) => {
-                return <EditResponse key={question.id} question={question} />;
-              })}
+            <div className="flex flex-col items-start gap-12 pt-4">
+              {currentSpace.space_listing_questions
+                .filter((item) => item.deleted === false)
+                .map((question) => {
+                  return <EditResponse key={question.id} question={question} />;
+                })}
             </div>
             <div>
-              <div className="h-24 bg-gray-50 p-4 rounded-md">Tags go here</div>
-              <div className="h-8"></div>
+              {currentSpace.space_tag_categories.length > 0 && (
+                <>
+                  <div className="bg-gray-50 p-4 rounded-md flex flex-col items-start gap-12">
+                    {currentSpace.space_tag_categories
+                      .filter((item) => item.deleted === false)
+                      .map((category) => {
+                        console.log(category);
+                        return (
+                          <EditProfileTags
+                            key={category.id}
+                            tagCategory={category}
+                          />
+                        );
+                      })}
+                  </div>
+                  <div className="h-8"></div>
+                </>
+              )}
+
               <div className="bg-gray-50 p-4 rounded-md">
                 <Text variant="subheading1">
                   Contact me

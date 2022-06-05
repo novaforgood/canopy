@@ -6,18 +6,16 @@ import { SidePadding } from "../../../components/SidePadding";
 import { SpaceLandingPage } from "../../../components/space-homepage/SpaceLandingPage";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { CustomPage } from "../../../types";
 
-export default function SpaceHomepage() {
+const SpaceHomepage: CustomPage = () => {
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
-  const { currentProfile, fetchingCurrentProfile } = useCurrentProfile();
 
-  console.log(fetchingCurrentProfile, fetchingCurrentSpace);
-  console.log(currentProfile, currentSpace);
-  if (fetchingCurrentProfile || fetchingCurrentSpace) {
+  if (fetchingCurrentSpace) {
     return <div>Loading...</div>;
   }
 
-  if (!currentSpace || !currentProfile) {
+  if (!currentSpace) {
     return <PageNotFound />;
   }
 
@@ -27,4 +25,8 @@ export default function SpaceHomepage() {
       <SpaceLandingPage />
     </SidePadding>
   );
-}
+};
+
+SpaceHomepage.requiredAuthorizations = [];
+
+export default SpaceHomepage;

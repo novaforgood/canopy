@@ -45,7 +45,6 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
     leading: true,
   });
   useEffect(() => {
-    console.log("Lole");
     const imageData =
       editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
     setImageData(imageData);

@@ -20,6 +20,25 @@ insert_permissions:
         - type
       backend_only: false
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - link
+        - type
+        - id
+        - profile_listing_id
+      filter:
+        _or:
+          - _and:
+              - profile_listing:
+                  public:
+                    _eq: true
+              - profile_listing:
+                  profile:
+                    space:
+                      attributes:
+                        _contains:
+                          public: true
   - role: user
     permission:
       columns:

@@ -1,0 +1,4 @@
+table:
+  schema: public
+  name: connection_request_status
+is_enum: true

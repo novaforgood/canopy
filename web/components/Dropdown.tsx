@@ -76,9 +76,7 @@ export function Dropdown() {
                         }}
                       >
                         <BxsUserAccount className="w-5 h-5 mr-2" />
-                        <Text bold variant="body2">
-                          My account
-                        </Text>
+                        <Text variant="body2">My account</Text>
                       </button>
                     );
                   }}
@@ -100,64 +98,12 @@ export function Dropdown() {
                           }}
                         >
                           <BxsWrench className="w-5 h-5 mr-2" />
-                          <Text bold variant="body2">
-                            Admin page
-                          </Text>
+                          <Text variant="body2">Admin page</Text>
                         </button>
                       );
                     }}
                   </Menu.Item>
                 )}
-
-                {allProfilesData?.profile.map((profile) => {
-                  return (
-                    <Menu.Item key={profile.id}>
-                      {({ active }) => {
-                        const styles = classNames({
-                          "group flex w-full items-center rounded-md px-2 py-3 text-sm whitespace-nowrap truncate":
-                            true,
-                          "bg-white": !active,
-                          "bg-gray-50": active,
-                        });
-                        return (
-                          <button
-                            className={styles}
-                            onClick={() => {
-                              router.push(`/space/${profile.space.slug}`);
-                            }}
-                          >
-                            <BxTransfer className="w-5 h-5 mr-2 flex-none" />
-                            {profile.space.name}
-                          </button>
-                        );
-                      }}
-                    </Menu.Item>
-                  );
-                })}
-
-                <Menu.Item>
-                  {({ active }) => {
-                    const styles = classNames({
-                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                        true,
-                      "bg-white": !active,
-                      "bg-gray-50": active,
-                    });
-                    return (
-                      <button
-                        className={styles}
-                        onClick={() => {
-                          router.push(`/create`);
-                        }}
-                      >
-                        <BxsAddToQueue className="w-5 h-5 mr-2" />
-                        <Text bold variant="body2">
-                          Create a space
-                        </Text>
-                      </button>
-                    );
-                  }}
-                </Menu.Item>
 
                 <Menu.Item>
                   {({ active }) => {
@@ -175,9 +121,7 @@ export function Dropdown() {
                         }}
                       >
                         <BxLogOut className="h-5 w-5 mr-2" />
-                        <Text bold variant="body2">
-                          Log out
-                        </Text>
+                        <Text variant="body2">Log out</Text>
                       </button>
                     );
                   }}
@@ -187,15 +131,15 @@ export function Dropdown() {
 
             <div>
               <Menu.Button className="focus:outline-none">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Text className="mr-1">
+                    {userData?.first_name} {userData?.last_name}
+                  </Text>
                   <ProfileImage
                     src={img}
                     alt="Profile image"
                     className="h-10 w-10"
                   />
-                  <Text className="mr-2">
-                    {userData?.first_name} {userData?.last_name}
-                  </Text>
                   <BxCaretDown className={caretStyles} />
                 </div>
               </Menu.Button>

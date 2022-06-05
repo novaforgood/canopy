@@ -27,7 +27,14 @@ query AllProfilesOfUser($user_id: String!) {
           url
         }
       }
+      profile_listing_to_space_tags(
+        where: { space_tag: { deleted: { _eq: false } } }
+      ) {
+        id
+        space_tag_id
+      }
     }
+
     flattened_profile_roles {
       id
       profile_id
@@ -54,12 +61,32 @@ query SpaceBySlug($slug: String!) {
     description_html
     slug
     owner_id
-    space_listing_questions(order_by: { listing_order: asc }) {
+    attributes
+    space_listing_questions(
+      order_by: { listing_order: asc }
+      where: { deleted: { _eq: false } }
+    ) {
       char_count
       id
       space_id
       title
       listing_order
+      deleted
+    }
+    space_tag_categories(
+      order_by: { listing_order: asc }
+      where: { deleted: { _eq: false } }
+    ) {
+      id
+      title
+      deleted
+      space_id
+      listing_order
+      space_tags {
+        id
+        label
+        deleted
+      }
     }
     space_cover_image {
       id
@@ -91,11 +118,12 @@ mutation CreateOwnerProfileInNewSpace(
       description_html
       slug
       owner_id
-      space_listing_questions {
+      space_listing_questions(order_by: { listing_order: asc }) {
         char_count
         id
         space_id
         title
+        deleted
       }
       space_cover_image {
         id
@@ -155,18 +183,23 @@ query ProfilesBySpaceId($space_id: uuid!) {
 
 query SpaceTagCategories($space_id: uuid!) {
   space_tag_category(where: { space_id: { _eq: $space_id } }) {
+    id
+    title
+    deleted
     space_tags {
       id
       label
+      deleted
     }
-    title
-    id
   }
 }
 
 query ProfileListingToSpaceTag($profile_id: uuid!) {
   profile_listing_to_space_tag(
-    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+    where: {
+      profile_listing: { profile_id: { _eq: $profile_id } }
+      space_tag: { deleted: { _eq: false } }
+    }
   ) {
     id
     profile_listing_id
@@ -175,13 +208,20 @@ query ProfileListingToSpaceTag($profile_id: uuid!) {
       id
       label
       space_tag_category_id
+      deleted
     }
   }
 }
 
 query SpaceTags($space_tag_category_id: uuid!) {
-  space_tag(where: { space_tag_category_id: {} }) {
+  space_tag(
+    where: {
+      space_tag_category_id: { _eq: $space_tag_category_id }
+      deleted: { _eq: false }
+    }
+  ) {
     id
+    label
     space_tag_category {
       space_id
       title
@@ -189,10 +229,8 @@ query SpaceTags($space_tag_category_id: uuid!) {
   }
 }
 
-query ProfileListingsInSpace($space_id: uuid!) {
-  profile_listing(
-    where: { public: { _eq: true }, profile: { space_id: { _eq: $space_id } } }
-  ) {
+query ProfileListingsInSpace($where: profile_listing_bool_exp) {
+  profile_listing(where: $where) {
     id
     public
     headline
@@ -201,6 +239,16 @@ query ProfileListingsInSpace($space_id: uuid!) {
       image {
         id
         url
+      }
+    }
+    profile_listing_to_space_tags(
+      where: { space_tag: { deleted: { _eq: false } } }
+    ) {
+      id
+      space_tag_id
+      space_tag {
+        id
+        label
       }
     }
     profile {
@@ -317,5 +365,167 @@ mutation UpsertProfileListing(
     id
     public
     headline
+  }
+}
+
+mutation UpsertSpaceProfileSchema(
+  $space_listing_questions: [space_listing_question_insert_input!]!
+  $space_tag_categories: [space_tag_category_insert_input!]!
+) {
+  insert_space_listing_question(
+    objects: $space_listing_questions
+    on_conflict: {
+      constraint: space_listing_question_pkey
+      update_columns: [char_count, listing_order, title, deleted]
+    }
+  ) {
+    returning {
+      id
+      space_id
+      listing_order
+      char_count
+      title
+      deleted
+    }
+  }
+  insert_space_tag_category(
+    objects: $space_tag_categories
+    on_conflict: {
+      constraint: space_tag_category_pkey
+      update_columns: [listing_order, title, deleted]
+    }
+  ) {
+    returning {
+      id
+      listing_order
+      space_id
+      title
+      deleted
+      space_tags {
+        id
+        label
+        deleted
+        space_tag_category_id
+      }
+    }
+  }
+}
+
+mutation UpdateSpace($space_id: uuid!, $variables: space_set_input!) {
+  update_space_by_pk(pk_columns: { id: $space_id }, _set: $variables) {
+    attributes
+    created_at
+    description_html
+    id
+    name
+    owner_id
+    slug
+    space_cover_image {
+      id
+      image {
+        id
+        url
+        uploader_user_id
+      }
+    }
+  }
+}
+
+mutation UpsertSpaceCoverImage($image_id: uuid!, $space_id: uuid!) {
+  insert_space_cover_image_one(
+    object: { image_id: $image_id, space_id: $space_id }
+    on_conflict: {
+      constraint: space_cover_image_space_id_key
+      update_columns: [image_id]
+    }
+  ) {
+    id
+    image {
+      id
+      uploader_user_id
+      url
+    }
+    image_id
+  }
+}
+
+mutation UpdateConnectionRequest(
+  $connection_request_id: uuid!
+  $variables: connection_request_set_input!
+) {
+  update_connection_request_by_pk(
+    pk_columns: { id: $connection_request_id }
+    _set: $variables
+  ) {
+    id
+    created_at
+    receiver_profile_id
+    sender_profile_id
+    status
+    updated_at
+  }
+}
+
+query ConnectionRequests($profile_id: uuid!) {
+  connection_request(
+    where: {
+      _or: [
+        { receiver_profile_id: { _eq: $profile_id } }
+        { sender_profile_id: { _eq: $profile_id } }
+      ]
+    }
+  ) {
+    id
+    created_at
+    receiver_profile_id
+    sender_profile_id
+    status
+    updated_at
+    receiver_profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+    }
+    sender_profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+    }
+  }
+}
+
+query PublicSpaceBySlug($slug: String!) {
+  public_space(where: { slug: { _eq: $slug } }) {
+    id
+    name
+    slug
   }
 }

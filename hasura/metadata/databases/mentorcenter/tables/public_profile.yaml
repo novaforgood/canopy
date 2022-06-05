@@ -49,6 +49,19 @@ insert_permissions:
         - user_id
       backend_only: false
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - user_id
+        - created_at
+        - id
+        - space_id
+      filter:
+        _or:
+          - space:
+              attributes:
+                _contains:
+                  public: true
   - role: user
     permission:
       columns:

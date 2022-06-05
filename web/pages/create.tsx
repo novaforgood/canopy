@@ -13,7 +13,9 @@ import { StageNavigator } from "../components/StageNavigator";
 import { FadeTransition } from "../components/transitions/FadeTransition";
 import {
   Space_Listing_Question_Insert_Input,
+  Space_Tag_Category_Arr_Rel_Insert_Input,
   useCreateOwnerProfileInNewSpaceMutation,
+  Space_Tag_Category_Insert_Input,
 } from "../generated/graphql";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
@@ -94,6 +96,7 @@ type CreateProgramState = {
   spaceSlug: string;
   coverImage: { id: string; url: string } | null;
   listingQuestions: Space_Listing_Question_Insert_Input[];
+  tagCategories: Space_Tag_Category_Insert_Input[];
 };
 
 const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
@@ -110,6 +113,14 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
     {
       title: "You can talk to me about",
       char_count: 200,
+    },
+  ],
+  tagCategories: [
+    {
+      title: "Communities",
+      space_tags: {
+        data: [{ label: "LGBTQ+" }],
+      },
     },
   ],
 };
@@ -237,7 +248,10 @@ const CreatePage: CustomPage = () => {
             show={stageDisplayed === CreateStage.EnterProfileSchema}
           >
             <EnterProfileSchema
-              data={{ listingQuestions: state.listingQuestions }}
+              data={{
+                listingQuestions: state.listingQuestions,
+                tagCategories: state.tagCategories,
+              }}
               onChange={(newData) => {
                 setState({ ...newData });
               }}
@@ -252,7 +266,7 @@ const CreatePage: CustomPage = () => {
               onChange={(newData) => {
                 setState({ ...newData });
               }}
-              onComplete={() => {
+              onComplete={async () => {
                 createOwnerProfile({
                   space: {
                     name: state.spaceName,
@@ -265,8 +279,17 @@ const CreatePage: CustomPage = () => {
                         listing_order: index,
                       })),
                     },
-                    space_cover_image: {
-                      data: { image_id: state.coverImage?.id },
+
+                    space_cover_image: state.coverImage
+                      ? {
+                          data: { image_id: state.coverImage.id },
+                        }
+                      : undefined,
+                    space_tag_categories: {
+                      data: state.tagCategories.map((question, index) => ({
+                        ...question,
+                        listing_order: index,
+                      })),
                     },
                   },
                   user_id: userData.id,

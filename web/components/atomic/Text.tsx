@@ -16,6 +16,7 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
+  medium?: boolean;
   className?: string;
 };
 
@@ -24,6 +25,7 @@ export const Text = ({
   bold = false,
   italic = false,
   underline = false,
+  medium = false,
   className,
   ...props
 }: TextProps) => {
@@ -39,6 +41,7 @@ export const Text = ({
     { "text-body2": variant === "body2" },
     { "text-body3": variant === "body3" },
     { "font-bold": bold },
+    { "font-medium": medium },
     { italic: italic }, // Styling needs to be polished
     { underline: underline },
     { [`${className}`]: true }

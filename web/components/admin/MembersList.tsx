@@ -20,20 +20,17 @@ export function MembersList() {
   }
 
   return (
-    <div className="">
-      <div className="grid grid-cols-4 gap-2 items-center">
-        <strong>Name</strong>
-        <strong>Email</strong>
-        <strong>Role</strong>
-        <strong>Created At</strong>
-        {profilesData?.profile?.map((profile) => {
-          return (
-            <Fragment key={profile.id}>
-              <MemberRow profileId={profile.id} />
-            </Fragment>
-          );
-        })}
-      </div>
+    <div className="grid grid-cols-3 gap-2 items-center w-full">
+      <strong>Name</strong>
+      <strong>Email</strong>
+      <strong>Role</strong>
+      {profilesData?.profile?.map((profile) => {
+        return (
+          <Fragment key={profile.id}>
+            <MemberRow profileId={profile.id} />
+          </Fragment>
+        );
+      })}
     </div>
   );
 }

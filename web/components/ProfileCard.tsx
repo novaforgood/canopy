@@ -53,7 +53,7 @@ export function ProfileCard(props: ProfileCardProps) {
         <div className="pb-2">
           <i>{descriptionTitle}</i>
         </div>
-        <div className="mb-4 text-gray-500 text-ellipsis overflow-hidden">
+        <div className="mb-4 text-gray-500 text-ellipsis overflow-hidden italic">
           {description}
         </div>
       </div>

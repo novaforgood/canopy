@@ -18,7 +18,10 @@ export function getUrqlClient(jwt: string) {
   return createClient({
     url: requireEnv("NEXT_PUBLIC_GRAPHQL_ENDPOINT"),
     requestPolicy: "cache-and-network",
+    maskTypename: true,
     fetchOptions: () => {
+      if (jwt.length === 0) return {};
+
       return {
         headers: {
           authorization: `Bearer ${jwt}`,

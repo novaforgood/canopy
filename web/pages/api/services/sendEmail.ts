@@ -4,6 +4,7 @@ import { EmailType } from "../../../common/types";
 import {
   executeGetInviteLinkQuery,
   executeGetProfileQuery,
+  executeInsertConnectionRequestMutation,
   executeInsertProfileMutation,
   GetInviteLinkDocument,
   Profile_Role_Enum,
@@ -93,6 +94,15 @@ export default applyMiddleware({
         .catch((err) => {
           throw makeApiError(err.message);
         });
+      const { error } = await executeInsertConnectionRequestMutation({
+        data: {
+          sender_profile_id: senderProfileId,
+          receiver_profile_id: receiverProfileId,
+        },
+      });
+      if (error) {
+        throw makeApiError(error.message);
+      }
       break;
     }
   }

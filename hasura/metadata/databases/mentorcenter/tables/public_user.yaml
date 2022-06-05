@@ -10,6 +10,22 @@ array_relationships:
           schema: public
           name: profile
 select_permissions:
+  - role: public
+    permission:
+      columns:
+        - id
+        - created_at
+        - first_name
+        - last_name
+        - email
+        - last_active_at
+      filter:
+        _or:
+          - profiles:
+              space:
+                attributes:
+                  _contains:
+                    public: true
   - role: user
     permission:
       columns:

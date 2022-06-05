@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -9,6 +9,7 @@ import { TwoThirdsPageLayout } from "../../../../components/TwoThirdsPageLayout"
 import {
   InviteLinksQuery,
   Space_Invite_Link_Type_Enum,
+  usePublicSpaceBySlugQuery,
 } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
@@ -43,9 +44,16 @@ function AlreadyPartOfSpace() {
 
 function JoinSpace() {
   const router = useRouter();
-  const { currentSpace } = useCurrentSpace();
 
   const inviteLinkId = useQueryParam("inviteLinkId", "string");
+  const slug = useQueryParam("slug", "string");
+
+  const [loading, setLoading] = useState(false);
+
+  const [{ data: publicSpaceData }] = usePublicSpaceBySlugQuery({
+    variables: { slug: slug ?? "" },
+  });
+  const publicSpace = publicSpaceData?.public_space[0];
 
   const joinSpace = useCallback(async () => {
     if (!inviteLinkId) {
@@ -64,7 +72,6 @@ function JoinSpace() {
         }
       >("/api/invite/joinProgram", { inviteLinkId })
       .then((response) => {
-        toast.success("Good job");
         return response;
       })
       .catch((e) => {
@@ -76,32 +83,38 @@ function JoinSpace() {
     <TwoThirdsPageLayout>
       <div className="h-screen flex flex-col items-start justify-center px-16 max-w-2xl">
         <Text variant="heading2">
-          You have been invited to <b>{currentSpace?.name}</b>!
+          You have been invited to <b>{publicSpace?.name}</b>!
         </Text>
 
         <div className="h-16"></div>
 
         <div className="text-2xl"></div>
         <Button
+          loading={loading}
           onClick={() => {
-            joinSpace().then((response) => {
-              if (response) {
-                switch (response.inviteLink.type) {
-                  case Space_Invite_Link_Type_Enum.Member: {
-                    router.push(`/space/${currentSpace?.slug}`);
-                    break;
-                  }
-                  case Space_Invite_Link_Type_Enum.MemberListingEnabled: {
-                    router.push(`/space/${currentSpace?.slug}/create-profile`);
-                    break;
+            setLoading(true);
+            joinSpace()
+              .then((response) => {
+                if (response) {
+                  switch (response.inviteLink.type) {
+                    case Space_Invite_Link_Type_Enum.Member: {
+                      router.push(`/space/${publicSpace?.slug}`);
+                      break;
+                    }
+                    case Space_Invite_Link_Type_Enum.MemberListingEnabled: {
+                      router.push(`/space/${publicSpace?.slug}/create-profile`);
+                      break;
+                    }
                   }
                 }
-              }
-            });
+              })
+              .finally(() => {
+                setLoading(false);
+              });
           }}
           rounded
         >
-          Join {currentSpace?.name}
+          Join {publicSpace?.name}
         </Button>
         <div className="h-4"></div>
         <Button

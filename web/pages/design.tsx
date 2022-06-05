@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { tuple } from "zod";
 
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
-import ToggleSwitch from "../components/atomic/Switch";
+import { ToggleSwitch } from "../components/atomic/ToggleSwitch";
 import { ImageUploader } from "../components/ImageUploader";
 import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
 import { TextInput } from "../components/inputs/TextInput";
@@ -343,6 +343,15 @@ const ComponentsPage: CustomPage = () => {
           </div>
 
           <SectionTitle title="Buttons" />
+          <div>Sizes</div>
+          <div className="flex flex-col items-start gap-2">
+            <Button size="medium">Medium</Button>
+            <Button size="small" loading>
+              Small
+            </Button>
+          </div>
+          <div className="h-8"></div>
+
           <ButtonsReference />
 
           <SectionTitle title="Inputs" />

@@ -1,11 +1,13 @@
-import { ImgHTMLAttributes } from "react";
+import { createFactory, ImgHTMLAttributes, useState } from "react";
 
 import { useRouter } from "next/router";
 
 import { useProfileListingsInSpaceQuery } from "../../generated/graphql";
+import { BxFilter } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
 import { Text } from "../atomic";
+import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { ProfileCard } from "../ProfileCard";
 import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
@@ -32,28 +34,78 @@ function SpaceSplashPage() {
   );
 }
 
+interface FilterBarProps {
+  selectedTagIds: Set<string>;
+  onChange: (newTagIds: Set<string>) => void;
+}
+function FilterBar(props: FilterBarProps) {
+  const { selectedTagIds, onChange } = props;
+
+  const { currentSpace } = useCurrentSpace();
+
+  return (
+    <div className="flex items-center gap-4">
+      <Text>Filter by:</Text>
+      {currentSpace?.space_tag_categories
+        .filter((category) => !category.deleted)
+        .map((category) => {
+          return (
+            <div className="w-64" key={category.id}>
+              <SelectAutocomplete
+                placeholder={category.title}
+                options={category.space_tags
+                  .filter((category) => !category.deleted)
+                  .map((tag) => ({
+                    value: tag.id,
+                    label: tag.label,
+                  }))}
+                value={null}
+                onSelect={(newTagId) => {
+                  if (newTagId)
+                    onChange(
+                      new Set([...Array.from(selectedTagIds), newTagId])
+                    );
+                }}
+              />
+            </div>
+          );
+        })}
+    </div>
+  );
+}
+
 export function SpaceLandingPage() {
   const { currentSpace } = useCurrentSpace();
 
   const router = useRouter();
 
   const [{ data: profileListingData }] = useProfileListingsInSpaceQuery({
-    variables: { space_id: currentSpace?.id ?? "" },
+    variables: {
+      where: {
+        profile: { space_id: { _eq: currentSpace?.id } },
+        public: { _eq: true },
+      },
+    },
   });
 
   const allProfileListings = profileListingData?.profile_listing ?? [];
 
+  const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
   return (
     <div>
       <div className="h-16"></div>
       <SpaceSplashPage />
       <div className="h-16"></div>
-      <SearchBar />
+      <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
       <div className="grid grid-cols-4 gap-4">
         {allProfileListings.map((listing, idx) => {
           const { first_name, last_name } = listing.profile.user;
 
+          const tagNames =
+            listing.profile_listing_to_space_tags?.map(
+              (tag) => tag.space_tag.label
+            ) ?? [];
           return (
             <ProfileCard
               key={idx}
@@ -64,7 +116,7 @@ export function SpaceLandingPage() {
               imageUrl={listing.profile_listing_image?.image.url}
               subtitle={listing.headline}
               descriptionTitle={"Topics"}
-              description={"(Tags here)"}
+              description={tagNames.join(", ")}
             />
           );
         })}
