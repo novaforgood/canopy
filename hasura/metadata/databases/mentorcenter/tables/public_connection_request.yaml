@@ -12,12 +12,12 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - id
         - created_at
-        - confirmed_at
-        - sender_profile_id
+        - id
         - receiver_profile_id
-        - confirmed
+        - sender_profile_id
+        - status
+        - updated_at
       filter:
         _or:
           - receiver_profile:
@@ -46,8 +46,7 @@ update_permissions:
   - role: user
     permission:
       columns:
-        - confirmed
-        - confirmed_at
+        - status
       filter:
         _or:
           - receiver_profile:
