@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import { EditProfileFormat } from "../../../components/admin/EditProfileFormat";
 import { InviteLinksList } from "../../../components/admin/InviteLinksList";
@@ -11,7 +12,9 @@ import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../components/EditProfileListing";
 import { Navbar } from "../../../components/Navbar";
 import { SidePadding } from "../../../components/SidePadding";
+import { useUpdateSpaceMutation } from "../../../generated/graphql";
 import {
+  BxFemaleSign,
   BxLink,
   BxQuestionMark,
   BxRightArrow,
@@ -31,8 +34,93 @@ function RoundedCard(props: { children: React.ReactNode; className?: string }) {
   return <div className={styles}>{children}</div>;
 }
 
+function CheckBox(props: {
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  const { label, checked, onChange } = props;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.checked);
+  };
+
+  return (
+    <div className="flex items-start gap-4">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={handleChange}
+        className="form-checkbox h-6 w-6"
+      />
+      <Text variant="body1">{label}</Text>
+    </div>
+  );
+}
+
+type SpaceAttributes = {
+  public: boolean;
+};
+
+const DEFAULT_SPACE_ATTRIBUTES: SpaceAttributes = {
+  public: false,
+};
+
 function SetPrivacySettings() {
-  return <div className="">Privacy settings, bitch</div>;
+  const { currentSpace } = useCurrentSpace();
+
+  const [attributes, setAttributes] = useState<SpaceAttributes>();
+
+  useEffect(() => {
+    if (currentSpace) {
+      const attrs = { ...DEFAULT_SPACE_ATTRIBUTES, ...currentSpace.attributes };
+      setAttributes(attrs);
+    }
+  }, [currentSpace]);
+
+  const [loading, setLoading] = useState(false);
+  const [_, updateSpace] = useUpdateSpaceMutation();
+
+  if (!attributes) {
+    return null;
+  }
+
+  return (
+    <div className="">
+      <Button
+        onClick={() => {
+          if (!currentSpace) {
+            toast.error("No space");
+            return;
+          }
+          setLoading(true);
+          updateSpace({
+            variables: {
+              attributes: attributes,
+            },
+            space_id: currentSpace.id,
+          })
+            .then(() => {
+              toast.success("Saved settings");
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }}
+        loading={loading}
+      >
+        Save changes
+      </Button>
+      <div className="h-8"></div>
+      <CheckBox
+        label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
+        checked={attributes.public}
+        onChange={(newVal) => {
+          setAttributes({ ...attributes, public: newVal });
+        }}
+      />
+    </div>
+  );
 }
 
 enum ManageSpaceTabs {

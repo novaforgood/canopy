@@ -61,6 +61,7 @@ query SpaceBySlug($slug: String!) {
     description_html
     slug
     owner_id
+    attributes
     space_listing_questions(
       order_by: { listing_order: asc }
       where: { deleted: { _eq: false } }
@@ -405,6 +406,26 @@ mutation UpsertSpaceProfileSchema(
         label
         deleted
         space_tag_category_id
+      }
+    }
+  }
+}
+
+mutation UpdateSpace($space_id: uuid!, $variables: space_set_input!) {
+  update_space_by_pk(pk_columns: { id: $space_id }, _set: $variables) {
+    attributes
+    created_at
+    description_html
+    id
+    name
+    owner_id
+    slug
+    space_cover_image {
+      id
+      image {
+        id
+        url
+        uploader_user_id
       }
     }
   }

@@ -45,7 +45,6 @@ function FilterBar(props: FilterBarProps) {
 
   return (
     <div className="flex items-center gap-4">
-      {/* <BxFilter className="w-10 h-10" /> */}
       <Text>Filter by:</Text>
       {currentSpace?.space_tag_categories
         .filter((category) => !category.deleted)

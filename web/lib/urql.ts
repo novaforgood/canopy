@@ -20,6 +20,8 @@ export function getUrqlClient(jwt: string) {
     requestPolicy: "cache-and-network",
     maskTypename: true,
     fetchOptions: () => {
+      if (jwt.length === 0) return {};
+
       return {
         headers: {
           authorization: `Bearer ${jwt}`,
