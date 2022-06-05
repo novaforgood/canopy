@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import classNames from "classnames";
 import { useRouter } from "next/router";
+import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
 
 import { EditProfileFormat } from "../../../components/admin/EditProfileFormat";
@@ -10,8 +11,13 @@ import { MembersList } from "../../../components/admin/MembersList";
 import { Button, Text } from "../../../components/atomic";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../components/EditProfileListing";
+import { HtmlDisplay } from "../../../components/HtmlDisplay";
+import { ImageUploader } from "../../../components/ImageUploader";
+import { SimpleRichTextInput } from "../../../components/inputs/SimpleRichTextInput";
+import { TextInput } from "../../../components/inputs/TextInput";
 import { Navbar } from "../../../components/Navbar";
 import { SidePadding } from "../../../components/SidePadding";
+import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
 import { useUpdateSpaceMutation } from "../../../generated/graphql";
 import {
   BxFemaleSign,
@@ -20,9 +26,14 @@ import {
   BxRightArrow,
   BxRightArrowAlt,
 } from "../../../generated/icons/regular";
-import { BxsCog, BxsReport } from "../../../generated/icons/solid";
+import {
+  BxsCloudUpload,
+  BxsCog,
+  BxsReport,
+} from "../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { uploadImage } from "../../../lib/image";
 
 function RoundedCard(props: { children: React.ReactNode; className?: string }) {
   const { children, className } = props;
@@ -128,22 +139,143 @@ function SetPrivacySettings() {
   );
 }
 
+function EditHomepage() {
+  const { currentSpace } = useCurrentSpace();
+
+  const [spaceName, setSpaceName] = useState("");
+  const [spaceDescriptionHtml, setSpaceDescriptionHtml] = useState("");
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (currentSpace) {
+      setSpaceName(currentSpace.name);
+      setImageSrc(currentSpace.space_cover_image?.image.url ?? null);
+    }
+  }, [currentSpace]);
+
+  const editor = useRef<AvatarEditor | null>(null);
+
+  const [edited, setEdited] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [_, updateSpace] = useUpdateSpaceMutation();
+
+  return (
+    <div className="flex flex-col items-start">
+      <Button
+        disabled={!edited}
+        rounded
+        onClick={async () => {
+          if (!currentSpace) {
+            toast.error("No space");
+            return;
+          }
+          setLoading(true);
+
+          const imageData =
+            editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
+
+          let image = null;
+          if (imageData) {
+            const res = await uploadImage(imageData).catch((err) => {
+              toast.error(err.message);
+              return null;
+            });
+            if (!res) {
+              setLoading(false);
+              toast.error("Image failed to upload");
+              return;
+            }
+
+            image = res.data.image;
+          }
+
+          updateSpace({
+            variables: {
+              name: spaceName,
+              description_html: spaceDescriptionHtml,
+            },
+            space_id: currentSpace.id,
+          })
+            .then(() => {
+              setEdited(false);
+              toast.success("Saved settings");
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }}
+        loading={loading}
+      >
+        Save changes
+      </Button>
+
+      <div className="h-16"></div>
+      <Text variant="subheading1" bold>
+        Space name
+      </Text>
+      <div className="h-2"></div>
+      <div className="w-96">
+        <TextInput value={spaceName} onValueChange={setSpaceName}></TextInput>
+      </div>
+
+      <div className="h-8"></div>
+
+      <Text variant="subheading1" bold>
+        Space description
+      </Text>
+      <div className="h-2"></div>
+      <div className="w-96">
+        <SimpleRichTextInput
+          initContent={currentSpace?.description_html ?? ""}
+          characterLimit={300}
+          onUpdate={({ editor }) => {
+            setSpaceDescriptionHtml(editor.getHTML());
+          }}
+        />
+      </div>
+
+      <div className="h-8"></div>
+
+      <Text variant="subheading1" bold>
+        Cover image
+      </Text>
+      <div className="h-2"></div>
+      <ImageUploader
+        imageSrc={imageSrc}
+        onImageSrcChange={setImageSrc}
+        height={450}
+        width={600}
+        showZoom
+        renderUploadIcon={() => (
+          <BxsCloudUpload className="text-gray-500 h-32 w-32 -mb-2" />
+        )}
+        getRef={(ref) => {
+          editor.current = ref;
+        }}
+      />
+    </div>
+  );
+}
+
 enum ManageSpaceTabs {
   Members = "Members",
   PrivacySettings = "Privacy Settings",
   EditProfileFormat = "Edit Profile Format",
+  EditHomepage = "Edit Homepage",
 }
 
 const MAP_TAB_TO_COMPONENT = {
   [ManageSpaceTabs.Members]: MembersList,
   [ManageSpaceTabs.PrivacySettings]: SetPrivacySettings,
   [ManageSpaceTabs.EditProfileFormat]: EditProfileFormat,
+  [ManageSpaceTabs.EditHomepage]: EditHomepage,
 };
 
 const MAP_TAB_TO_TITLE = {
   [ManageSpaceTabs.Members]: "Members",
   [ManageSpaceTabs.PrivacySettings]: "Privacy Settings",
   [ManageSpaceTabs.EditProfileFormat]: "Edit Profile Format",
+  [ManageSpaceTabs.EditHomepage]: "Edit Homepage",
 };
 
 const ALL_TABS = Object.values(ManageSpaceTabs);
