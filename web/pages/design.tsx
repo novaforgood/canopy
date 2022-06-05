@@ -346,7 +346,9 @@ const ComponentsPage: CustomPage = () => {
           <div>Sizes</div>
           <div className="flex flex-col items-start gap-2">
             <Button size="medium">Medium</Button>
-            <Button size="small">Small</Button>
+            <Button size="small" loading>
+              Small
+            </Button>
           </div>
           <div className="h-8"></div>
 

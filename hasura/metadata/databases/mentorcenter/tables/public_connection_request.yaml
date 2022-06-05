@@ -29,7 +29,7 @@ select_permissions:
           - _and:
               - sender_profile:
                   space_id:
-                    _eq: X-Hasura-User-Id
+                    _eq: X-Hasura-Space-Id
               - _exists:
                   _where:
                     _and:

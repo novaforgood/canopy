@@ -452,10 +452,10 @@ mutation UpsertSpaceCoverImage($image_id: uuid!, $space_id: uuid!) {
 query ConnectionRequests($profile_id: uuid!) {
   connection_request(
     where: {
-      _or: {
-        receiver_profile_id: { _eq: $profile_id }
-        sender_profile_id: { _eq: $profile_id }
-      }
+      _or: [
+        { receiver_profile_id: { _eq: $profile_id } }
+        { sender_profile_id: { _eq: $profile_id } }
+      ]
     }
   ) {
     created_at

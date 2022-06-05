@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useRouter } from "next/router";
 
@@ -24,6 +24,7 @@ import {
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useUserData } from "../../../../hooks/useUserData";
+import { getTimeRelativeToNow } from "../../../../lib";
 
 interface EditConnectionRequestProps {
   connectionRequest: ConnectionRequestsQuery["connection_request"][number];
@@ -33,24 +34,40 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
 
   const { currentProfile } = useCurrentProfile();
 
+  const [loading, setLoading] = useState(false);
+
   if (!currentProfile) {
     return null;
   }
 
-  const otherProfile =
-    connectionRequest.sender_profile.id === currentProfile.id
-      ? connectionRequest.receiver_profile
-      : connectionRequest.sender_profile;
+  const amSender = currentProfile.id === connectionRequest.sender_profile_id;
+  const otherProfile = amSender
+    ? connectionRequest.receiver_profile
+    : connectionRequest.sender_profile;
+
+  const timestampText = amSender ? "Sent" : "Received";
+  const timestampString = `${timestampText} ${getTimeRelativeToNow(
+    new Date(connectionRequest.created_at)
+  )}`;
+
   const { first_name, last_name } = otherProfile.user;
   return (
-    <div className="flex">
+    <div className="flex items-center gap-4 w-full">
       <ProfileImage
         src={otherProfile.profile_listing?.profile_listing_image?.image.url}
         className="h-10 w-10"
       />
-      <Text>
-        {first_name} {last_name}
-      </Text>
+      <div className="flex-1 truncate flex flex-col items-start">
+        <Text className="flex-1 truncate">
+          {first_name} {last_name}
+        </Text>
+        <Text variant="body2" className="text-gray-600">
+          {timestampString}
+        </Text>
+      </div>
+      <Button variant="outline" size="small" className="shrink-0">
+        Check in
+      </Button>
     </div>
   );
 }
@@ -84,7 +101,7 @@ export default function AccountPage() {
 
       <Text variant="heading2">Nice to see you, {userData?.first_name}!</Text>
       <div className="h-8"></div>
-      <Text bold>
+      <Text medium>
         Welcome to Your Account. Manage your settings to make Canopy work best
         for you.
       </Text>
@@ -126,8 +143,10 @@ export default function AccountPage() {
             <Text variant="heading4">Your connections</Text>
           </div>
           <div className="h-8"></div>
-          <Text>View and make sure your info is up to date.</Text>
-          <div className="h-4"></div>
+          <Text>
+            Press {'"Check in"'} if you have met with your connection!
+          </Text>
+          <div className="h-8"></div>
 
           {connectionRequests.length === 0 && (
             <div className="p-4 rounded-md border">
@@ -143,14 +162,16 @@ export default function AccountPage() {
               </Button>
             </div>
           )}
-          {connectionRequests.map((request) => {
-            return (
-              <EditConnectionRequest
-                connectionRequest={request}
-                key={request.id}
-              />
-            );
-          })}
+          <div className="flex flex-col items-start gap-4 w-full">
+            {connectionRequests.map((request) => {
+              return (
+                <EditConnectionRequest
+                  connectionRequest={request}
+                  key={request.id}
+                />
+              );
+            })}
+          </div>
         </RoundedCard>
       </div>
     </SidePadding>

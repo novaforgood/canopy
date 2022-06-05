@@ -1,3 +1,5 @@
+import { formatDistance } from "date-fns";
+
 import { getCurrentUser } from "./firebase";
 
 export const isServer = () => typeof window === "undefined";
@@ -42,4 +44,8 @@ export function queryToString(
   return Object.keys(query)
     .map((key) => `${key}=${query[key]?.toString()}`)
     .join("&");
+}
+
+export function getTimeRelativeToNow(date: Date) {
+  return formatDistance(date, new Date(), { addSuffix: true });
 }

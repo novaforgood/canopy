@@ -11,6 +11,7 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { getTimeRelativeToNow } from "../../lib";
 import { Button, Select, Text } from "../atomic";
 
 import { CopyLink } from "./CopyLink";
@@ -52,11 +53,7 @@ export function InviteLinksList() {
                 <Text>
                   Expires:{" "}
                   <Text bold>
-                    {formatDistance(
-                      new Date(inviteLink.expires_at),
-                      new Date(),
-                      { addSuffix: true }
-                    )}
+                    {getTimeRelativeToNow(new Date(inviteLink.expires_at))}
                     {/* {format(
                       new Date(inviteLink.expires_at),
                       "MMM dd yyyy, h:mm a"

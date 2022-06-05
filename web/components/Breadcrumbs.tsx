@@ -58,7 +58,6 @@ export function Breadcrumbs() {
         .slice(1);
 
       pathArray[0].title = <BxsHome className="h-5 w-5" />;
-      console.log(pathArray);
 
       setBreadcrumbs(pathArray);
     }
