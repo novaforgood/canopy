@@ -17,6 +17,7 @@
 - "!include public_space_invite_link.yaml"
 - "!include public_space_invite_link_type.yaml"
 - "!include public_space_listing_question.yaml"
+- "!include public_space_public.yaml"
 - "!include public_space_tag.yaml"
 - "!include public_space_tag_category.yaml"
 - "!include public_user.yaml"
