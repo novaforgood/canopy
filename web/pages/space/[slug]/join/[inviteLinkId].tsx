@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -48,6 +48,8 @@ function JoinSpace() {
   const inviteLinkId = useQueryParam("inviteLinkId", "string");
   const slug = useQueryParam("slug", "string");
 
+  const [loading, setLoading] = useState(false);
+
   const [{ data: publicSpaceData }] = usePublicSpaceBySlugQuery({
     variables: { slug: slug ?? "" },
   });
@@ -70,7 +72,6 @@ function JoinSpace() {
         }
       >("/api/invite/joinProgram", { inviteLinkId })
       .then((response) => {
-        toast.success("Good job");
         return response;
       })
       .catch((e) => {
@@ -89,21 +90,27 @@ function JoinSpace() {
 
         <div className="text-2xl"></div>
         <Button
+          loading={loading}
           onClick={() => {
-            joinSpace().then((response) => {
-              if (response) {
-                switch (response.inviteLink.type) {
-                  case Space_Invite_Link_Type_Enum.Member: {
-                    router.push(`/space/${publicSpace?.slug}`);
-                    break;
-                  }
-                  case Space_Invite_Link_Type_Enum.MemberListingEnabled: {
-                    router.push(`/space/${publicSpace?.slug}/create-profile`);
-                    break;
+            setLoading(true);
+            joinSpace()
+              .then((response) => {
+                if (response) {
+                  switch (response.inviteLink.type) {
+                    case Space_Invite_Link_Type_Enum.Member: {
+                      router.push(`/space/${publicSpace?.slug}`);
+                      break;
+                    }
+                    case Space_Invite_Link_Type_Enum.MemberListingEnabled: {
+                      router.push(`/space/${publicSpace?.slug}/create-profile`);
+                      break;
+                    }
                   }
                 }
-              }
-            });
+              })
+              .finally(() => {
+                setLoading(false);
+              });
           }}
           rounded
         >
