@@ -21,7 +21,7 @@ export interface EditProfileImageModalProps {
 export function EditProfileImageModal(props: EditProfileImageModalProps) {
   const { isOpen, onClose } = props;
 
-  const { currentProfile } = useCurrentProfile();
+  const { currentProfile, refetchCurrentProfile } = useCurrentProfile();
 
   const [{ data: profileImageData }] = useProfileImageQuery({
     variables: { profile_id: currentProfile?.id ?? "" },
@@ -66,6 +66,7 @@ export function EditProfileImageModal(props: EditProfileImageModalProps) {
             image_id: imageId,
             profile_id: currentProfile.id,
           });
+          refetchCurrentProfile();
           onClose();
         } else {
           toast.error("No image selected");

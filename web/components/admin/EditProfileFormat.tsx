@@ -13,7 +13,7 @@ import { Button } from "../atomic";
 import { EditProfileSchema, EditProfileSchemaData } from "./EditProfileSchema";
 
 export function EditProfileFormat() {
-  const { currentSpace } = useCurrentSpace();
+  const { currentSpace, refetchCurrentSpace } = useCurrentSpace();
 
   const [data, setData] = useState<EditProfileSchemaData>({
     listingQuestions: [],
@@ -71,6 +71,7 @@ export function EditProfileFormat() {
       .then(() => {
         setEdited(false);
         toast.success("Saved");
+        refetchCurrentSpace();
       })
       .catch((err) => {
         toast.error(err.message);
@@ -78,7 +79,12 @@ export function EditProfileFormat() {
       .finally(() => {
         setLoading(false);
       });
-  }, [data.listingQuestions, data.tagCategories, upsertSpaceProfileSchema]);
+  }, [
+    data.listingQuestions,
+    data.tagCategories,
+    refetchCurrentSpace,
+    upsertSpaceProfileSchema,
+  ]);
 
   return (
     <div className="w-full">

@@ -170,7 +170,7 @@ export default function AccountPage() {
               <Text variant="heading4">List Your Profile</Text>
             </div>
             <div className="h-8"></div>
-            <Text>On the way!</Text>
+            <Text>Work in progress</Text>
           </RoundedCard>
         </div>
         <RoundedCard className="w-full flex-1">

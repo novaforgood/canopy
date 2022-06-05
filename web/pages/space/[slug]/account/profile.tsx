@@ -37,23 +37,13 @@ export default function AccountProfilePage() {
       <Breadcrumbs />
       <div className="h-16"></div>
 
-      <Text variant="heading2">Nice to see you, {userData?.first_name}!</Text>
+      <Text variant="heading2">Edit your profile</Text>
       <div className="h-8"></div>
       <Text bold>
         Welcome to Your Account. Manage your settings to make Canopy work best
         for you.
       </Text>
       <div className="h-8"></div>
-
-      <div className="h-8"></div>
-      <RoundedCard className="w-full">
-        <div className="flex items-center gap-2">
-          <BxsReport className="h-7 w-7" />
-          <Text variant="heading4">Program </Text>
-        </div>
-        <div className="h-8"></div>
-        <Text>On the way!</Text>
-      </RoundedCard>
 
       <div className="h-4"></div>
       <EditProfileListing />
