@@ -38,14 +38,9 @@ export default function AccountProfilePage() {
       <div className="h-16"></div>
 
       <Text variant="heading2">Edit your profile</Text>
-      <div className="h-8"></div>
-      <Text bold>
-        Welcome to Your Account. Manage your settings to make Canopy work best
-        for you.
-      </Text>
-      <div className="h-8"></div>
 
-      <div className="h-4"></div>
+      <div className="h-12"></div>
+
       <EditProfileListing />
       <div className="h-32"></div>
     </SidePadding>

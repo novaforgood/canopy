@@ -26,6 +26,7 @@ export function EditProfileImageModal(props: EditProfileImageModalProps) {
   const [{ data: profileImageData }] = useProfileImageQuery({
     variables: { profile_id: currentProfile?.id ?? "" },
   });
+
   const [_, insertProfileImage] = useInsertProfileImageMutation();
   const profileImageUrl =
     profileImageData?.profile_listing_image[0]?.image.url ?? null;
@@ -35,10 +36,10 @@ export function EditProfileImageModal(props: EditProfileImageModalProps) {
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (profileImageUrl) {
+    if (profileImageUrl && isOpen) {
       setImage(profileImageUrl);
     }
-  }, [profileImageUrl]);
+  }, [profileImageUrl, isOpen]);
 
   return (
     <ActionModal
