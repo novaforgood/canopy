@@ -21,11 +21,12 @@ export interface EditProfileImageModalProps {
 export function EditProfileImageModal(props: EditProfileImageModalProps) {
   const { isOpen, onClose } = props;
 
-  const { currentProfile } = useCurrentProfile();
+  const { currentProfile, refetchCurrentProfile } = useCurrentProfile();
 
   const [{ data: profileImageData }] = useProfileImageQuery({
     variables: { profile_id: currentProfile?.id ?? "" },
   });
+
   const [_, insertProfileImage] = useInsertProfileImageMutation();
   const profileImageUrl =
     profileImageData?.profile_listing_image[0]?.image.url ?? null;
@@ -35,10 +36,10 @@ export function EditProfileImageModal(props: EditProfileImageModalProps) {
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (profileImageUrl) {
+    if (profileImageUrl && isOpen) {
       setImage(profileImageUrl);
     }
-  }, [profileImageUrl]);
+  }, [profileImageUrl, isOpen]);
 
   return (
     <ActionModal
@@ -66,6 +67,7 @@ export function EditProfileImageModal(props: EditProfileImageModalProps) {
             image_id: imageId,
             profile_id: currentProfile.id,
           });
+          refetchCurrentProfile();
           onClose();
         } else {
           toast.error("No image selected");

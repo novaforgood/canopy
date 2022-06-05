@@ -119,7 +119,7 @@ export default function AdminPage() {
           <Text variant="heading4">Program Overview</Text>
         </div>
         <div className="h-8"></div>
-        <Text>On the way!</Text>
+        <Text>Work in progress</Text>
       </RoundedCard>
       <div className="h-10"></div>
       <RoundedCard className="w-full">
