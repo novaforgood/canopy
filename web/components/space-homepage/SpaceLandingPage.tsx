@@ -2,7 +2,10 @@ import { createFactory, ImgHTMLAttributes, useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { useProfileListingsInSpaceQuery } from "../../generated/graphql";
+import {
+  Profile_Role_Enum,
+  useProfileListingsInSpaceQuery,
+} from "../../generated/graphql";
 import { BxFilter } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
@@ -82,7 +85,12 @@ export function SpaceLandingPage() {
   const [{ data: profileListingData }] = useProfileListingsInSpaceQuery({
     variables: {
       where: {
-        profile: { space_id: { _eq: currentSpace?.id } },
+        profile: {
+          space_id: { _eq: currentSpace?.id },
+          flattened_profile_roles: {
+            profile_role: { _eq: Profile_Role_Enum.MemberWhoCanList },
+          },
+        },
         public: { _eq: true },
       },
     },
