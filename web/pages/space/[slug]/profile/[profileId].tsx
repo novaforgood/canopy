@@ -23,6 +23,7 @@ import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { apiClient } from "../../../../lib/apiClient";
 import { getTimezoneSelectOptions } from "../../../../lib/timezone";
+import { CustomPage } from "../../../../types";
 
 const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -144,7 +145,7 @@ function IntroduceModal(props: IntroduceModalProps) {
     </>
   );
 }
-export default function SpaceHomepage() {
+const SpaceHomepage: CustomPage = () => {
   const router = useRouter();
 
   const { currentSpace } = useCurrentSpace();
@@ -247,4 +248,8 @@ export default function SpaceHomepage() {
       </SidePadding>
     </div>
   );
-}
+};
+
+SpaceHomepage.requiredAuthorizations = [];
+
+export default SpaceHomepage;
