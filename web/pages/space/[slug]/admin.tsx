@@ -18,7 +18,10 @@ import { TextInput } from "../../../components/inputs/TextInput";
 import { Navbar } from "../../../components/Navbar";
 import { SidePadding } from "../../../components/SidePadding";
 import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
-import { useUpdateSpaceMutation } from "../../../generated/graphql";
+import {
+  useUpdateSpaceMutation,
+  useUpsertSpaceCoverImageMutation,
+} from "../../../generated/graphql";
 import {
   BxFemaleSign,
   BxLink,
@@ -156,13 +159,15 @@ function EditHomepage() {
   const editor = useRef<AvatarEditor | null>(null);
 
   const [edited, setEdited] = useState(false);
+  const [editedCoverPhoto, setEditedCoverPhoto] = useState(false);
   const [loading, setLoading] = useState(false);
   const [_, updateSpace] = useUpdateSpaceMutation();
+  const [__, upsertCoverImage] = useUpsertSpaceCoverImageMutation();
 
   return (
     <div className="flex flex-col items-start">
       <Button
-        disabled={!edited}
+        disabled={!edited && !editedCoverPhoto}
         rounded
         onClick={async () => {
           if (!currentSpace) {
@@ -174,8 +179,7 @@ function EditHomepage() {
           const imageData =
             editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
 
-          let image = null;
-          if (imageData) {
+          if (imageData && editedCoverPhoto) {
             const res = await uploadImage(imageData).catch((err) => {
               toast.error(err.message);
               return null;
@@ -186,7 +190,20 @@ function EditHomepage() {
               return;
             }
 
-            image = res.data.image;
+            const image = res.data.image;
+
+            const res2 = await upsertCoverImage({
+              image_id: image.id,
+              space_id: currentSpace.id,
+            }).catch((err) => {
+              toast.error(err.message);
+              return null;
+            });
+            if (!res2) {
+              setLoading(false);
+              toast.error("Upsert cover image failed");
+              return;
+            }
           }
 
           updateSpace({
@@ -215,7 +232,13 @@ function EditHomepage() {
       </Text>
       <div className="h-2"></div>
       <div className="w-96">
-        <TextInput value={spaceName} onValueChange={setSpaceName}></TextInput>
+        <TextInput
+          value={spaceName}
+          onValueChange={(newValue) => {
+            setEdited(true);
+            setSpaceName(newValue);
+          }}
+        ></TextInput>
       </div>
 
       <div className="h-8"></div>
@@ -226,9 +249,10 @@ function EditHomepage() {
       <div className="h-2"></div>
       <div className="w-96">
         <SimpleRichTextInput
-          initContent={currentSpace?.description_html ?? ""}
+          initContent={currentSpace?.description_html ?? undefined}
           characterLimit={300}
           onUpdate={({ editor }) => {
+            setEdited(true);
             setSpaceDescriptionHtml(editor.getHTML());
           }}
         />
@@ -237,12 +261,21 @@ function EditHomepage() {
       <div className="h-8"></div>
 
       <Text variant="subheading1" bold>
-        Cover image
+        Cover image {editedCoverPhoto && "(edited)"}
       </Text>
       <div className="h-2"></div>
       <ImageUploader
         imageSrc={imageSrc}
-        onImageSrcChange={setImageSrc}
+        onImageSrcChange={(newImageSrc) => {
+          setImageSrc(newImageSrc);
+          setEditedCoverPhoto(true);
+        }}
+        onPositionChange={() => {
+          setEditedCoverPhoto(true);
+        }}
+        onScaleChange={() => {
+          setEditedCoverPhoto(true);
+        }}
         height={450}
         width={600}
         showZoom
@@ -357,6 +390,8 @@ export default function AdminPage() {
           <BxsReport className="h-7 w-7" />
           <Text variant="heading4">Program Overview</Text>
         </div>
+        <div className="h-8"></div>
+        <Text>On the way!</Text>
       </RoundedCard>
       <div className="h-10"></div>
       <RoundedCard className="w-full">

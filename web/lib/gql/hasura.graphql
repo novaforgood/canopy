@@ -430,3 +430,21 @@ mutation UpdateSpace($space_id: uuid!, $variables: space_set_input!) {
     }
   }
 }
+
+mutation UpsertSpaceCoverImage($image_id: uuid!, $space_id: uuid!) {
+  insert_space_cover_image_one(
+    object: { image_id: $image_id, space_id: $space_id }
+    on_conflict: {
+      constraint: space_cover_image_space_id_key
+      update_columns: [image_id]
+    }
+  ) {
+    id
+    image {
+      id
+      uploader_user_id
+      url
+    }
+    image_id
+  }
+}
