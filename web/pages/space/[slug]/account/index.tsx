@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
 import { MembersList } from "../../../../components/admin/MembersList";
@@ -13,7 +14,9 @@ import { RoundedCard } from "../../../../components/RoundedCard";
 import { SidePadding } from "../../../../components/SidePadding";
 import {
   ConnectionRequestsQuery,
+  Connection_Request_Status_Enum,
   useConnectionRequestsQuery,
+  useUpdateConnectionRequestMutation,
 } from "../../../../generated/graphql";
 import { BxShow, BxUserCircle } from "../../../../generated/icons/regular";
 import {
@@ -33,6 +36,8 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
   const { connectionRequest } = props;
 
   const { currentProfile } = useCurrentProfile();
+
+  const [_, updateConnectionRequest] = useUpdateConnectionRequestMutation();
 
   const [loading, setLoading] = useState(false);
 
@@ -61,13 +66,44 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
         <Text className="flex-1 truncate">
           {first_name} {last_name}
         </Text>
-        <Text variant="body2" className="text-gray-600">
+        <Text italic variant="body2" className="text-gray-600">
           {timestampString}
         </Text>
       </div>
-      <Button variant="outline" size="small" className="shrink-0">
-        Check in
-      </Button>
+      {connectionRequest.status === Connection_Request_Status_Enum.MetWith ? (
+        <Button
+          variant="outline"
+          size="small"
+          className="shrink-0 w-28 justify-center"
+          disabled
+        >
+          Met with
+        </Button>
+      ) : (
+        <Button
+          variant="outline"
+          size="small"
+          className="shrink-0 w-28 justify-center"
+          loading={loading}
+          onClick={() => {
+            setLoading(true);
+            updateConnectionRequest({
+              connection_request_id: connectionRequest.id,
+              variables: {
+                status: Connection_Request_Status_Enum.MetWith,
+              },
+            })
+              .catch((e) => {
+                toast.error("Error checking in");
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+          }}
+        >
+          Check in
+        </Button>
+      )}
     </div>
   );
 }

@@ -449,6 +449,23 @@ mutation UpsertSpaceCoverImage($image_id: uuid!, $space_id: uuid!) {
   }
 }
 
+mutation UpdateConnectionRequest(
+  $connection_request_id: uuid!
+  $variables: connection_request_set_input!
+) {
+  update_connection_request_by_pk(
+    pk_columns: { id: $connection_request_id }
+    _set: $variables
+  ) {
+    id
+    created_at
+    receiver_profile_id
+    sender_profile_id
+    status
+    updated_at
+  }
+}
+
 query ConnectionRequests($profile_id: uuid!) {
   connection_request(
     where: {
@@ -458,8 +475,8 @@ query ConnectionRequests($profile_id: uuid!) {
       ]
     }
   ) {
-    created_at
     id
+    created_at
     receiver_profile_id
     sender_profile_id
     status
