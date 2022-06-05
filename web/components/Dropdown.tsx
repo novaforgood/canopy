@@ -76,9 +76,7 @@ export function Dropdown() {
                         }}
                       >
                         <BxsUserAccount className="w-5 h-5 mr-2" />
-                        <Text bold variant="body2">
-                          My account
-                        </Text>
+                        <Text variant="body2">My account</Text>
                       </button>
                     );
                   }}
@@ -100,9 +98,7 @@ export function Dropdown() {
                           }}
                         >
                           <BxsWrench className="w-5 h-5 mr-2" />
-                          <Text bold variant="body2">
-                            Admin page
-                          </Text>
+                          <Text variant="body2">Admin page</Text>
                         </button>
                       );
                     }}
@@ -125,9 +121,7 @@ export function Dropdown() {
                         }}
                       >
                         <BxLogOut className="h-5 w-5 mr-2" />
-                        <Text bold variant="body2">
-                          Log out
-                        </Text>
+                        <Text variant="body2">Log out</Text>
                       </button>
                     );
                   }}

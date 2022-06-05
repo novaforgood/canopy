@@ -448,3 +448,59 @@ mutation UpsertSpaceCoverImage($image_id: uuid!, $space_id: uuid!) {
     image_id
   }
 }
+
+query ConnectionRequests($profile_id: uuid!) {
+  connection_request(
+    where: {
+      _or: {
+        receiver_profile_id: { _eq: $profile_id }
+        sender_profile_id: { _eq: $profile_id }
+      }
+    }
+  ) {
+    created_at
+    id
+    receiver_profile_id
+    sender_profile_id
+    status
+    updated_at
+    receiver_profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+    }
+    sender_profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        email
+      }
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+    }
+  }
+}
