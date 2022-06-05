@@ -20,6 +20,8 @@ export function EditProfileFormat() {
     tagCategories: [],
   });
 
+  const [edited, setEdited] = useState(false);
+
   useEffect(() => {
     if (
       !currentSpace?.space_listing_questions ||
@@ -66,6 +68,10 @@ export function EditProfileFormat() {
           : undefined,
       })),
     })
+      .then(() => {
+        setEdited(false);
+        toast.success("Saved");
+      })
       .catch((err) => {
         toast.error(err.message);
       })
@@ -76,11 +82,22 @@ export function EditProfileFormat() {
 
   return (
     <div className="w-full">
-      <Button rounded onClick={saveChanges} loading={loading}>
+      <Button
+        disabled={!edited}
+        rounded
+        onClick={saveChanges}
+        loading={loading}
+      >
         Save changes
       </Button>
       <div className="h-4"></div>
-      <EditProfileSchema data={data} onChange={setData} />
+      <EditProfileSchema
+        data={data}
+        onChange={(newData) => {
+          setEdited(true);
+          setData(newData);
+        }}
+      />
     </div>
   );
 }

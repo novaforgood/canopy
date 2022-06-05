@@ -70,6 +70,7 @@ function SetPrivacySettings() {
   const { currentSpace } = useCurrentSpace();
 
   const [attributes, setAttributes] = useState<SpaceAttributes>();
+  const [edited, setEdited] = useState(false);
 
   useEffect(() => {
     if (currentSpace) {
@@ -88,6 +89,8 @@ function SetPrivacySettings() {
   return (
     <div className="">
       <Button
+        disabled={!edited}
+        rounded
         onClick={() => {
           if (!currentSpace) {
             toast.error("No space");
@@ -101,6 +104,7 @@ function SetPrivacySettings() {
             space_id: currentSpace.id,
           })
             .then(() => {
+              setEdited(false);
               toast.success("Saved settings");
             })
             .finally(() => {
@@ -116,6 +120,7 @@ function SetPrivacySettings() {
         label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
         checked={attributes.public}
         onChange={(newVal) => {
+          setEdited(true);
           setAttributes({ ...attributes, public: newVal });
         }}
       />
