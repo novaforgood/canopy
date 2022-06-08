@@ -77,7 +77,7 @@ function FilterBar(props: FilterBarProps) {
           })}
       </div>
       <div className="h-4"></div>
-      <div className="flex">
+      <div className="flex gap-2">
         {currentSpace?.space_tag_categories.map((category) => {
           return (
             <>
