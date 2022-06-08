@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import { Editor } from "@tiptap/core";
 import CharacterCount from "@tiptap/extension-character-count";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -15,7 +16,7 @@ import classNames from "classnames";
 type SimpleRichTextInputProps = Omit<EditorContentProps, "editor" | "ref"> & {
   placeholder?: string;
   characterLimit?: number;
-  onUpdate?: (props: EditorEvents["update"]) => void;
+  onUpdate?: (props: { editor: Editor }) => void;
   editable?: boolean;
   initContent?: string;
   unstyled?: boolean;

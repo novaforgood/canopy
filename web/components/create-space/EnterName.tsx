@@ -24,15 +24,20 @@ interface EnterNameProps {
   onComplete: () => void;
   data: EnterNameData;
   onChange: (newData: Partial<EnterNameData>) => void;
+  initDescription: string;
 }
 
 export function EnterName(props: EnterNameProps) {
-  const { onComplete, data, onChange } = props;
+  const { onComplete, data, onChange, initDescription } = props;
 
   const [description, setDescription] = useState("");
   useEffect(() => {
     onChange({ spaceDescription: description });
   }, [description, onChange]);
+
+  useEffect(() => {
+    setDescription(initDescription);
+  }, [initDescription]);
 
   return (
     <div className="flex gap-20 justify-start items-start h-full">
@@ -62,7 +67,7 @@ export function EnterName(props: EnterNameProps) {
         <div className="h-6"></div>
         <SimpleRichTextInput
           className="w-120"
-          value={data.spaceDescription}
+          initContent={initDescription}
           onUpdate={({ editor }) => {
             setDescription(editor.getHTML());
           }}

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useInterval } from "@mantine/hooks";
 import { customAlphabet } from "nanoid";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -89,6 +89,7 @@ const ALL_CREATE_STAGES = Object.values(CreateStage).map((val) => {
 });
 
 type CreateProgramState = {
+  lastSavedTime?: number;
   enteredStages: CreateStage[];
   spaceName: string;
   spaceDescription: string;
@@ -99,6 +100,7 @@ type CreateProgramState = {
 };
 
 const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
+  lastSavedTime: 0,
   enteredStages: [CreateStage.EnterName],
   spaceName: "",
   spaceDescription: "",
@@ -148,19 +150,46 @@ const CreatePage: CustomPage = () => {
     changeStageDisplay();
   }, [currentStage]);
 
-  const loadedState = LocalStorage.get(
-    LocalStorageKey.CreateSpace
-  ) as CreateProgramState | null;
   const [state, setState] = useState<CreateProgramState>({
     ...DEFAULT_CREATE_PROGRAM_STATE,
-    ...loadedState,
   });
 
-  // Update localstorage to match the current state
-  const [debouncedState] = useDebouncedValue(state, 400);
+  const [loadedFromLocalStorage, setLoadedFromLocalStorage] = useState(false);
+  const [initDescription, setInitDescription] = useState("");
   useEffect(() => {
-    LocalStorage.set(LocalStorageKey.CreateSpace, debouncedState);
-  }, [debouncedState]);
+    const loadedState = LocalStorage.get(
+      LocalStorageKey.CreateSpace
+    ) as CreateProgramState | null;
+
+    if (loadedState) {
+      // If less than 10 seconds after last saved (e.g. the user refreshed)
+      if (
+        loadedState.lastSavedTime &&
+        Date.now() - loadedState.lastSavedTime < 1000 * 10
+      ) {
+        setState((prev) => ({ ...prev, ...loadedState }));
+        setInitDescription(loadedState.spaceDescription);
+      }
+    }
+    setLoadedFromLocalStorage(true);
+  }, []);
+
+  const saveToLocalStorage = useCallback(() => {
+    console.log("Lmao");
+    if (!loadedFromLocalStorage) return;
+    LocalStorage.set(LocalStorageKey.CreateSpace, {
+      ...state,
+      lastSavedTime: Date.now(),
+    });
+  }, [loadedFromLocalStorage, state]);
+
+  // Update localstorage to match the current state every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(saveToLocalStorage, 2000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [saveToLocalStorage]);
 
   // Navigate to a stage
   const navStage = (stage: CreateStage) => {
@@ -226,6 +255,7 @@ const CreatePage: CustomPage = () => {
         <div className="relative w-full h-full">
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
+              initDescription={initDescription}
               data={{
                 coverImage: state.coverImage,
                 spaceName: state.spaceName,
