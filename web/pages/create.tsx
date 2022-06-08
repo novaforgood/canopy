@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { useDebouncedValue, useSetState } from "@mantine/hooks";
+import { useDebouncedValue, useInterval } from "@mantine/hooks";
 import { customAlphabet } from "nanoid";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { EnterCoverPhoto } from "../components/create-space/EnterCoverPhoto";
-import { EnterName } from "../components/create-space/EnterName";
+import { EnterName, EnterNameData } from "../components/create-space/EnterName";
 import { EnterProfileSchema } from "../components/create-space/EnterProfileSchema";
 import { EnterSettings } from "../components/create-space/EnterSettings";
 import { StageNavigator } from "../components/StageNavigator";
 import { FadeTransition } from "../components/transitions/FadeTransition";
 import {
   Space_Listing_Question_Insert_Input,
-  Space_Tag_Category_Arr_Rel_Insert_Input,
   useCreateOwnerProfileInNewSpaceMutation,
   Space_Tag_Category_Insert_Input,
 } from "../generated/graphql";
@@ -90,6 +89,7 @@ const ALL_CREATE_STAGES = Object.values(CreateStage).map((val) => {
 });
 
 type CreateProgramState = {
+  lastSavedTime?: number;
   enteredStages: CreateStage[];
   spaceName: string;
   spaceDescription: string;
@@ -100,6 +100,7 @@ type CreateProgramState = {
 };
 
 const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
+  lastSavedTime: 0,
   enteredStages: [CreateStage.EnterName],
   spaceName: "",
   spaceDescription: "",
@@ -109,17 +110,20 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
     {
       title: "About me",
       char_count: 200,
+      deleted: false,
     },
     {
       title: "You can talk to me about",
       char_count: 200,
+      deleted: false,
     },
   ],
   tagCategories: [
     {
       title: "Communities",
+      deleted: false,
       space_tags: {
-        data: [{ label: "LGBTQ+" }],
+        data: [{ label: "LGBTQ+", deleted: false }],
       },
     },
   ],
@@ -146,20 +150,46 @@ const CreatePage: CustomPage = () => {
     changeStageDisplay();
   }, [currentStage]);
 
-  const loadedState = LocalStorage.get(
-    LocalStorageKey.CreateSpace
-  ) as CreateProgramState | null;
-
-  const [state, setState] = useSetState<CreateProgramState>({
+  const [state, setState] = useState<CreateProgramState>({
     ...DEFAULT_CREATE_PROGRAM_STATE,
-    ...loadedState,
   });
 
-  // Update localstorage to match the current state
-  const [debouncedState] = useDebouncedValue(state, 400);
+  const [loadedFromLocalStorage, setLoadedFromLocalStorage] = useState(false);
+  const [initDescription, setInitDescription] = useState("");
   useEffect(() => {
-    LocalStorage.set(LocalStorageKey.CreateSpace, debouncedState);
-  }, [debouncedState]);
+    const loadedState = LocalStorage.get(
+      LocalStorageKey.CreateSpace
+    ) as CreateProgramState | null;
+
+    if (loadedState) {
+      // If less than 10 seconds after last saved (e.g. the user refreshed)
+      if (
+        loadedState.lastSavedTime &&
+        Date.now() - loadedState.lastSavedTime < 1000 * 10
+      ) {
+        setState((prev) => ({ ...prev, ...loadedState }));
+        setInitDescription(loadedState.spaceDescription);
+      }
+    }
+    setLoadedFromLocalStorage(true);
+  }, []);
+
+  const saveToLocalStorage = useCallback(() => {
+    console.log("Lmao");
+    if (!loadedFromLocalStorage) return;
+    LocalStorage.set(LocalStorageKey.CreateSpace, {
+      ...state,
+      lastSavedTime: Date.now(),
+    });
+  }, [loadedFromLocalStorage, state]);
+
+  // Update localstorage to match the current state every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(saveToLocalStorage, 2000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [saveToLocalStorage]);
 
   // Navigate to a stage
   const navStage = (stage: CreateStage) => {
@@ -175,6 +205,16 @@ const CreatePage: CustomPage = () => {
       }
     });
   };
+
+  const handleEnterNameChange = useCallback(
+    (newData: Partial<EnterNameData>) => {
+      const newSlug = newData.spaceName
+        ? { spaceSlug: slugifyAndAppendRandomString(newData.spaceName) }
+        : {};
+      setState((prev) => ({ ...prev, ...newData, ...newSlug }));
+    },
+    []
+  );
 
   if (!userData) {
     return null;
@@ -215,15 +255,13 @@ const CreatePage: CustomPage = () => {
         <div className="relative w-full h-full">
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
+              initDescription={initDescription}
               data={{
                 coverImage: state.coverImage,
                 spaceName: state.spaceName,
                 spaceDescription: state.spaceDescription,
               }}
-              onChange={(newData) => {
-                const slug = slugifyAndAppendRandomString(newData.spaceName);
-                setState({ ...newData, spaceSlug: slug });
-              }}
+              onChange={handleEnterNameChange}
               onComplete={() => {
                 navStage(CreateStage.EnterCoverPhoto);
               }}
@@ -235,7 +273,7 @@ const CreatePage: CustomPage = () => {
                 navStage(CreateStage.EnterProfileSchema);
               }}
               onChange={(newData) => {
-                setState({ ...newData });
+                setState((prev) => ({ ...prev, ...newData }));
               }}
               data={{
                 coverImage: state.coverImage,
@@ -253,7 +291,7 @@ const CreatePage: CustomPage = () => {
                 tagCategories: state.tagCategories,
               }}
               onChange={(newData) => {
-                setState({ ...newData });
+                setState((prev) => ({ ...prev, ...newData }));
               }}
               onComplete={() => {
                 navStage(CreateStage.EnterSettings);
@@ -264,7 +302,7 @@ const CreatePage: CustomPage = () => {
             <EnterSettings
               data={{ spaceSlug: state.spaceSlug }}
               onChange={(newData) => {
-                setState({ ...newData });
+                setState((prev) => ({ ...prev, ...newData }));
               }}
               onComplete={async () => {
                 createOwnerProfile({

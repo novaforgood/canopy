@@ -1,4 +1,4 @@
-import { createFactory, ImgHTMLAttributes, useState } from "react";
+import { createFactory, Fragment, ImgHTMLAttributes, useState } from "react";
 
 import { useRouter } from "next/router";
 
@@ -57,6 +57,7 @@ function FilterBar(props: FilterBarProps) {
             return (
               <div className="w-64" key={category.id}>
                 <SelectAutocomplete
+                  key={category.id}
                   placeholder={category.title}
                   options={category.space_tags
                     .filter((category) => !category.deleted)
@@ -77,10 +78,10 @@ function FilterBar(props: FilterBarProps) {
           })}
       </div>
       <div className="h-4"></div>
-      <div className="flex">
+      <div className="flex gap-2">
         {currentSpace?.space_tag_categories.map((category) => {
           return (
-            <>
+            <Fragment key={category.id}>
               {category.space_tags.map((tag) =>
                 selectedTagIds.has(tag.id) ? (
                   <Tag
@@ -98,7 +99,7 @@ function FilterBar(props: FilterBarProps) {
                   />
                 ) : null
               )}
-            </>
+            </Fragment>
           );
         })}
       </div>
@@ -113,30 +114,31 @@ export function SpaceLandingPage() {
 
   const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
 
-  const [{ data: profileListingData }] = useProfileListingsInSpaceQuery({
-    variables: {
-      where: {
-        profile: {
-          space_id: { _eq: currentSpace?.id },
-          flattened_profile_roles: {
-            profile_role: { _eq: Profile_Role_Enum.MemberWhoCanList },
+  const [{ data: profileListingData, fetching: fetchingProfileListings }] =
+    useProfileListingsInSpaceQuery({
+      variables: {
+        where: {
+          profile: {
+            space_id: { _eq: currentSpace?.id },
+            flattened_profile_roles: {
+              profile_role: { _eq: Profile_Role_Enum.MemberWhoCanList },
+            },
           },
-        },
-        public: { _eq: true },
+          public: { _eq: true },
 
-        profile_listing_to_space_tags:
-          selectedTagIds.size > 0
-            ? {
-                space_tag: {
-                  id: {
-                    _in: Array.from(selectedTagIds),
+          profile_listing_to_space_tags:
+            selectedTagIds.size > 0
+              ? {
+                  space_tag: {
+                    id: {
+                      _in: Array.from(selectedTagIds),
+                    },
                   },
-                },
-              }
-            : undefined,
+                }
+              : undefined,
+        },
       },
-    },
-  });
+    });
 
   const allProfileListings = profileListingData?.profile_listing ?? [];
 
@@ -147,6 +149,16 @@ export function SpaceLandingPage() {
       <div className="h-16"></div>
       <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
+      {fetchingProfileListings && (
+        <div>
+          <Text italic>Loading...</Text>
+        </div>
+      )}
+      {allProfileListings.length === 0 && (
+        <div>
+          <Text italic>No profiles found</Text>
+        </div>
+      )}
       <div className="grid grid-cols-4 gap-4">
         {allProfileListings.map((listing, idx) => {
           const { first_name, last_name } = listing.profile.user;

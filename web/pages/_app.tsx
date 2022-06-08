@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useCallback, useEffect, useMemo } from "react";
 
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
@@ -17,6 +17,7 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
+import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -69,21 +70,33 @@ function App({ Component, pageProps }: AppProps) {
   });
   const spaceId = spaceData?.space[0]?.id;
 
-  // When a new spaceId is set, we need to refetch the invite links.
-  useEffect(() => {
-    const reloadSession = async () => {
+  const reloadSession = useCallback(
+    async (spaceId: string) => {
       const session = await loadSession({
         spaceId: spaceId,
         forceUpdateJwt: true,
       });
       setSession(session);
-    };
+    },
+    [setSession]
+  );
 
-    if (spaceId) {
-      console.log("Refreshing JWT...");
-      reloadSession();
+  // When a new spaceId is set, we need to refetch the invite links.
+  useEffect(() => {
+    const lastVisitedSpaceId = LocalStorage.get(
+      LocalStorageKey.LastVisitedSpaceId
+    );
+
+    if (spaceId === lastVisitedSpaceId) {
+      return;
+    } else {
+      if (spaceId) {
+        console.log("Refreshing JWT...");
+        reloadSession(spaceId);
+        LocalStorage.set(LocalStorageKey.LastVisitedSpaceId, spaceId);
+      }
     }
-  }, [spaceId, setSession]);
+  }, [spaceId, setSession, reloadSession]);
 
   // Update space data when slug changes to a non-empty string.
   useEffect(() => {

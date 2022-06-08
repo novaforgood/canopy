@@ -20,20 +20,20 @@ export type EditProfileSchemaData = {
 interface EditProfileSchemaProps {
   data: EditProfileSchemaData;
   onChange: (data: EditProfileSchemaData) => void;
+  requireSpace?: boolean;
 }
 
 export function EditProfileSchema(props: EditProfileSchemaProps) {
-  const { data, onChange } = props;
+  const { data, onChange, requireSpace = true } = props;
 
   const { currentSpace } = useCurrentSpace();
 
-  console.log(data);
   return (
     <div className="border border-black rounded-lg w-full flex flex-col pb-12">
       <div className="h-20 bg-gray-100 rounded-t-lg"></div>
       <div className="px-12 -mt-4">
         <div className="flex items-center gap-12">
-          <div className="rounded-full h-32 w-32 bg-gray-400"></div>
+          <div className="rounded-full h-32 w-32 shrink-0 bg-gray-400"></div>
           <div className="flex flex-col mt-4">
             <Text variant="heading4">Member Name</Text>
             <div className="h-1"></div>
@@ -81,23 +81,37 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
               })}
             <AddSectionButton
               onClick={() => {
-                if (!currentSpace) {
-                  toast.error("currentSpace not present");
-                  return;
-                }
+                if (requireSpace) {
+                  if (!currentSpace) {
+                    toast.error("currentSpace not present");
+                    return;
+                  }
 
-                onChange({
-                  listingQuestions: [
-                    ...data.listingQuestions,
-                    {
-                      space_id: currentSpace.id,
-                      title: "New Profile Question",
-                      char_count: 200,
-                      deleted: false,
-                    },
-                  ],
-                  tagCategories: data.tagCategories,
-                });
+                  onChange({
+                    listingQuestions: [
+                      ...data.listingQuestions,
+                      {
+                        space_id: currentSpace.id,
+                        title: "New Profile Question",
+                        char_count: 200,
+                        deleted: false,
+                      },
+                    ],
+                    tagCategories: data.tagCategories,
+                  });
+                } else {
+                  onChange({
+                    listingQuestions: [
+                      ...data.listingQuestions,
+                      {
+                        title: "New Profile Question",
+                        char_count: 200,
+                        deleted: false,
+                      },
+                    ],
+                    tagCategories: data.tagCategories,
+                  });
+                }
               }}
             />
           </div>
@@ -140,21 +154,34 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
             <div className="h-2"></div>
             <AddSectionButton
               onClick={() => {
-                if (!currentSpace) {
-                  toast.error("currentSpace not present");
-                  return;
+                if (requireSpace) {
+                  if (!currentSpace) {
+                    toast.error("currentSpace not present");
+                    return;
+                  }
+                  onChange({
+                    tagCategories: [
+                      ...data.tagCategories,
+                      {
+                        title: "New Tag Category",
+                        deleted: false,
+                        space_id: currentSpace.id,
+                      },
+                    ],
+                    listingQuestions: data.listingQuestions,
+                  });
+                } else {
+                  onChange({
+                    tagCategories: [
+                      ...data.tagCategories,
+                      {
+                        title: "New Tag Category",
+                        deleted: false,
+                      },
+                    ],
+                    listingQuestions: data.listingQuestions,
+                  });
                 }
-                onChange({
-                  tagCategories: [
-                    ...data.tagCategories,
-                    {
-                      title: "New Tag Category",
-                      deleted: false,
-                      space_id: currentSpace.id,
-                    },
-                  ],
-                  listingQuestions: data.listingQuestions,
-                });
               }}
             />
           </div>
