@@ -109,17 +109,20 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
     {
       title: "About me",
       char_count: 200,
+      deleted: false,
     },
     {
       title: "You can talk to me about",
       char_count: 200,
+      deleted: false,
     },
   ],
   tagCategories: [
     {
       title: "Communities",
+      deleted: false,
       space_tags: {
-        data: [{ label: "LGBTQ+" }],
+        data: [{ label: "LGBTQ+", deleted: false }],
       },
     },
   ],
@@ -146,20 +149,13 @@ const CreatePage: CustomPage = () => {
     changeStageDisplay();
   }, [currentStage]);
 
-  const [state, setState] = useState<CreateProgramState>(
-    DEFAULT_CREATE_PROGRAM_STATE
-  );
-  useEffect(() => {
-    const loadedState = LocalStorage.get(
-      LocalStorageKey.CreateSpace
-    ) as CreateProgramState | null;
-
-    setState((prev) => ({ ...prev, ...loadedState }));
-  }, []);
-
-  useEffect(() => {
-    console.log("state set to", state);
-  }, [state]);
+  const loadedState = LocalStorage.get(
+    LocalStorageKey.CreateSpace
+  ) as CreateProgramState | null;
+  const [state, setState] = useState<CreateProgramState>({
+    ...DEFAULT_CREATE_PROGRAM_STATE,
+    ...loadedState,
+  });
 
   // Update localstorage to match the current state
   const [debouncedState] = useDebouncedValue(state, 400);

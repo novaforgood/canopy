@@ -30,7 +30,11 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
       <div className="h-8"></div>
 
       <div className="max-w-3xl">
-        <EditProfileSchema data={data} onChange={onChange} />
+        <EditProfileSchema
+          requireSpace={false}
+          data={data}
+          onChange={onChange}
+        />
       </div>
 
       <div className="h-12"></div>

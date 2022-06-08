@@ -22,14 +22,16 @@ export function EnterSettings(props: EnterSettingsProps) {
       <div className="h-10"></div>
       <Text variant="heading3">Directory Settings</Text>
       <div className="h-10"></div>
-      <TextInput
-        className="w-96"
-        value={data.spaceSlug}
-        label="Domain name"
-        onValueChange={(newVal) => {
-          onChange({ ...data, spaceSlug: newVal });
-        }}
-      />
+      <div className="w-96">
+        <TextInput
+          value={data.spaceSlug}
+          label="Domain name"
+          onValueChange={(newVal) => {
+            onChange({ ...data, spaceSlug: newVal });
+          }}
+        />
+      </div>
+
       <Text className="mt-2 text-gray-600">
         Anyone can access your public homepage via{" "}
         <Text underline>

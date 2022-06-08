@@ -32,7 +32,7 @@ export function EnterName(props: EnterNameProps) {
   const [description, setDescription] = useState("");
   useEffect(() => {
     onChange({ spaceDescription: description });
-  }, [description]);
+  }, [description, onChange]);
 
   return (
     <div className="flex gap-20 justify-start items-start h-full">
