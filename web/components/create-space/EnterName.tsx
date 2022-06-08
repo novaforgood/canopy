@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -15,7 +15,7 @@ const ARRAY_LENGTH_8 = new Array(8).fill(0);
 
 const SPACE_NAME_PLACEHOLDER = "Space Name";
 
-type EnterNameData = {
+export type EnterNameData = {
   spaceName: string;
   spaceDescription: string;
   coverImage: { id: string; url: string } | null;
@@ -23,17 +23,16 @@ type EnterNameData = {
 interface EnterNameProps {
   onComplete: () => void;
   data: EnterNameData;
-  onChange: (newData: EnterNameData) => void;
+  onChange: (newData: Partial<EnterNameData>) => void;
 }
 
 export function EnterName(props: EnterNameProps) {
   const { onComplete, data, onChange } = props;
 
-  const [_, createOwnerProfile] = useCreateOwnerProfileInNewSpaceMutation();
-
-  const router = useRouter();
-
-  const { userData } = useUserData();
+  const [description, setDescription] = useState("");
+  useEffect(() => {
+    onChange({ spaceDescription: description });
+  }, [description]);
 
   return (
     <div className="flex gap-20 justify-start items-start h-full">
@@ -49,7 +48,7 @@ export function EnterName(props: EnterNameProps) {
           className="w-120"
           value={data.spaceName}
           onValueChange={(value) => {
-            onChange({ ...data, spaceName: value });
+            onChange({ spaceName: value });
           }}
           placeholder="Ex. Rainbow Buddies, UCLA SWE, etc."
         />
@@ -65,7 +64,7 @@ export function EnterName(props: EnterNameProps) {
           className="w-120"
           value={data.spaceDescription}
           onUpdate={({ editor }) => {
-            onChange({ ...data, spaceDescription: editor.getHTML() });
+            setDescription(editor.getHTML());
           }}
           characterLimit={300}
           placeholder="Ex. A community of people who love bunnies."
