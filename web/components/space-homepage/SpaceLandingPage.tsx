@@ -1,4 +1,4 @@
-import { createFactory, ImgHTMLAttributes, useState } from "react";
+import { createFactory, Fragment, ImgHTMLAttributes, useState } from "react";
 
 import { useRouter } from "next/router";
 
@@ -57,6 +57,7 @@ function FilterBar(props: FilterBarProps) {
             return (
               <div className="w-64" key={category.id}>
                 <SelectAutocomplete
+                  key={category.id}
                   placeholder={category.title}
                   options={category.space_tags
                     .filter((category) => !category.deleted)
@@ -80,7 +81,7 @@ function FilterBar(props: FilterBarProps) {
       <div className="flex gap-2">
         {currentSpace?.space_tag_categories.map((category) => {
           return (
-            <>
+            <Fragment key={category.id}>
               {category.space_tags.map((tag) =>
                 selectedTagIds.has(tag.id) ? (
                   <Tag
@@ -98,7 +99,7 @@ function FilterBar(props: FilterBarProps) {
                   />
                 ) : null
               )}
-            </>
+            </Fragment>
           );
         })}
       </div>
