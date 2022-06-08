@@ -43,7 +43,7 @@ export function Breadcrumbs() {
               title: `${first_name} ${last_name}`,
               href: `/space/${linkPath[i - 1]}/profile/${profileId}`,
             };
-          } else if (path === "profile") {
+          } else if (path === "profile" && linkPath[i - 1] !== "account") {
             return {
               title: "profile",
               href: null,

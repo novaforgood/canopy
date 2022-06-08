@@ -13,7 +13,6 @@ import { StageNavigator } from "../components/StageNavigator";
 import { FadeTransition } from "../components/transitions/FadeTransition";
 import {
   Space_Listing_Question_Insert_Input,
-  Space_Tag_Category_Arr_Rel_Insert_Input,
   useCreateOwnerProfileInNewSpaceMutation,
   Space_Tag_Category_Insert_Input,
 } from "../generated/graphql";
