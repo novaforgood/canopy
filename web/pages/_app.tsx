@@ -10,6 +10,7 @@ import { useSpaceBySlugQuery } from "../generated/graphql";
 import { loadSession } from "../lib";
 import { handleError } from "../lib/error";
 import { onAuthStateChanged } from "../lib/firebase";
+import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 import { sessionAtom } from "../lib/recoil";
 import { getUrqlClient } from "../lib/urql";
 import { CustomPage } from "../types";
@@ -17,7 +18,6 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
