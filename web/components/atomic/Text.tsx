@@ -1,5 +1,6 @@
-import classNames from "classnames";
 import React, { HTMLAttributes } from "react";
+
+import classNames from "classnames";
 
 type TextProps = HTMLAttributes<HTMLDivElement> & {
   variant?:
@@ -15,6 +16,7 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
+  medium?: boolean;
   className?: string;
 };
 
@@ -23,10 +25,11 @@ export const Text = ({
   bold = false,
   italic = false,
   underline = false,
+  medium = false,
   className,
   ...props
 }: TextProps) => {
-  let styles = classNames(
+  const styles = classNames(
     "font-sans",
     { "text-heading1 leading-tight": variant === "heading1" },
     { "text-heading2 leading-tight": variant === "heading2" },
@@ -38,6 +41,7 @@ export const Text = ({
     { "text-body2": variant === "body2" },
     { "text-body3": variant === "body3" },
     { "font-bold": bold },
+    { "font-medium": medium },
     { italic: italic }, // Styling needs to be polished
     { underline: underline },
     { [`${className}`]: true }

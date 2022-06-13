@@ -1,14 +1,13 @@
-import { useDropzone } from "react-dropzone";
+import { DropzoneOptions, useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 
-interface HookProps {
-  onDropAccepted: (acceptedFiles: File) => void;
-}
-
+type HookProps = Omit<DropzoneOptions, "onDropAccepted"> & {
+  onDropAccepted: (acceptedFile: File) => void;
+};
 export function useSingleImageDropzone(props: HookProps) {
-  const { onDropAccepted } = props;
+  const { onDropAccepted, ...rest } = props;
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const response = useDropzone({
     accept: {
       "image/*": [".jpeg", ".png", ".jpg"],
     },
@@ -23,11 +22,8 @@ export function useSingleImageDropzone(props: HookProps) {
       toast.error(error.message);
     },
     maxFiles: 1,
+    ...rest,
   });
 
-  return {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-  };
+  return response;
 }

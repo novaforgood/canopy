@@ -11,7 +11,10 @@ module.exports = {
         sans: ["Rubik", ...defaultTheme.fontFamily.sans],
       },
       spacing: {
+        0.25: "0.0625rem",
         120: "30rem",
+        160: "40rem",
+        200: "50rem",
         240: "45rem",
       },
       fontSize: {
@@ -27,6 +30,9 @@ module.exports = {
       },
     },
     colors: {
+      transparent: {
+        DEFAULT: "transparent",
+      },
       white: {
         DEFAULT: "#fff",
       },

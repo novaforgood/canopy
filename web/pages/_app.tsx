@@ -1,25 +1,23 @@
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo } from "react";
+
+import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
+import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
+import { Provider } from "urql";
+
+import AuthWrapper from "../components/AuthWrapper";
+import { useSpaceBySlugQuery } from "../generated/graphql";
+import { loadSession } from "../lib";
+import { handleError } from "../lib/error";
+import { onAuthStateChanged } from "../lib/firebase";
+import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
+import { sessionAtom } from "../lib/recoil";
+import { getUrqlClient } from "../lib/urql";
+import { CustomPage } from "../types";
 
 import type { AppProps } from "next/app";
-import { getUrqlClient } from "../lib/urql";
-import { Provider } from "urql";
-import { Toaster } from "react-hot-toast";
-import { auth } from "../lib/firebase";
+
 import "../styles/globals.css";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
-import { sessionAtom } from "../lib/recoil";
-import { useCurrentSpace } from "../hooks/useCurrentSpace";
-import { loadSession } from "../lib";
-import { usePrevious } from "../hooks/usePrevious";
-import { useSpaceBySlugQuery } from "../generated/graphql";
-import { useRouter } from "next/router";
 
 interface UrqlProviderProps {
   children: React.ReactNode;
@@ -42,7 +40,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [session, setSession] = useRecoilState(sessionAtom);
 
   useEffect(() => {
-    const unsubscribeListener = auth.onAuthStateChanged(async (user) => {
+    const unsubscribeListener = onAuthStateChanged(async () => {
       // Whenever auth state changes, we no longer know what the session is.
       // We must wait for this handler to run to completion, resolving
       // the session to either authenticated or null.
@@ -70,23 +68,35 @@ function App({ Component, pageProps }: AppProps) {
     pause: true,
     variables: { slug: spaceSlug },
   });
-  const spaceId = spaceData?.space[0].id;
+  const spaceId = spaceData?.space[0]?.id;
 
-  // When a new spaceId is set, we need to refetch the invite links.
-  useEffect(() => {
-    const reloadSession = async () => {
+  const reloadSession = useCallback(
+    async (spaceId: string) => {
       const session = await loadSession({
         spaceId: spaceId,
         forceUpdateJwt: true,
       });
       setSession(session);
-    };
+    },
+    [setSession]
+  );
 
-    if (spaceId) {
-      console.log("Refreshing JWT...");
-      reloadSession();
+  // When a new spaceId is set, we need to refetch the invite links.
+  useEffect(() => {
+    const lastVisitedSpaceId = LocalStorage.get(
+      LocalStorageKey.LastVisitedSpaceId
+    );
+
+    if (spaceId === lastVisitedSpaceId) {
+      return;
+    } else {
+      if (spaceId) {
+        console.log("Refreshing JWT...");
+        reloadSession(spaceId);
+        LocalStorage.set(LocalStorageKey.LastVisitedSpaceId, spaceId);
+      }
     }
-  }, [spaceId, setSession]);
+  }, [spaceId, setSession, reloadSession]);
 
   // Update space data when slug changes to a non-empty string.
   useEffect(() => {
@@ -104,12 +114,20 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-function AppWrapper({ Component, ...pageProps }: AppProps) {
+type CustomAppProps = AppProps & {
+  Component: CustomPage;
+};
+
+function AppWrapper({ Component, ...pageProps }: CustomAppProps) {
   return (
     <RecoilRoot>
       <AuthProvider>
         <UrqlProvider>
-          <App {...pageProps} Component={Component} />
+          <AuthWrapper
+            requiredAuthorizations={Component.requiredAuthorizations}
+          >
+            <App {...pageProps} Component={Component} />
+          </AuthWrapper>
         </UrqlProvider>
       </AuthProvider>
     </RecoilRoot>

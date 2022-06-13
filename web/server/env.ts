@@ -5,6 +5,7 @@ const SERVER_PROCESS_ENV = {
   AWS_ENV_SECRET_ACCESS_KEY: process.env.AWS_ENV_SECRET_ACCESS_KEY,
   AWS_ENV_REGION: process.env.AWS_ENV_REGION,
   AWS_ENV_S3_BUCKET: process.env.AWS_ENV_S3_BUCKET,
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 } as const;
 
 type ServerEnvVarKey = keyof typeof SERVER_PROCESS_ENV;

@@ -15,6 +15,13 @@ object_relationships:
         column_mapping:
           id: profile_listing_id
 array_relationships:
+  - name: profile_listing_responses
+    using:
+      foreign_key_constraint_on:
+        column: profile_listing_id
+        table:
+          schema: public
+          name: profile_listing_response
   - name: profile_listing_socials
     using:
       foreign_key_constraint_on:
@@ -22,3 +29,97 @@ array_relationships:
         table:
           schema: public
           name: profile_listing_social
+  - name: profile_listing_to_space_tags
+    using:
+      foreign_key_constraint_on:
+        column: profile_listing_id
+        table:
+          schema: public
+          name: profile_listing_to_space_tag
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - _and:
+              - profile:
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: MemberWhoCanList
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+      columns:
+        - headline
+        - profile_id
+        - public
+      backend_only: false
+select_permissions:
+  - role: public
+    permission:
+      columns:
+        - public
+        - headline
+        - id
+        - profile_id
+      filter:
+        _or:
+          - profile:
+              space:
+                attributes:
+                  _contains:
+                    public: true
+  - role: user
+    permission:
+      columns:
+        - headline
+        - id
+        - profile_id
+        - public
+      filter:
+        _or:
+          - _and:
+              - public:
+                  _eq: true
+              - profile:
+                  space:
+                    profiles:
+                      user_id:
+                        _eq: X-Hasura-User-Id
+          - profile:
+              user_id:
+                _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - headline
+        - profile_id
+        - public
+      filter:
+        _or:
+          - _and:
+              - profile:
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _exists:
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: MemberWhoCanList
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+      check: null

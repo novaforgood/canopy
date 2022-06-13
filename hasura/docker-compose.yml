@@ -29,5 +29,7 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       ## Hasura JWT Secret
       HASURA_GRAPHQL_JWT_SECRET: "${HASURA_GRAPHQL_JWT_SECRET}"
+      ## Unauthorized role
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "public"
 volumes:
   db_data:

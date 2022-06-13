@@ -1,7 +1,8 @@
-import classNames from "classnames";
 import { InputHTMLAttributes } from "react";
 
-type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+import classNames from "classnames";
+
+export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   onValueChange?: (value: string) => void;
 };
 

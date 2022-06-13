@@ -1,7 +1,8 @@
-type JSONType = Object | string | boolean | number;
+type JSONType = Record<string, unknown> | string | boolean | number;
 
 export enum LocalStorageKey {
   CreateSpace = "CreateSpace",
+  LastVisitedSpaceId = "LastVisitedSpaceId",
 }
 
 export const LocalStorage = {

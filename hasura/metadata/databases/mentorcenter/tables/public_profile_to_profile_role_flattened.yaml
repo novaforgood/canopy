@@ -11,3 +11,44 @@ object_relationships:
         insertion_order: null
         column_mapping:
           profile_id: id
+  - name: space
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: space
+        insertion_order: null
+        column_mapping:
+          space_id: id
+select_permissions:
+  - role: public
+    permission:
+      columns:
+        - profile_role
+        - user_id
+        - id
+        - profile_id
+        - space_id
+      filter:
+        _or:
+          - profile:
+              space:
+                attributes:
+                  _contains:
+                    public: true
+  - role: user
+    permission:
+      columns:
+        - profile_role
+        - user_id
+        - id
+        - profile_id
+        - space_id
+      filter:
+        _or:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - space:
+              profiles:
+                user_id:
+                  _eq: X-Hasura-User-Id

@@ -1,4 +1,10 @@
-# Mentor Center v3
+<br/><br/>
+<p align="center">
+	<img src="/web/public/assets/canopyLogo.svg" width="200"/>
+</p>
+<br/>
+
+# Canopy
 
 ## Setup dev environment
 

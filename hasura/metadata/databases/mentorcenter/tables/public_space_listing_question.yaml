@@ -27,18 +27,38 @@ insert_permissions:
                 name: profile_to_profile_role_flattened
       columns:
         - char_count
+        - deleted
+        - id
         - listing_order
         - space_id
         - title
       backend_only: false
 select_permissions:
-  - role: user
+  - role: public
     permission:
       columns:
         - id
         - space_id
         - title
         - char_count
+        - listing_order
+        - deleted
+        - updated_at
+      filter:
+        _or:
+          - space:
+              attributes:
+                _contains:
+                  public: true
+  - role: user
+    permission:
+      columns:
+        - char_count
+        - deleted
+        - id
+        - listing_order
+        - space_id
+        - title
       filter:
         _or:
           - space:
@@ -50,6 +70,7 @@ update_permissions:
     permission:
       columns:
         - char_count
+        - deleted
         - listing_order
         - title
       filter:
@@ -70,3 +91,23 @@ update_permissions:
                 schema: public
                 name: profile_to_profile_role_flattened
       check: null
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - space:
+              owner_id:
+                _eq: X-Hasura-User-Id
+          - _exists:
+              _where:
+                _and:
+                  - user_id:
+                      _eq: X-Hasura-User-Id
+                  - space_id:
+                      _eq: X-Hasura-Space-Id
+                  - profile_role:
+                      _eq: Admin
+              _table:
+                schema: public
+                name: profile_to_profile_role_flattened

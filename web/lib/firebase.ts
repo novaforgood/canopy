@@ -1,6 +1,19 @@
 // Import the functions you need from the SDKs you need
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged as firebaseOnAuthStateChanged,
+  signOut as firebaseSignOut,
+  createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword,
+  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
+  NextOrObserver,
+  User,
+  ErrorFn,
+  CompleteFn,
+} from "firebase/auth";
+
 import { requireEnv } from "./env";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -20,4 +33,32 @@ if (getApps().length === 0) {
   initializeApp(firebaseConfig);
 }
 
-export const auth = getAuth(getApp());
+const auth = getAuth(getApp());
+
+// Get current user
+export const getCurrentUser = () => auth.currentUser;
+
+// On auth state changed
+export const onAuthStateChanged = (
+  nextOrObserver: NextOrObserver<User>,
+  error?: ErrorFn,
+  completed?: CompleteFn
+) => firebaseOnAuthStateChanged(auth, nextOrObserver, error, completed);
+
+// Sign in with Google
+const googleOauthProvider = new GoogleAuthProvider();
+export const signInWithGoogle = () =>
+  signInWithPopup(auth, googleOauthProvider);
+
+// Sign out
+export const signOut = () => firebaseSignOut(auth);
+
+// Create user with email and password
+export const createUserWithEmailAndPassword = (
+  email: string,
+  password: string
+) => firebaseCreateUserWithEmailAndPassword(auth, email, password);
+
+// Sign in with email and password
+export const signInWithEmailAndPassword = (email: string, password: string) =>
+  firebaseSignInWithEmailAndPassword(auth, email, password);

@@ -1,0 +1,18 @@
+table:
+  schema: public
+  name: space_public
+select_permissions:
+  - role: public
+    permission:
+      columns:
+        - name
+        - slug
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - name
+        - slug
+        - id
+      filter: {}
