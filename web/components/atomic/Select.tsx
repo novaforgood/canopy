@@ -87,7 +87,7 @@ export const Select = <T extends string | Date>({
             leaveTo="opacity-0"
           >
             <Listbox.Options
-              className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white z-20
+              className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white z-10
               rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
             >
               {options.map((option, i) => (

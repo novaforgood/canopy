@@ -28,7 +28,7 @@ function SpaceSplashPage() {
         <div className="h-8"></div>
         <HtmlDisplay html={currentSpace?.description_html ?? ""} />
       </div>
-      <div className="flex-1 self-stretch -mx-4 sm:mx-0">
+      <div className="flex-1 self-stretch -mx-6 sm:mx-0">
         <SpaceCoverPhoto
           className="h-full w-full bg-gray-50"
           src={currentSpace?.space_cover_image?.image.url}

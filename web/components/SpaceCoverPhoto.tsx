@@ -3,6 +3,9 @@ import { ImgHTMLAttributes } from "react";
 import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
 
+import { BxImage } from "../generated/icons/regular";
+import { BxsImage } from "../generated/icons/solid";
+
 type SpaceCoverPhotoProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src?: string | null;
   alt?: string;
@@ -32,8 +35,16 @@ export function SpaceCoverPhoto(props: SpaceCoverPhotoProps) {
     <div
       ref={ref}
       className={styles}
-      style={{ ...style, height: desiredHeight }}
+      style={{
+        ...style,
+        height: desiredHeight,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
       {...rest}
-    ></div>
+    >
+      <BxsImage className="w-1/2 text-white" />
+    </div>
   );
 }

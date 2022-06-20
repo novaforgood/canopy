@@ -135,7 +135,9 @@ export default function AccountPage() {
       <Breadcrumbs />
       <div className="h-16"></div>
 
-      <Text variant="heading2">Nice to see you, {userData?.first_name}!</Text>
+      <Text variant="heading2" mobileVariant="heading3">
+        Nice to see you, {userData?.first_name}!
+      </Text>
       <div className="h-8"></div>
       <Text medium>
         Welcome to Your Account. Manage your settings to make Canopy work best
@@ -143,9 +145,7 @@ export default function AccountPage() {
       </Text>
       <div className="h-8"></div>
 
-      <div className="h-8"></div>
-
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 items-start flex-1">
           <RoundedCard className="w-full">
             <div className="flex items-center gap-2">
@@ -164,14 +164,14 @@ export default function AccountPage() {
               View Profile
             </Button>
           </RoundedCard>
-          <RoundedCard className="w-full">
+          {/* <RoundedCard className="w-full">
             <div className="flex items-center gap-2">
               <BxsShow className="h-7 w-7 text-gray-600" />
               <Text variant="heading4">List Your Profile</Text>
             </div>
             <div className="h-8"></div>
             <Text>Work in progress</Text>
-          </RoundedCard>
+          </RoundedCard> */}
         </div>
         <RoundedCard className="w-full flex-1">
           <div className="flex items-center gap-2">
