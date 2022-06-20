@@ -16,7 +16,6 @@ import { ActionModal } from "../../../../components/modals/ActionModal";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { SidePadding } from "../../../../components/SidePadding";
-import { SpaceLandingPage } from "../../../../components/space-homepage/SpaceLandingPage";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";

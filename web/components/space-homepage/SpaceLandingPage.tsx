@@ -22,17 +22,22 @@ function SpaceSplashPage() {
   const { currentSpace } = useCurrentSpace();
 
   return (
-    <div className="flex items-center gap-8">
-      <div className="flex flex-col flex-1">
+    <div className="flex flex-col md:flex-row items-center gap-8">
+      <div className="flex-col flex-1 hidden md:flex">
         <Text variant="heading1">{currentSpace?.name}</Text>
         <div className="h-8"></div>
         <HtmlDisplay html={currentSpace?.description_html ?? ""} />
       </div>
-      <div className="flex-1 self-stretch">
+      <div className="flex-1 self-stretch -mx-4 md:mx-0">
         <SpaceCoverPhoto
           className="h-full w-full bg-gray-50"
           src={currentSpace?.space_cover_image?.image.url}
         ></SpaceCoverPhoto>
+      </div>
+      <div className="flex-col flex-1 flex md:hidden">
+        <Text variant="heading3">{currentSpace?.name}</Text>
+        <div className="h-2"></div>
+        <HtmlDisplay html={currentSpace?.description_html ?? ""} />
       </div>
     </div>
   );
@@ -159,7 +164,7 @@ export function SpaceLandingPage() {
           <Text italic>No profiles found</Text>
         </div>
       )}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {allProfileListings.map((listing, idx) => {
           const { first_name, last_name } = listing.profile.user;
 
