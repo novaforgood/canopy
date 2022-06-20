@@ -30,15 +30,6 @@ interface EnterNameProps {
 export function EnterName(props: EnterNameProps) {
   const { onComplete, data, onChange, initDescription } = props;
 
-  const [description, setDescription] = useState("");
-  useEffect(() => {
-    onChange({ spaceDescription: description });
-  }, [description, onChange]);
-
-  useEffect(() => {
-    setDescription(initDescription);
-  }, [initDescription]);
-
   return (
     <div className="flex gap-20 justify-start items-start h-full">
       <div className="flex flex-col items-start justify-between h-full w-full">
@@ -68,7 +59,7 @@ export function EnterName(props: EnterNameProps) {
           <SimpleRichTextInput
             initContent={initDescription}
             onUpdate={({ editor }) => {
-              setDescription(editor.getHTML());
+              onChange({ spaceDescription: editor.getHTML() });
             }}
             characterLimit={300}
             placeholder="Ex. This is a directory of our international peer mentors. Feel free to reach out to any of them with questions about visas, classes, and getting adjusted to life in the U.S"

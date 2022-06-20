@@ -155,7 +155,6 @@ const CreatePage: CustomPage = () => {
   });
 
   const [loadedFromLocalStorage, setLoadedFromLocalStorage] = useState(false);
-  const [initDescription, setInitDescription] = useState("");
   useEffect(() => {
     const loadedState = LocalStorage.get(
       LocalStorageKey.CreateSpace
@@ -168,7 +167,6 @@ const CreatePage: CustomPage = () => {
         Date.now() - loadedState.lastSavedTime < 1000 * 10
       ) {
         setState((prev) => ({ ...prev, ...loadedState }));
-        setInitDescription(loadedState.spaceDescription);
       }
     }
     setLoadedFromLocalStorage(true);
@@ -254,7 +252,7 @@ const CreatePage: CustomPage = () => {
         <div className="relative w-full h-full">
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
-              initDescription={initDescription}
+              initDescription={state.spaceDescription}
               data={{
                 coverImage: state.coverImage,
                 spaceName: state.spaceName,

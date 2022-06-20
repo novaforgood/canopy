@@ -96,7 +96,9 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     if (!editor || !initContent) {
       return;
     }
-    editor.commands.setContent(initContent);
+    if (initContent !== editor.getHTML()) {
+      editor.commands.setContent(initContent);
+    }
   }, [editor, initContent]);
 
   return (
