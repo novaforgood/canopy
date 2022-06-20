@@ -24,8 +24,9 @@ export function EnterProfileSchema(props: EnterProfileSchemaProps) {
       <div className="h-10"></div>
       <Text variant="heading3">Edit profile page format</Text>
       <div className="h-2"></div>
-      <Text variant="subheading2" bold className="text-gray-600">
-        Community member profiles will follow this format.
+      <Text variant="subheading2" bold className="text-gray-600 w-200">
+        Directory profiles will follow the format below. You can change the
+        Profile Questions and Tags to make it relevant to your community.
       </Text>
       <div className="h-8"></div>
 

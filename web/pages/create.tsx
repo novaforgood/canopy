@@ -54,7 +54,7 @@ enum CreateStage {
 const MAP_STAGE_TO_LABEL: Record<CreateStage, string> = {
   [CreateStage.EnterName]: "Name",
   [CreateStage.EnterCoverPhoto]: "Cover Photo",
-  [CreateStage.EnterProfileSchema]: "Profile Page Format",
+  [CreateStage.EnterProfileSchema]: "Directory Profiles",
   [CreateStage.EnterSettings]: "Directory Settings",
 };
 
@@ -109,21 +109,21 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   listingQuestions: [
     {
       title: "About me",
-      char_count: 200,
+      char_count: 250,
       deleted: false,
     },
     {
       title: "You can talk to me about",
-      char_count: 200,
+      char_count: 250,
       deleted: false,
     },
   ],
   tagCategories: [
     {
-      title: "Communities",
+      title: "Major",
       deleted: false,
       space_tags: {
-        data: [{ label: "LGBTQ+", deleted: false }],
+        data: [{ label: "Economics", deleted: false }],
       },
     },
   ],
@@ -175,7 +175,6 @@ const CreatePage: CustomPage = () => {
   }, []);
 
   const saveToLocalStorage = useCallback(() => {
-    console.log("Lmao");
     if (!loadedFromLocalStorage) return;
     LocalStorage.set(LocalStorageKey.CreateSpace, {
       ...state,

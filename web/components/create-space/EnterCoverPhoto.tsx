@@ -55,7 +55,7 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
       <div className="flex flex-col items-start w-full">
         <div className="h-10"></div>
         <Text variant="heading3">
-          Upload a homepage picture for your directory. (optional)
+          Upload a homepage picture for your directory.
         </Text>
         <div className="h-2"></div>
         <Text variant="subheading2" className="text-gray-600">

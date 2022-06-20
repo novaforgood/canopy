@@ -43,10 +43,10 @@ export function EnterName(props: EnterNameProps) {
     <div className="flex gap-20 justify-start items-start h-full">
       <div className="flex flex-col items-start justify-between h-full w-full">
         <div className="h-10"></div>
-        <Text variant="heading4">What is the name of your community?</Text>
+        <Text variant="heading4">What is the name of your directory? *</Text>
         <div className="h-1"></div>
         <Text variant="body1" className="text-gray-600">
-          This will become the name of your directory.
+          This will be the title of your homepage.
         </Text>
         <div className="h-6"></div>
         <Input
@@ -58,22 +58,23 @@ export function EnterName(props: EnterNameProps) {
           placeholder="Ex. Rainbow Buddies, UCLA SWE, etc."
         />
         <div className="h-24"></div>
-        <Text variant="heading4">Tell us about your community.</Text>
+        <Text variant="heading4">Write a description for your directory.</Text>
         <div className="h-1"></div>
         <Text variant="body1" className="text-gray-600">
-          This will become the description on your directory homepage (you can
-          change this anytime).
+          Who is in this directory? And how should people use this space?
         </Text>
         <div className="h-6"></div>
-        <SimpleRichTextInput
-          className="w-120"
-          initContent={initDescription}
-          onUpdate={({ editor }) => {
-            setDescription(editor.getHTML());
-          }}
-          characterLimit={300}
-          placeholder="Ex. A community of people who love bunnies."
-        />
+        <div className="w-full flex flex-col" style={{ minHeight: 150 }}>
+          <SimpleRichTextInput
+            initContent={initDescription}
+            onUpdate={({ editor }) => {
+              setDescription(editor.getHTML());
+            }}
+            characterLimit={300}
+            placeholder="Ex. This is a directory of our international peer mentors. Feel free to reach out to any of them with questions about visas, classes, and getting adjusted to life in the U.S"
+          />
+        </div>
+
         <div className="h-20"></div>
         <Button
           // disabled={!name}

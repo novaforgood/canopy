@@ -102,7 +102,7 @@ function LoggedInHomePage() {
               router.push("/create");
             }}
           >
-            Create new space
+            Create new directory
           </Button>
           <div className="h-16"></div>
           <Button onClick={signOut} variant="outline">

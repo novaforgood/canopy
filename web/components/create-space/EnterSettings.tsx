@@ -50,7 +50,7 @@ export function EnterSettings(props: EnterSettingsProps) {
           setLoading(false);
         }}
       >
-        Create program
+        Create directory
       </Button>
     </div>
   );

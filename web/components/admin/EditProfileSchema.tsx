@@ -45,40 +45,46 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
         <div className="h-16"></div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="pt-4">
-            {data.listingQuestions
-              .filter((item) => item.deleted === false)
-              .map((question, index) => {
-                return (
-                  <EditQuestion
-                    question={question}
-                    onSave={(newQuestion) => {
-                      onChange({
-                        listingQuestions: [
-                          ...data.listingQuestions.slice(0, index),
-                          newQuestion,
-                          ...data.listingQuestions.slice(index + 1),
-                        ],
-                        tagCategories: data.tagCategories,
-                      });
-                    }}
-                    onDelete={() => {
-                      const delArr = question.id
-                        ? [{ ...question, deleted: true }]
-                        : [];
-                      onChange({
-                        listingQuestions: [
-                          ...data.listingQuestions.slice(0, index),
-                          ...delArr,
-                          ...data.listingQuestions.slice(index + 1),
-                        ],
-                        tagCategories: data.tagCategories,
-                      });
-                    }}
-                    key={index}
-                  />
-                );
-              })}
+          <div>
+            <div className="pt-4 flex flex-col gap-12">
+              <Text variant="heading4" bold className="-mb-4">
+                Profile Questions
+              </Text>
+              {data.listingQuestions
+                .filter((item) => item.deleted === false)
+                .map((question, index) => {
+                  return (
+                    <EditQuestion
+                      question={question}
+                      onSave={(newQuestion) => {
+                        onChange({
+                          listingQuestions: [
+                            ...data.listingQuestions.slice(0, index),
+                            newQuestion,
+                            ...data.listingQuestions.slice(index + 1),
+                          ],
+                          tagCategories: data.tagCategories,
+                        });
+                      }}
+                      onDelete={() => {
+                        const delArr = question.id
+                          ? [{ ...question, deleted: true }]
+                          : [];
+                        onChange({
+                          listingQuestions: [
+                            ...data.listingQuestions.slice(0, index),
+                            ...delArr,
+                            ...data.listingQuestions.slice(index + 1),
+                          ],
+                          tagCategories: data.tagCategories,
+                        });
+                      }}
+                      key={index}
+                    />
+                  );
+                })}
+            </div>
+            <div className="h-8"></div>
             <AddSectionButton
               onClick={() => {
                 if (requireSpace) {
@@ -113,10 +119,15 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                   });
                 }
               }}
-            />
+            >
+              + Add Profile Question
+            </AddSectionButton>
           </div>
           <div className="flex flex-col">
-            <div className="bg-gray-50 rounded-md p-4">
+            <div className="bg-gray-50 rounded-md p-4 flex flex-col gap-12">
+              <Text variant="heading4" bold className="-mb-4">
+                Tags
+              </Text>
               {data.tagCategories
                 .filter((item) => item.deleted === false)
                 .map((tagCategory, index) => {
@@ -183,7 +194,9 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                   });
                 }
               }}
-            />
+            >
+              + Add Tag Category
+            </AddSectionButton>
           </div>
         </div>
       </div>
