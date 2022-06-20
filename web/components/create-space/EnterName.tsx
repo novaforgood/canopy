@@ -34,7 +34,7 @@ export function EnterName(props: EnterNameProps) {
     <div className="flex gap-20 justify-start items-start h-full">
       <div className="flex flex-col items-start justify-between h-full w-full">
         <div className="h-10"></div>
-        <Text variant="heading4">What is the name of your directory? *</Text>
+        <Text variant="heading4">Name your directory. *</Text>
         <div className="h-1"></div>
         <Text variant="body1" className="text-gray-600">
           This will be the title of your homepage.

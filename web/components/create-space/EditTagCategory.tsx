@@ -28,8 +28,6 @@ export function EditTagCategory(props: EditTagCategoryProps) {
   );
   const [newTag, setNewTag] = useState("");
 
-  console.log(tags, "Tags");
-
   useEffect(() => {
     if (isOpen) {
       setTitle(tagCategory.title ?? "");

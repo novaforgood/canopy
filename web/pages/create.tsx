@@ -94,6 +94,7 @@ type CreateProgramState = {
   spaceName: string;
   spaceDescription: string;
   spaceSlug: string;
+  editedSlug: boolean;
   coverImage: { id: string; url: string } | null;
   listingQuestions: Space_Listing_Question_Insert_Input[];
   tagCategories: Space_Tag_Category_Insert_Input[];
@@ -106,6 +107,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   spaceDescription: "",
   spaceSlug: "",
   coverImage: null,
+  editedSlug: false,
   listingQuestions: [
     {
       title: "About me",
@@ -205,12 +207,13 @@ const CreatePage: CustomPage = () => {
 
   const handleEnterNameChange = useCallback(
     (newData: Partial<EnterNameData>) => {
-      const newSlug = newData.spaceName
-        ? { spaceSlug: slugifyAndAppendRandomString(newData.spaceName) }
-        : {};
+      const newSlug =
+        newData.spaceName && !state.editedSlug
+          ? { spaceSlug: slugifyAndAppendRandomString(newData.spaceName) }
+          : {};
       setState((prev) => ({ ...prev, ...newData, ...newSlug }));
     },
-    []
+    [state.editedSlug]
   );
 
   if (!userData) {
@@ -297,7 +300,10 @@ const CreatePage: CustomPage = () => {
           </FadeTransition>
           <FadeTransition show={stageDisplayed === CreateStage.EnterSettings}>
             <EnterSettings
-              data={{ spaceSlug: state.spaceSlug }}
+              data={{
+                spaceSlug: state.spaceSlug,
+                editedSlug: state.editedSlug,
+              }}
               onChange={(newData) => {
                 setState((prev) => ({ ...prev, ...newData }));
               }}

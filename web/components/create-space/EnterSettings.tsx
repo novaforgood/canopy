@@ -5,6 +5,7 @@ import { TextInput } from "../inputs/TextInput";
 
 type EnterSettingsData = {
   spaceSlug: string;
+  editedSlug: boolean;
 };
 interface EnterSettingsProps {
   onComplete: () => void | Promise<void>;
@@ -27,7 +28,7 @@ export function EnterSettings(props: EnterSettingsProps) {
           value={data.spaceSlug}
           label="Domain name"
           onValueChange={(newVal) => {
-            onChange({ ...data, spaceSlug: newVal });
+            onChange({ ...data, spaceSlug: newVal, editedSlug: true });
           }}
         />
       </div>
