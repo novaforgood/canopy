@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { faker } from "@faker-js/faker";
 import { useDisclosure } from "@mantine/hooks";
@@ -16,6 +16,7 @@ import { ActionModal } from "../../../../components/modals/ActionModal";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { SidePadding } from "../../../../components/SidePadding";
+import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
@@ -168,6 +169,10 @@ const SpaceHomepage: CustomPage = () => {
   const listing = profileData.profile_by_pk.profile_listing;
   const { first_name, last_name, email } = profileData.profile_by_pk.user;
 
+  const profileTagIds = new Set(
+    listing.profile_listing_to_space_tags.map((item) => item.space_tag_id)
+  );
+
   return (
     <div>
       <SidePadding>
@@ -177,16 +182,16 @@ const SpaceHomepage: CustomPage = () => {
         <div className="h-8"></div>
 
         <div className="border border-black rounded-lg w-full flex flex-col pb-12">
-          <div className="h-32 bg-gray-100 rounded-t-lg"></div>
-          <div className="px-20 -mt-8">
-            <div className="flex items-center gap-12">
+          <div className="h-16 sm:h-32 bg-gray-100 rounded-t-lg"></div>
+          <div className="px-4 -mt-4 sm:px-20 sm:-mt-8">
+            <div className="flex items-center gap-6 sm:gap-12">
               <ProfileImage
                 src={listing.profile_listing_image?.image.url}
                 alt={`${first_name} ${last_name}`}
-                className="h-48 w-48"
+                className="w-24 h-24 sm:h-48 sm:w-48"
               />
               <div className="flex flex-col mt-4">
-                <Text variant="heading3">
+                <Text variant="heading3" mobileVariant="heading4">
                   {first_name} {last_name}
                 </Text>
                 <div className="h-1"></div>
@@ -195,12 +200,12 @@ const SpaceHomepage: CustomPage = () => {
             </div>
             <div className="h-16"></div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-8 p-4">
                 {listing.profile_listing_responses.map((response) => {
                   return (
                     <div key={response.id}>
-                      <Text variant="heading4">
+                      <Text variant="heading4" mobileVariant="subheading1">
                         {response.space_listing_question.title}
                       </Text>
                       <div className="h-1"></div>
@@ -210,12 +215,34 @@ const SpaceHomepage: CustomPage = () => {
                 })}
               </div>
               <div>
-                <div className="h-24 bg-gray-50 p-4 rounded-md">
-                  <Text variant="heading4">Tags go here</Text>
+                <div className="bg-gray-50 p-4 rounded-md">
+                  {currentSpace.space_tag_categories.map((category) => {
+                    return (
+                      <div key={category.id}>
+                        <Text variant="heading4" mobileVariant="subheading1">
+                          {category.title}
+                        </Text>
+                        <div className="h-2"></div>
+                        <div className="flex flex-wrap gap-2">
+                          {category.space_tags.map((tag) => {
+                            if (!profileTagIds.has(tag.id)) {
+                              return null;
+                            } else {
+                              return (
+                                <Tag key={tag.id} text={tag.label ?? ""} />
+                              );
+                            }
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="h-8"></div>
                 <div className="bg-gray-50 p-4 rounded-md">
-                  <Text variant="heading4">Contact</Text>
+                  <Text variant="heading4" mobileVariant="subheading1">
+                    Contact
+                  </Text>
                   <div className="h-4"></div>
                   <Button
                     rounded

@@ -22,19 +22,19 @@ function SpaceSplashPage() {
   const { currentSpace } = useCurrentSpace();
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-8">
-      <div className="flex-col flex-1 hidden md:flex">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-8">
+      <div className="flex-col flex-1 hidden sm:flex">
         <Text variant="heading1">{currentSpace?.name}</Text>
         <div className="h-8"></div>
         <HtmlDisplay html={currentSpace?.description_html ?? ""} />
       </div>
-      <div className="flex-1 self-stretch -mx-4 md:mx-0">
+      <div className="flex-1 self-stretch -mx-4 sm:mx-0">
         <SpaceCoverPhoto
           className="h-full w-full bg-gray-50"
           src={currentSpace?.space_cover_image?.image.url}
         ></SpaceCoverPhoto>
       </div>
-      <div className="flex-col flex-1 flex md:hidden">
+      <div className="flex-col flex-1 flex sm:hidden">
         <Text variant="heading3">{currentSpace?.name}</Text>
         <div className="h-2"></div>
         <HtmlDisplay html={currentSpace?.description_html ?? ""} />

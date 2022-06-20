@@ -30,8 +30,8 @@ function EditProfileImage() {
 
   return (
     <>
-      <div className="h-40 w-40 rounded-full relative">
-        <ProfileImage className="h-40 w-40" src={profileImageUrl} />
+      <div className="h-24 w-24 sm:h-40 sm:w-40 rounded-full relative">
+        <ProfileImage className="h-full w-full" src={profileImageUrl} />
         <button
           onClick={handlers.open}
           className="absolute top-0 left-0 h-full w-full rounded-full bg-black/50 text-white/80 
@@ -75,8 +75,8 @@ export function EditProfileListing(props: EditProfileListingProps) {
       <div className="h-4"></div>
       <div className="max-w-3xl border border-black rounded-lg w-full flex flex-col pb-12">
         <div className="h-20 bg-gray-100 rounded-t-lg"></div>
-        <div className="px-12 -mt-4">
-          <div className="flex items-center gap-12">
+        <div className="px-4 sm:px-12 -mt-4">
+          <div className="flex items-center gap-6 sm:gap-12">
             <EditProfileImage />
             <div className="flex flex-col mt-4">
               <Text variant="heading4">
@@ -90,7 +90,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
           </div>
           <div className="h-16"></div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col items-start gap-12 pt-4">
               {currentSpace.space_listing_questions
                 .filter((item) => item.deleted === false)

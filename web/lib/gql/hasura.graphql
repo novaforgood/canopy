@@ -290,6 +290,16 @@ query ProfileById($profile_id: uuid!) {
           title
         }
       }
+      profile_listing_to_space_tags(
+        where: { space_tag: { deleted: { _eq: false } } }
+      ) {
+        id
+        space_tag_id
+        space_tag {
+          id
+          label
+        }
+      }
     }
     user {
       id
