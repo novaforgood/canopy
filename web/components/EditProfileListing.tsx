@@ -105,7 +105,6 @@ export function EditProfileListing(props: EditProfileListingProps) {
                     {currentSpace.space_tag_categories
                       .filter((item) => item.deleted === false)
                       .map((category) => {
-                        console.log(category);
                         return (
                           <EditProfileTags
                             key={category.id}

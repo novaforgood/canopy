@@ -22,7 +22,7 @@ export default function PublishedToggleSwitch(
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
-  const [{ data: profileListingData }] = useProfileListingQuery({
+  const [{ data: profileListingData, fetching }] = useProfileListingQuery({
     variables: { profile_listing_id: profileListingId },
   });
 
@@ -30,6 +30,8 @@ export default function PublishedToggleSwitch(
 
   const profileIsPublic =
     profileListingData?.profile_listing_by_pk?.public ?? false;
+
+  if (fetching) return null;
 
   return (
     <div className="flex gap-4 items-center">
