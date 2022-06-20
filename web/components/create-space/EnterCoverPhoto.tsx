@@ -59,7 +59,8 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
         </Text>
         <div className="h-2"></div>
         <Text variant="subheading2" className="text-gray-600">
-          This can be a logo, a picture of your community, or anything you want!
+          This can be anything that represents this {"directory's"} community,
+          such as a logo or a picture of community members
         </Text>
         <div className="h-8"></div>
         <ImageUploader
