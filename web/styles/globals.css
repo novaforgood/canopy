@@ -23,7 +23,7 @@
   pointer-events: none;
 }
 
-.ProseMirror-trailingBreak {
+.ProseMirror p.is-editor-empty:first-child .ProseMirror-trailingBreak {
   display: none;
 }
 

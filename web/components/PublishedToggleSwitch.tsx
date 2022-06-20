@@ -28,11 +28,8 @@ export default function PublishedToggleSwitch(
 
   const [_, upsertProfileListing] = useUpsertProfileListingMutation();
 
-  if (!profileListingData?.profile_listing_by_pk) {
-    return null;
-  }
-
-  const profileIsPublic = profileListingData.profile_listing_by_pk.public;
+  const profileIsPublic =
+    profileListingData?.profile_listing_by_pk?.public ?? false;
 
   return (
     <div className="flex gap-4 items-center">
@@ -53,7 +50,7 @@ export default function PublishedToggleSwitch(
             }),
             {
               loading: "Loading",
-              success: `Profile is now ${newVal ? "public" : "private"}`,
+              success: `Profile is now ${newVal ? "published" : "private"}`,
               error: "Error when setting profile public status",
             },
             {
@@ -66,15 +63,15 @@ export default function PublishedToggleSwitch(
           );
         }}
         className={`${profileIsPublic ? "bg-black" : "bg-gray-600"}
-          relative inline-flex h-7 w-28 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+          relative inline-flex h-7 w-32 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
       >
         <span className="sr-only">Use setting</span>
         <span
           aria-hidden="true"
           className={`${profileIsPublic ? "translate-x-7" : "translate-x-0"}
-            pointer-events-none inline-block h-6 w-20 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+            pointer-events-none inline-block h-6 w-24 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
         >
-          <div>{`${profileIsPublic ? "Public" : "Private"}`}</div>
+          <div>{`${profileIsPublic ? "Published" : "Private"}`}</div>
         </span>
       </Switch>
       {profileIsPublic ? (

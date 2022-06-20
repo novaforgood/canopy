@@ -71,12 +71,14 @@ export default applyMiddleware({
         throw makeApiFail("Cannot connect to yourself");
       }
 
+      const spaceName = senderData.profile_by_pk.space.name;
+
       await sendgridMail
         .send({
           from: "connect@joincanopy.org",
           cc: [sender.email],
           to: receiver.email,
-          templateId: "d-511fd4076eaf47269c1f3f1783c449ad",
+          templateId: "d-be75ba26790f45d68be187f7b110b616",
           dynamicTemplateData: {
             sender: {
               firstName: sender.first_name,
@@ -89,6 +91,7 @@ export default applyMiddleware({
             introMessage,
             availability,
             timezone,
+            spaceName,
           },
         })
         .catch((err) => {

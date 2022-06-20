@@ -216,9 +216,7 @@ const SpaceHomepage: CustomPage = () => {
                 </div>
                 <div className="h-8"></div>
                 <div className="bg-gray-50 p-4 rounded-md">
-                  <Text variant="heading4">Contact me</Text>
-                  <div className="h-4"></div>
-                  <Text>Need some help? {"We'll"} introduce you.</Text>
+                  <Text variant="heading4">Contact</Text>
                   <div className="h-4"></div>
                   <Button
                     rounded

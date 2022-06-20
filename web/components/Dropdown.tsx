@@ -130,7 +130,9 @@ export function Dropdown() {
                           <button
                             className={styles}
                             onClick={() => {
-                              signOut();
+                              signOut().then(() => {
+                                router.push("/");
+                              });
                             }}
                           >
                             <BxLogOut className="h-5 w-5 mr-2" />

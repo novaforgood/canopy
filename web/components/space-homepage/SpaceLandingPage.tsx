@@ -176,8 +176,10 @@ export function SpaceLandingPage() {
               name={`${first_name} ${last_name}`}
               imageUrl={listing.profile_listing_image?.image.url}
               subtitle={listing.headline}
-              descriptionTitle={"Topics"}
-              description={tagNames.join(", ")}
+              descriptionTitle={"Tags"}
+              description={
+                tagNames.length === 0 ? "No tags" : tagNames.join(", ")
+              }
             />
           );
         })}

@@ -57,6 +57,10 @@ query GetProfile($profile_id: uuid!) {
       last_name
       email
     }
+    space {
+      id
+      name
+    }
   }
 }
 
