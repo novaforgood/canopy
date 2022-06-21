@@ -146,7 +146,7 @@ const CreatePage: CustomPage = () => {
   useEffect(() => {
     async function changeStageDisplay() {
       setStageDisplayed(null);
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       setStageDisplayed(currentStage);
     }
     changeStageDisplay();
@@ -220,8 +220,8 @@ const CreatePage: CustomPage = () => {
     return null;
   }
   return (
-    <div className="flex h-screen">
-      <div className="bg-gray-50 p-12 pt-40 h-screen flex-none">
+    <div className="flex flex-col sm:flex-row h-screen">
+      <div className="bg-gray-50 p-6 sm:p-12 sm:pt-40 sm:h-screen flex-none">
         <StageNavigator
           currentStage={currentStage}
           stages={ALL_CREATE_STAGES}
@@ -252,7 +252,7 @@ const CreatePage: CustomPage = () => {
             }
           }}
         />
-        <div className="relative w-full h-full">
+        <div className="relative w-full sm:h-full">
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
               initDescription={state.spaceDescription}

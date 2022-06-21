@@ -93,7 +93,7 @@ export function EnterResponses(props: EnterResponsesProps) {
         {spaceListingQuestions.map((question) => {
           return (
             <div
-              className="flex flex-col items-start mt-4 w-160"
+              className="flex flex-col items-start mt-4 w-full sm:w-160"
               key={question.id}
             >
               <Text variant="subheading2" className="text-gray-600 font-bold">

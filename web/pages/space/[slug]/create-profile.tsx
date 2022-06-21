@@ -124,8 +124,8 @@ export default function ListerOnboardingPage() {
   }
 
   return (
-    <div className="flex h-screen">
-      <div className="bg-gray-50 p-12 pt-40 h-screen shrink-0">
+    <div className="flex flex-col sm:flex-row sm:h-screen">
+      <div className="bg-gray-50 p-6 sm:p-12 sm:pt-40 sm:h-screen shrink-0">
         <StageNavigator
           currentStage={currentStage}
           stages={ALL_LISTER_STAGES}

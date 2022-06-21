@@ -182,9 +182,7 @@ export function SpaceLandingPage() {
               imageUrl={listing.profile_listing_image?.image.url}
               subtitle={listing.headline}
               descriptionTitle={"Tags"}
-              description={
-                tagNames.length === 0 ? "No tags" : tagNames.join(", ")
-              }
+              description={tagNames.length === 0 ? "none" : tagNames.join(", ")}
             />
           );
         })}
