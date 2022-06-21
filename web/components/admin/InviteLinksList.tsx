@@ -7,12 +7,14 @@ import {
   Profile_Role_Enum,
   Space_Invite_Link_Type_Enum,
   useCreateInviteLinkMutation,
+  useDeleteInviteLinkMutation,
   useInviteLinksQuery,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { getTimeRelativeToNow } from "../../lib";
 import { Button, Select, Text } from "../atomic";
+import { DeleteButton } from "../DeleteButton";
 
 import { CopyLink } from "./CopyLink";
 import {
@@ -25,6 +27,7 @@ export function InviteLinksList() {
   const { currentProfileHasRole } = useCurrentProfile();
 
   const [_, createInviteLink] = useCreateInviteLinkMutation();
+  const [__, deleteInviteLink] = useDeleteInviteLinkMutation();
 
   const [linkType, setLinkType] = useState<Space_Invite_Link_Type_Enum | null>(
     null
@@ -46,29 +49,60 @@ export function InviteLinksList() {
       <div className="flex flex-col gap-2">
         {inviteLinksData?.space_invite_link?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
+
+          const expiredTime = new Date(inviteLink.expires_at);
+          const isExpired = expiredTime.getTime() < Date.now();
           return (
-            <div key={inviteLink.id} className="border p-4">
+            <div key={inviteLink.id} className="border p-4 flex gap-8">
               <CopyLink link={link} />
-              <div className="ml-16 text-gray-600">
-                <Text>
-                  Expires:{" "}
-                  <Text bold>
-                    {getTimeRelativeToNow(new Date(inviteLink.expires_at))}
-                    {/* {format(
+              <Text className="text-gray-600">
+                {!isExpired && "Expires: "}
+                <Text bold>
+                  {isExpired
+                    ? "Expired"
+                    : `${getTimeRelativeToNow(expiredTime)}`}
+                  {/* {format(
                       new Date(inviteLink.expires_at),
                       "MMM dd yyyy, h:mm a"
                     )} */}
-                  </Text>
                 </Text>
-              </div>
-              <div className="ml-16 text-gray-600">
-                <Text>
-                  Type:{" "}
-                  <Text bold>
-                    {MAP_INVITE_LINK_TYPE_TO_OPTION_LABEL[inviteLink.type]}
-                  </Text>
+              </Text>
+              <Text className="text-gray-600">
+                Type:{" "}
+                <Text bold>
+                  {MAP_INVITE_LINK_TYPE_TO_OPTION_LABEL[inviteLink.type]}
                 </Text>
-              </div>
+              </Text>
+              <DeleteButton
+                className=""
+                onClick={() => {
+                  if (isExpired) {
+                    // Delete
+                    deleteInviteLink({ id: inviteLink.id })
+                      .then(() => {
+                        refetchInviteLinks();
+                        toast.success("Deleted invite link!");
+                      })
+                      .catch((err) => {
+                        toast.error(err.message);
+                      });
+                  } else {
+                    const confirmed = window.confirm(
+                      "Are you sure you would like to delete this invite link?"
+                    );
+                    if (confirmed) {
+                      deleteInviteLink({ id: inviteLink.id })
+                        .then(() => {
+                          refetchInviteLinks();
+                          toast.success("Deleted invite link!");
+                        })
+                        .catch((err) => {
+                          toast.error(err.message);
+                        });
+                    }
+                  }
+                }}
+              />
             </div>
           );
         })}

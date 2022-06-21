@@ -15,6 +15,7 @@ import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
 import { EditButton } from "./EditButton";
 import { ProfileImage } from "./ProfileImage";
 import PublishedToggleSwitch from "./PublishedToggleSwitch";
+import { HoverTooltip } from "./tooltips";
 
 function EditProfileImage() {
   const { currentProfile } = useCurrentProfile();
@@ -117,7 +118,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
                 </>
               )}
 
-              <div className="bg-gray-50 p-4 rounded-md">
+              <div className="bg-gray-50 p-4 rounded-md flex flex-col items-start">
                 <Text variant="subheading1">
                   Contact me
                   <EditButton

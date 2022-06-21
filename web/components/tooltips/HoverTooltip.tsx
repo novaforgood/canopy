@@ -8,9 +8,8 @@ export function HoverTooltip(props: Omit<TooltipProps, "show">) {
   return (
     <Tooltip show={show} tooltipText={tooltipText}>
       <div
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
-        onMouseMove={() => setShow(false)}
+        onPointerEnter={() => setShow(true)}
+        onPointerLeave={() => setShow(false)}
       >
         {children}
       </div>

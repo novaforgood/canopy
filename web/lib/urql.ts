@@ -1,5 +1,6 @@
 import { devtoolsExchange } from "@urql/devtools";
 import { cacheExchange } from "@urql/exchange-graphcache";
+import { retryExchange } from "@urql/exchange-retry";
 import {
   createClient,
   dedupExchange,
@@ -38,7 +39,30 @@ export function getUrqlClient(jwt: string) {
             `${data.profile_id}-${data.profile_role}`,
         },
       }),
+      // retryExchange({
+      //   maxNumberAttempts: 2,
+      //   retryIf: (error) => {
+      //     for (const err of error.graphQLErrors) {
+      //       if (err.extensions.code === "invalid-jwt") {
+      //         return true;
+      //       }
+      //     }
+      //     return false;
+      //   },
+      // }),
       fetchExchange,
     ],
   });
 }
+
+/**
+ * "errors": [
+        {
+            "extensions": {
+                "path": "$",
+                "code": "invalid-jwt"
+            },
+            "message": "Could not verify JWT: JWTExpired"
+        }
+    ]
+ */
