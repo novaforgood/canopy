@@ -12,10 +12,10 @@ import { CustomPage } from "../types";
 function LandingPage() {
   const router = useRouter();
   return (
-    <div className="w-full py-16 px-32 md:h-screen">
-      <div className="w-full items-center justify-between md:flex">
+    <div className="w-full px-6 py-4 sm:py-16 sm:px-32 md:h-screen">
+      <div className="flex flex-col sm:flex-row gap-4 items-start w-full sm:items-center justify-between">
         <img src={"/assets/canopyLogo.svg"} alt="Canopy Logo" />
-        <div className="flex" justify-end="true">
+        <div className="flex">
           {
             <Button
               variant="outline"
@@ -38,8 +38,8 @@ function LandingPage() {
           }
         </div>
       </div>
-      <div className="flex flex-col justify-start items-start pt-40 max-w-xl">
-        <Text variant="heading1">
+      <div className="flex flex-col justify-start items-start pt-24 sm:pt-40 max-w-xl">
+        <Text variant="heading1" mobileVariant="heading3">
           Helping communities grow tight-knit support networks
         </Text>
         <div className="h-8"></div>
