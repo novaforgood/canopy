@@ -104,7 +104,7 @@ export function EditProfileTags(props: EditProfileTagsProps) {
             />
           </div>
 
-          <div className="flex gap-2 py-3">
+          <div className="flex flex-wrap gap-2 py-3">
             {tagCategory.space_tags.map((tag) => {
               const selected = selectedTags.has(tag.id);
 

@@ -48,7 +48,7 @@ function ManageSpace() {
 
   const Component = MAP_TAB_TO_COMPONENT[selectedTab];
   return (
-    <RoundedCard className="w-full">
+    <RoundedCard className="w-full overflow-x-auto">
       <div className="flex items-center gap-2">
         <BxsCog className="h-7 w-7" />
         <Text variant="heading4">Manage Space</Text>
@@ -81,7 +81,7 @@ function ManageSpace() {
         </div>
 
         <div className="self-stretch w-0.25 bg-gray-300 shrink-0 mx-8"></div>
-        <div className="min-h-screen w-full">
+        <div className="min-h-screen sm:w-full">
           <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-8"></div>
           <Component />

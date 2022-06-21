@@ -100,16 +100,18 @@ export function EnterResponses(props: EnterResponsesProps) {
                 {question.title}
               </Text>
               <div className="h-4"></div>
-              <SimpleRichTextInput
-                initContent={initResponses[question.id]}
-                characterLimit={question.char_count}
-                onUpdate={({ editor }) => {
-                  setResponses((prev) => ({
-                    ...prev,
-                    [question.id]: editor.getHTML(),
-                  }));
-                }}
-              />
+              <div className="w-full">
+                <SimpleRichTextInput
+                  initContent={initResponses[question.id]}
+                  characterLimit={question.char_count}
+                  onUpdate={({ editor }) => {
+                    setResponses((prev) => ({
+                      ...prev,
+                      [question.id]: editor.getHTML(),
+                    }));
+                  }}
+                />
+              </div>
             </div>
           );
         })}

@@ -7,9 +7,10 @@ import { Provider } from "urql";
 
 import AuthWrapper from "../components/AuthWrapper";
 import { useSpaceBySlugQuery } from "../generated/graphql";
+import { usePrevious } from "../hooks/usePrevious";
 import { loadSession } from "../lib";
 import { handleError } from "../lib/error";
-import { onAuthStateChanged } from "../lib/firebase";
+import { getCurrentUser, onAuthStateChanged } from "../lib/firebase";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 import { sessionAtom } from "../lib/recoil";
 import { getUrqlClient } from "../lib/urql";
@@ -39,20 +40,45 @@ interface AuthProviderProps {
 function AuthProvider({ children }: AuthProviderProps) {
   const [session, setSession] = useRecoilState(sessionAtom);
 
+  const refreshSession = useCallback(async () => {
+    setSession(undefined);
+    const session = await loadSession();
+    setSession(session);
+  }, [setSession]);
+
+  const refreshSessionIfNeeded = useCallback(async () => {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      const token = await currentUser.getIdTokenResult();
+      const expiresAt = new Date(token.expirationTime).getTime();
+      const expiresIn = expiresAt - Date.now();
+
+      if (expiresIn < 180000) {
+        console.log("JWT expires in 180 seconds. Refreshing session...");
+        refreshSession();
+      }
+    }
+  }, [refreshSession]);
+
+  useEffect(() => {
+    const interval = setInterval(refreshSessionIfNeeded, 2000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [refreshSessionIfNeeded]);
+
   useEffect(() => {
     const unsubscribeListener = onAuthStateChanged(async () => {
       // Whenever auth state changes, we no longer know what the session is.
       // We must wait for this handler to run to completion, resolving
       // the session to either authenticated or null.
-      setSession(undefined);
-      const session = await loadSession();
-      setSession(session);
+      refreshSession();
     });
 
     return () => {
       unsubscribeListener();
     };
-  }, [setSession]);
+  }, [refreshSession]);
 
   if (session === undefined) {
     return <div></div>; // TODO: Add loading screen.
@@ -99,12 +125,13 @@ function App({ Component, pageProps }: AppProps) {
   }, [spaceId, setSession, reloadSession]);
 
   // Update space data when slug changes to a non-empty string.
+  const previousSlug = usePrevious(spaceSlug);
   useEffect(() => {
-    if (spaceSlug) {
+    if (spaceSlug && spaceSlug !== previousSlug) {
       console.log("Re-executing space lazy query...");
       executeQuery();
     }
-  }, [spaceSlug, executeQuery]);
+  }, [spaceSlug, executeQuery, previousSlug]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

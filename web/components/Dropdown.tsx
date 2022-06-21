@@ -16,6 +16,7 @@ import {
 } from "../generated/icons/regular";
 import {
   BxsAddToQueue,
+  BxsUser,
   BxsUserAccount,
   BxsWrench,
 } from "../generated/icons/solid";
@@ -93,6 +94,29 @@ export function Dropdown() {
                         );
                       }}
                     </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => {
+                        const styles = classNames({
+                          "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                            true,
+                          "bg-white": !active,
+                          "bg-gray-50": active,
+                        });
+                        return (
+                          <button
+                            className={styles}
+                            onClick={() => {
+                              router.push(
+                                `/space/${currentSpace?.slug}/account/profile`
+                              );
+                            }}
+                          >
+                            <BxsUser className="w-5 h-5 mr-2" />
+                            <Text variant="body2">Edit my profile</Text>
+                          </button>
+                        );
+                      }}
+                    </Menu.Item>
                     {isAdmin && (
                       <Menu.Item>
                         {({ active }) => {
@@ -130,7 +154,9 @@ export function Dropdown() {
                           <button
                             className={styles}
                             onClick={() => {
-                              signOut();
+                              signOut().then(() => {
+                                router.push("/");
+                              });
                             }}
                           >
                             <BxLogOut className="h-5 w-5 mr-2" />

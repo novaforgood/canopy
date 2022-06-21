@@ -162,6 +162,12 @@ mutation CreateInviteLink(
   }
 }
 
+mutation DeleteInviteLink($id: uuid!) {
+  delete_space_invite_link_by_pk(id: $id) {
+    id
+  }
+}
+
 query ProfilesBySpaceId($space_id: uuid!) {
   profile(where: { space_id: { _eq: $space_id } }) {
     id
@@ -288,6 +294,16 @@ query ProfileById($profile_id: uuid!) {
         space_listing_question {
           id
           title
+        }
+      }
+      profile_listing_to_space_tags(
+        where: { space_tag: { deleted: { _eq: false } } }
+      ) {
+        id
+        space_tag_id
+        space_tag {
+          id
+          label
         }
       }
     }

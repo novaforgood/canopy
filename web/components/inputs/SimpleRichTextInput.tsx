@@ -20,6 +20,7 @@ type SimpleRichTextInputProps = Omit<EditorContentProps, "editor" | "ref"> & {
   editable?: boolean;
   initContent?: string;
   unstyled?: boolean;
+  editorStyleString?: string;
 };
 
 /**
@@ -36,6 +37,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     unstyled = false,
     onUpdate = () => {},
     className,
+    editorStyleString = "",
     ...rest
   } = props;
 
@@ -62,7 +64,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
         strike: false,
       }),
       Placeholder.configure({
-        placeholder: placeholder,
+        placeholder: placeholder ?? " ",
       }),
       Link.configure({
         HTMLAttributes: {
@@ -77,7 +79,8 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
       attributes: {
         class: unstyled
           ? ""
-          : "border border-gray-400 focus:border-black rounded-md px-4 focus:outline-none transition w-full",
+          : "border border-gray-400 focus:border-black rounded-md px-4 focus:outline-none transition",
+        style: editorStyleString,
       },
     },
   });
@@ -93,15 +96,13 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
     if (!editor || !initContent) {
       return;
     }
-    editor.commands.setContent(initContent);
+    if (initContent !== editor.getHTML()) {
+      editor.commands.setContent(initContent);
+    }
   }, [editor, initContent]);
 
-  const styles = classNames({
-    "w-full": true,
-    [`${className}`]: true,
-  });
   return (
-    <div className={styles}>
+    <>
       <EditorContent {...rest} editor={editor} />
       {characterLimit && (
         <div className="mt-1 flex justify-end text-gray-400 break-words w-full">
@@ -109,6 +110,6 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
           characters
         </div>
       )}
-    </div>
+    </>
   );
 };

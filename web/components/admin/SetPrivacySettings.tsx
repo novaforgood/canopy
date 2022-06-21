@@ -18,12 +18,12 @@ function CheckBox(props: {
   };
 
   return (
-    <div className="flex items-start gap-4">
+    <div className="flex items-baseline gap-4">
       <input
         type="checkbox"
         checked={checked}
         onChange={handleChange}
-        className="form-checkbox h-6 w-6"
+        className="form-checkbox h-4 w-4 shrink-0"
       />
       <Text variant="body1">{label}</Text>
     </div>

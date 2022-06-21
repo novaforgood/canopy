@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
+import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
 import AvatarEditor from "react-avatar-editor";
 
@@ -12,6 +13,7 @@ interface ImageUploaderProps {
   getRef?: (editor: AvatarEditor | null) => void;
   width: number;
   height: number;
+  scaleWidth?: boolean; // If true, width of component is set to 100%
   showZoom?: boolean;
   showRoundedCrop?: boolean;
   renderUploadIcon?: () => ReactNode;
@@ -26,6 +28,7 @@ export function ImageUploader(props: ImageUploaderProps) {
   const {
     getRef = () => {},
     showRoundedCrop = false,
+    scaleWidth = false,
     width,
     height,
     showZoom = false,
@@ -90,9 +93,16 @@ export function ImageUploader(props: ImageUploaderProps) {
     "hover:brightness-95": !imageSrc,
     "border-teal-500 hover:border-teal-700": isDragActive,
   });
+
+  const { ref, width: calculatedWidth } = useElementSize();
+  const desiredHeight = (calculatedWidth * height) / width;
+
+  const scaledWidth = scaleWidth ? "100%" : width;
+  const scaledHeight = scaleWidth ? desiredHeight : height;
+
   return (
-    <div className="flex flex-col items-center">
-      <div style={{ width: width, height: height }}>
+    <div className="flex flex-col items-center w-full">
+      <div ref={ref} style={{ width: scaledWidth, height: scaledHeight }}>
         <div
           {...getRootProps()}
           className={styles}

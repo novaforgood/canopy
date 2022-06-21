@@ -12,7 +12,11 @@ export function CopyLink({ link }: { link: string }) {
       >
         {clipboard.copied ? "Copied!" : "Copy"}
       </button>
-      <a href={link}>{link}</a>
+      <input
+        className="w-96 truncate"
+        value={link}
+        contentEditable={false}
+      ></input>
     </div>
   );
 }
