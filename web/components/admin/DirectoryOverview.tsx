@@ -25,6 +25,12 @@ const MAP_DATE_RANGE_TO_VIEW_DURATION = {
   [Directory_Overview_Date_Range_Enum.PastYear]: "Yearly View",
 };
 
+const DATE_RANGE_DROPDOWN_OPTIONS = Object.values(
+  Directory_Overview_Date_Range_Enum
+).map((type) => {
+  return { label: MAP_DATE_RANGE_TO_VIEW_DURATION[type], value: type };
+});
+
 const dateToday = new Date();
 const computeAfterDate = (dateRange: Directory_Overview_Date_Range_Enum) => {
   switch (dateRange) {
@@ -72,12 +78,6 @@ export function DirectoryOverview() {
       },
     });
 
-  const dateRangeDropdownOptions = Object.values(
-    Directory_Overview_Date_Range_Enum
-  ).map((type) => {
-    return { label: MAP_DATE_RANGE_TO_VIEW_DURATION[type], value: type };
-  });
-
   return (
     <>
       <div className="flex items-center justify-between flex-wrap">
@@ -91,7 +91,7 @@ export function DirectoryOverview() {
             <Select
               placeholder="Select date range"
               className="w-40"
-              options={dateRangeDropdownOptions}
+              options={DATE_RANGE_DROPDOWN_OPTIONS}
               value={DirectoryOverviewDateRange}
               onSelect={(selectedValue) =>
                 setDirectoryOverviewDateRange(
@@ -105,7 +105,7 @@ export function DirectoryOverview() {
       </div>
       <div className="h-4 sm:h-8"></div>
       <Text>
-        Check out your directory&apos;s activity in the past{" "}
+        Check out your {"directory's"} activity in the past{" "}
         {DirectoryOverviewDateRange
           ? MAP_DATE_RANGE_TO_TEXT[DirectoryOverviewDateRange]
           : "--"}{" "}
@@ -120,7 +120,7 @@ export function DirectoryOverview() {
           <Select
             placeholder="Select date range"
             className="w-40 shrink-0"
-            options={dateRangeDropdownOptions}
+            options={DATE_RANGE_DROPDOWN_OPTIONS}
             value={DirectoryOverviewDateRange}
             onSelect={(selectedValue) =>
               setDirectoryOverviewDateRange(
