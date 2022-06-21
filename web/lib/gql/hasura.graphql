@@ -545,3 +545,51 @@ query PublicSpaceBySlug($slug: String!) {
     slug
   }
 }
+
+query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
+  listed_profile_count: profile_aggregate(
+    where: {
+      space_id: { _eq: $space_id }
+      profile_listing: { public: { _eq: true } }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  new_member_count: profile_aggregate(
+    where: { space_id: { _eq: $space_id }, created_at: { _gte: $after } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  general_member_count: profile_aggregate(
+    where: { space_id: { _eq: $space_id } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  requests_sent_count: connection_request_aggregate(
+    where: { sender_profile: { space_id: { _eq: $space_id } } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  confirmed_meeting_count: connection_request_aggregate(
+    where: {
+      status: { _eq: MetWith }
+      sender_profile: { space_id: { _eq: $space_id } }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
