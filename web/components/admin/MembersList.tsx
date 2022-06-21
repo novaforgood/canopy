@@ -20,7 +20,7 @@ export function MembersList() {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-2 items-center w-full">
+    <div className="grid grid-cols-3 gap-2 items-center w-160 sm:w-full">
       <strong>Name</strong>
       <strong>Email</strong>
       <strong>Role</strong>

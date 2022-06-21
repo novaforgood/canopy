@@ -44,7 +44,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
         </div>
         <div className="h-16"></div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <div className="pt-4 flex flex-col gap-12">
               <Text variant="heading4" bold className="-mb-4">
