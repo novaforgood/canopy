@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Used in mobile navbar to prevent body scrolling when navbar is open. */
+.no-scroll {
+  overflow: hidden;
+}
+
 /* Input slider */
 
 .slider-thumb::-webkit-slider-thumb {
@@ -20,9 +25,11 @@
 .ProseMirror p.is-editor-empty:first-child::before {
   color: #adb5bd;
   content: attr(data-placeholder);
-  float: left;
-  height: 0;
   pointer-events: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child .ProseMirror-trailingBreak {
+  display: none;
 }
 
 .ProseMirror p {

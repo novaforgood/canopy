@@ -54,7 +54,7 @@ enum CreateStage {
 const MAP_STAGE_TO_LABEL: Record<CreateStage, string> = {
   [CreateStage.EnterName]: "Name",
   [CreateStage.EnterCoverPhoto]: "Cover Photo",
-  [CreateStage.EnterProfileSchema]: "Profile Page Format",
+  [CreateStage.EnterProfileSchema]: "Directory Profiles",
   [CreateStage.EnterSettings]: "Directory Settings",
 };
 
@@ -94,6 +94,7 @@ type CreateProgramState = {
   spaceName: string;
   spaceDescription: string;
   spaceSlug: string;
+  editedSlug: boolean;
   coverImage: { id: string; url: string } | null;
   listingQuestions: Space_Listing_Question_Insert_Input[];
   tagCategories: Space_Tag_Category_Insert_Input[];
@@ -106,24 +107,25 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   spaceDescription: "",
   spaceSlug: "",
   coverImage: null,
+  editedSlug: false,
   listingQuestions: [
     {
       title: "About me",
-      char_count: 200,
+      char_count: 250,
       deleted: false,
     },
     {
       title: "You can talk to me about",
-      char_count: 200,
+      char_count: 250,
       deleted: false,
     },
   ],
   tagCategories: [
     {
-      title: "Communities",
+      title: "Major",
       deleted: false,
       space_tags: {
-        data: [{ label: "LGBTQ+", deleted: false }],
+        data: [{ label: "Economics", deleted: false }],
       },
     },
   ],
@@ -155,7 +157,6 @@ const CreatePage: CustomPage = () => {
   });
 
   const [loadedFromLocalStorage, setLoadedFromLocalStorage] = useState(false);
-  const [initDescription, setInitDescription] = useState("");
   useEffect(() => {
     const loadedState = LocalStorage.get(
       LocalStorageKey.CreateSpace
@@ -168,14 +169,12 @@ const CreatePage: CustomPage = () => {
         Date.now() - loadedState.lastSavedTime < 1000 * 10
       ) {
         setState((prev) => ({ ...prev, ...loadedState }));
-        setInitDescription(loadedState.spaceDescription);
       }
     }
     setLoadedFromLocalStorage(true);
   }, []);
 
   const saveToLocalStorage = useCallback(() => {
-    console.log("Lmao");
     if (!loadedFromLocalStorage) return;
     LocalStorage.set(LocalStorageKey.CreateSpace, {
       ...state,
@@ -208,12 +207,13 @@ const CreatePage: CustomPage = () => {
 
   const handleEnterNameChange = useCallback(
     (newData: Partial<EnterNameData>) => {
-      const newSlug = newData.spaceName
-        ? { spaceSlug: slugifyAndAppendRandomString(newData.spaceName) }
-        : {};
+      const newSlug =
+        newData.spaceName && !state.editedSlug
+          ? { spaceSlug: slugifyAndAppendRandomString(newData.spaceName) }
+          : {};
       setState((prev) => ({ ...prev, ...newData, ...newSlug }));
     },
-    []
+    [state.editedSlug]
   );
 
   if (!userData) {
@@ -255,7 +255,7 @@ const CreatePage: CustomPage = () => {
         <div className="relative w-full h-full">
           <FadeTransition show={stageDisplayed === CreateStage.EnterName}>
             <EnterName
-              initDescription={initDescription}
+              initDescription={state.spaceDescription}
               data={{
                 coverImage: state.coverImage,
                 spaceName: state.spaceName,
@@ -300,7 +300,10 @@ const CreatePage: CustomPage = () => {
           </FadeTransition>
           <FadeTransition show={stageDisplayed === CreateStage.EnterSettings}>
             <EnterSettings
-              data={{ spaceSlug: state.spaceSlug }}
+              data={{
+                spaceSlug: state.spaceSlug,
+                editedSlug: state.editedSlug,
+              }}
               onChange={(newData) => {
                 setState((prev) => ({ ...prev, ...newData }));
               }}

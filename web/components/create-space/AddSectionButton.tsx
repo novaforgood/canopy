@@ -7,8 +7,6 @@ export function AddSectionButton(props: AddSectionButtonProps) {
     <button
       {...props}
       className="bg-gray-50 active:translate-y-px hover:brightness-95 py-2 text-center w-full rounded-md text-gray-700"
-    >
-      + Add Section
-    </button>
+    ></button>
   );
 }

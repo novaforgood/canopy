@@ -118,7 +118,7 @@ export function SpaceDropdown() {
                       >
                         <BxsAddToQueue className="w-5 h-5 mr-2" />
                         <Text bold variant="body2">
-                          Create a space
+                          Create new directory
                         </Text>
                       </button>
                     );

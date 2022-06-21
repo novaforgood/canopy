@@ -4,6 +4,7 @@ import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
 import { Input, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
 import { EditButton } from "../EditButton";
+import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
 
 const LOREM_IPSUM_PREFIX =
@@ -53,13 +54,20 @@ export function EditQuestion(props: EditQuestionProps) {
         }}
       >
         <div className="p-8 py-16 w-96 flex flex-col">
-          <Input
+          <Text variant="heading4" className="text-center">
+            Edit question
+          </Text>
+          <div className="h-8"></div>
+          <TextInput
+            label="Question Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
             className="mb-4"
           />
-          <Input
+          <div className="h-4"></div>
+          <TextInput
+            label="Character Limit"
             value={charCount?.toString()}
             type="number"
             onChange={(e) => setCharCount(parseInt(e.target.value))}
@@ -68,7 +76,7 @@ export function EditQuestion(props: EditQuestionProps) {
           />
         </div>
       </ActionModal>
-      <div className="flex flex-col pb-16">
+      <div className="flex flex-col">
         <Text variant="subheading1">
           {question.title}
           <EditButton

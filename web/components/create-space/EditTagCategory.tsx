@@ -4,7 +4,7 @@ import {
   Space_Tag_Category_Insert_Input,
   Space_Tag_Insert_Input,
 } from "../../generated/graphql";
-import { Input, Text } from "../atomic";
+import { Button, Input, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
 import { EditButton } from "../EditButton";
 import { TextInput } from "../inputs/TextInput";
@@ -28,8 +28,6 @@ export function EditTagCategory(props: EditTagCategoryProps) {
   );
   const [newTag, setNewTag] = useState("");
 
-  console.log(tags, "Tags");
-
   useEffect(() => {
     if (isOpen) {
       setTitle(tagCategory.title ?? "");
@@ -38,12 +36,18 @@ export function EditTagCategory(props: EditTagCategoryProps) {
     }
   }, [isOpen, tagCategory.space_tags, tagCategory.title]);
 
+  const addTag = () => {
+    if (newTag.length > 0) {
+      setTags((prev) => [...prev, { label: newTag, deleted: false }]);
+      setNewTag("");
+    }
+  };
   return (
     <>
       <ActionModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        actionText="Set"
+        actionText="Done setting tags"
         onAction={() => {
           onSave({
             ...tagCategory,
@@ -73,25 +77,31 @@ export function EditTagCategory(props: EditTagCategoryProps) {
           />
           <div className="h-8"></div>
           <Text className="text-gray-700">
-            Type and hit [enter] to create a tag.
+            Type and hit <Text bold>[enter]</Text> to create a tag.
           </Text>
           <div className="h-2"></div>
-          <TextInput
-            value={newTag}
-            onValueChange={setNewTag}
-            placeholder="Add tags"
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                if (newTag.length > 0) {
-                  setTags((prev) => [
-                    ...prev,
-                    { label: newTag, deleted: false },
-                  ]);
-                  setNewTag("");
+          <div className="flex items-center gap-2">
+            <TextInput
+              value={newTag}
+              onValueChange={setNewTag}
+              placeholder="Add tags"
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  addTag();
                 }
-              }
-            }}
-          />
+              }}
+            />
+            <Button
+              size="small"
+              variant="outline"
+              className="px-2 shrink-0"
+              disabled={newTag.length === 0}
+              onClick={addTag}
+            >
+              Add
+            </Button>
+          </div>
+
           <div className="h-4"></div>
           <div className="flex flex-wrap items-start gap-2">
             {tags
@@ -114,7 +124,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
           </div>
         </div>
       </ActionModal>
-      <div className="flex flex-col pb-16">
+      <div className="flex flex-col">
         <Text variant="subheading1">
           {tagCategory.title}
           <EditButton

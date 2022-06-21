@@ -76,16 +76,16 @@ export function EnterTags(props: EnterTagsProps) {
       }}
       onSecondaryAction={onSkip}
     >
-      <div className="flex flex-col items-start gap-16">
+      <div className="flex flex-col items-start gap-16 w-full">
         <div className="h-8"></div>
         {spaceCategories.map((category) => {
           return (
-            <div className="flex flex-col items-start" key={category.id}>
+            <div className="flex flex-col items-start w-full" key={category.id}>
               <Text variant="subheading2" className="text-gray-600 font-bold">
                 {category.title}
               </Text>
               <div className="h-4"></div>
-              <div className="flex items-center gap-16">
+              <div className="flex flex-col gap-4 md:flex-row md:gap-16">
                 <div className="w-72">
                   <SelectAutocomplete
                     options={category.space_tags
@@ -104,7 +104,7 @@ export function EnterTags(props: EnterTagsProps) {
                   />
                 </div>
 
-                <div className="flex gap-2 py-3">
+                <div className="flex flex-wrap gap-2 py-3">
                   {category.space_tags.map((tag) => {
                     const selected = selectedTags.has(tag.id);
 

@@ -5,7 +5,7 @@ export interface SidePaddingProps {
 }
 export function SidePadding({ children }: SidePaddingProps) {
   return (
-    <div className="w-full px-2 flex flex-col items-center">
+    <div className="w-full px-6 flex flex-col items-center">
       <div className="max-w-5xl w-full">{children}</div>
     </div>
   );

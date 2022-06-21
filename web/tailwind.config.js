@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      transitionProperty: {
+        height: "height",
+      },
       fontFamily: {
         sans: ["Rubik", ...defaultTheme.fontFamily.sans],
       },
