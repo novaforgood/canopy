@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Used in mobile navbar to prevent body scrolling when navbar is open. */
+.no-scroll {
+  overflow: hidden;
+}
+
 /* Input slider */
 
 .slider-thumb::-webkit-slider-thumb {

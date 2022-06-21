@@ -64,7 +64,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
         strike: false,
       }),
       Placeholder.configure({
-        placeholder: placeholder,
+        placeholder: placeholder ?? " ",
       }),
       Link.configure({
         HTMLAttributes: {

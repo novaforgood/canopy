@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
@@ -31,8 +31,16 @@ function MobileNavbar() {
 
   const [expanded, setExpanded] = useState(false);
 
+  useEffect(() => {
+    if (expanded) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [expanded]);
+
   return (
-    <div className="w-screen relative -mx-6">
+    <div className="w-screen relative -mx-6 overscroll-none">
       <div className="flex items-center justify-between bg-gray-50 px-4 py-3">
         <div>{currentSpace?.name}</div>
         <button onClick={() => setExpanded((prev) => !prev)}>
@@ -65,17 +73,6 @@ function MobileNavbar() {
           <div className="h-6"></div>
 
           <div className="flex flex-col gap-2">
-            {isAdmin && (
-              <Button
-                className="w-full justify-center"
-                onClick={() => {
-                  router.push(`/space/${currentSpace?.slug}/admin`);
-                }}
-              >
-                Admin settings
-              </Button>
-            )}
-
             <Button
               className="w-full justify-center"
               onClick={() => {
@@ -97,6 +94,16 @@ function MobileNavbar() {
 
           <div className="h-8"></div>
           <div className="flex flex-col items-start gap-4">
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  router.push(`/space/${currentSpace?.slug}/admin`);
+                }}
+              >
+                Admin settings
+              </button>
+            )}
+
             <button
               onClick={() => {
                 router.push(`/space/${currentSpace?.slug}/account/profile`);

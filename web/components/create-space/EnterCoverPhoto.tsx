@@ -4,15 +4,12 @@ import { useDebouncedValue } from "@mantine/hooks";
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
 
-import { BxCaretDown } from "../../generated/icons/regular";
 import { BxsCloudUpload } from "../../generated/icons/solid";
 import { uploadImage } from "../../lib/image";
 import { Button, Input, Text } from "../atomic";
-import { HtmlDisplay } from "../HtmlDisplay";
 import { ImageUploader } from "../ImageUploader";
-import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
-const ARRAY_LENGTH_8 = new Array(8).fill(0);
+import { HomepagePreview } from "./HomepagePreview";
 
 type EnterCoverPhotoData = {
   coverImage: { id: string; url: string } | null;
@@ -64,6 +61,7 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
         </Text>
         <div className="h-8"></div>
         <ImageUploader
+          scaleWidth
           imageSrc={imageSrc}
           onImageSrcChange={setImageSrc}
           height={450}
@@ -122,35 +120,12 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
         </div>
         <div className="h-20"></div>
       </div>
-      <div className="border border-black rounded-md p-4 w-120 mt-12 shrink-0">
-        <div className="flex items-center justify-between truncate">
-          <Text variant="subheading1" className="p-2">
-            {data.spaceName}
-          </Text>
-          <div className="flex gap-1 items-center">
-            <div className="rounded-full bg-gray-700 h-5 w-5"></div>
-            <BxCaretDown className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="h-8"></div>
-        <div className="flex w-full items-center gap-4">
-          <div className="flex-1 flex flex-col items-start gap-2 p-2">
-            <Text variant="heading4">{data.spaceName}</Text>
-            <HtmlDisplay html={data.spaceDescription} className="text-xs" />
-          </div>
-          <SpaceCoverPhoto
-            className="flex-1 bg-teal-50 animate-pulse"
-            src={imageData}
-          />
-        </div>
-        <div className="w-full h-0.5 bg-gray-50 my-8"></div>
-        <div className="grid grid-cols-4 gap-4 w-full">
-          {ARRAY_LENGTH_8.map((_, idx) => {
-            return <div key={idx} className="rounded-md bg-gray-50 h-28" />;
-          })}
-        </div>
-      </div>
+      <HomepagePreview
+        title={data.spaceName}
+        description={data.spaceDescription}
+        coverSrc={imageData}
+        coverFlashing
+      />
     </div>
   );
 }
