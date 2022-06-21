@@ -546,7 +546,7 @@ query PublicSpaceBySlug($slug: String!) {
   }
 }
 
-query AdminDashProgramOverview($space_id: uuid!, $after: timestamptz!) {
+query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
   listed_profile_count: profile_aggregate(
     where: {
       space_id: { _eq: $space_id }

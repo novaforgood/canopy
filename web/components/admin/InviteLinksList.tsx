@@ -53,7 +53,10 @@ export function InviteLinksList() {
           const expiredTime = new Date(inviteLink.expires_at);
           const isExpired = expiredTime.getTime() < Date.now();
           return (
-            <div key={inviteLink.id} className="border p-4 flex gap-8">
+            <div
+              key={inviteLink.id}
+              className="border p-4 flex gap-8 flex-col sm:flex-row"
+            >
               <CopyLink link={link} />
               <Text className="text-gray-600">
                 {!isExpired && "Expires: "}
