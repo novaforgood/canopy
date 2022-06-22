@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
+import { DirectoryOverview } from "../../../components/admin/DirectoryOverview";
 import { EditHomepage } from "../../../components/admin/EditHomepage";
 import { EditProfileFormat } from "../../../components/admin/EditProfileFormat";
 import { InviteLinksList } from "../../../components/admin/InviteLinksList";
@@ -11,13 +12,13 @@ import { SetPrivacySettings } from "../../../components/admin/SetPrivacySettings
 import { Button, Select, Text } from "../../../components/atomic";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { Navbar } from "../../../components/Navbar";
+import { Responsive } from "../../../components/Responsive";
 import { RoundedCard } from "../../../components/RoundedCard";
 import { SidePadding } from "../../../components/SidePadding";
 import { BxLink, BxRightArrowAlt } from "../../../generated/icons/regular";
 import { BxsCog, BxsReport } from "../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { DirectoryOverview } from "../../../components/admin/DirectoryOverview";
 
 enum ManageSpaceTabs {
   Members = "Members",
@@ -54,34 +55,52 @@ function ManageSpace() {
         <BxsCog className="h-7 w-7" />
         <Text variant="heading4">Manage Space</Text>
       </div>
-      <div className="h-12"></div>
-      <div className="flex items-start w-full">
-        <div className="flex flex-col items-start whitespace-nowrap">
-          <div className="flex flex-col items-end gap-3 w-full">
-            {ALL_TABS.map((tab) => {
-              const styles = classNames({
-                "flex items-center": true,
-                "text-gray-600": selectedTab !== tab,
-              });
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setSelectedTab(tab)}
-                  className={styles}
-                >
-                  <Text variant="body1">{MAP_TAB_TO_TITLE[tab]}</Text>
-                  {selectedTab === tab ? (
-                    <BxRightArrowAlt className="h-6 w-6" />
-                  ) : (
-                    <div className="h-6 w-6"></div>
-                  )}
-                </button>
-              );
-            })}
+      <div className="h-6 sm:h-12"></div>
+      <div className="flex flex-col sm:flex-row items-start w-full">
+        <Responsive mode="desktop-only">
+          <div className="flex flex-col items-start whitespace-nowrap">
+            <div className="flex flex-col items-end gap-3 w-full">
+              {ALL_TABS.map((tab) => {
+                const styles = classNames({
+                  "flex items-center": true,
+                  "text-gray-600": selectedTab !== tab,
+                });
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setSelectedTab(tab)}
+                    className={styles}
+                  >
+                    <Text variant="body1">{MAP_TAB_TO_TITLE[tab]}</Text>
+                    {selectedTab === tab ? (
+                      <BxRightArrowAlt className="h-6 w-6" />
+                    ) : (
+                      <div className="h-6 w-6"></div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+          <div className="self-stretch w-0.25 bg-gray-300 shrink-0 mx-8"></div>
+        </Responsive>
+        <Responsive mode="mobile-only" className="w-full">
+          <Select
+            className="w-full shadow-md"
+            options={ALL_TABS.map((tab) => ({
+              label: MAP_TAB_TO_TITLE[tab],
+              value: tab,
+            }))}
+            value={selectedTab}
+            onSelect={(newVal) => {
+              if (newVal) {
+                setSelectedTab(newVal);
+              }
+            }}
+          />
+          <div className="h-8"></div>
+        </Responsive>
 
-        <div className="self-stretch w-0.25 bg-gray-300 shrink-0 mx-8"></div>
         <div className="min-h-screen sm:w-full">
           <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-8"></div>

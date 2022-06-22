@@ -33,15 +33,11 @@ export function SpaceDropdown() {
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
-  const img = currentProfile?.profile_listing?.profile_listing_image?.image.url;
-
-  const { currentProfileHasRole } = useCurrentProfile();
-
   const router = useRouter();
 
-  const [{ data: allProfilesData }] = useAllProfilesOfUserQuery({
-    variables: { user_id: userData?.id ?? "" },
-  });
+  // const [{ data: allProfilesData }] = useAllProfilesOfUserQuery({
+  //   variables: { user_id: userData?.id ?? "" },
+  // });
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -64,7 +60,7 @@ export function SpaceDropdown() {
               leaveTo="transform opacity-0 scale-95"
             >
               <Menu.Items className="absolute z-10 left-0 top-full mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md border border-gray-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {allProfilesData?.profile.map((profile) => {
+                {/* {allProfilesData?.profile.map((profile) => {
                   return (
                     <Menu.Item key={profile.id}>
                       {({ active }) => {
@@ -99,7 +95,29 @@ export function SpaceDropdown() {
                       }}
                     </Menu.Item>
                   );
-                })}
+                })} */}
+
+                <Menu.Item>
+                  {({ active }) => {
+                    const styles = classNames({
+                      "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                        true,
+                      "bg-white": !active,
+                      "bg-gray-50": active,
+                    });
+                    return (
+                      <button
+                        className={styles}
+                        onClick={() => {
+                          router.push(`/`);
+                        }}
+                      >
+                        <BxTransfer className="w-5 h-5 mr-2 flex-none" />
+                        <Text variant="body2">Change directory</Text>
+                      </button>
+                    );
+                  }}
+                </Menu.Item>
 
                 <Menu.Item>
                   {({ active }) => {

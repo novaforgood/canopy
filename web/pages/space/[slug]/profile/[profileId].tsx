@@ -20,12 +20,42 @@ import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
+import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { useUserData } from "../../../../hooks/useUserData";
 import { apiClient } from "../../../../lib/apiClient";
 import { getTimezoneSelectOptions } from "../../../../lib/timezone";
 import { CustomPage } from "../../../../types";
 
 const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+interface PleaseLogInModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function PleaseLogInModal(props: PleaseLogInModalProps) {
+  const { isOpen, onClose } = props;
+
+  const router = useRouter();
+
+  return (
+    <ActionModal
+      isOpen={isOpen}
+      actionText={"Login"}
+      onAction={() => {
+        router.push(`/login?redirect=${router.asPath}`);
+      }}
+      secondaryActionText="Cancel"
+      onSecondaryAction={onClose}
+      onClose={onClose}
+    >
+      <div className="p-8 w-80">
+        <Text>Please log in so we can introduce you.</Text>
+      </div>
+    </ActionModal>
+  );
+}
 
 interface IntroduceModalProps {
   isOpen: boolean;
@@ -35,13 +65,12 @@ interface IntroduceModalProps {
 function IntroduceModal(props: IntroduceModalProps) {
   const { isOpen, onClose, profileId } = props;
 
+  const { userData } = useUserData();
   const { currentProfile } = useCurrentProfile();
   const [introMsg, setIntroMsg] = useState("");
   const [avail, setAvail] = useState("");
 
-  const [timezone, setTimezone] = useState<string | null>(
-    "America/Los_Angeles"
-  );
+  const [timezone, setTimezone] = useState<string | null>(defaultTz);
 
   useEffect(() => {
     if (isOpen) {
@@ -104,39 +133,53 @@ function IntroduceModal(props: IntroduceModalProps) {
         secondaryActionText={"Cancel"}
         onSecondaryAction={onClose}
       >
-        <div className="flex flex-col items-center pt-8 px-16">
-          <Text variant="heading4">{`Let's introduce you to ${profileData.profile_by_pk.user.first_name}`}</Text>
-          <div className="h-12"></div>
-          <div className="flex flex-col w-96 gap-8">
-            <div className="w-full flex flex-col">
-              <Text className="text-gray-600 mb-2">Optional intro message</Text>
-              <Textarea
-                minRows={4}
-                value={introMsg}
-                onValueChange={setIntroMsg}
-                placeholder="Example: Hi, I’m Billy! I am a Student at Taylor Middle School. Would you be free for a 30 minute chat about dinosaurs? Thank you for your consideration. "
-              />
-            </div>
-            <div className="w-full flex flex-col">
-              <Text className="text-gray-600 mb-2">
-                Please add your general availability*
+        <div className="pt-8 px-16">
+          <div className="w-96 flex flex-col items-center ">
+            <Text variant="heading4">{`Let's introduce you to ${profileData.profile_by_pk.user.first_name}`}</Text>
+            <div className="h-4"></div>
+            <Text className="text-gray-600 text-center" variant="body2">
+              {"We'll"} send an email to{" "}
+              {profileData.profile_by_pk.user.first_name}, as well as you at{" "}
+              <Text variant="body2" className="text-black">
+                {userData?.email}
               </Text>
-              <Textarea
-                value={avail}
-                onValueChange={setAvail}
-                placeholder="Example: Monday and Tuesday nights after 7pm. All day Saturday and Sunday."
-              ></Textarea>
-            </div>
-            <div className="w-full flex flex-col items-start">
-              <Text className="text-gray-600 mb-2">
-                Please select your timezone*
-              </Text>
-              <SelectAutocomplete
-                options={getTimezoneSelectOptions()}
-                value={timezone}
-                onSelect={setTimezone}
-                className="w-96"
-              />
+              .
+            </Text>
+            <div className="h-8"></div>
+
+            <div className="flex flex-col w-96 gap-8">
+              <div className="w-full flex flex-col">
+                <Text className="text-gray-600 mb-2">
+                  Optional intro message
+                </Text>
+                <Textarea
+                  minRows={4}
+                  value={introMsg}
+                  onValueChange={setIntroMsg}
+                  placeholder="Example: Hi, I’m Billy! I am a Student at Taylor Middle School. Would you be free for a 30 minute chat about dinosaurs? Thank you for your consideration. "
+                />
+              </div>
+              <div className="w-full flex flex-col">
+                <Text className="text-gray-600 mb-2">
+                  Please add your general availability*
+                </Text>
+                <Textarea
+                  value={avail}
+                  onValueChange={setAvail}
+                  placeholder="Example: Monday and Tuesday nights after 7pm. All day Saturday and Sunday."
+                ></Textarea>
+              </div>
+              <div className="w-full flex flex-col items-start">
+                <Text className="text-gray-600 mb-2">
+                  Please select your timezone*
+                </Text>
+                <SelectAutocomplete
+                  options={getTimezoneSelectOptions()}
+                  value={timezone}
+                  onSelect={setTimezone}
+                  className="w-96"
+                />
+              </div>
             </div>
           </div>
           <div className="h-16"></div>
@@ -150,8 +193,10 @@ const SpaceHomepage: CustomPage = () => {
 
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
+  const isLoggedIn = useIsLoggedIn();
 
   const [open, handlers] = useDisclosure(false);
+  const [loginModalOpen, loginModalHandlers] = useDisclosure(false);
 
   const profileId = useQueryParam("profileId", "string");
   const [{ data: profileData }] = useProfileByIdQuery({
@@ -244,9 +289,17 @@ const SpaceHomepage: CustomPage = () => {
                     Contact
                   </Text>
                   <div className="h-4"></div>
+                  <Text>{profileData.profile_by_pk.user.email}</Text>
+                  <div className="h-4"></div>
                   <Button
                     rounded
-                    onClick={handlers.open}
+                    onClick={() => {
+                      if (isLoggedIn) {
+                        handlers.open();
+                      } else {
+                        loginModalHandlers.open();
+                      }
+                    }}
                     disabled={profileId === currentProfile?.id}
                   >
                     Introduce me
@@ -268,6 +321,10 @@ const SpaceHomepage: CustomPage = () => {
           isOpen={open}
           onClose={handlers.close}
           profileId={profileId}
+        />
+        <PleaseLogInModal
+          isOpen={loginModalOpen}
+          onClose={loginModalHandlers.close}
         />
       </SidePadding>
     </div>

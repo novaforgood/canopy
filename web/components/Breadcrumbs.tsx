@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 
@@ -71,8 +71,8 @@ export function Breadcrumbs() {
     <div className="flex justify-start gap-2 text-black">
       {breadcrumbs.map((item, i) => {
         return (
-          <>
-            <div key={i} className="flex-none">
+          <Fragment key={i}>
+            <div className="flex-none">
               {item.href ? (
                 <a href={item.href}>{item.title}</a>
               ) : (
@@ -80,7 +80,7 @@ export function Breadcrumbs() {
               )}
             </div>
             <Text>/</Text>
-          </>
+          </Fragment>
         );
       })}
     </div>

@@ -27,7 +27,7 @@ select_permissions:
               user_id:
                 _eq: X-Hasura-User-Id
           - _and:
-              - sender_profile:
+              - receiver_profile:
                   space_id:
                     _eq: X-Hasura-Space-Id
               - _exists:

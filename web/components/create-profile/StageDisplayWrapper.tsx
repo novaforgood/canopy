@@ -21,7 +21,7 @@ export function StageDisplayWrapper(props: StageDisplayWrapperProps) {
 
   const [loading, setLoading] = useState(false);
   return (
-    <div className="py-20 pl-16 flex flex-col justify-between min-h-screen">
+    <div className="py-20 px-6 sm:px-16 flex flex-col justify-between min-h-screen">
       <div>
         <Text variant="heading3">{title}</Text>
         {children}

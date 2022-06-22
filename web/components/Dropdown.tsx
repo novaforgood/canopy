@@ -38,8 +38,6 @@ export function Dropdown() {
 
   const { currentProfileHasRole } = useCurrentProfile();
 
-  const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
-
   const router = useRouter();
 
   const isLoggedIn = useIsLoggedIn();
@@ -117,31 +115,7 @@ export function Dropdown() {
                         );
                       }}
                     </Menu.Item>
-                    {isAdmin && (
-                      <Menu.Item>
-                        {({ active }) => {
-                          const styles = classNames({
-                            "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                              true,
-                            "bg-white": !active,
-                            "bg-gray-50": active,
-                          });
-                          return (
-                            <button
-                              className={styles}
-                              onClick={() => {
-                                router.push(
-                                  `/space/${currentSpace?.slug}/admin`
-                                );
-                              }}
-                            >
-                              <BxsWrench className="w-5 h-5 mr-2" />
-                              <Text variant="body2">Admin page</Text>
-                            </button>
-                          );
-                        }}
-                      </Menu.Item>
-                    )}
+
                     <Menu.Item>
                       {({ active }) => {
                         const styles = classNames({

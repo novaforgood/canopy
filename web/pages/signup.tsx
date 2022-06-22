@@ -103,13 +103,13 @@ const SignUpPage: CustomPage = () => {
         <div>Redirecting...</div>
       ) : (
         <TwoThirdsPageLayout>
-          <div className="h-full flex flex-col items-start justify-center px-16">
+          <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16">
             <Text variant="heading3">
               Sign up{router.query.redirect && " to continue"}
             </Text>
             <div className="h-8"></div>
             <button
-              className="border rounded-md w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
+              className="border rounded-md w-full sm:w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
               onClick={() => {
                 setSigningInWithGoogle(true);
                 signInWithGoogle()
@@ -149,14 +149,14 @@ const SignUpPage: CustomPage = () => {
             </button>
 
             <div className="h-8"></div>
-            <div className="w-96 flex items-center gap-4 select-none">
+            <div className="w-full sm:w-96 flex items-center gap-4 select-none">
               <div className="flex-1 h-0.5 bg-gray-50"></div>
               <div className="text-gray-300">or</div>
               <div className="flex-1 h-0.5 bg-gray-50"></div>
             </div>
             <div className="h-8"></div>
 
-            <div className="flex flex-col gap-4 w-96">
+            <div className="flex flex-col gap-4 w-full sm:w-96">
               <div className="flex gap-4">
                 <TextInput
                   className="w-full"

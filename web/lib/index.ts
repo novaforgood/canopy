@@ -4,11 +4,13 @@ import { getCurrentUser } from "./firebase";
 
 export const isServer = () => typeof window === "undefined";
 
-export async function loadSession(
-  props: { spaceId?: string; forceUpdateJwt?: boolean } | void
-) {
+export interface LoadSessionProps {
+  spaceId?: string;
+  forceUpdateJwt?: boolean;
+}
+export async function loadSession(props: LoadSessionProps | void) {
+  const user = getCurrentUser();
   try {
-    const user = getCurrentUser();
     if (user) {
       const tokenResult = await user.getIdTokenResult();
       const claims = tokenResult.claims["https://hasura.io/jwt/claims"];
@@ -26,15 +28,17 @@ export async function loadSession(
         });
         await user.getIdToken(true);
       }
-      return {
-        userId: user.uid,
-        jwt: await user.getIdToken(),
-      };
-    } else {
-      return null;
     }
   } catch (e) {
     return null;
+  }
+  if (!user) {
+    return null;
+  } else {
+    return {
+      userId: user.uid,
+      jwt: await user.getIdToken(),
+    };
   }
 }
 

@@ -3,7 +3,6 @@ import { Fragment } from "react";
 import { AppProps } from "next/app";
 import router, { useRouter } from "next/router";
 
-import { Profile_Role_Enum } from "../generated/graphql";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { getCurrentUser } from "../lib/firebase";

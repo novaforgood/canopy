@@ -87,6 +87,14 @@ export function SetPrivacySettings() {
       >
         Save changes
       </Button>
+      {edited && (
+        <>
+          <div className="h-2"></div>
+          <Text variant="body2" style={{ color: "red" }}>
+            You must click {'"Save Changes"'} for your changes to take effect.
+          </Text>
+        </>
+      )}
       <div className="h-8"></div>
       <CheckBox
         label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
