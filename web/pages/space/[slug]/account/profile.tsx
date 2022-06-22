@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
 import { MembersList } from "../../../../components/admin/MembersList";
@@ -30,6 +31,8 @@ export default function AccountProfilePage() {
     return <div>Ur not in this space lol</div>;
   }
 
+  const hasListing = !!currentProfile.profile_listing;
+
   return (
     <SidePadding>
       <Navbar />
@@ -41,7 +44,26 @@ export default function AccountProfilePage() {
 
       <div className="h-12"></div>
 
-      <EditProfileListing />
+      {hasListing ? (
+        <EditProfileListing />
+      ) : (
+        <>
+          <Text>You {"haven't"} created a profile yet.</Text>
+          <div className="h-4"></div>
+          <Button
+            rounded
+            onClick={() => {
+              if (!currentSpace) {
+                toast.error("currentSpace not defined");
+                return;
+              }
+              router.push(`/space/${currentSpace.slug}/create-profile`);
+            }}
+          >
+            Create a profile
+          </Button>
+        </>
+      )}
       <div className="h-32"></div>
     </SidePadding>
   );
