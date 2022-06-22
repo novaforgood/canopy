@@ -102,7 +102,7 @@ function JoinSpace() {
                       break;
                     }
                     case Space_Invite_Link_Type_Enum.MemberListingEnabled: {
-                      router.push(`/space/${publicSpace?.slug}/create-profile`);
+                      router.push(`/space/${publicSpace?.slug}/welcome`);
                       break;
                     }
                   }

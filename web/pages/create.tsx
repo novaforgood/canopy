@@ -352,4 +352,6 @@ const CreatePage: CustomPage = () => {
   );
 };
 
+CreatePage.showFooter = false;
+
 export default CreatePage;
