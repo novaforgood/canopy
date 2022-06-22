@@ -52,35 +52,42 @@ function FilterBar(props: FilterBarProps) {
 
   const { currentSpace } = useCurrentSpace();
 
+  const tagCategories =
+    currentSpace?.space_tag_categories.filter(
+      (category) => !category.deleted
+    ) ?? [];
+
+  if (tagCategories.length === 0) {
+    return null;
+  }
+
   return (
     <div>
       <div className="flex items-center gap-4">
         <Text>Filter by:</Text>
-        {currentSpace?.space_tag_categories
-          .filter((category) => !category.deleted)
-          .map((category) => {
-            return (
-              <div className="w-64" key={category.id}>
-                <SelectAutocomplete
-                  key={category.id}
-                  placeholder={category.title}
-                  options={category.space_tags
-                    .filter((category) => !category.deleted)
-                    .map((tag) => ({
-                      value: tag.id,
-                      label: tag.label,
-                    }))}
-                  value={null}
-                  onSelect={(newTagId) => {
-                    if (newTagId)
-                      onChange(
-                        new Set([...Array.from(selectedTagIds), newTagId])
-                      );
-                  }}
-                />
-              </div>
-            );
-          })}
+        {tagCategories.map((category) => {
+          return (
+            <div className="w-64" key={category.id}>
+              <SelectAutocomplete
+                key={category.id}
+                placeholder={category.title}
+                options={category.space_tags
+                  .filter((category) => !category.deleted)
+                  .map((tag) => ({
+                    value: tag.id,
+                    label: tag.label,
+                  }))}
+                value={null}
+                onSelect={(newTagId) => {
+                  if (newTagId)
+                    onChange(
+                      new Set([...Array.from(selectedTagIds), newTagId])
+                    );
+                }}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className="h-4"></div>
       <div className="flex gap-2">

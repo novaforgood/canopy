@@ -98,7 +98,7 @@ function JoinSpace() {
                 if (response) {
                   switch (response.inviteLink.type) {
                     case Space_Invite_Link_Type_Enum.Member: {
-                      router.push(`/space/${publicSpace?.slug}/welcome`);
+                      router.push(`/space/${publicSpace?.slug}`);
                       break;
                     }
                     case Space_Invite_Link_Type_Enum.MemberListingEnabled: {

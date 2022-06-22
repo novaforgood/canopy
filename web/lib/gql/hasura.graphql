@@ -575,7 +575,7 @@ query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
   }
 
   requests_sent_count: connection_request_aggregate(
-    where: { sender_profile: { space_id: { _eq: $space_id } } }
+    where: { receiver_profile: { space_id: { _eq: $space_id } } }
   ) {
     aggregate {
       count
@@ -585,7 +585,7 @@ query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
   confirmed_meeting_count: connection_request_aggregate(
     where: {
       status: { _eq: MetWith }
-      sender_profile: { space_id: { _eq: $space_id } }
+      receiver_profile: { space_id: { _eq: $space_id } }
     }
   ) {
     aggregate {

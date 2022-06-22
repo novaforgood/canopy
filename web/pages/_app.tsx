@@ -42,7 +42,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const refreshSession = useCallback(async () => {
     setSession(undefined);
-    const session = await loadSession();
+    const session = await loadSession({ forceUpdateJwt: true });
     setSession(session);
   }, [setSession]);
 
