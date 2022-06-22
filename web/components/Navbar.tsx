@@ -40,6 +40,11 @@ function MobileNavbar() {
   //   }
   // }, [expanded]);
 
+  const navigate = async (route: string) => {
+    await router.push(route);
+    setExpanded(false);
+  };
+
   return (
     <div className="w-screen relative -mx-6 overscroll-none">
       <div className="flex items-center justify-between bg-gray-50 px-4 py-3">
@@ -77,7 +82,7 @@ function MobileNavbar() {
             <Button
               className="w-full justify-center"
               onClick={() => {
-                router.push(`/space/${currentSpace?.slug}`);
+                navigate(`/space/${currentSpace?.slug}`);
               }}
             >
               Browse Community Profiles
@@ -86,7 +91,7 @@ function MobileNavbar() {
               className="w-full justify-center"
               variant="outline"
               onClick={() => {
-                router.push(`/space/${currentSpace?.slug}/account`);
+                navigate(`/space/${currentSpace?.slug}/account`);
               }}
             >
               Your Account
@@ -98,7 +103,7 @@ function MobileNavbar() {
             {isAdmin && (
               <button
                 onClick={() => {
-                  router.push(`/space/${currentSpace?.slug}/admin`);
+                  navigate(`/space/${currentSpace?.slug}/admin`);
                 }}
               >
                 Admin settings
@@ -107,7 +112,7 @@ function MobileNavbar() {
 
             <button
               onClick={() => {
-                router.push(`/space/${currentSpace?.slug}/account/profile`);
+                navigate(`/space/${currentSpace?.slug}/account/profile`);
               }}
             >
               Edit Your Profile
@@ -115,7 +120,7 @@ function MobileNavbar() {
             {/* <button>Your Connections</button> */}
             <button
               onClick={() => {
-                router.push("/");
+                navigate("/");
               }}
             >
               Switch Community Spaces
@@ -123,7 +128,7 @@ function MobileNavbar() {
             <button
               onClick={() => {
                 signOut().then(() => {
-                  router.push("/");
+                  navigate("/");
                 });
               }}
             >
