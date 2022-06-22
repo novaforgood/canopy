@@ -6,6 +6,7 @@ import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
 import { Provider } from "urql";
 
 import AuthWrapper from "../components/AuthWrapper";
+import { Footer } from "../components/Footer";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { usePrevious } from "../hooks/usePrevious";
 import { loadSession } from "../lib";
@@ -86,7 +87,11 @@ function AuthProvider({ children }: AuthProviderProps) {
   return <>{children}</>;
 }
 
-function App({ Component, pageProps }: AppProps) {
+type CustomAppProps = AppProps & {
+  Component: CustomPage;
+};
+
+function App({ Component, pageProps }: CustomAppProps) {
   const [session, setSession] = useRecoilState(sessionAtom);
   const router = useRouter();
   const spaceSlug = router.query.slug as string;
@@ -137,13 +142,10 @@ function App({ Component, pageProps }: AppProps) {
     <Suspense fallback={<div>Loading...</div>}>
       <Toaster />
       <Component {...pageProps} />
+      {Component.showFooter !== false && <Footer />}
     </Suspense>
   );
 }
-
-type CustomAppProps = AppProps & {
-  Component: CustomPage;
-};
 
 function AppWrapper({ Component, ...pageProps }: CustomAppProps) {
   return (
