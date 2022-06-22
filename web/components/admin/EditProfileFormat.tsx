@@ -8,7 +8,7 @@ import {
   useUpsertSpaceProfileSchemaMutation,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { Button } from "../atomic";
+import { Button, Text } from "../atomic";
 
 import { EditProfileSchema, EditProfileSchemaData } from "./EditProfileSchema";
 
@@ -96,6 +96,15 @@ export function EditProfileFormat() {
       >
         Save changes
       </Button>
+      {edited && (
+        <>
+          <div className="h-2"></div>
+          <Text variant="body2" style={{ color: "red" }}>
+            You must click {'"Save Changes"'} for your changes to take effect.
+          </Text>
+        </>
+      )}
+
       <div className="h-4"></div>
       <EditProfileSchema
         data={data}

@@ -55,7 +55,7 @@ export function InviteLinksList() {
           return (
             <div
               key={inviteLink.id}
-              className="border p-4 flex gap-8 flex-col sm:flex-row"
+              className="border p-4 w-full flex gap-2 sm:gap-8 flex-col sm:flex-row"
             >
               <CopyLink link={link} />
               <Text className="text-gray-600">
@@ -77,7 +77,7 @@ export function InviteLinksList() {
                 </Text>
               </Text>
               <DeleteButton
-                className=""
+                className="ml-auto"
                 onClick={() => {
                   if (isExpired) {
                     // Delete

@@ -118,7 +118,6 @@ export function ImageUploader(props: ImageUploaderProps) {
         >
           {imageSrc && (
             <AvatarEditor
-              crossOrigin="anonymous"
               onLoadSuccess={() => {
                 onLoadSuccess();
                 setShowRepositionActivated(true);

@@ -51,7 +51,7 @@ export function MemberRow(props: MemberRowProps) {
           <BxsCrown className="h-4 w-4 ml-2 text-gray-600" />
         )}
       </div>
-      <div>{email}</div>
+      <input value={email} readOnly className="truncate" />
       <SelectAutocomplete
         className="w-48"
         options={ROLE_SELECT_OPTIONS}
