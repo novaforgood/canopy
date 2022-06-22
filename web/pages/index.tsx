@@ -75,25 +75,21 @@ function LoggedInHomePage() {
 
         <div className="h-12"></div>
 
-        <div className="flex flex-col gap-8 items-start w-full sm:w-120">
+        <div className="flex flex-col gap-4 items-start w-full sm:w-120">
           {profileData?.profile.map((profile) => {
             return (
-              <div
-                className="flex justify-between items-center w-full"
+              <button
+                className="border p-2 flex justify-between items-center w-full"
                 key={profile.id}
+                onClick={() => {
+                  router.push(`/space/${profile.space.slug}`);
+                }}
               >
                 <Text variant="heading4" mobileVariant="subheading2">
                   {profile.space.name}
                 </Text>
-                <button
-                  className="w-6 h-6 hover:text-gray-700"
-                  onClick={() => {
-                    router.push(`/space/${profile.space.slug}`);
-                  }}
-                >
-                  <BxExit />
-                </button>
-              </div>
+                <BxExit className="w-6 h-6 hover:text-gray-700" />
+              </button>
             );
           })}
         </div>

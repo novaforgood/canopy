@@ -71,7 +71,7 @@ export default applyMiddleware({
         throw makeApiFail("Cannot connect to yourself");
       }
 
-      const spaceName = senderData.profile_by_pk.space.name;
+      const spaceName = receiverData.profile_by_pk.space.name;
 
       await sendgridMail
         .send({

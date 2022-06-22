@@ -31,13 +31,14 @@ function MobileNavbar() {
 
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    if (expanded) {
-      document.body.classList.add("no-scroll");
-    } else {
-      document.body.classList.remove("no-scroll");
-    }
-  }, [expanded]);
+  // Doesn't work in safari anyways.
+  // useEffect(() => {
+  //   if (expanded) {
+  //     document.body.classList.add("no-scroll");
+  //   } else {
+  //     document.body.classList.remove("no-scroll");
+  //   }
+  // }, [expanded]);
 
   return (
     <div className="w-screen relative -mx-6 overscroll-none">
