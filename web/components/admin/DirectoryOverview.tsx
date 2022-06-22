@@ -53,7 +53,7 @@ function DirectoryOverviewInfoBox(props: {
   label: string;
 }) {
   return (
-    <div className="grow flex flex-col justify-start bg-gray-50 p-4 rounded-lg grow">
+    <div className="flex flex-col justify-start bg-gray-50 p-4 rounded-lg grow">
       <Text variant="heading3">{props.amount}</Text>
       <Text variant="body2">{props.label}</Text>
     </div>

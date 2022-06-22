@@ -82,7 +82,9 @@ function ManageSpace() {
               })}
             </div>
           </div>
-          <div className="self-stretch w-0.25 bg-gray-300 shrink-0 mx-8"></div>
+        </Responsive>
+        <Responsive mode="desktop-only" className="self-stretch">
+          <div className="self-stretch w-0.25 h-full bg-gray-300 shrink-0 mx-8"></div>
         </Responsive>
         <Responsive mode="mobile-only" className="w-full">
           <Select
