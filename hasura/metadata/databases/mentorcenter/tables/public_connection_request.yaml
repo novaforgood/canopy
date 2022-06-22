@@ -42,6 +42,7 @@ select_permissions:
                   _table:
                     schema: public
                     name: profile_to_profile_role_flattened
+      allow_aggregations: true
 update_permissions:
   - role: user
     permission:

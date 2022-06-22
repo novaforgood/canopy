@@ -8,7 +8,7 @@ import { EditProfileFormat } from "../../../components/admin/EditProfileFormat";
 import { InviteLinksList } from "../../../components/admin/InviteLinksList";
 import { MembersList } from "../../../components/admin/MembersList";
 import { SetPrivacySettings } from "../../../components/admin/SetPrivacySettings";
-import { Text } from "../../../components/atomic";
+import { Button, Select, Text } from "../../../components/atomic";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { Navbar } from "../../../components/Navbar";
 import { RoundedCard } from "../../../components/RoundedCard";
@@ -17,6 +17,7 @@ import { BxLink, BxRightArrowAlt } from "../../../generated/icons/regular";
 import { BxsCog, BxsReport } from "../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { DirectoryOverview } from "../../../components/admin/DirectoryOverview";
 
 enum ManageSpaceTabs {
   Members = "Members",
@@ -114,12 +115,7 @@ export default function AdminPage() {
       <Text variant="heading2">Admin dashboard</Text>
       <div className="h-8"></div>
       <RoundedCard className="w-full">
-        <div className="flex items-center gap-2">
-          <BxsReport className="h-7 w-7" />
-          <Text variant="heading4">Program Overview</Text>
-        </div>
-        <div className="h-8"></div>
-        <Text>Work in progress</Text>
+        <DirectoryOverview />
       </RoundedCard>
       <div className="h-10"></div>
       <RoundedCard className="w-full">
