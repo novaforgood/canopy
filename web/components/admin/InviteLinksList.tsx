@@ -91,7 +91,7 @@ export function InviteLinksList() {
                       });
                   } else {
                     const confirmed = window.confirm(
-                      "Are you sure you would like to delete this invite link?"
+                      "Are you sure you would like to delete this invite link? Users will be unable to use it to join your space."
                     );
                     if (confirmed) {
                       deleteInviteLink({ id: inviteLink.id })

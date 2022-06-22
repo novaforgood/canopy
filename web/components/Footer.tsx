@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <div className="px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-gray-300 font-sans">
+    <div className="px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-gray-300 font-sans text-sm">
       <div className="flex gap-8">
         <div>
-          <div>Product</div>
+          <div>Canopy</div>
           <div className="flex flex-col gap-2 mt-4 font-medium">
-            <Link href="/" className="hover:underline">
+            <a target="_blank" className="hover:underline" href="/">
               Home
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -17,26 +17,35 @@ export function Footer() {
         <div>
           <div>Legal</div>
           <div className="flex flex-col gap-2 mt-4 font-medium">
-            <Link href="/terms" className="hover:underline">
+            <a target="_blank" className="hover:underline" href="/terms">
               Terms of Use
-            </Link>
-            <Link href="/privacy" className="hover:underline">
+            </a>
+
+            <a target="_blank" className="hover:underline" href="/privacy">
               Privacy Policy
-            </Link>
+            </a>
           </div>
         </div>
         <div>
           <div>About the Creators</div>
           <div className="flex flex-col gap-2 mt-4 font-medium">
-            <Link
-              href="https://www.novaforgood.org/"
+            <a
+              target="_blank"
               className="hover:underline"
+              href="https://www.novaforgood.org/"
+              rel="noreferrer"
             >
               Nova, Tech for Good
-            </Link>
-            <Link href="https://risc.uchicago.edu/" className="hover:underline">
+            </a>
+
+            <a
+              target="_blank"
+              className="hover:underline"
+              href="https://risc.uchicago.edu/"
+              rel="noreferrer"
+            >
               UChicago RISC
-            </Link>
+            </a>
           </div>
         </div>
       </div>
