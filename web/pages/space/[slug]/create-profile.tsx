@@ -13,10 +13,12 @@ import { StepDisplay } from "../../../components/create-profile/StepDisplay";
 import { StageNavigator } from "../../../components/StageNavigator";
 import { FadeTransition } from "../../../components/transitions/FadeTransition";
 import { TwoThirdsPageLayout } from "../../../components/TwoThirdsPageLayout";
+import { Profile_Role_Enum } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../../../hooks/useUpdateQueryParams";
+import { CustomPage } from "../../../types";
 
 enum ListerStage {
   EnterBasicInfo = "EnterBasicInfo",
@@ -41,22 +43,14 @@ const ALL_LISTER_STAGES = Object.values(ListerStage).map((val) => {
   };
 });
 
-export default function ListerOnboardingPage() {
+const ListerOnboardingPage: CustomPage = () => {
   const router = useRouter();
   const currentStage = (useQueryParam("stage", "string") ??
     ListerStage.EnterBasicInfo) as ListerStage;
   const { updateQueryParams } = useUpdateQueryParams();
 
   const { currentSpace } = useCurrentSpace();
-  const { currentProfile, fetchingCurrentProfile } = useCurrentProfile();
-
-  const [showIntro, setShowIntro] = useState(true);
-
-  useEffect(() => {
-    if (currentProfile?.profile_listing) {
-      setShowIntro(false);
-    }
-  }, [currentProfile?.profile_listing]);
+  const { fetchingCurrentProfile, currentProfileHasRole } = useCurrentProfile();
 
   const [stageDisplayed, setStageDisplayed] = useState<ListerStage | null>(
     null
@@ -79,53 +73,13 @@ export default function ListerOnboardingPage() {
     return <div>Loading...</div>;
   }
 
-  if (showIntro) {
-    return (
-      <TwoThirdsPageLayout>
-        <div className="h-screen flex flex-col items-start justify-center px-16 max-w-2xl">
-          <Text variant="heading2">Welcome to {currentSpace?.name}!</Text>
-
-          <div className="h-12"></div>
-          <Text className="text-gray-600">Here are your next steps:</Text>
-          <div className="h-8"></div>
-          <div className="w-160 flex flex-col gap-4">
-            <StepDisplay
-              stepNumber={1}
-              title="Complete your profile"
-              description="It takes 3 minutes, and your profile can be edited or unpublished at any time."
-              highlighted
-            />
-            <StepDisplay
-              stepNumber={2}
-              title="Publish your profile in the community directory"
-              description="Other community members will reach out to you through a profile contact button"
-            />
-            <StepDisplay
-              stepNumber={3}
-              title="Wait for a connection request!"
-              description="Whenever someone reaches out, you will be notified via email. Please respond promptly to schedule a meeting time"
-            />
-          </div>
-          <div className="h-16"></div>
-          <Button
-            variant="primary"
-            rounded
-            onClick={() => {
-              setShowIntro(false);
-            }}
-          >
-            Create my profile
-          </Button>
-
-          <div className="h-40"></div>
-        </div>
-      </TwoThirdsPageLayout>
-    );
+  if (!currentProfileHasRole(Profile_Role_Enum.MemberWhoCanList)) {
+    return <div>You do not have profile listing permissions.</div>;
   }
 
   return (
-    <div className="flex h-screen">
-      <div className="bg-gray-50 p-12 pt-40 h-screen shrink-0">
+    <div className="flex flex-col sm:flex-row sm:h-screen">
+      <div className="bg-gray-50 p-6 sm:p-12 sm:pt-40 sm:h-screen shrink-0">
         <StageNavigator
           currentStage={currentStage}
           stages={ALL_LISTER_STAGES}
@@ -203,4 +157,8 @@ export default function ListerOnboardingPage() {
       </div>
     </div>
   );
-}
+};
+
+ListerOnboardingPage.showFooter = false;
+
+export default ListerOnboardingPage;

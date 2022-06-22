@@ -271,6 +271,7 @@ query ProfileListingsInSpace($where: profile_listing_bool_exp) {
 
 query ProfileById($profile_id: uuid!) {
   profile_by_pk(id: $profile_id) {
+    id
     created_at
     profile_listing {
       id
@@ -543,5 +544,53 @@ query PublicSpaceBySlug($slug: String!) {
     id
     name
     slug
+  }
+}
+
+query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
+  listed_profile_count: profile_aggregate(
+    where: {
+      space_id: { _eq: $space_id }
+      profile_listing: { public: { _eq: true } }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  new_member_count: profile_aggregate(
+    where: { space_id: { _eq: $space_id }, created_at: { _gte: $after } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  general_member_count: profile_aggregate(
+    where: { space_id: { _eq: $space_id } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  requests_sent_count: connection_request_aggregate(
+    where: { receiver_profile: { space_id: { _eq: $space_id } } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  confirmed_meeting_count: connection_request_aggregate(
+    where: {
+      status: { _eq: MetWith }
+      receiver_profile: { space_id: { _eq: $space_id } }
+    }
+  ) {
+    aggregate {
+      count
+    }
   }
 }

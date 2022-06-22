@@ -53,7 +53,10 @@ export function InviteLinksList() {
           const expiredTime = new Date(inviteLink.expires_at);
           const isExpired = expiredTime.getTime() < Date.now();
           return (
-            <div key={inviteLink.id} className="border p-4 flex gap-8">
+            <div
+              key={inviteLink.id}
+              className="border p-4 w-full flex gap-2 sm:gap-8 flex-col sm:flex-row"
+            >
               <CopyLink link={link} />
               <Text className="text-gray-600">
                 {!isExpired && "Expires: "}
@@ -74,7 +77,7 @@ export function InviteLinksList() {
                 </Text>
               </Text>
               <DeleteButton
-                className=""
+                className="ml-auto"
                 onClick={() => {
                   if (isExpired) {
                     // Delete
@@ -88,7 +91,7 @@ export function InviteLinksList() {
                       });
                   } else {
                     const confirmed = window.confirm(
-                      "Are you sure you would like to delete this invite link?"
+                      "Are you sure you would like to delete this invite link? Users will be unable to use it to join your space."
                     );
                     if (confirmed) {
                       deleteInviteLink({ id: inviteLink.id })

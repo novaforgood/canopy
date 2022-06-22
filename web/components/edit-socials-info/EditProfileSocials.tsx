@@ -25,14 +25,14 @@ export function EditProfileSocials() {
 
   return (
     <>
-      <div className="flex flex-col items-start gap-2 w-120">
+      <div className="flex flex-col items-start gap-2 w-full sm:w-120">
         <div className="flex items-center gap-4 w-full">
           <Text className="text-right w-24 flex-none">Email</Text>
 
           <TextInput
             className="w-full"
             value={userData?.email ?? ""}
-            disabled
+            contentEditable={false}
           />
         </div>
         {profileListingSocialsData?.profile_listing_social?.map(

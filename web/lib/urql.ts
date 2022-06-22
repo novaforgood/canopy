@@ -37,6 +37,10 @@ export function getUrqlClient(jwt: string) {
         keys: {
           profile_to_profile_role_flattened: (data) =>
             `${data.profile_id}-${data.profile_role}`,
+          profile_aggregate: () => null,
+          profile_aggregate_fields: () => null,
+          connection_request_aggregate: () => null,
+          connection_request_aggregate_fields: () => null,
         },
       }),
       // retryExchange({
@@ -54,15 +58,3 @@ export function getUrqlClient(jwt: string) {
     ],
   });
 }
-
-/**
- * "errors": [
-        {
-            "extensions": {
-                "path": "$",
-                "code": "invalid-jwt"
-            },
-            "message": "Could not verify JWT: JWTExpired"
-        }
-    ]
- */

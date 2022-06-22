@@ -11,6 +11,7 @@ import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Select } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { ProfileImage } from "../ProfileImage";
 
 import { MAP_ROLE_TO_TITLE, ROLE_SELECT_OPTIONS } from "./roles";
 interface MemberRowProps {
@@ -39,12 +40,18 @@ export function MemberRow(props: MemberRowProps) {
   return (
     <Fragment>
       <div className="flex items-center">
+        <ProfileImage
+          className="h-10 w-10 mr-2"
+          src={
+            profile.profile_listing?.profile_listing_image?.image.url ?? null
+          }
+        />
         {first_name} {last_name}{" "}
         {currentSpace?.owner_id === profile.user.id && (
           <BxsCrown className="h-4 w-4 ml-2 text-gray-600" />
         )}
       </div>
-      <div>{email}</div>
+      <input value={email} readOnly className="truncate" />
       <SelectAutocomplete
         className="w-48"
         options={ROLE_SELECT_OPTIONS}

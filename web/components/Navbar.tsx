@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { Profile_Role_Enum } from "../generated/graphql";
 import { BxMenu, BxX } from "../generated/icons/regular";
-import { BxsCog, BxsWrench } from "../generated/icons/solid";
+import { BxsCog, BxsHome, BxsWrench } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
@@ -31,13 +31,19 @@ function MobileNavbar() {
 
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    if (expanded) {
-      document.body.classList.add("no-scroll");
-    } else {
-      document.body.classList.remove("no-scroll");
-    }
-  }, [expanded]);
+  // Doesn't work in safari anyways.
+  // useEffect(() => {
+  //   if (expanded) {
+  //     document.body.classList.add("no-scroll");
+  //   } else {
+  //     document.body.classList.remove("no-scroll");
+  //   }
+  // }, [expanded]);
+
+  const navigate = async (route: string) => {
+    await router.push(route);
+    setExpanded(false);
+  };
 
   return (
     <div className="w-screen relative -mx-6 overscroll-none">
@@ -76,7 +82,7 @@ function MobileNavbar() {
             <Button
               className="w-full justify-center"
               onClick={() => {
-                router.push(`/space/${currentSpace?.slug}`);
+                navigate(`/space/${currentSpace?.slug}`);
               }}
             >
               Browse Community Profiles
@@ -85,7 +91,7 @@ function MobileNavbar() {
               className="w-full justify-center"
               variant="outline"
               onClick={() => {
-                router.push(`/space/${currentSpace?.slug}/account`);
+                navigate(`/space/${currentSpace?.slug}/account`);
               }}
             >
               Your Account
@@ -97,7 +103,7 @@ function MobileNavbar() {
             {isAdmin && (
               <button
                 onClick={() => {
-                  router.push(`/space/${currentSpace?.slug}/admin`);
+                  navigate(`/space/${currentSpace?.slug}/admin`);
                 }}
               >
                 Admin settings
@@ -106,7 +112,7 @@ function MobileNavbar() {
 
             <button
               onClick={() => {
-                router.push(`/space/${currentSpace?.slug}/account/profile`);
+                navigate(`/space/${currentSpace?.slug}/account/profile`);
               }}
             >
               Edit Your Profile
@@ -114,7 +120,7 @@ function MobileNavbar() {
             {/* <button>Your Connections</button> */}
             <button
               onClick={() => {
-                router.push("/");
+                navigate("/");
               }}
             >
               Switch Community Spaces
@@ -122,7 +128,7 @@ function MobileNavbar() {
             <button
               onClick={() => {
                 signOut().then(() => {
-                  router.push("/");
+                  navigate("/");
                 });
               }}
             >
@@ -136,11 +142,45 @@ function MobileNavbar() {
 }
 
 export function Navbar() {
+  const router = useRouter();
+  const { currentSpace } = useCurrentSpace();
+  const { currentProfileHasRole } = useCurrentProfile();
+  const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
+
+  const arr = router.asPath.split("/");
+  const isInAdminDashboard = arr.includes("admin");
+
   return (
     <>
       <Responsive mode="desktop-only">
-        <div className="flex items-center justify-between mt-12">
-          <SpaceDropdown />
+        <div className="flex items-center justify-between mt-12 bg-white">
+          <div className="flex">
+            <SpaceDropdown />
+            {isAdmin &&
+              (isInAdminDashboard ? (
+                <Button
+                  size="small"
+                  className={"flex items-center ml-6"}
+                  onClick={() => {
+                    router.push(`/space/${currentSpace?.slug}`);
+                  }}
+                >
+                  <BxsHome className="w-5 h-5 mr-2" />
+                  <Text variant="body1">Directory Homepage</Text>
+                </Button>
+              ) : (
+                <Button
+                  size="small"
+                  className={"flex items-center ml-6"}
+                  onClick={() => {
+                    router.push(`/space/${currentSpace?.slug}/admin`);
+                  }}
+                >
+                  <BxsCog className="w-5 h-5 mr-2" />
+                  <Text variant="body1">Admin Dashboard</Text>
+                </Button>
+              ))}
+          </div>
           <Dropdown />
         </div>
       </Responsive>

@@ -136,7 +136,7 @@ export function EnterBasicInfo(props: EnterNameProps) {
           How would you describe yourself in a few words?
         </Text>
         <div className="h-6"></div>
-        <div className="w-120">
+        <div className="w-full sm:w-120">
           <TextInput
             value={headline}
             onValueChange={setHeadline}

@@ -37,7 +37,7 @@ export function Review(props: ReviewProps) {
     >
       <div className="flex flex-col items-start">
         <div className="h-8"></div>
-        <div className="w-160 flex flex-col gap-4">
+        <div className="w-full sm:w-160 flex flex-col gap-4">
           <StepDisplay
             stepNumber={1}
             title="Review your profile below"

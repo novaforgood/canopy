@@ -101,7 +101,10 @@ export function ImageUploader(props: ImageUploaderProps) {
   const scaledHeight = scaleWidth ? desiredHeight : height;
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div
+      className="flex flex-col items-center"
+      style={{ width: scaleWidth ? "100%" : "auto" }}
+    >
       <div ref={ref} style={{ width: scaledWidth, height: scaledHeight }}>
         <div
           {...getRootProps()}
@@ -115,7 +118,6 @@ export function ImageUploader(props: ImageUploaderProps) {
         >
           {imageSrc && (
             <AvatarEditor
-              crossOrigin="anonymous"
               onLoadSuccess={() => {
                 onLoadSuccess();
                 setShowRepositionActivated(true);

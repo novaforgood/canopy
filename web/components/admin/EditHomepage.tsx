@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
-import { Button, Text } from "../atomic";
-import { ImageUploader } from "../ImageUploader";
-import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
-import { TextInput } from "../inputs/TextInput";
+
 import {
   useUpdateSpaceMutation,
   useUpsertSpaceCoverImageMutation,
@@ -12,6 +10,10 @@ import {
 import { BxsCloudUpload } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { uploadImage } from "../../lib/image";
+import { Button, Text } from "../atomic";
+import { ImageUploader } from "../ImageUploader";
+import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
+import { TextInput } from "../inputs/TextInput";
 
 export function EditHomepage() {
   const { currentSpace } = useCurrentSpace();
@@ -23,6 +25,7 @@ export function EditHomepage() {
   useEffect(() => {
     if (currentSpace) {
       setSpaceName(currentSpace.name);
+      console.log(currentSpace.space_cover_image?.image.url);
       setImageSrc(currentSpace.space_cover_image?.image.url ?? null);
     }
   }, [currentSpace]);
@@ -96,6 +99,14 @@ export function EditHomepage() {
       >
         Save changes
       </Button>
+      {edited && (
+        <>
+          <div className="h-2"></div>
+          <Text variant="body2" style={{ color: "red" }}>
+            You must click {'"Save Changes"'} for your changes to take effect.
+          </Text>
+        </>
+      )}
 
       <div className="h-16"></div>
       <Text variant="subheading1" bold>
