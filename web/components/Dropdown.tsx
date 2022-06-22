@@ -136,7 +136,7 @@ export function Dropdown() {
                               }}
                             >
                               <BxsWrench className="w-5 h-5 mr-2" />
-                              <Text variant="body2">Admin page</Text>
+                              <Text variant="body2">Directory settings</Text>
                             </button>
                           );
                         }}

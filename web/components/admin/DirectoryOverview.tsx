@@ -1,5 +1,7 @@
-import { addDays, addMonths, addYears, format } from "date-fns";
 import { useState } from "react";
+
+import { addDays, addMonths, addYears, format } from "date-fns";
+
 import { useAdminDashDirectoryOverviewQuery } from "../../generated/graphql";
 import { BxsReport } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
@@ -87,7 +89,6 @@ export function DirectoryOverview() {
         </div>
         <Responsive mode="desktop-only">
           <div className="flex items-center gap-2">
-            <Button className="h-8">placeholder</Button>
             <Select
               placeholder="Select date range"
               className="w-40"
@@ -105,12 +106,15 @@ export function DirectoryOverview() {
       </div>
       <div className="h-4 sm:h-8"></div>
       <Text>
-        Check out your {"directory's"} activity in the past{" "}
-        {DirectoryOverviewDateRange
-          ? MAP_DATE_RANGE_TO_TEXT[DirectoryOverviewDateRange]
-          : "--"}{" "}
+        Check out your {"directory's"} activity in the{" "}
+        <Text bold>
+          past{" "}
+          {DirectoryOverviewDateRange
+            ? MAP_DATE_RANGE_TO_TEXT[DirectoryOverviewDateRange]
+            : "--"}
+        </Text>{" "}
         <span className="text-gray-600">
-          {`(since ${format(afterDate, "MM/dd/yyyy")})`}
+          {`(since ${format(afterDate, "MMMM dd, yyyy")})`}
         </span>
         .
       </Text>

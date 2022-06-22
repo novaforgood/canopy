@@ -271,6 +271,7 @@ query ProfileListingsInSpace($where: profile_listing_bool_exp) {
 
 query ProfileById($profile_id: uuid!) {
   profile_by_pk(id: $profile_id) {
+    id
     created_at
     profile_listing {
       id
