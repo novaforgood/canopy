@@ -25,7 +25,6 @@ export function EditHomepage() {
   useEffect(() => {
     if (currentSpace) {
       setSpaceName(currentSpace.name);
-      console.log(currentSpace.space_cover_image?.image.url);
       setImageSrc(currentSpace.space_cover_image?.image.url ?? null);
     }
   }, [currentSpace]);

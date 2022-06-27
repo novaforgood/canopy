@@ -25,6 +25,7 @@ export function EnterSettings(props: EnterSettingsProps) {
       <div className="h-10"></div>
       <div className="w-96">
         <TextInput
+          characterLimit={60}
           value={data.spaceSlug}
           label="Domain name"
           onValueChange={(newVal) => {
