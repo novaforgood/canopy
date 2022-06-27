@@ -37,6 +37,9 @@ function slugifyAndAppendRandomString(name: string) {
 }
 
 function makeReadableError(message: string) {
+  return message;
+
+  // temp disable this for debugging purposes
   if (message.includes("check_name_length")) {
     return "THe name of the space must be between 1 and 50 characters";
   } else {
@@ -152,39 +155,25 @@ const CreatePage: CustomPage = () => {
     changeStageDisplay();
   }, [currentStage]);
 
+  const loadedState = LocalStorage.get(
+    LocalStorageKey.CreateSpace
+  ) as CreateProgramState | null;
+
   const [state, setState] = useState<CreateProgramState>({
     ...DEFAULT_CREATE_PROGRAM_STATE,
+    ...loadedState,
   });
 
-  const [loadedFromLocalStorage, setLoadedFromLocalStorage] = useState(false);
-  useEffect(() => {
-    const loadedState = LocalStorage.get(
-      LocalStorageKey.CreateSpace
-    ) as CreateProgramState | null;
-
-    if (loadedState) {
-      // If less than 10 seconds after last saved (e.g. the user refreshed)
-      if (
-        loadedState.lastSavedTime &&
-        Date.now() - loadedState.lastSavedTime < 1000 * 10
-      ) {
-        setState((prev) => ({ ...prev, ...loadedState }));
-      }
-    }
-    setLoadedFromLocalStorage(true);
-  }, []);
-
   const saveToLocalStorage = useCallback(() => {
-    if (!loadedFromLocalStorage) return;
     LocalStorage.set(LocalStorageKey.CreateSpace, {
       ...state,
       lastSavedTime: Date.now(),
     });
-  }, [loadedFromLocalStorage, state]);
+  }, [state]);
 
-  // Update localstorage to match the current state every 2 seconds
+  // Update localstorage to match the current state every second
   useEffect(() => {
-    const interval = setInterval(saveToLocalStorage, 2000);
+    const interval = setInterval(saveToLocalStorage, 1000);
     return () => {
       clearInterval(interval);
     };

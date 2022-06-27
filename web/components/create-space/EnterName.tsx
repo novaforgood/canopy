@@ -9,6 +9,7 @@ import { useUserData } from "../../hooks/useUserData";
 import { Button, Input, Text, Textarea } from "../atomic";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
+import { TextInput } from "../inputs/TextInput";
 import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 import { HomepagePreview } from "./HomepagePreview";
@@ -38,14 +39,17 @@ export function EnterName(props: EnterNameProps) {
           This will be the title of your homepage.
         </Text>
         <div className="h-6"></div>
-        <Input
-          className="w-80 2xl:w-120"
-          value={data.spaceName}
-          onValueChange={(value) => {
-            onChange({ spaceName: value });
-          }}
-          placeholder="Ex. Rainbow Buddies, UCLA SWE, etc."
-        />
+        <div className="w-80 2xl:w-120">
+          <TextInput
+            characterLimit={50}
+            value={data.spaceName}
+            onValueChange={(value) => {
+              onChange({ spaceName: value });
+            }}
+            placeholder="Ex. Rainbow Buddies, UCLA SWE, etc."
+          />
+        </div>
+
         <div className="h-24"></div>
         <Text variant="heading4">Write a description for your directory.</Text>
         <div className="h-1"></div>
