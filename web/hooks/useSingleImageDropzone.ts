@@ -11,7 +11,7 @@ export function useSingleImageDropzone(props: HookProps) {
     accept: {
       "image/*": [".jpeg", ".png", ".jpg"],
     },
-    maxSize: 2 * 1024 * 1024, // 2MB, max size backend accepts
+    maxSize: 10 * 1024 * 1024, // 10MB
     onDropAccepted: (files) => {
       onDropAccepted(files[0]);
     },
