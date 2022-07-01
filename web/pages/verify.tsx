@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { useWindowEvent } from "@mantine/hooks";
 import { sendEmailVerification } from "firebase/auth";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -10,7 +11,6 @@ import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { getCurrentUser } from "../lib/firebase";
 import { CustomPage } from "../types";
-import { useWindowEvent } from "@mantine/hooks";
 
 function VerifyYourEmail() {
   const router = useRouter();
@@ -21,6 +21,8 @@ function VerifyYourEmail() {
 
   const [loadingResendVerification, setLoadingResendVerification] =
     useState(false);
+
+  const currentUser = getCurrentUser();
 
   useWindowEvent("focus", async () => {
     currentUser
@@ -53,33 +55,7 @@ function VerifyYourEmail() {
           toast.error(e.message);
         });
     }
-  }, [redirectUsingQueryParam]);
-
-  const sendVerification = useCallback(async () => {
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-      if (currentUser.emailVerified) {
-        // Upsert user then redirect to home
-
-        setVerified(true);
-
-        await fetch(`/api/auth/upsertUserData`, {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${await currentUser.getIdToken()}`,
-          },
-        })
-          .then(() => {
-            return redirectUsingQueryParam("/");
-          })
-          .catch((e) => {
-            toast.error(e.message);
-          });
-      } else {
-        await sendEmailVerification(currentUser);
-      }
-    }
-  }, [redirectUsingQueryParam]);
+  }, [redirectUsingQueryParam, currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -91,9 +67,7 @@ function VerifyYourEmail() {
         sendEmailVerification(currentUser).catch(() => {});
       }
     }
-  }, []);
-
-  const currentUser = getCurrentUser();
+  }, [redirectAfterVerification, currentUser]);
 
   return (
     <TwoThirdsPageLayout>
