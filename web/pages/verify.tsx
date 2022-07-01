@@ -45,6 +45,7 @@ function VerifyYourEmail() {
         },
       })
         .then(async () => {
+          // wait half a second before redirecting to show verified screen
           await new Promise((resolve) => setTimeout(resolve, 500));
           return redirectUsingQueryParam("/");
         })
