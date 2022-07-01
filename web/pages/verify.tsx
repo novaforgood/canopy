@@ -10,6 +10,7 @@ import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { getCurrentUser } from "../lib/firebase";
 import { CustomPage } from "../types";
+import { useWindowEvent } from "@mantine/hooks";
 
 function VerifyYourEmail() {
   const router = useRouter();
@@ -20,6 +21,38 @@ function VerifyYourEmail() {
 
   const [loadingResendVerification, setLoadingResendVerification] =
     useState(false);
+
+  useWindowEvent("focus", async () => {
+    currentUser
+      ?.reload()
+      .then(() => {
+        if (currentUser.emailVerified) {
+          redirectAfterVerification();
+        }
+      })
+      // not sure what to do here - error with reload() has only happened once
+      .catch((error) => toast.error(`Reload Error: ${error.message}`));
+  });
+
+  const redirectAfterVerification = useCallback(async () => {
+    if (currentUser) {
+      setVerified(true);
+
+      await fetch(`/api/auth/upsertUserData`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${await currentUser.getIdToken()}`,
+        },
+      })
+        .then(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          return redirectUsingQueryParam("/");
+        })
+        .catch((e) => {
+          toast.error(e.message);
+        });
+    }
+  }, [redirectUsingQueryParam]);
 
   const sendVerification = useCallback(async () => {
     const currentUser = getCurrentUser();
@@ -48,9 +81,16 @@ function VerifyYourEmail() {
   }, [redirectUsingQueryParam]);
 
   useEffect(() => {
-    // Send verification email
-    sendVerification();
-  }, [sendVerification]);
+    if (currentUser) {
+      if (currentUser.emailVerified) {
+        redirectAfterVerification();
+      } else {
+        // ignore too-many-requests error caused by resending request every page refresh (oops)
+        // TODO: only send verification email first time, and not on every page reload
+        sendEmailVerification(currentUser).catch(() => {});
+      }
+    }
+  }, []);
 
   const currentUser = getCurrentUser();
 
@@ -72,7 +112,9 @@ function VerifyYourEmail() {
               {currentUser?.email} in order to proceed with account creation.
             </Text>
             <Text className="mt-4">
-              {"Once you've verified your email, refresh this page to log in."}
+              {
+                "Once you've verified your email, refresh this page if you are not automatically redirected."
+              }
             </Text>
             <div className="h-16"></div>
             <Button
@@ -90,18 +132,22 @@ function VerifyYourEmail() {
               rounded
               loading={loadingResendVerification}
               onClick={async () => {
-                setLoadingResendVerification(true);
-                await sendVerification()
-                  .then(() => {
-                    toast.success("Verification email re-sent!");
-                  })
-                  .catch((error) => {
-                    toast.error(
-                      `Error sending verification email: ${error.message}`
-                    );
-                  });
+                if (currentUser) {
+                  setLoadingResendVerification(true);
+                  await sendEmailVerification(currentUser)
+                    .then(() => {
+                      toast.success("Verification email re-sent!");
+                    })
+                    .catch((error) => {
+                      toast.error(
+                        error.message.includes("too-many-requests")
+                          ? "Please wait until sending another verification email."
+                          : `Error sending verification email: ${error.message}`
+                      );
+                    });
 
-                setLoadingResendVerification(false);
+                  setLoadingResendVerification(false);
+                }
               }}
             >
               Resend verification email
