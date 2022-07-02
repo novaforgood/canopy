@@ -12,13 +12,16 @@ import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam"
 import { getCurrentUser } from "../lib/firebase";
 import { CustomPage } from "../types";
 
+const sleep = async (ms: number) => {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 function VerifyYourEmail() {
   const router = useRouter();
 
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
 
   const [verified, setVerified] = useState(false);
-
   const [loadingResendVerification, setLoadingResendVerification] =
     useState(false);
 
@@ -48,7 +51,7 @@ function VerifyYourEmail() {
       })
         .then(async () => {
           // wait half a second before redirecting to show verified screen
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          sleep(500);
           return redirectUsingQueryParam("/");
         })
         .catch((e) => {
