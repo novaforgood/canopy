@@ -69,7 +69,7 @@ function LoggedInHomePage() {
   });
   const router = useRouter();
   return (
-    <SidePadding>
+    <SidePadding className="min-h-screen">
       <div className="flex flex-col items-center pt-12">
         <Text variant="heading4">Welcome to Canopy!</Text>
 

@@ -220,7 +220,7 @@ const SpaceHomepage: CustomPage = () => {
 
   return (
     <div>
-      <SidePadding>
+      <SidePadding className="min-h-screen">
         <Navbar />
         <div className="h-16"></div>
         <Breadcrumbs />

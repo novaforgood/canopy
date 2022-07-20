@@ -129,7 +129,7 @@ export default function AccountPage() {
   }
 
   return (
-    <SidePadding>
+    <SidePadding className="min-h-screen">
       <Navbar />
       <div className="h-16"></div>
       <Breadcrumbs />

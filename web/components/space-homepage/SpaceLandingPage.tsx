@@ -11,37 +11,10 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
 import { Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { HtmlDisplay } from "../HtmlDisplay";
 import { ProfileCard } from "../ProfileCard";
-import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 import { Tag } from "../Tag";
 
-import { SearchBar } from "./SearchBar";
-
-function SpaceSplashPage() {
-  const { currentSpace } = useCurrentSpace();
-
-  return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-8">
-      <div className="flex-col flex-1 hidden sm:flex">
-        <Text variant="heading1">{currentSpace?.name}</Text>
-        <div className="h-8"></div>
-        <HtmlDisplay html={currentSpace?.description_html ?? ""} />
-      </div>
-      <div className="flex-1 self-stretch -mx-6 sm:mx-0">
-        <SpaceCoverPhoto
-          className="h-full w-full bg-gray-50"
-          src={currentSpace?.space_cover_image?.image.url}
-        ></SpaceCoverPhoto>
-      </div>
-      <div className="flex-col flex-1 flex sm:hidden">
-        <Text variant="heading3">{currentSpace?.name}</Text>
-        <div className="h-2"></div>
-        <HtmlDisplay html={currentSpace?.description_html ?? ""} />
-      </div>
-    </div>
-  );
-}
+import { SpaceSplashPage } from "./SpaceSplashPage";
 
 interface FilterBarProps {
   selectedTagIds: Set<string>;
@@ -156,9 +129,6 @@ export function SpaceLandingPage() {
 
   return (
     <div>
-      <div className="h-16"></div>
-      <SpaceSplashPage />
-      <div className="h-16"></div>
       <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
       {fetchingProfileListings && (
