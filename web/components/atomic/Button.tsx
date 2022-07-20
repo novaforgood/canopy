@@ -44,24 +44,23 @@ export const Button = ({
 }: ButtonProps) => {
   disabled = loading || disabled;
 
-  const secondaryStyles = classNames({
-    ["underline border border-transparent"]: true,
-    ["hover:text-gray-500 text-gray-600"]: !disabled,
-    ["text-gray-400"]: disabled,
-  });
-
   const primaryStyles = classNames({
-    ["border border-black"]: true,
-    ["text-white"]: variant === "primary",
-    ["bg-gray-900 hover:bg-black"]: !disabled,
+    ["border border-green-800 text-white"]: true,
+    ["bg-green-800 hover:bg-green-900"]: !disabled,
     ["bg-gray-700 border-gray-700"]: disabled,
   });
 
   const outlineStyles = classNames({
-    ["border border-black"]: true,
+    ["border border-green-800 text-green-800"]: true,
     ["bg-white"]: !disabled,
     ["hover:brightness-95"]: !disabled,
     ["border-gray-500 text-gray-500"]: disabled,
+  });
+
+  const secondaryStyles = classNames({
+    ["underline border border-transparent"]: true,
+    ["hover:text-gray-500 text-gray-600"]: !disabled,
+    ["text-gray-400"]: disabled,
   });
 
   const styles = classNames({
@@ -69,7 +68,7 @@ export const Button = ({
     [outlineStyles]: variant === "outline",
     [secondaryStyles]: variant === "secondary",
     ["transition flex items-center"]: true,
-    ["px-8 py-3"]: size === "medium",
+    ["px-8 py-2"]: size === "medium",
     ["px-6 py-1.5 text-sm"]: size === "small",
 
     ["rounded-md"]: !rounded,

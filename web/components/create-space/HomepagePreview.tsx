@@ -29,16 +29,16 @@ export function HomepagePreview(props: HomepagePreviewProps) {
 
   const headingStyles = classNames({
     "p-2": true,
-    "bg-teal-50 animate-pulse": titleAndDescriptionFlashing,
+    "bg-green-50 animate-pulse": titleAndDescriptionFlashing,
   });
   const titleAndDescriptionStyles = classNames({
     "flex-1 flex flex-col items-start gap-2 p-2": true,
-    "bg-teal-50 animate-pulse": titleAndDescriptionFlashing,
+    "bg-green-50 animate-pulse": titleAndDescriptionFlashing,
   });
 
   const coverStyles = classNames({
     "flex-1 bg-gray-50": true,
-    "bg-teal-50 animate-pulse": coverFlashing,
+    "bg-green-50 animate-pulse": coverFlashing,
   });
 
   return (
