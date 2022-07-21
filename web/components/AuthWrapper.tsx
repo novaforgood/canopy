@@ -30,14 +30,14 @@ export default function AuthWrapper({
     const currentUser = getCurrentUser();
     if (!isLoggedIn) {
       const prefix = router.asPath.split("?")[0];
-      if (prefix !== "/login") {
-        router.push(`/login?redirect=${router.asPath}`);
+      if (prefix !== "/signup") {
+        router.replace(`/signup?redirect=${router.asPath}`);
         return null;
       }
     } else if (currentUser && currentUser.emailVerified === false) {
       const prefix = router.asPath.split("?")[0];
       if (prefix !== "/verify") {
-        router.push({
+        router.replace({
           pathname: "/verify",
           query: { redirect: router.asPath },
         });
