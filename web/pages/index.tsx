@@ -1,9 +1,8 @@
-import { ReactNode } from "react";
-
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../components/atomic";
 import { ConnectAnyone } from "../components/landing-page/ConnectAnyone";
+import { DemoCarousel } from "../components/landing-page/DemoCarousel";
 import { HowItWorks } from "../components/landing-page/HowItWorks";
 import { LandingSection } from "../components/landing-page/LandingSection";
 import { SidePadding } from "../components/SidePadding";
@@ -45,7 +44,7 @@ function LandingPage() {
               }
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-16 items-end w-full">
+          <div className="grid sm:grid-cols-2 gap-16 items-end w-full">
             <div className="flex flex-col justify-start items-start pt-24 sm:pt-32">
               <Text variant="heading2" mobileVariant="heading3">
                 Create a support structure for your community
@@ -65,7 +64,7 @@ function LandingPage() {
               >
                 Get started
               </Button>
-              <div className="h-32"></div>
+              <div className="sm:h-32"></div>
             </div>
             <img
               className="object-contain"
@@ -91,7 +90,10 @@ function LandingPage() {
         <ConnectAnyone />
       </LandingSection>
 
-      <LandingSection title="Simple. Friendly. Free."></LandingSection>
+      <LandingSection title="Simple. Friendly. Free.">
+        <div className="h-16"></div>
+        <DemoCarousel />
+      </LandingSection>
       <LandingSection title="How it works" className="bg-lime-200">
         <div className="h-16"></div>
         <HowItWorks />

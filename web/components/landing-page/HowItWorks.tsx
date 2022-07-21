@@ -32,7 +32,7 @@ const DATA: HowItWorksData[] = [
 
 export function HowItWorks() {
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className="grid grid-rows sm:grid-cols-3 gap-8">
       {DATA.map((data, index) => {
         return (
           <div
