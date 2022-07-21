@@ -25,7 +25,11 @@ export function LandingSection(props: LandingSectionProps) {
       <SidePadding>
         <div className="flex flex-col items-center text-green-900">
           {title && (
-            <Text variant="heading3" className="text-center max-w-2xl">
+            <Text
+              variant="heading3"
+              mobileVariant="heading4"
+              className="text-center max-w-2xl"
+            >
               {title}
             </Text>
           )}
