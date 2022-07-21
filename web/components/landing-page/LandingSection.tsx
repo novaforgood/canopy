@@ -16,7 +16,7 @@ export function LandingSection(props: LandingSectionProps) {
   const { title, subtitle, className, children } = props;
 
   const styles = classNames({
-    "flex flex-col justify-start items-start border-t border-green-900 py-24":
+    "flex flex-col justify-start items-start border-t border-green-500 py-24":
       true,
     [`${className}`]: true,
   });

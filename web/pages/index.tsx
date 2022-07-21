@@ -35,11 +35,13 @@ function LandingPage() {
               <div className="w-4" />
               {
                 <Button
+                  variant="cta"
                   onClick={() => {
-                    router.push("/signup");
+                    router.push("/create");
                   }}
+                  className="bg-lime-200"
                 >
-                  Sign up to connect
+                  Create a Directory
                 </Button>
               }
             </div>

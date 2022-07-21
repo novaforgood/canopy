@@ -77,7 +77,7 @@ export function ColorPaletteReference() {
 }
 
 function ButtonsReference() {
-  const variants = ["primary", "outline", "secondary"] as const;
+  const variants = ["cta", "primary", "outline", "secondary"] as const;
   const propsets = [
     { title: "Normal", props: {} },
     {
@@ -99,7 +99,7 @@ function ButtonsReference() {
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className="grid grid-cols-4 gap-8">
       {variants.map((variant) => (
         <div key={variant} className="font-bold text-lg">
           <div className="bg-green-50 w-auto">{variant}</div>
