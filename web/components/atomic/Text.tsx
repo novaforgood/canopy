@@ -22,6 +22,9 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   className?: string;
 };
 
+// Hack: List all sm:variants here so they don't get pruned by Tailwind.
+("sm:text-heading1 sm:text-heading2 sm:text-heading3 sm:text-heading4 sm:text-subheading1 sm:text-subheading2 sm:text-body1 sm:text-body2 sm:text-body3");
+
 function appendSm(str: string) {
   return str
     .split(" ")
@@ -54,8 +57,8 @@ export const Text = ({
 }: TextProps) => {
   const styles = classNames({
     "font-sans": true,
-    [appendSm(getVariantStyles(variant))]: true,
     [getVariantStyles(mobileVariant)]: true,
+    [appendSm(getVariantStyles(variant))]: true,
     "font-bold": bold,
     "font-medium": medium,
     italic: italic, // Styling needs to be polished
