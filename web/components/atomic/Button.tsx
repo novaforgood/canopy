@@ -27,7 +27,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
   rounded?: boolean;
   floating?: boolean;
-  variant?: "primary" | "outline" | "secondary";
+  variant?: "cta" | "primary" | "outline" | "secondary";
   size?: "small" | "medium";
 };
 
@@ -43,6 +43,12 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   disabled = loading || disabled;
+
+  const ctaStyles = classNames({
+    ["border border-green-800"]: true,
+    ["bg-lime-500 hover:bg-lime-400 text-green-900"]: !disabled,
+    ["border-gray-500 text-gray-500"]: disabled,
+  });
 
   const primaryStyles = classNames({
     ["border border-green-800 text-white"]: true,
@@ -64,6 +70,7 @@ export const Button = ({
   });
 
   const styles = classNames({
+    [ctaStyles]: variant === "cta",
     [primaryStyles]: variant === "primary",
     [outlineStyles]: variant === "outline",
     [secondaryStyles]: variant === "secondary",
