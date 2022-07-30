@@ -35,7 +35,7 @@ export function ProfileCard(props: ProfileCardProps) {
   return (
     <button
       onClick={onClick}
-      className=" border-gray-400 mb-10 border-x border-y rounded-md flex flex-col items-start transition hover:border-green-500 active:translate-y-px"
+      className=" border-gray-400 border-x border-y rounded-md flex flex-col items-start transition hover:border-green-500 active:translate-y-px"
     >
       <div className="w-full border-none pb-4">
         <div ref={ref} style={{ height: desiredHeight }}>

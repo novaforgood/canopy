@@ -351,7 +351,14 @@ const SpaceHomepage: CustomPage = () => {
       </SidePadding>
       <SidePadding className="bg-gray-100 border-t border-green-900 h-64 flex justify-center items-center">
         <div className="w-full h-full flex justify-center items-center">
-          <Button variant="outline">View more mentors</Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              router.push(`/space/${currentSpace?.slug}`);
+            }}
+          >
+            View more members
+          </Button>
         </div>
       </SidePadding>
     </div>

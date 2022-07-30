@@ -3,7 +3,7 @@ import { ReactNode, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
-import { Text } from "../../../components/atomic";
+import { Button, Text } from "../../../components/atomic";
 import { PageNotFound } from "../../../components/error-screens/PageNotFound";
 import { Navbar } from "../../../components/Navbar";
 import { SidePadding } from "../../../components/SidePadding";
@@ -31,7 +31,7 @@ function IconTip(props: IconTipProps) {
       <div className="border border-green-900 rounded-full w-10 h-10 p-2 shrink-0">
         {icon}
       </div>
-      <Text>{tip}</Text>
+      <Text variant="body2">{tip}</Text>
     </div>
   );
 }
@@ -45,9 +45,9 @@ function CollapsibleTipsBar() {
 
   return (
     <div className={styles}>
-      <div className="bg-lime-100 border-b border-gray-600 text-green-800 w-full py-4 relative">
+      <div className="bg-lime-100 border-b border-gray-600 text-green-800 w-full py-8 relative">
         <SidePadding className="">
-          <div className="grid grid-rows sm:grid-cols-3 gap-4 sm:gap-8">
+          <div className="grid grid-rows sm:grid-cols-3 gap-4 sm:gap-12">
             <IconTip
               icon={<BxGroup />}
               tip="Browse the community directory below"
@@ -88,21 +88,27 @@ const SpaceHomepage: CustomPage = () => {
 
   return (
     <div>
-      <div className="bg-olive-100 flex flex-col items-center border-b border-gray-600">
-        <SidePadding>
-          <Navbar />
-          <div className="sm:h-16"></div>
-          <SpaceSplashPage />
-        </SidePadding>
+      <SidePadding className="bg-olive-100 flex flex-col items-center border-b border-gray-600">
+        <Navbar />
+        <div className="sm:h-16"></div>
+        <SpaceSplashPage />
         <div className="h-8 sm:hidden"></div>
-      </div>
+      </SidePadding>
       <CollapsibleTipsBar />
-      <div className="bg-gray-50">
+      <SidePadding className="min-h-screen bg-gray-50">
         <div className="h-16"></div>
-        <SidePadding className="min-h-screen">
-          <SpaceLandingPage />
-        </SidePadding>
-      </div>
+        <SpaceLandingPage />
+        <div className="h-16"></div>
+      </SidePadding>
+      {/* <SidePadding className="bg-gray-100 border-t border-green-900 h-64 flex justify-center items-center">
+        <div className="w-full h-full flex flex-col justify-center items-center">
+          <Text variant="heading4">
+            Having trouble connecting with someone?
+          </Text>
+          <div className="h-8"></div>
+          <Text>Please contact _ (WIP)</Text>
+        </div>
+      </SidePadding> */}
     </div>
   );
 };
