@@ -7,7 +7,8 @@ import { toast } from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
 import { TextInput } from "../components/inputs/TextInput";
-import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
+import { ImageSidebar } from "../components/layout/ImageSidebar";
+import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
@@ -102,7 +103,17 @@ const SignUpPage: CustomPage = () => {
       {isLoggedIn ? (
         <div>Redirecting...</div>
       ) : (
-        <TwoThirdsPageLayout>
+        <TwoThirdsPageLayout
+          renderLeft={() => {
+            return (
+              <ImageSidebar
+                imageSrc="/assets/sidebar/sidebar_trees_dark.svg"
+                imageAlt="trees"
+                canGoBack={true}
+              />
+            );
+          }}
+        >
           <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16">
             <Text variant="heading3">
               Sign up{router.query.redirect && " to continue"}

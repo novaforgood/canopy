@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../components/atomic";
 import { StepDisplay } from "../../../components/create-profile/StepDisplay";
-import { TwoThirdsPageLayout } from "../../../components/TwoThirdsPageLayout";
+import { TwoThirdsPageLayout } from "../../../components/layout/TwoThirdsPageLayout";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { CustomPage } from "../../../types";
 

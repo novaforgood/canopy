@@ -3,11 +3,12 @@ import { useState } from "react";
 import { addDays, addMonths, addYears, format } from "date-fns";
 
 import { useAdminDashDirectoryOverviewQuery } from "../../generated/graphql";
+import { BxStar } from "../../generated/icons/regular";
 import { BxsReport } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Select, Text } from "../atomic";
-import { Responsive } from "../Responsive";
+import { Responsive } from "../layout/Responsive";
 
 enum Directory_Overview_Date_Range_Enum {
   PastWeek = "week",
@@ -53,7 +54,7 @@ function DirectoryOverviewInfoBox(props: {
   label: string;
 }) {
   return (
-    <div className="flex flex-col justify-start bg-gray-50 p-4 rounded-lg grow">
+    <div className="flex flex-col justify-start bg-gray-100 p-4 rounded-lg grow">
       <Text variant="heading3">{props.amount}</Text>
       <Text variant="body2">{props.label}</Text>
     </div>
@@ -84,7 +85,7 @@ export function DirectoryOverview() {
     <>
       <div className="flex items-center justify-between flex-wrap">
         <div className="flex items-center gap-2">
-          <BxsReport className="h-7 w-7" />
+          <BxStar className="h-7 w-7" />
           <Text variant="heading4">Directory Overview</Text>
         </div>
         <Responsive mode="desktop-only">
@@ -137,7 +138,7 @@ export function DirectoryOverview() {
         </div>
         <div className="h-4"></div>
       </Responsive>
-      <div className="grid sm:grid-cols-5 grid-cols-2 gap-4 flex flex-wrap overflow-x-auto">
+      <div className="grid sm:grid-cols-5 grid-cols-2 gap-4 overflow-x-auto">
         <DirectoryOverviewInfoBox
           label="general members"
           amount={adminDashData?.general_member_count.aggregate?.count ?? "--"}

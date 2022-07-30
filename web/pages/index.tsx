@@ -5,7 +5,7 @@ import { ConnectAnyone } from "../components/landing-page/ConnectAnyone";
 import { DemoCarousel } from "../components/landing-page/DemoCarousel";
 import { HowItWorks } from "../components/landing-page/HowItWorks";
 import { LandingSection } from "../components/landing-page/LandingSection";
-import { SidePadding } from "../components/SidePadding";
+import { SidePadding } from "../components/layout/SidePadding";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { BxExit } from "../generated/icons/regular";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";

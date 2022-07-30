@@ -1,20 +1,32 @@
 import React from "react";
 
+import classNames from "classnames";
+
 import { BxX } from "../generated/icons/regular";
 
 interface TagProps {
   text: string;
   onDeleteClick?: () => void;
+  variant?: "primary" | "outline";
 }
 export function Tag(props: TagProps) {
-  const { text, onDeleteClick } = props;
+  const { text, onDeleteClick, variant = "primary" } = props;
+
+  const tagContainerStyles = classNames({
+    "rounded-full flex items-center px-3 py-1": true,
+    "bg-lime-200": variant === "primary",
+    "bg-white border-2 border-lime-700": variant === "outline",
+  });
+
+  const tagStyles = classNames({
+    "whitespace-nowrap text-xs": true,
+    "text-olive-700": variant === "primary",
+    "text-lime-700": variant === "outline",
+  });
 
   return (
-    <div className="rounded-full bg-gray-200 flex items-center px-5 py-1">
-      <div
-        className="whitespace-nowrap text-sm text-gray-800"
-        style={{ fontWeight: 500 }}
-      >
+    <div className={tagContainerStyles}>
+      <div className={tagStyles} style={{ fontWeight: 500 }}>
         {text}
       </div>
       {onDeleteClick && (

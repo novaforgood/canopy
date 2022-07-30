@@ -19,6 +19,7 @@ export function SpaceCoverPhoto(props: SpaceCoverPhotoProps) {
   const desiredHeight = (width * 3) / 4;
 
   const styles = classNames({
+    "bg-olive-200": true,
     [`${className}`]: true,
   });
 
@@ -28,6 +29,7 @@ export function SpaceCoverPhoto(props: SpaceCoverPhotoProps) {
       src={src}
       alt={alt}
       className={styles}
+      draggable={false}
       style={{ ...style, height: desiredHeight }}
       {...rest}
     />
@@ -44,7 +46,7 @@ export function SpaceCoverPhoto(props: SpaceCoverPhotoProps) {
       }}
       {...rest}
     >
-      <BxsImage className="w-1/2 text-white" />
+      <BxsImage className="w-1/2 text-gray-50" />
     </div>
   );
 }

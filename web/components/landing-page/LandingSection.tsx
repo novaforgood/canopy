@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import classNames from "classnames";
 
 import { Text } from "../atomic";
-import { SidePadding } from "../SidePadding";
+import { SidePadding } from "../layout/SidePadding";
 
 interface LandingSectionProps {
   title?: string;
