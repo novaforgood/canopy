@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <div className="border-t border-gray-700 px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-gray-300 font-sans text-sm">
+    <div className="border-t border-gray-700 px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
       <div className="flex gap-8">
         <div>
           <div>Canopy</div>
