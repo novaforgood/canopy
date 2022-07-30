@@ -6,7 +6,8 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
-import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
+import { ImageSidebar } from "../components/layout/ImageSidebar";
+import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
 import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { getCurrentUser } from "../lib/firebase";
@@ -72,7 +73,17 @@ function VerifyYourEmail() {
   }, [redirectAfterVerification, currentUser]);
 
   return (
-    <TwoThirdsPageLayout>
+    <TwoThirdsPageLayout
+      renderLeft={() => {
+        return (
+          <ImageSidebar
+            imageSrc="/assets/sidebar/sidebar_butterfly.svg"
+            imageAlt="butterfly"
+            canGoBack={false}
+          />
+        );
+      }}
+    >
       <div className="h-screen flex flex-col items-start justify-center px-16 max-w-2xl">
         {verified ? (
           <>
@@ -86,7 +97,10 @@ function VerifyYourEmail() {
             <div className="h-8"></div>
             <Text>
               Please click on the confirmation link to your email:{" "}
-              {currentUser?.email} in order to proceed with account creation.
+              <Text underline className="text-green-800">
+                {currentUser?.email}
+              </Text>{" "}
+              in order to proceed with account creation.
             </Text>
             <Text className="mt-4">
               {

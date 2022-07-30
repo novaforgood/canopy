@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../components/atomic";
 import { PageNotFound } from "../../../components/error-screens/PageNotFound";
+import { SidePadding } from "../../../components/layout/SidePadding";
 import { Navbar } from "../../../components/Navbar";
-import { SidePadding } from "../../../components/SidePadding";
 import { SpaceLandingPage } from "../../../components/space-homepage/SpaceLandingPage";
 import { SpaceSplashPage } from "../../../components/space-homepage/SpaceSplashPage";
 import {

@@ -8,7 +8,7 @@ import { BxsReport } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Select, Text } from "../atomic";
-import { Responsive } from "../Responsive";
+import { Responsive } from "../layout/Responsive";
 
 enum Directory_Overview_Date_Range_Enum {
   PastWeek = "week",

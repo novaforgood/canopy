@@ -8,10 +8,10 @@ import { MembersList } from "../../../../components/admin/MembersList";
 import { Button, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../../components/EditProfileListing";
+import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { RoundedCard } from "../../../../components/RoundedCard";
-import { SidePadding } from "../../../../components/SidePadding";
 import {
   ConnectionRequestsQuery,
   Connection_Request_Status_Enum,

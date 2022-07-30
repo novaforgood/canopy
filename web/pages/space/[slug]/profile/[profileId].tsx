@@ -13,10 +13,10 @@ import { SelectAutocomplete } from "../../../../components/atomic/SelectAutocomp
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
+import { SidePadding } from "../../../../components/layout/SidePadding";
 import { ActionModal } from "../../../../components/modals/ActionModal";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
-import { SidePadding } from "../../../../components/SidePadding";
 import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";

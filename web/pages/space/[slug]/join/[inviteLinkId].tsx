@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../../../../components/atomic";
-import { TwoThirdsPageLayout } from "../../../../components/TwoThirdsPageLayout";
+import { TwoThirdsPageLayout } from "../../../../components/layout/TwoThirdsPageLayout";
 import {
   InviteLinksQuery,
   Space_Invite_Link_Type_Enum,
