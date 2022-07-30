@@ -58,7 +58,7 @@ export function ProfileCard(props: ProfileCardProps) {
             {descriptionTitle}
           </Text>
         </div>
-        <div className="mb-4 text-gray-500 text-ellipsis overflow-hidden">
+        <div className="mb-4 text-gray-500 text-ellipsis overflow-hidden flex flex-wrap gap-1">
           {tags && tags.length > 0 ? (
             tags.map((tag, index) => (
               <Tag key={index} text={tag} variant="outline" />
