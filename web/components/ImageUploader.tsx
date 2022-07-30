@@ -91,7 +91,7 @@ export function ImageUploader(props: ImageUploaderProps) {
     "w-full relative h-full box-border flex justify-center items-center rounded-sm border-dashed border-4 border-gray-400 bg-gray-100 cursor-pointer":
       true,
     "hover:brightness-95": !imageSrc,
-    "border-teal-500 hover:border-teal-700": isDragActive,
+    "border-green-500 hover:border-green-700": isDragActive,
   });
 
   const { ref, width: calculatedWidth } = useElementSize();
@@ -118,7 +118,6 @@ export function ImageUploader(props: ImageUploaderProps) {
         >
           {imageSrc && (
             <AvatarEditor
-              crossOrigin={"anonymous"}
               onLoadSuccess={() => {
                 onLoadSuccess();
                 setShowRepositionActivated(true);

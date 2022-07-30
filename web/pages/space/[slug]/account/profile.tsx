@@ -8,9 +8,9 @@ import { MembersList } from "../../../../components/admin/MembersList";
 import { Button, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../../components/EditProfileListing";
+import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
 import { RoundedCard } from "../../../../components/RoundedCard";
-import { SidePadding } from "../../../../components/SidePadding";
 import { BxsReport } from "../../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
@@ -34,7 +34,7 @@ export default function AccountProfilePage() {
   const hasListing = !!currentProfile.profile_listing;
 
   return (
-    <SidePadding>
+    <SidePadding className="min-h-screen">
       <Navbar />
       <div className="h-16"></div>
       <Breadcrumbs />

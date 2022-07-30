@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import classNames from "classnames";
 
-import { Responsive } from "./Responsive";
+import { Responsive } from "./layout/Responsive";
 
 interface StageNavigatorProps<TStageEnum> {
   currentStage: TStageEnum;

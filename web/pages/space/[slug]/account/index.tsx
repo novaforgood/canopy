@@ -8,10 +8,10 @@ import { MembersList } from "../../../../components/admin/MembersList";
 import { Button, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../../components/EditProfileListing";
+import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { RoundedCard } from "../../../../components/RoundedCard";
-import { SidePadding } from "../../../../components/SidePadding";
 import {
   ConnectionRequestsQuery,
   Connection_Request_Status_Enum,
@@ -129,7 +129,7 @@ export default function AccountPage() {
   }
 
   return (
-    <SidePadding>
+    <SidePadding className="min-h-screen">
       <Navbar />
       <div className="h-16"></div>
       <Breadcrumbs />

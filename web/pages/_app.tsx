@@ -1,79 +1,23 @@
-import { Suspense, useCallback, useEffect, useMemo } from "react";
+import { Suspense, useCallback, useEffect } from "react";
 
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
-import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
-import { Provider } from "urql";
+import { RecoilRoot, useRecoilState } from "recoil";
 
-import AuthWrapper from "../components/AuthWrapper";
 import { Footer } from "../components/Footer";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { usePrevious } from "../hooks/usePrevious";
-import { loadSession, LoadSessionProps } from "../lib";
-import { handleError } from "../lib/error";
-import { getCurrentUser, onAuthStateChanged } from "../lib/firebase";
+import { useRefreshSession } from "../hooks/useRefreshSession";
+import { getCurrentUser } from "../lib/firebase";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 import { sessionAtom } from "../lib/recoil";
-import { getUrqlClient } from "../lib/urql";
+import { AuthProvider } from "../providers/AuthProvider";
+import { UrqlProvider } from "../providers/UrqlProvider";
 import { CustomPage } from "../types";
 
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-
-function useRefreshSession() {
-  const [session, setSession] = useRecoilState(sessionAtom);
-
-  const refreshSession = useCallback(
-    async (props: (LoadSessionProps & { hardRefresh?: boolean }) | void) => {
-      const session = await loadSession(props);
-      setSession(session);
-    },
-    [setSession]
-  );
-
-  return useMemo(() => ({ refreshSession }), [refreshSession]);
-}
-interface UrqlProviderProps {
-  children: React.ReactNode;
-}
-function UrqlProvider({ children }: UrqlProviderProps) {
-  const session = useRecoilValue(sessionAtom);
-
-  const client = useMemo(
-    () => getUrqlClient(session?.jwt ?? ""),
-    [session?.jwt]
-  );
-
-  return <Provider value={client}>{children}</Provider>;
-}
-
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
-function AuthProvider({ children }: AuthProviderProps) {
-  const [session, setSession] = useRecoilState(sessionAtom);
-
-  const { refreshSession } = useRefreshSession();
-
-  useEffect(() => {
-    const unsubscribeListener = onAuthStateChanged(async () => {
-      // Whenever auth state changes, we no longer know what the session is.
-      // We must wait for this handler to run to completion, resolving
-      // the session to either authenticated or null.
-      setSession(undefined);
-      refreshSession();
-    });
-
-    return () => {
-      unsubscribeListener();
-    };
-  }, [refreshSession, setSession]);
-
-  if (session === undefined) return null;
-
-  return <>{children}</>;
-}
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
@@ -158,13 +102,9 @@ function App({ Component, pageProps }: CustomAppProps) {
 function AppWrapper({ Component, ...pageProps }: CustomAppProps) {
   return (
     <RecoilRoot>
-      <AuthProvider>
+      <AuthProvider requiredAuthorizations={Component.requiredAuthorizations}>
         <UrqlProvider>
-          <AuthWrapper
-            requiredAuthorizations={Component.requiredAuthorizations}
-          >
-            <App {...pageProps} Component={Component} />
-          </AuthWrapper>
+          <App {...pageProps} Component={Component} />
         </UrqlProvider>
       </AuthProvider>
     </RecoilRoot>

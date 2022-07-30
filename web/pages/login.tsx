@@ -1,13 +1,15 @@
 import { ReactNode, useEffect, useState } from "react";
 
 import { useSetState } from "@mantine/hooks";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
 import { Input } from "../components/atomic/Input";
 import { TextInput } from "../components/inputs/TextInput";
-import { TwoThirdsPageLayout } from "../components/TwoThirdsPageLayout";
+import { ImageSidebar } from "../components/layout/ImageSidebar";
+import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
 import { useUserQuery } from "../generated/graphql";
 import { BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
@@ -110,7 +112,17 @@ const LoginPage: CustomPage = () => {
       ) : isLoggedIn ? (
         <div>Redirecting...</div>
       ) : (
-        <TwoThirdsPageLayout>
+        <TwoThirdsPageLayout
+          renderLeft={() => {
+            return (
+              <ImageSidebar
+                imageSrc="/assets/sidebar/sidebar_trees_light.svg"
+                imageAlt="trees"
+                canGoBack={true}
+              />
+            );
+          }}
+        >
           <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16">
             <Text variant="heading3">
               Login{router.query.redirect && " to continue"}

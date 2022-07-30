@@ -54,7 +54,7 @@ export function ColorPaletteReference() {
                         className="h-10 w-full rounded dark:ring-1 dark:ring-inset dark:ring-white/10 shadow-lg"
                         style={{ backgroundColor: value }}
                       />
-                      <div className="px-0.5 md:flex md:justify-between md:space-x-2 2xl:space-x-0 2xl:block">
+                      <div className="px-0.5 md:flex flex-col 2xl:flex-row md:justify-between 2xl:space-x-0 2xl:block">
                         <div className="w-6 font-medium text-slate-900 2xl:w-full">
                           {name}
                         </div>
@@ -77,7 +77,7 @@ export function ColorPaletteReference() {
 }
 
 function ButtonsReference() {
-  const variants = ["primary", "outline", "secondary"] as const;
+  const variants = ["cta", "primary", "outline", "secondary"] as const;
   const propsets = [
     { title: "Normal", props: {} },
     {
@@ -99,10 +99,10 @@ function ButtonsReference() {
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className="grid grid-cols-4 gap-8">
       {variants.map((variant) => (
         <div key={variant} className="font-bold text-lg">
-          <div className="bg-teal-50 w-auto">{variant}</div>
+          <div className="bg-green-50 w-auto">{variant}</div>
         </div>
       ))}
       {propsets.map(({ title, props }) => {
@@ -170,7 +170,7 @@ function ModalReference() {
           setIsOpen3(false);
         }}
       >
-        <div className="bg-teal-50">content</div>
+        <div className="bg-green-50">content</div>
       </ActionModal>
 
       <Button

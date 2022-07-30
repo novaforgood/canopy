@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
 import { useDisclosure } from "@mantine/hooks";
 import { LexRuntime } from "aws-sdk";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
@@ -12,10 +13,10 @@ import { SelectAutocomplete } from "../../../../components/atomic/SelectAutocomp
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
+import { SidePadding } from "../../../../components/layout/SidePadding";
 import { ActionModal } from "../../../../components/modals/ActionModal";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
-import { SidePadding } from "../../../../components/SidePadding";
 import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
@@ -220,14 +221,14 @@ const SpaceHomepage: CustomPage = () => {
 
   return (
     <div>
-      <SidePadding>
+      <SidePadding className="bg-gray-100">
         <Navbar />
         <div className="h-16"></div>
-        <Breadcrumbs />
+        <Link href={`/space/${currentSpace?.slug}`}>{"< Mentors"}</Link>
         <div className="h-8"></div>
 
-        <div className="border border-black rounded-lg w-full flex flex-col pb-12">
-          <div className="h-16 sm:h-32 bg-gray-100 rounded-t-lg"></div>
+        <div className="border border-black rounded-lg w-full flex flex-col pb-12 bg-white">
+          <div className="h-16 sm:h-32 bg-olive-100 rounded-t-lg"></div>
           <div className="px-4 -mt-4 sm:px-20 sm:-mt-8">
             <div className="flex items-center gap-6 sm:gap-12">
               <ProfileImage
@@ -245,29 +246,63 @@ const SpaceHomepage: CustomPage = () => {
             </div>
             <div className="h-16"></div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-8 p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-8 p-6">
                 {listing.profile_listing_responses.map((response) => {
                   return (
                     <div key={response.id}>
-                      <Text variant="heading4" mobileVariant="subheading1">
+                      <Text
+                        variant="heading4"
+                        mobileVariant="subheading1"
+                        className="text-green-800"
+                      >
                         {response.space_listing_question.title}
                       </Text>
                       <div className="h-1"></div>
-                      <HtmlDisplay html={response.response_html} />
+                      <HtmlDisplay
+                        html={response.response_html}
+                        className="text-gray-900"
+                      />
                     </div>
                   );
                 })}
+                <div>
+                  <Text
+                    variant="heading4"
+                    mobileVariant="subheading1"
+                    className="text-green-800"
+                  >
+                    {"Let's talk!"}
+                  </Text>
+                  <div className="h-4"></div>
+                  <Button
+                    rounded
+                    onClick={() => {
+                      if (isLoggedIn) {
+                        handlers.open();
+                      } else {
+                        loginModalHandlers.open();
+                      }
+                    }}
+                    disabled={profileId === currentProfile?.id}
+                  >
+                    Introduce me
+                  </Button>
+                </div>
               </div>
               <div>
-                <div className="bg-gray-50 p-4 rounded-md">
+                <div className="border border-olive-700 p-6 rounded-md">
                   {currentSpace.space_tag_categories.map((category) => {
                     return (
                       <div key={category.id}>
-                        <Text variant="heading4" mobileVariant="subheading1">
+                        <Text
+                          variant="heading4"
+                          mobileVariant="subheading1"
+                          className="text-green-800"
+                        >
                           {category.title}
                         </Text>
-                        <div className="h-2"></div>
+                        <div className="h-4"></div>
                         <div className="flex flex-wrap gap-2">
                           {category.space_tags.map((tag) => {
                             if (!profileTagIds.has(tag.id)) {
@@ -284,27 +319,18 @@ const SpaceHomepage: CustomPage = () => {
                   })}
                 </div>
                 <div className="h-8"></div>
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <Text variant="heading4" mobileVariant="subheading1">
+                <div className="border border-olive-700 p-6 rounded-md">
+                  <Text
+                    variant="heading4"
+                    mobileVariant="subheading1"
+                    className="text-green-800"
+                  >
                     Contact
                   </Text>
                   <div className="h-4"></div>
                   <Text>{profileData.profile_by_pk.user.email}</Text>
                   <div className="h-4"></div>
-                  <Button
-                    rounded
-                    onClick={() => {
-                      if (isLoggedIn) {
-                        handlers.open();
-                      } else {
-                        loginModalHandlers.open();
-                      }
-                    }}
-                    disabled={profileId === currentProfile?.id}
-                  >
-                    Introduce me
-                  </Button>
-                  <div className="h-8"></div>
+
                   <ProfileSocialsDisplay
                     profileListingId={listing.id}
                     email={email}
@@ -326,6 +352,18 @@ const SpaceHomepage: CustomPage = () => {
           isOpen={loginModalOpen}
           onClose={loginModalHandlers.close}
         />
+      </SidePadding>
+      <SidePadding className="bg-olive-100 border-t border-green-900 h-64 flex justify-center items-center">
+        <div className="w-full h-full flex justify-center items-center">
+          <Button
+            variant="outline"
+            onClick={() => {
+              router.push(`/space/${currentSpace?.slug}`);
+            }}
+          >
+            View more members
+          </Button>
+        </div>
       </SidePadding>
     </div>
   );

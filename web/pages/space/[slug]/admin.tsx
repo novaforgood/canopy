@@ -11,10 +11,10 @@ import { MembersList } from "../../../components/admin/MembersList";
 import { SetPrivacySettings } from "../../../components/admin/SetPrivacySettings";
 import { Button, Select, Text } from "../../../components/atomic";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
+import { Responsive } from "../../../components/layout/Responsive";
+import { SidePadding } from "../../../components/layout/SidePadding";
 import { Navbar } from "../../../components/Navbar";
-import { Responsive } from "../../../components/Responsive";
 import { RoundedCard } from "../../../components/RoundedCard";
-import { SidePadding } from "../../../components/SidePadding";
 import { BxLink, BxRightArrowAlt } from "../../../generated/icons/regular";
 import { BxsCog, BxsReport } from "../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
@@ -128,7 +128,7 @@ export default function AdminPage() {
   }
 
   return (
-    <SidePadding>
+    <SidePadding className="min-h-screen">
       <Navbar />
       <div className="h-16"></div>
       <Breadcrumbs />

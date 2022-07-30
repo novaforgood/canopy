@@ -4,24 +4,8 @@ import { Listbox, Transition } from "@headlessui/react";
 import classNames from "classnames";
 import { isEqual } from "date-fns";
 
-const UpDownArrow: React.FC = () => {
-  return (
-    <svg
-      className="h-5 w-5 text-gray-500"
-      x-description="Heroicon name: solid/selector"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        fillRule="evenodd"
-        d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-        clipRule="evenodd"
-      ></path>
-    </svg>
-  );
-};
+import { BxCaretDown } from "../../generated/icons/regular";
+import { BxsDownArrow } from "../../generated/icons/solid";
 
 interface SelectProps<T> {
   options: { label: string; value: T }[];
@@ -78,7 +62,7 @@ export const Select = <T extends string | Date>({
             <span className={placeholderStyles}>
               {value ? valueToLabel(value) : placeholder}
             </span>
-            <UpDownArrow />
+            <BxCaretDown className="h-5 w-5" />
           </Listbox.Button>
           <Transition
             as={Fragment}

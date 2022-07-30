@@ -13,8 +13,8 @@ import { signOut } from "../lib/firebase";
 
 import { Button, Text } from "./atomic";
 import { Dropdown } from "./Dropdown";
+import { Responsive } from "./layout/Responsive";
 import { ProfileImage } from "./ProfileImage";
-import { Responsive } from "./Responsive";
 import { SpaceDropdown } from "./SpaceDropdown";
 import { FadeTransition } from "./transitions/FadeTransition";
 
@@ -153,7 +153,7 @@ export function Navbar() {
   return (
     <>
       <Responsive mode="desktop-only">
-        <div className="flex items-center justify-between mt-12 bg-white">
+        <div className="flex items-center justify-between pt-12">
           <div className="flex">
             <SpaceDropdown />
             {isAdmin &&

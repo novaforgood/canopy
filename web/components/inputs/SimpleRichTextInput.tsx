@@ -68,7 +68,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
       }),
       Link.configure({
         HTMLAttributes: {
-          class: "underline cursor-pointer text-teal-500",
+          class: "underline cursor-pointer text-green-500",
         },
       }),
       CharacterCount.configure({
