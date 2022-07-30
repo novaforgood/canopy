@@ -10,9 +10,9 @@ import { EnterResponses } from "../../../components/create-profile/EnterResponse
 import { EnterTags } from "../../../components/create-profile/EnterTags";
 import { Review } from "../../../components/create-profile/Review";
 import { StepDisplay } from "../../../components/create-profile/StepDisplay";
+import { TwoThirdsPageLayout } from "../../../components/layout/TwoThirdsPageLayout";
 import { StageNavigator } from "../../../components/StageNavigator";
 import { FadeTransition } from "../../../components/transitions/FadeTransition";
-import { TwoThirdsPageLayout } from "../../../components/TwoThirdsPageLayout";
 import { Profile_Role_Enum } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";

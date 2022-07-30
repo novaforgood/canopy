@@ -13,8 +13,8 @@ import { signOut } from "../lib/firebase";
 
 import { Button, Text } from "./atomic";
 import { Dropdown } from "./Dropdown";
+import { Responsive } from "./layout/Responsive";
 import { ProfileImage } from "./ProfileImage";
-import { Responsive } from "./Responsive";
 import { SpaceDropdown } from "./SpaceDropdown";
 import { FadeTransition } from "./transitions/FadeTransition";
 

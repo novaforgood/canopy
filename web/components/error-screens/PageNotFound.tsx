@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../atomic";
-import { TwoThirdsPageLayout } from "../TwoThirdsPageLayout";
+import { TwoThirdsPageLayout } from "../layout/TwoThirdsPageLayout";
 export function PageNotFound() {
   const router = useRouter();
   return (
