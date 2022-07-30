@@ -77,7 +77,6 @@ export function StageNavigator<TStageEnum extends string>(
       <Responsive mode="mobile-only">
         <div className="flex flex-col gap-4 w-full text-gray-700">
           {stages.map(({ value, label }, idx) => {
-            console.log(currentStage);
             const isCurrent = value === currentStage;
             const isHovered = hoveredStage === value;
             const disabled = !enabledStages.includes(value);
@@ -95,7 +94,6 @@ export function StageNavigator<TStageEnum extends string>(
               "px-6 py-3 border-l-2 transition border-gray-300": true,
             });
 
-            console.log(isCurrent);
             if (isCurrent === false) return null;
 
             return (
