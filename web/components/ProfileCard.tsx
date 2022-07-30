@@ -40,6 +40,7 @@ export function ProfileCard(props: ProfileCardProps) {
           <ProfileImage
             className="w-full h-full rounded-t-md"
             rounded={false}
+            border={false}
             src={imageUrl}
             alt={name}
           />

@@ -10,9 +10,9 @@ export function Tag(props: TagProps) {
   const { text, onDeleteClick } = props;
 
   return (
-    <div className="rounded-full bg-gray-200 flex items-center px-5 py-1">
+    <div className="rounded-full bg-lime-200 flex items-center px-5 py-1">
       <div
-        className="whitespace-nowrap text-sm text-gray-800"
+        className="whitespace-nowrap text-sm text-olive-700"
         style={{ fontWeight: 500 }}
       >
         {text}

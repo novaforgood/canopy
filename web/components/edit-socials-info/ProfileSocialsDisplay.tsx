@@ -19,7 +19,7 @@ function IconLink(props: {
   const { className, href, icon } = props;
   return (
     <a
-      className="w-10 h-10 p-2 flex-none bg-gray-500 hover:bg-gray-400 transition rounded-full text-gray-50"
+      className="w-10 h-10 p-1.5 flex-none hover:bg-gray-100 transition rounded-full border border-green-700 text-green-700"
       href={href}
       target="_blank"
       rel="noopener noreferrer"

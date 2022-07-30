@@ -32,13 +32,22 @@ export type ProfileImageProps = Omit<
   alt?: string;
   className?: string;
   rounded?: boolean;
+  border?: boolean;
 };
 
 export function ProfileImage(props: ProfileImageProps) {
-  const { src, alt = "Profile", className, rounded = true, ...rest } = props;
+  const {
+    src,
+    alt = "Profile",
+    className,
+    rounded = true,
+    border = true,
+    ...rest
+  } = props;
 
   const styles = classNames({
-    "border border-green-700 bg-gray-100 shrink-0": true,
+    "bg-gray-100 shrink-0": true,
+    "border border-green-700": border,
     "rounded-full": rounded,
     "bg-olive-200 text-gray-50 flex items-center justify-center": !src,
     [`${className}`]: true,
