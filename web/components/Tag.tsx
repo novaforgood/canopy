@@ -13,13 +13,13 @@ export function Tag(props: TagProps) {
   const { text, onDeleteClick, variant = "primary" } = props;
 
   const tagContainerStyles = classNames({
-    "rounded-full flex items-center px-5 py-1": true,
+    "rounded-full flex items-center px-3 py-1": true,
     "bg-lime-200": variant === "primary",
     "bg-white border-2 border-lime-700": variant === "outline",
   });
 
   const tagStyles = classNames({
-    "whitespace-nowrap text-sm": true,
+    "whitespace-nowrap text-xs": true,
     "text-olive-700": variant === "primary",
     "text-lime-700": variant === "outline",
   });

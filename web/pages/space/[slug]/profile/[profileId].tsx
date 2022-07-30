@@ -267,7 +267,11 @@ const SpaceHomepage: CustomPage = () => {
                   );
                 })}
                 <div>
-                  <Text variant="heading4" mobileVariant="subheading1">
+                  <Text
+                    variant="heading4"
+                    mobileVariant="subheading1"
+                    className="text-green-800"
+                  >
                     {"Let's talk!"}
                   </Text>
                   <div className="h-4"></div>
@@ -349,7 +353,7 @@ const SpaceHomepage: CustomPage = () => {
           onClose={loginModalHandlers.close}
         />
       </SidePadding>
-      <SidePadding className="bg-gray-100 border-t border-green-900 h-64 flex justify-center items-center">
+      <SidePadding className="bg-olive-100 border-t border-green-900 h-64 flex justify-center items-center">
         <div className="w-full h-full flex justify-center items-center">
           <Button
             variant="outline"
