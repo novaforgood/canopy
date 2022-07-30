@@ -31,7 +31,7 @@ export const Modal = ({
 
   return (
     <Transition show={isOpen} as={Fragment}>
-      <Dialog onClose={onClose}>
+      <Dialog onClose={onClose} className="fixed inset-0">
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
