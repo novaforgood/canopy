@@ -34,7 +34,7 @@ export default function AccountProfilePage() {
   const hasListing = !!currentProfile.profile_listing;
 
   return (
-    <>
+    <div className="bg-gray-50">
       <Navbar />
       <SidePadding className="min-h-screen">
         <div className="h-16"></div>
@@ -67,6 +67,6 @@ export default function AccountProfilePage() {
         )}
         <div className="h-32"></div>
       </SidePadding>
-    </>
+    </div>
   );
 }

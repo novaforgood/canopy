@@ -128,7 +128,7 @@ export default function AdminPage() {
   }
 
   return (
-    <>
+    <div className="bg-gray-50">
       <Navbar />
       <SidePadding className="min-h-screen">
         <div className="h-16"></div>
@@ -151,6 +151,6 @@ export default function AdminPage() {
         <ManageSpace />
         <div className="h-16"></div>
       </SidePadding>
-    </>
+    </div>
   );
 }
