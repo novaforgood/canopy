@@ -41,7 +41,7 @@ export function StageNavigator<TStageEnum extends string>(
             const cardStyles = classNames({
               "flex w-full items-center border transition rounded-md": true,
               "cursor-pointer bg-white": !disabled,
-              "pointer-events-none bg-gray-50": disabled,
+              "pointer-events-none bg-gray-100": disabled,
               "border-gray-900": !isCurrent,
               "border-white bg-green-700 text-white": isCurrent,
             });
