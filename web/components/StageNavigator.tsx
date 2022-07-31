@@ -11,6 +11,7 @@ interface StageNavigatorProps<TStageEnum> {
     label: string;
   }[];
   enabledStages?: TStageEnum[];
+  visitedStages?: TStageEnum[];
   onStageClick?: (stage: TStageEnum) => void;
 }
 
@@ -22,6 +23,7 @@ export function StageNavigator<TStageEnum extends string>(
     stages,
     onStageClick = () => {},
     enabledStages = [],
+    visitedStages = [],
   } = props;
 
   const [hoveredStage, setHoveredStage] = useState<TStageEnum | null>(null);
@@ -34,18 +36,20 @@ export function StageNavigator<TStageEnum extends string>(
             const isCurrent = value === currentStage;
             const isHovered = hoveredStage === value;
             const disabled = !enabledStages.includes(value);
+            const visited = visitedStages.includes(value);
 
             const cardStyles = classNames({
-              "flex w-full items-center border-2 transition": true,
+              "flex w-full items-center border transition rounded-md": true,
               "cursor-pointer bg-white": !disabled,
               "pointer-events-none bg-gray-50": disabled,
-              "border-gray-300": !isCurrent && !isHovered,
-              "border-gray-900": !isCurrent && isHovered,
-              "border-black": isCurrent,
+              "border-gray-900": !isCurrent,
+              "border-white bg-green-700 text-white": isCurrent,
             });
 
             const labelStyles = classNames({
-              "px-6 py-3 border-l-2 transition border-gray-300": true,
+              "px-6 py-3 border-l transition": true,
+              "border-gray-900": !isCurrent,
+              "border-white": isCurrent,
             });
 
             return (

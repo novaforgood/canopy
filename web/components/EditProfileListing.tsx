@@ -98,6 +98,14 @@ export function EditProfileListing(props: EditProfileListingProps) {
                 .map((question) => {
                   return <EditResponse key={question.id} question={question} />;
                 })}
+              <div>
+                <Text variant="subheading1">{"Let's talk!"}</Text>
+                <div className="h-4"></div>
+
+                <Button disabled rounded>
+                  Introduce me
+                </Button>
+              </div>
             </div>
             <div>
               {currentSpace.space_tag_categories.length > 0 && (
@@ -120,19 +128,15 @@ export function EditProfileListing(props: EditProfileListingProps) {
 
               <div className="bg-gray-50 p-4 rounded-md flex flex-col items-start">
                 <Text variant="subheading1">
-                  Contact me
+                  Contact
                   <EditButton
                     className="mb-1 ml-1"
                     onClick={socialsHandlers.open}
                   />
                 </Text>
                 <div className="h-4"></div>
-                <Text>Need some help? {"We'll"} introduce you.</Text>
+                <Text>{userData?.email}</Text>
                 <div className="h-4"></div>
-                <Button disabled rounded>
-                  Introduce me
-                </Button>
-                <div className="h-8"></div>
                 <ProfileSocialsDisplay
                   profileListingId={currentProfile.profile_listing?.id ?? ""}
                   email={userData?.email}

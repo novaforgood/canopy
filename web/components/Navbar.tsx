@@ -46,8 +46,10 @@ function MobileNavbar() {
   };
 
   return (
-    <div className="w-screen relative -mx-6 overscroll-none">
-      <div className="flex items-center justify-between bg-gray-50 px-4 py-3">
+    <div className="w-full overscroll-none relative">
+      <div className="absolute right-full w-6 h-full bg-gray-50"></div>
+      <div className="absolute left-full w-6 h-full bg-gray-50"></div>
+      <div className="flex items-center justify-between bg-gray-50 py-3">
         <div>{currentSpace?.name}</div>
         <button onClick={() => setExpanded((prev) => !prev)}>
           {expanded ? (
