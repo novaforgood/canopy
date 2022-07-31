@@ -74,7 +74,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
         />
       )}
       <div className="h-4"></div>
-      <div className="max-w-3xl border border-black rounded-lg w-full flex flex-col pb-12">
+      <div className="bg-white max-w-3xl border border-black rounded-lg w-full flex flex-col pb-12">
         <div className="h-20 bg-gray-100 rounded-t-lg"></div>
         <div className="px-4 sm:px-12 -mt-4">
           <div className="flex items-center gap-6 sm:gap-12">

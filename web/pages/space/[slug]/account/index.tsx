@@ -129,7 +129,7 @@ export default function AccountPage() {
   }
 
   return (
-    <>
+    <div className="bg-gray-50">
       <Navbar />
       <SidePadding className="min-h-screen">
         <div className="h-16"></div>
@@ -212,6 +212,6 @@ export default function AccountPage() {
           </RoundedCard>
         </div>
       </SidePadding>
-    </>
+    </div>
   );
 }
