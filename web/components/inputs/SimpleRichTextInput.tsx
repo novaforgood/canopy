@@ -79,7 +79,7 @@ export const SimpleRichTextInput = (props: SimpleRichTextInputProps) => {
       attributes: {
         class: unstyled
           ? ""
-          : "border border-gray-400 focus:border-black rounded-md px-4 focus:outline-none transition",
+          : "border border-gray-400 focus:border-black rounded-md px-4 bg-white focus:outline-none transition",
         style: editorStyleString,
       },
     },

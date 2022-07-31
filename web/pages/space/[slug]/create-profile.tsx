@@ -4,6 +4,7 @@ import { customAlphabet } from "nanoid";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../components/atomic";
+import { BackButton } from "../../../components/BackButton";
 import { EnterBasicInfo } from "../../../components/create-profile/EnterBasicInfo";
 import { EnterContactInfo } from "../../../components/create-profile/EnterContactInfo";
 import { EnterResponses } from "../../../components/create-profile/EnterResponses";
@@ -29,7 +30,7 @@ enum ListerStage {
 }
 
 const MAP_STAGE_TO_LABEL: Record<ListerStage, string> = {
-  [ListerStage.EnterBasicInfo]: "Basic Info",
+  [ListerStage.EnterBasicInfo]: "Your Bio",
   [ListerStage.EnterResponses]: "Profile",
   [ListerStage.EnterTags]: "Tags",
   [ListerStage.EnterContactInfo]: "Contact Info",
@@ -69,6 +70,28 @@ const ListerOnboardingPage: CustomPage = () => {
     updateQueryParams({ stage });
   };
 
+  const navBack = () => {
+    switch (currentStage) {
+      case ListerStage.EnterBasicInfo:
+        router.push("/");
+        break;
+      case ListerStage.EnterResponses:
+        navStage(ListerStage.EnterBasicInfo);
+        break;
+      case ListerStage.EnterTags:
+        navStage(ListerStage.EnterResponses);
+        break;
+      case ListerStage.EnterContactInfo:
+        navStage(ListerStage.EnterTags);
+        break;
+      case ListerStage.Review:
+        navStage(ListerStage.EnterContactInfo);
+        break;
+      default:
+        router.back();
+    }
+  };
+
   if (fetchingCurrentProfile) {
     return <div>Loading...</div>;
   }
@@ -79,7 +102,7 @@ const ListerOnboardingPage: CustomPage = () => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:h-screen">
-      <div className="bg-gray-50 p-6 sm:p-12 sm:pt-40 sm:h-screen shrink-0">
+      <div className="bg-olive-100 p-6 sm:p-12 sm:pt-40 sm:h-screen shrink-0 flex flex-col items-start justify-between">
         <StageNavigator
           currentStage={currentStage}
           stages={ALL_LISTER_STAGES}
@@ -88,25 +111,10 @@ const ListerOnboardingPage: CustomPage = () => {
             navStage(newStage);
           }}
         />
+        <BackButton onClick={navBack} />
       </div>
-      {/* <BackButton
-          onClick={() => {
-            switch (currentStage) {
-              case ListerStage.EnterBasicInfo:
-                router.push("/");
-                break;
-              case ListerStage.EnterResponses:
-                navStage(ListerStage.EnterBasicInfo);
-                break;
-              case ListerStage.EnterTags:
-                navStage(ListerStage.EnterResponses);
-                break;
-              default:
-                break;
-            }
-          }}
-        /> */}
-      <div className="relative w-full overflow-y-auto">
+
+      <div className="relative w-full overflow-y-auto bg-gray-50">
         <FadeTransition show={stageDisplayed === ListerStage.EnterBasicInfo}>
           <EnterBasicInfo
             onComplete={() => {
