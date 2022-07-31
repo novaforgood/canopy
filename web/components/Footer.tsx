@@ -2,10 +2,12 @@ import Link from "next/link";
 
 import { Text } from "../components/atomic";
 
+import { SidePadding } from "./layout/SidePadding";
+
 export function Footer() {
   return (
-    <div>
-      <div className="border-t-2 border-gray-700 px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
+    <SidePadding className="bg-green-700">
+      <div className="border-t-2 border-gray-700 pt-8 pb-12 flex gap-8 justify-between text-gray-100 font-sans text-sm">
         <div className="flex gap-4">
           <img
             src="/assets/canopy_logo_square.svg"
@@ -18,7 +20,7 @@ export function Footer() {
           </Text>
         </div>
       </div>
-      <div className="border-t-2 border-gray-700 px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
+      <div className="border-t-2 border-gray-700 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
         <div className="flex gap-8">
           <div>
             <div>Canopy</div>
@@ -66,6 +68,6 @@ export function Footer() {
           </div>
         </div>
       </div>
-    </div>
+    </SidePadding>
   );
 }
