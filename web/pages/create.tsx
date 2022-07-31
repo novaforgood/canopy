@@ -165,20 +165,19 @@ const CreatePage: CustomPage = () => {
     ...loadedState,
   });
 
-  const saveToLocalStorage = useCallback(() => {
+  const [debouncedState] = useDebouncedValue(state, 200);
+
+  const saveToLocalStorage = useCallback((state: CreateProgramState) => {
     LocalStorage.set(LocalStorageKey.CreateSpace, {
       ...state,
       lastSavedTime: Date.now(),
     });
-  }, [state]);
+  }, []);
 
   // Update localstorage to match the current state every second
   useEffect(() => {
-    const interval = setInterval(saveToLocalStorage, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveToLocalStorage]);
+    saveToLocalStorage(debouncedState);
+  }, [debouncedState, saveToLocalStorage]);
 
   // Navigate to a stage
   const navStage = (stage: CreateStage) => {
