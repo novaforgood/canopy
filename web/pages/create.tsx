@@ -136,6 +136,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
 
 const CreatePage: CustomPage = () => {
   const router = useRouter();
+
   const currentStage = (useQueryParam("stage", "string") ??
     CreateStage.EnterName) as CreateStage;
   const { updateQueryParams } = useUpdateQueryParams();
