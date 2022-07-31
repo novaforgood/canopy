@@ -128,27 +128,29 @@ export default function AdminPage() {
   }
 
   return (
-    <SidePadding className="min-h-screen">
+    <>
       <Navbar />
-      <div className="h-16"></div>
-      <Breadcrumbs />
-      <div className="h-16"></div>
-      <Text variant="heading2">Admin dashboard</Text>
-      <div className="h-8"></div>
-      <RoundedCard className="w-full">
-        <DirectoryOverview />
-      </RoundedCard>
-      <div className="h-10"></div>
-      <RoundedCard className="w-full">
-        <div className="flex items-center gap-2">
-          <BxLink className="h-7 w-7" />
-          <Text variant="heading4">Invite Members</Text>
-        </div>
-        <InviteLinksList />
-      </RoundedCard>
-      <div className="h-10"></div>
-      <ManageSpace />
-      <div className="h-16"></div>
-    </SidePadding>
+      <SidePadding className="min-h-screen">
+        <div className="h-16"></div>
+        <Breadcrumbs />
+        <div className="h-16"></div>
+        <Text variant="heading2">Admin dashboard</Text>
+        <div className="h-8"></div>
+        <RoundedCard className="w-full">
+          <DirectoryOverview />
+        </RoundedCard>
+        <div className="h-10"></div>
+        <RoundedCard className="w-full">
+          <div className="flex items-center gap-2">
+            <BxLink className="h-7 w-7" />
+            <Text variant="heading4">Invite Members</Text>
+          </div>
+          <InviteLinksList />
+        </RoundedCard>
+        <div className="h-10"></div>
+        <ManageSpace />
+        <div className="h-16"></div>
+      </SidePadding>
+    </>
   );
 }

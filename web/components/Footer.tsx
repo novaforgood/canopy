@@ -18,7 +18,7 @@ export function Footer() {
           </Text>
         </div>
       </div>
-      <div className="border-t-2 border-gray-300 px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
+      <div className="border-t-2 border-gray-700 px-6 sm:px-24 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
         <div className="flex gap-8">
           <div>
             <div>Canopy</div>

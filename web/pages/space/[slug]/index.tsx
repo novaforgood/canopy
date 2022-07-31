@@ -88,8 +88,10 @@ const SpaceHomepage: CustomPage = () => {
 
   return (
     <div>
-      <SidePadding className="bg-olive-100 flex flex-col items-center border-b border-gray-600">
+      <div className="bg-olive-100">
         <Navbar />
+      </div>
+      <SidePadding className="bg-olive-100 flex flex-col items-center border-b border-gray-600">
         <div className="sm:h-16"></div>
         <SpaceSplashPage />
         <div className="h-8 sm:hidden"></div>
