@@ -3,22 +3,22 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
-import { DirectoryOverview } from "../../../components/admin/DirectoryOverview";
-import { EditHomepage } from "../../../components/admin/EditHomepage";
-import { EditProfileFormat } from "../../../components/admin/EditProfileFormat";
-import { InviteLinksList } from "../../../components/admin/InviteLinksList";
-import { MembersList } from "../../../components/admin/MembersList";
-import { SetPrivacySettings } from "../../../components/admin/SetPrivacySettings";
-import { Button, Select, Text } from "../../../components/atomic";
-import { Breadcrumbs } from "../../../components/Breadcrumbs";
-import { Responsive } from "../../../components/layout/Responsive";
-import { SidePadding } from "../../../components/layout/SidePadding";
-import { Navbar } from "../../../components/Navbar";
-import { RoundedCard } from "../../../components/RoundedCard";
-import { BxLink, BxRightArrowAlt } from "../../../generated/icons/regular";
-import { BxsCog, BxsReport } from "../../../generated/icons/solid";
-import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
+import { EditHomepage } from "../../../../components/admin/EditHomepage";
+import { EditProfileFormat } from "../../../../components/admin/EditProfileFormat";
+import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
+import { MembersList } from "../../../../components/admin/MembersList";
+import { SetPrivacySettings } from "../../../../components/admin/SetPrivacySettings";
+import { Button, Select, Text } from "../../../../components/atomic";
+import { Breadcrumbs } from "../../../../components/Breadcrumbs";
+import { Responsive } from "../../../../components/layout/Responsive";
+import { SidePadding } from "../../../../components/layout/SidePadding";
+import { Navbar } from "../../../../components/Navbar";
+import { RoundedCard } from "../../../../components/RoundedCard";
+import { BxLink, BxRightArrowAlt } from "../../../../generated/icons/regular";
+import { BxsCog, BxsReport } from "../../../../generated/icons/solid";
+import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 
 enum ManageSpaceTabs {
   Members = "Members",

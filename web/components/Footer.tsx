@@ -13,6 +13,7 @@ export function Footer() {
             src="/assets/canopy_logo_square.svg"
             alt="logo"
             className="h-10 w-10"
+            draggable={false}
           />
           <Text className="sm:max-w-lg" mobileVariant="body2">
             Canopy’s mission is to support the growth of more connected

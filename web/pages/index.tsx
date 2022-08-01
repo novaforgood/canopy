@@ -124,7 +124,7 @@ function LoggedInHomePage() {
   });
   const router = useRouter();
   return (
-    <SidePadding className="min-h-screen">
+    <SidePadding className="min-h-screen bg-gray-50">
       <div className="flex flex-col items-center pt-12">
         <Text variant="heading4">Welcome to Canopy!</Text>
 
@@ -134,7 +134,7 @@ function LoggedInHomePage() {
           {profileData?.profile.map((profile) => {
             return (
               <button
-                className="border p-2 flex justify-between items-center w-full"
+                className="border p-2 flex justify-between items-center w-full bg-white"
                 key={profile.id}
                 onClick={() => {
                   router.push(`/space/${profile.space.slug}`);

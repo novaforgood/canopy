@@ -47,7 +47,7 @@ export const Button = ({
   const ctaStyles = classNames({
     ["border border-green-800"]: true,
     ["bg-lime-500 hover:bg-lime-400 text-green-900"]: !disabled,
-    ["border-gray-500 text-gray-500"]: disabled,
+    ["border-gray-500 text-gray-500 bg-lime-200"]: disabled,
   });
 
   const primaryStyles = classNames({
