@@ -10,6 +10,7 @@ import {
   BxGlobe,
   BxLink,
 } from "../../generated/icons/regular";
+import { Responsive } from "../layout/Responsive";
 
 interface ConnectData {
   buttonIcon: ReactNode;
@@ -103,7 +104,7 @@ export function ConnectAnyone() {
   const item = DATA[selected];
 
   return (
-    <div className="flex gap-8">
+    <div className="flex flex-col sm:flex-row gap-8">
       <div className="flex flex-col gap-2">
         {DATA.map((data, index) => {
           return (
@@ -120,30 +121,60 @@ export function ConnectAnyone() {
         })}
       </div>
 
-      <div className="rounded-md border border-r border-green-700 grid grid-cols-2 overflow-hidden">
-        <div className="bg-lime-200 border-r border-black p-8">
-          <Text variant="heading4">{item.title}</Text>
-          <div className="h-12"></div>
-          <Text variant="body1" bold className="text-lime-700">
-            {item.question}
-          </Text>
-          <div className="h-2"></div>
-          <Text variant="body1">{item.answer}</Text>
-        </div>
+      <Responsive mode="desktop-only">
+        <div className="rounded-md border border-r border-green-700 grid grid-cols-2 overflow-hidden">
+          <div className="bg-lime-200 border-r border-black p-8">
+            <Text variant="heading4">{item.title}</Text>
+            <div className="h-12"></div>
+            <Text variant="body1" bold className="text-lime-700">
+              {item.question}
+            </Text>
+            <div className="h-2"></div>
+            <Text variant="body1">{item.answer}</Text>
+          </div>
 
-        {/**
-         * Hack: Images have a tiny black border, so use negative margins to zoom slightly on
-         * the image and hide that extra border
-         */}
+          {/**
+           * Hack: Images have a tiny black border, so use negative margins to zoom slightly on
+           * the image and hide that extra border
+           */}
 
-        <div className="-m-0.25">
-          <img
-            className="self-stretch overflow-hidden"
-            src={item.imageUrl}
-            alt={item.imageAlt}
-          />
+          <div className="-m-0.25">
+            <img
+              draggable={false}
+              className="self-stretch overflow-hidden"
+              src={item.imageUrl}
+              alt={item.imageAlt}
+            />
+          </div>
         </div>
-      </div>
+      </Responsive>
+      <Responsive mode="mobile-only">
+        <div className="rounded-md border border-r border-green-700 overflow-hidden">
+          {/**
+           * Hack: Images have a tiny black border, so use negative margins to zoom slightly on
+           * the image and hide that extra border
+           */}
+
+          <div className="-m-0.25">
+            <img
+              draggable={false}
+              className="self-stretch overflow-hidden"
+              src={item.imageUrl}
+              alt={item.imageAlt}
+            />
+          </div>
+
+          <div className="bg-lime-200 p-8">
+            <Text variant="heading4">{item.title}</Text>
+            <div className="h-12"></div>
+            <Text variant="body1" bold className="text-lime-700">
+              {item.question}
+            </Text>
+            <div className="h-2"></div>
+            <Text variant="body1">{item.answer}</Text>
+          </div>
+        </div>
+      </Responsive>
     </div>
   );
 }
