@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+
+import toast from "react-hot-toast";
 
 import {
   Space_Tag_Category_Insert_Input,
@@ -37,31 +39,35 @@ export function EditTagCategory(props: EditTagCategoryProps) {
   }, [isOpen, tagCategory.space_tags, tagCategory.title]);
 
   const addTag = () => {
-    if (newTag.length > 0) {
-      setTags((prev) => [...prev, { label: newTag, deleted: false }]);
-      setNewTag("");
+    if (newTag.length === 0) {
+      return;
     }
+    if (tags.map((t) => t.label).includes(newTag)) {
+      toast.error(`Tag "${newTag}" already exists`);
+      return;
+    }
+    setTags((prev) => [...prev, { label: newTag, deleted: false }]);
+    setNewTag("");
   };
+
+  const onClose = () => {
+    setIsOpen(false);
+    onSave({
+      ...tagCategory,
+      title,
+      space_tags: {
+        data: tags,
+      },
+    });
+  };
+
   return (
     <>
       <ActionModal
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        actionText="Done setting tags"
-        onAction={() => {
-          onSave({
-            ...tagCategory,
-            title,
-            space_tags: {
-              data: tags,
-            },
-          });
-          setIsOpen(false);
-        }}
-        secondaryActionText="Cancel"
-        onSecondaryAction={() => {
-          setIsOpen(false);
-        }}
+        onClose={onClose}
+        actionText="Done editing"
+        onAction={onClose}
       >
         <div className="p-8 py-16 w-96 flex flex-col">
           <Text variant="heading4" className="text-center">
@@ -111,13 +117,23 @@ export function EditTagCategory(props: EditTagCategoryProps) {
                   key={index}
                   text={tag.label ?? ""}
                   onDeleteClick={() => {
-                    const delArr = tag.id ? [{ ...tag, deleted: true }] : [];
-
-                    setTags((prev) => [
-                      ...prev.slice(0, index),
-                      ...delArr,
-                      ...prev.slice(index + 1),
-                    ]);
+                    setTags((prev) => {
+                      return prev
+                        .map((t) => {
+                          if (!t.id) {
+                            if (t.label === tag.label) {
+                              return null;
+                            } else {
+                              return t;
+                            }
+                          } else if (t.id === tag.id) {
+                            return { ...t, deleted: true };
+                          } else {
+                            return t;
+                          }
+                        })
+                        .filter((v) => v !== null) as Space_Tag_Insert_Input[];
+                    });
                   }}
                 />
               ))}
