@@ -23,8 +23,6 @@ export function DemoCarousel() {
           slidesPerView={1}
           navigation
           pagination={{ clickable: true }}
-          onSwiper={(swiper) => console.log(swiper)}
-          onSlideChange={() => console.log("slide change")}
         >
           {CAROUSEL_IMAGES.map((image, index) => (
             <SwiperSlide

@@ -5,6 +5,8 @@ import { ConnectAnyone } from "../components/landing-page/ConnectAnyone";
 import { DemoCarousel } from "../components/landing-page/DemoCarousel";
 import { HowItWorks } from "../components/landing-page/HowItWorks";
 import { LandingSection } from "../components/landing-page/LandingSection";
+import { MeaningfulRelationships } from "../components/landing-page/MeaningfulRelationships";
+import { Responsive } from "../components/layout/Responsive";
 import { SidePadding } from "../components/layout/SidePadding";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { BxExit } from "../generated/icons/regular";
@@ -69,6 +71,7 @@ function LandingPage() {
               <div className="sm:h-32"></div>
             </div>
             <img
+              draggable={false}
               className="object-contain"
               src="/assets/landing/trees_with_people.png"
               alt="Trees with faces"
@@ -81,7 +84,10 @@ function LandingPage() {
         className="bg-olive-100"
         title="Empower your community members to start meaningful relationships"
         subtitle="Through a simple profile directory, Canopy helps people in your community easily find and reach out to each other."
-      ></LandingSection>
+      >
+        <div className="h-16"></div>
+        <MeaningfulRelationships />
+      </LandingSection>
 
       <LandingSection
         className="bg-gray-100"
@@ -92,10 +98,13 @@ function LandingPage() {
         <ConnectAnyone />
       </LandingSection>
 
-      <LandingSection title="Simple. Friendly. Free.">
-        <div className="h-16"></div>
-        <DemoCarousel />
-      </LandingSection>
+      <Responsive mode="desktop-only">
+        <LandingSection title="Simple. Friendly. Free.">
+          <div className="h-16"></div>
+          <DemoCarousel />
+        </LandingSection>
+      </Responsive>
+
       <LandingSection title="How it works" className="bg-lime-200">
         <div className="h-16"></div>
         <HowItWorks />
