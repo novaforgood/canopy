@@ -9,6 +9,7 @@ import {
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Text } from "../atomic";
+import CatchUnsavedChangesModal from "../modals/CatchUnsavedChangesModal";
 
 import { EditProfileSchema, EditProfileSchemaData } from "./EditProfileSchema";
 
@@ -68,10 +69,14 @@ export function EditProfileFormat() {
           : undefined,
       })),
     })
-      .then(() => {
-        setEdited(false);
-        toast.success("Saved");
-        refetchCurrentSpace();
+      .then((result) => {
+        if (result.error) {
+          toast.error(result.error.message);
+        } else {
+          setEdited(false);
+          toast.success("Saved");
+          refetchCurrentSpace();
+        }
       })
       .catch((err) => {
         toast.error(err.message);
@@ -113,6 +118,7 @@ export function EditProfileFormat() {
           setData(newData);
         }}
       />
+      {/* <CatchUnsavedChangesModal unsavedChangesExist={edited} /> */}
     </div>
   );
 }

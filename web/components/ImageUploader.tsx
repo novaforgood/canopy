@@ -188,7 +188,7 @@ export function ImageUploader(props: ImageUploaderProps) {
                 <input
                   className="appearance-none w-full h-1 bg-gray-200 rounded outline-none slider-thumb"
                   type="range"
-                  min={1}
+                  min={0.5}
                   max={3}
                   step={0.001}
                   value={scale}

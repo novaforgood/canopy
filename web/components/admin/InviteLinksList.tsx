@@ -120,6 +120,7 @@ export function InviteLinksList() {
           onSelect={setLinkType}
         ></Select>
         <Button
+          variant="cta"
           disabled={!linkType}
           onClick={async () => {
             if (!linkType) {

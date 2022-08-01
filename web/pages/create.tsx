@@ -136,6 +136,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
 
 const CreatePage: CustomPage = () => {
   const router = useRouter();
+
   const currentStage = (useQueryParam("stage", "string") ??
     CreateStage.EnterName) as CreateStage;
   const { updateQueryParams } = useUpdateQueryParams();
@@ -164,20 +165,19 @@ const CreatePage: CustomPage = () => {
     ...loadedState,
   });
 
-  const saveToLocalStorage = useCallback(() => {
+  const [debouncedState] = useDebouncedValue(state, 200);
+
+  const saveToLocalStorage = useCallback((state: CreateProgramState) => {
     LocalStorage.set(LocalStorageKey.CreateSpace, {
       ...state,
       lastSavedTime: Date.now(),
     });
-  }, [state]);
+  }, []);
 
   // Update localstorage to match the current state every second
   useEffect(() => {
-    const interval = setInterval(saveToLocalStorage, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [saveToLocalStorage]);
+    saveToLocalStorage(debouncedState);
+  }, [debouncedState, saveToLocalStorage]);
 
   // Navigate to a stage
   const navStage = (stage: CreateStage) => {
@@ -210,7 +210,7 @@ const CreatePage: CustomPage = () => {
   }
   return (
     <div className="flex flex-col sm:flex-row h-screen">
-      <div className="bg-gray-50 p-6 sm:p-12 sm:pt-40 sm:h-screen flex-none">
+      <div className="bg-olive-100 p-6 sm:p-12 sm:pt-40 sm:h-screen flex-none">
         <StageNavigator
           currentStage={currentStage}
           stages={ALL_CREATE_STAGES}
@@ -220,7 +220,7 @@ const CreatePage: CustomPage = () => {
           }}
         />
       </div>
-      <div className="px-16 py-20 w-full h-screen flex flex-col items-start overflow-y-auto">
+      <div className="px-16 py-20 w-full h-screen flex flex-col items-start overflow-y-auto bg-gray-50">
         <BackButton
           onClick={() => {
             switch (currentStage) {

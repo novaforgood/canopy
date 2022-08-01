@@ -149,6 +149,7 @@ export function SpaceLandingPage() {
             listing.profile_listing_to_space_tags?.map(
               (tag) => tag.space_tag.label
             ) ?? undefined;
+
           return (
             <ProfileCard
               key={idx}

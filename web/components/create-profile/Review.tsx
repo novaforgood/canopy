@@ -52,11 +52,11 @@ export function Review(props: ReviewProps) {
         <div className="h-8"></div>
         <EditProfileListing showPublishedToggle={false} />
         <div className="h-16"></div>
-        <div className="flex flex-col gap-2">
+        <div className="flex">
           <Button
             variant="primary"
             rounded
-            className="w-64 flex items-center justify-center"
+            className="flex items-center justify-center"
             loading={loadingPublish}
             onClick={async () => {
               if (!currentProfile) {
@@ -78,9 +78,9 @@ export function Review(props: ReviewProps) {
             Publish my profile
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             rounded
-            className="w-64 flex items-center justify-center"
+            className="flex items-center justify-center"
             onClick={savedModalHandlers.open}
           >
             Save without publishing
@@ -88,11 +88,11 @@ export function Review(props: ReviewProps) {
         </div>
         <div className="h-8"></div>
         <Text variant="body2" className="text-gray-600">
-          Remember, you can edit your profile in “My Account” at any time.
+          Don’t worry, you can always edit your profile later!
         </Text>
 
         <Modal isOpen={publishModalOpened} onClose={() => {}}>
-          <div className="bg-white px-12 py-16 rounded-md">
+          <div className="bg-white px-12 pt-16 pb-8 rounded-md">
             <div className="w-56 flex flex-col items-center">
               <Text variant="heading4">Your profile is live!</Text>
               <div className="h-8"></div>
@@ -101,6 +101,11 @@ export function Review(props: ReviewProps) {
               <Button onClick={onComplete} rounded>
                 Go to homepage
               </Button>
+              <div className="h-16"></div>
+              <img
+                src="/assets/create-profile/many_trees.svg"
+                alt="many trees"
+              />
             </div>
           </div>
         </Modal>

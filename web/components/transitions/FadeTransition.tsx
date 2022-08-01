@@ -28,7 +28,7 @@ export function FadeTransition(props: FadeTransitionProps) {
       leaveFrom="opacity-100"
       leaveTo="opacity-0 hidden"
     >
-      {children}
+      {show && children}
     </Transition>
   );
 }
