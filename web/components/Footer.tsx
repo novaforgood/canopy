@@ -15,7 +15,7 @@ export function Footer() {
             className="h-10 w-10"
             draggable={false}
           />
-          <Text className="sm:max-w-lg" mobileVariant="body2">
+          <Text className="sm:max-w-md" variant="body2">
             Canopy’s mission is to support the growth of more connected
             communities by helping people find each other more seamlessly.
           </Text>
@@ -24,8 +24,8 @@ export function Footer() {
       <div className="border-t-2 border-gray-700 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
         <div className="flex gap-8">
           <div>
-            <div>Canopy</div>
-            <div className="flex flex-col gap-2 mt-4 font-medium">
+            <div className="font-bold">Canopy</div>
+            <div className="flex flex-col gap-2 mt-4">
               <a target="_blank" className="hover:underline" href="/">
                 Home
               </a>
@@ -34,8 +34,8 @@ export function Footer() {
         </div>
         <div className="flex gap-4 sm:gap-24">
           <div>
-            <div>Legal</div>
-            <div className="flex flex-col gap-2 mt-4 font-medium">
+            <div className="font-bold">Legal</div>
+            <div className="flex flex-col gap-2 mt-4">
               <a target="_blank" className="hover:underline" href="/terms">
                 Terms of Use
               </a>
@@ -46,8 +46,8 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <div>About the Creators</div>
-            <div className="flex flex-col gap-2 mt-4 font-medium">
+            <div className="font-bold">About the creators</div>
+            <div className="flex flex-col gap-2 mt-4">
               <a
                 target="_blank"
                 className="hover:underline"

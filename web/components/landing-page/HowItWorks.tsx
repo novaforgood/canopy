@@ -46,9 +46,10 @@ export function HowItWorks() {
             <Text>{data.description}</Text>
             <div className="flex-1 mt-16"></div>
             <img
-              className="justify-self-end translate-y-0.25 select-none pointer-events-none"
+              className="justify-self-end translate-y-0.25 select-none"
               src={data.imageUrl}
               alt={data.imageAlt}
+              draggable={false}
             />
           </div>
         );
