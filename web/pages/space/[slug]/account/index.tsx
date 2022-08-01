@@ -129,42 +129,43 @@ export default function AccountPage() {
   }
 
   return (
-    <SidePadding className="min-h-screen">
+    <div className="bg-gray-50">
       <Navbar />
-      <div className="h-16"></div>
-      <Breadcrumbs />
-      <div className="h-16"></div>
+      <SidePadding className="min-h-screen">
+        <div className="h-16"></div>
+        <Breadcrumbs />
+        <div className="h-16"></div>
 
-      <Text variant="heading2" mobileVariant="heading3">
-        Nice to see you, {userData?.first_name}!
-      </Text>
-      <div className="h-8"></div>
-      <Text medium>
-        Welcome to Your Account. Manage your settings to make Canopy work best
-        for you.
-      </Text>
-      <div className="h-8"></div>
+        <Text variant="heading2" mobileVariant="heading3">
+          Nice to see you, {userData?.first_name}!
+        </Text>
+        <div className="h-8"></div>
+        <Text medium>
+          Welcome to Your Account. Manage your settings to make Canopy work best
+          for you.
+        </Text>
+        <div className="h-8"></div>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex flex-col gap-4 items-start flex-1">
-          <RoundedCard className="w-full">
-            <div className="flex items-center gap-2">
-              <BxsUserCircle className="h-7 w-7 text-gray-600" />
-              <Text variant="heading4">Your Profile</Text>
-            </div>
-            <div className="h-8"></div>
-            <Text>View and make sure your info is up to date.</Text>
-            <div className="h-4"></div>
-            <Button
-              variant="outline"
-              onClick={() => {
-                router.push(`${router.asPath}/profile`);
-              }}
-            >
-              View Profile
-            </Button>
-          </RoundedCard>
-          {/* <RoundedCard className="w-full">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col gap-4 items-start flex-1">
+            <RoundedCard className="w-full">
+              <div className="flex items-center gap-2">
+                <BxsUserCircle className="h-7 w-7 text-gray-600" />
+                <Text variant="heading4">Your Profile</Text>
+              </div>
+              <div className="h-8"></div>
+              <Text>View and make sure your info is up to date.</Text>
+              <div className="h-4"></div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  router.push(`${router.asPath}/profile`);
+                }}
+              >
+                View Profile
+              </Button>
+            </RoundedCard>
+            {/* <RoundedCard className="w-full">
             <div className="flex items-center gap-2">
               <BxsShow className="h-7 w-7 text-gray-600" />
               <Text variant="heading4">List Your Profile</Text>
@@ -172,44 +173,45 @@ export default function AccountPage() {
             <div className="h-8"></div>
             <Text>Work in progress</Text>
           </RoundedCard> */}
-        </div>
-        <RoundedCard className="w-full flex-1">
-          <div className="flex items-center gap-2">
-            <BxsReport className="h-7 w-7 text-gray-600" />
-            <Text variant="heading4">Your connections</Text>
           </div>
-          <div className="h-8"></div>
-          <Text>
-            Press {'"Check in"'} if you have met with your connection!
-          </Text>
-          <div className="h-8"></div>
-
-          {connectionRequests.length === 0 && (
-            <div className="p-4 rounded-md border">
-              <Text>No connections yet!</Text>
-              <div className="h-2"></div>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  router.push(`/space/${currentSpace.slug}`);
-                }}
-              >
-                Browse profiles
-              </Button>
+          <RoundedCard className="w-full flex-1">
+            <div className="flex items-center gap-2">
+              <BxsReport className="h-7 w-7 text-gray-600" />
+              <Text variant="heading4">Your connections</Text>
             </div>
-          )}
-          <div className="flex flex-col items-start gap-4 w-full">
-            {connectionRequests.map((request) => {
-              return (
-                <EditConnectionRequest
-                  connectionRequest={request}
-                  key={request.id}
-                />
-              );
-            })}
-          </div>
-        </RoundedCard>
-      </div>
-    </SidePadding>
+            <div className="h-8"></div>
+            <Text>
+              Press {'"Check in"'} if you have met with your connection!
+            </Text>
+            <div className="h-8"></div>
+
+            {connectionRequests.length === 0 && (
+              <div className="p-4 rounded-md border">
+                <Text>No connections yet!</Text>
+                <div className="h-2"></div>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    router.push(`/space/${currentSpace.slug}`);
+                  }}
+                >
+                  Browse profiles
+                </Button>
+              </div>
+            )}
+            <div className="flex flex-col items-start gap-4 w-full">
+              {connectionRequests.map((request) => {
+                return (
+                  <EditConnectionRequest
+                    connectionRequest={request}
+                    key={request.id}
+                  />
+                );
+              })}
+            </div>
+          </RoundedCard>
+        </div>
+      </SidePadding>
+    </div>
   );
 }

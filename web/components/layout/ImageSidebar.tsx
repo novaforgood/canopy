@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 
+import { BackButton } from "../BackButton";
+
 interface ImageSidebarProps {
   imageSrc: string;
   imageAlt: string;
@@ -16,7 +18,7 @@ export function ImageSidebar(props: ImageSidebarProps) {
         {canGoBack && (
           <>
             <div className="h-16"></div>
-            <button onClick={router.back}>{"← Back"}</button>
+            <BackButton />
           </>
         )}
       </div>

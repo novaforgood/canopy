@@ -75,7 +75,10 @@ export default applyMiddleware({
 
       await sendgridMail
         .send({
-          from: "connect@joincanopy.org",
+          from: {
+            email: "connect@joincanopy.org",
+            name: "Canopy",
+          },
           cc: [sender.email],
           to: receiver.email,
           templateId: "d-be75ba26790f45d68be187f7b110b616",

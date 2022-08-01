@@ -3,22 +3,22 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
-import { DirectoryOverview } from "../../../components/admin/DirectoryOverview";
-import { EditHomepage } from "../../../components/admin/EditHomepage";
-import { EditProfileFormat } from "../../../components/admin/EditProfileFormat";
-import { InviteLinksList } from "../../../components/admin/InviteLinksList";
-import { MembersList } from "../../../components/admin/MembersList";
-import { SetPrivacySettings } from "../../../components/admin/SetPrivacySettings";
-import { Button, Select, Text } from "../../../components/atomic";
-import { Breadcrumbs } from "../../../components/Breadcrumbs";
-import { Responsive } from "../../../components/layout/Responsive";
-import { SidePadding } from "../../../components/layout/SidePadding";
-import { Navbar } from "../../../components/Navbar";
-import { RoundedCard } from "../../../components/RoundedCard";
-import { BxLink, BxRightArrowAlt } from "../../../generated/icons/regular";
-import { BxsCog, BxsReport } from "../../../generated/icons/solid";
-import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
+import { EditHomepage } from "../../../../components/admin/EditHomepage";
+import { EditProfileFormat } from "../../../../components/admin/EditProfileFormat";
+import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
+import { MembersList } from "../../../../components/admin/MembersList";
+import { SetPrivacySettings } from "../../../../components/admin/SetPrivacySettings";
+import { Button, Select, Text } from "../../../../components/atomic";
+import { Breadcrumbs } from "../../../../components/Breadcrumbs";
+import { Responsive } from "../../../../components/layout/Responsive";
+import { SidePadding } from "../../../../components/layout/SidePadding";
+import { Navbar } from "../../../../components/Navbar";
+import { RoundedCard } from "../../../../components/RoundedCard";
+import { BxLink, BxRightArrowAlt } from "../../../../generated/icons/regular";
+import { BxsCog, BxsReport } from "../../../../generated/icons/solid";
+import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 
 enum ManageSpaceTabs {
   Members = "Members",
@@ -128,27 +128,29 @@ export default function AdminPage() {
   }
 
   return (
-    <SidePadding className="min-h-screen">
+    <div className="bg-gray-50">
       <Navbar />
-      <div className="h-16"></div>
-      <Breadcrumbs />
-      <div className="h-16"></div>
-      <Text variant="heading2">Admin dashboard</Text>
-      <div className="h-8"></div>
-      <RoundedCard className="w-full">
-        <DirectoryOverview />
-      </RoundedCard>
-      <div className="h-10"></div>
-      <RoundedCard className="w-full">
-        <div className="flex items-center gap-2">
-          <BxLink className="h-7 w-7" />
-          <Text variant="heading4">Invite Members</Text>
-        </div>
-        <InviteLinksList />
-      </RoundedCard>
-      <div className="h-10"></div>
-      <ManageSpace />
-      <div className="h-16"></div>
-    </SidePadding>
+      <SidePadding className="min-h-screen">
+        <div className="h-16"></div>
+        <Breadcrumbs />
+        <div className="h-16"></div>
+        <Text variant="heading2">Admin dashboard</Text>
+        <div className="h-8"></div>
+        <RoundedCard className="w-full">
+          <DirectoryOverview />
+        </RoundedCard>
+        <div className="h-10"></div>
+        <RoundedCard className="w-full">
+          <div className="flex items-center gap-2">
+            <BxLink className="h-7 w-7" />
+            <Text variant="heading4">Invite Members</Text>
+          </div>
+          <InviteLinksList />
+        </RoundedCard>
+        <div className="h-10"></div>
+        <ManageSpace />
+        <div className="h-16"></div>
+      </SidePadding>
+    </div>
   );
 }

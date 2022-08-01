@@ -34,37 +34,39 @@ export default function AccountProfilePage() {
   const hasListing = !!currentProfile.profile_listing;
 
   return (
-    <SidePadding className="min-h-screen">
+    <div className="bg-gray-50">
       <Navbar />
-      <div className="h-16"></div>
-      <Breadcrumbs />
-      <div className="h-16"></div>
+      <SidePadding className="min-h-screen">
+        <div className="h-16"></div>
+        <Breadcrumbs />
+        <div className="h-16"></div>
 
-      <Text variant="heading2">Edit your profile</Text>
+        <Text variant="heading2">Edit your profile</Text>
 
-      <div className="h-12"></div>
+        <div className="h-12"></div>
 
-      {hasListing ? (
-        <EditProfileListing />
-      ) : (
-        <>
-          <Text>You {"haven't"} created a profile yet.</Text>
-          <div className="h-4"></div>
-          <Button
-            rounded
-            onClick={() => {
-              if (!currentSpace) {
-                toast.error("currentSpace not defined");
-                return;
-              }
-              router.push(`/space/${currentSpace.slug}/create-profile`);
-            }}
-          >
-            Create a profile
-          </Button>
-        </>
-      )}
-      <div className="h-32"></div>
-    </SidePadding>
+        {hasListing ? (
+          <EditProfileListing />
+        ) : (
+          <>
+            <Text>You {"haven't"} created a profile yet.</Text>
+            <div className="h-4"></div>
+            <Button
+              rounded
+              onClick={() => {
+                if (!currentSpace) {
+                  toast.error("currentSpace not defined");
+                  return;
+                }
+                router.push(`/space/${currentSpace.slug}/create-profile`);
+              }}
+            >
+              Create a profile
+            </Button>
+          </>
+        )}
+        <div className="h-32"></div>
+      </SidePadding>
+    </div>
   );
 }

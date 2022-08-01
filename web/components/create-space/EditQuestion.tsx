@@ -34,24 +34,22 @@ export function EditQuestion(props: EditQuestionProps) {
   const [title, setTitle] = useState(question.title ?? "");
   const [charCount, setCharCount] = useState(question.char_count ?? 0);
 
+  const onClose = () => {
+    setIsOpen(false);
+    onSave({
+      ...question,
+      title,
+      char_count: charCount,
+    });
+  };
+
   return (
     <>
       <ActionModal
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        actionText="Set"
-        onAction={() => {
-          onSave({
-            ...question,
-            title,
-            char_count: charCount,
-          });
-          setIsOpen(false);
-        }}
-        secondaryActionText="Cancel"
-        onSecondaryAction={() => {
-          setIsOpen(false);
-        }}
+        onClose={onClose}
+        actionText="Done editing"
+        onAction={onClose}
       >
         <div className="p-8 py-16 w-96 flex flex-col">
           <Text variant="heading4" className="text-center">

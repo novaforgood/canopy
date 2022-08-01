@@ -60,7 +60,7 @@ export function EditProfileSocials() {
             handlers.open();
           }}
         >
-          Edit
+          Edit or add socials
         </Button>
 
         <ProfileSocialsModal isOpen={opened} onClose={handlers.close} />

@@ -14,6 +14,7 @@ import { signOut } from "../lib/firebase";
 import { Button, Text } from "./atomic";
 import { Dropdown } from "./Dropdown";
 import { Responsive } from "./layout/Responsive";
+import { SidePadding } from "./layout/SidePadding";
 import { ProfileImage } from "./ProfileImage";
 import { SpaceDropdown } from "./SpaceDropdown";
 import { FadeTransition } from "./transitions/FadeTransition";
@@ -46,9 +47,9 @@ function MobileNavbar() {
   };
 
   return (
-    <div className="w-screen relative -mx-6 overscroll-none">
-      <div className="flex items-center justify-between bg-gray-50 px-4 py-3">
-        <div>{currentSpace?.name}</div>
+    <div className="w-full overscroll-none relative">
+      <div className="flex items-center justify-between bg-gray-50 py-3 px-4">
+        <Text>{currentSpace?.name}</Text>
         <button onClick={() => setExpanded((prev) => !prev)}>
           {expanded ? (
             <BxX className="h-10 w-10" />
@@ -67,7 +68,7 @@ function MobileNavbar() {
         leave="transition-opacity ease-linear duration-150"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        className="overflow-hidden bg-white absolute top-full w-full h-screen"
+        className="bg-white absolute top-full w-full h-screen"
       >
         <div className="px-8 pt-12">
           <div className="flex items-center gap-2">
@@ -153,39 +154,44 @@ export function Navbar() {
   return (
     <>
       <Responsive mode="desktop-only">
-        <div className="flex items-center justify-between pt-12">
-          <div className="flex">
-            <SpaceDropdown />
-            {isAdmin &&
-              (isInAdminDashboard ? (
-                <Button
-                  size="small"
-                  className={"flex items-center ml-6"}
-                  onClick={() => {
-                    router.push(`/space/${currentSpace?.slug}`);
-                  }}
-                >
-                  <BxsHome className="w-5 h-5 mr-2" />
-                  <Text variant="body1">Directory Homepage</Text>
-                </Button>
-              ) : (
-                <Button
-                  size="small"
-                  className={"flex items-center ml-6"}
-                  onClick={() => {
-                    router.push(`/space/${currentSpace?.slug}/admin`);
-                  }}
-                >
-                  <BxsCog className="w-5 h-5 mr-2" />
-                  <Text variant="body1">Admin Dashboard</Text>
-                </Button>
-              ))}
+        <SidePadding>
+          <div className="flex items-center justify-between pt-12">
+            <div className="flex">
+              <SpaceDropdown />
+              {isAdmin &&
+                (isInAdminDashboard ? (
+                  <Button
+                    size="small"
+                    className={"flex items-center ml-6"}
+                    onClick={() => {
+                      router.push(`/space/${currentSpace?.slug}`);
+                    }}
+                  >
+                    <BxsHome className="w-5 h-5 mr-2" />
+                    <Text variant="body1">Directory Homepage</Text>
+                  </Button>
+                ) : (
+                  <Button
+                    size="small"
+                    className={"flex items-center ml-6"}
+                    onClick={() => {
+                      router.push(`/space/${currentSpace?.slug}/admin`);
+                    }}
+                  >
+                    <BxsCog className="w-5 h-5 mr-2" />
+                    <Text variant="body1">Admin Dashboard</Text>
+                  </Button>
+                ))}
+            </div>
+            <Dropdown />
           </div>
-          <Dropdown />
-        </div>
+        </SidePadding>
       </Responsive>
-      <Responsive mode="mobile-only" className="w-full sticky top-0 z-10">
-        <MobileNavbar />
+      <Responsive mode="mobile-only" className="">
+        <div className="h-16"></div>
+        <div className="h-16 fixed w-full top-0 z-10 bg-white">
+          <MobileNavbar />
+        </div>
       </Responsive>
     </>
   );
