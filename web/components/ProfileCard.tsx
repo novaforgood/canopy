@@ -24,7 +24,7 @@ export function ProfileCard(props: ProfileCardProps) {
     subtitle,
     descriptionTitle,
     imageUrl,
-    tags,
+    tags = [],
     onClick = () => {},
   } = props;
 
@@ -32,6 +32,11 @@ export function ProfileCard(props: ProfileCardProps) {
 
   const desiredHeight = width;
 
+  const numTags = 3;
+  const processedTags = [
+    ...tags.slice(0, numTags),
+    `+ ${tags.length - numTags} more`,
+  ];
   return (
     <button
       onClick={onClick}
@@ -49,17 +54,24 @@ export function ProfileCard(props: ProfileCardProps) {
         </div>
       </div>
       <div className="px-4 flex flex-col items-start w-full text-gray-900 ">
-        <div className="pb-2 pt-4 text-2xl text-left truncate w-full">
+        <Text variant="heading4" className="text-left truncate w-full">
           {name}
-        </div>
-        <div className="mb-4 text-md pb-4">{subtitle ?? "‎"}</div>
-        <div className="pb-2">
-          <Text variant="body2" medium className="text-gray-800">
-            {descriptionTitle}
-          </Text>
-        </div>
+        </Text>
+        <div className="h-1"></div>
+        {subtitle && (
+          <>
+            <Text variant="body2" className="text-left">
+              {subtitle}
+            </Text>
+            <div className="h-4"></div>
+          </>
+        )}
+        <Text variant="body2" medium className="text-gray-800">
+          {descriptionTitle}
+        </Text>
+        <div className="h-2"></div>
         <div className="mb-4 text-gray-500 text-ellipsis overflow-hidden flex flex-wrap gap-1">
-          {tags && tags.length > 0 ? (
+          {tags.length > 0 ? (
             tags.map((tag, index) => (
               <Tag key={index} text={tag} variant="outline" />
             ))
