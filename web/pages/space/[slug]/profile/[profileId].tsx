@@ -293,7 +293,7 @@ const SpaceHomepage: CustomPage = () => {
                 </div>
               </div>
               <div>
-                <div className="border border-olive-700 p-6 rounded-md">
+                <div className="border border-olive-700 p-6 rounded-md flex flex-col gap-8">
                   {currentSpace.space_tag_categories.map((category) => {
                     return (
                       <div key={category.id}>
