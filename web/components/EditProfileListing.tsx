@@ -31,7 +31,7 @@ function EditProfileImage() {
 
   return (
     <>
-      <div className="h-24 w-24 sm:h-40 sm:w-40 rounded-full relative">
+      <div className="h-24 w-24 sm:h-40 sm:w-40 shrink-0 rounded-full relative">
         <ProfileImage className="h-full w-full" src={profileImageUrl} />
         <button
           onClick={handlers.open}

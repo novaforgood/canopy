@@ -27,6 +27,10 @@ export function EnterContactInfo(props: EnterContactInfoProps) {
           Email and social platforms
         </Text>
         <div className="h-4"></div>
+        <Text className="text-gray-600">
+          Add links to your Instagram, Linkedin, or Twitter profiles!
+        </Text>
+        <div className="h-4"></div>
         <EditProfileSocials />
       </div>
     </StageDisplayWrapper>
