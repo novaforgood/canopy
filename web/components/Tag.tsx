@@ -15,7 +15,7 @@ export function Tag(props: TagProps) {
   const tagContainerStyles = classNames({
     "rounded-full flex items-center px-3 py-1": true,
     "bg-lime-200": variant === "primary",
-    "bg-white border-2 border-lime-700": variant === "outline",
+    "bg-white border border-lime-700": variant === "outline",
   });
 
   const tagStyles = classNames({
