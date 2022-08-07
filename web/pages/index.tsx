@@ -8,11 +8,8 @@ import { LandingSection } from "../components/landing-page/LandingSection";
 import { MeaningfulRelationships } from "../components/landing-page/MeaningfulRelationships";
 import { Responsive } from "../components/layout/Responsive";
 import { SidePadding } from "../components/layout/SidePadding";
-import { useAllProfilesOfUserQuery } from "../generated/graphql";
-import { BxExit } from "../generated/icons/regular";
+import { LoggedInHomePage } from "../components/LoggedInHomePage";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
-import { useUserData } from "../hooks/useUserData";
-import { signOut } from "../lib/firebase";
 import { CustomPage } from "../types";
 
 function LandingPage() {
@@ -123,56 +120,6 @@ function LandingPage() {
         </Button>
       </LandingSection>
     </div>
-  );
-}
-
-function LoggedInHomePage() {
-  const { userData } = useUserData();
-  const [{ data: profileData }] = useAllProfilesOfUserQuery({
-    variables: { user_id: userData?.id ?? "" },
-  });
-  const router = useRouter();
-  return (
-    <SidePadding className="min-h-screen bg-gray-50">
-      <div className="flex flex-col items-center pt-12">
-        <Text variant="heading4">Welcome to Canopy!</Text>
-
-        <div className="h-12"></div>
-
-        <div className="flex flex-col gap-4 items-start w-full sm:w-120">
-          {profileData?.profile.map((profile) => {
-            return (
-              <button
-                className="border p-2 flex justify-between items-center w-full bg-white"
-                key={profile.id}
-                onClick={() => {
-                  router.push(`/space/${profile.space.slug}`);
-                }}
-              >
-                <Text variant="heading4" mobileVariant="subheading2">
-                  {profile.space.name}
-                </Text>
-                <BxExit className="w-6 h-6 hover:text-gray-700" />
-              </button>
-            );
-          })}
-        </div>
-        <div className="h-12"></div>
-        <Button
-          onClick={() => {
-            router.push("/create");
-          }}
-        >
-          Create new directory
-        </Button>
-        <div className="h-8 sm:h-16"></div>
-        <Button onClick={signOut} variant="outline">
-          Log out
-        </Button>
-
-        <div className="h-4"></div>
-      </div>
-    </SidePadding>
   );
 }
 
