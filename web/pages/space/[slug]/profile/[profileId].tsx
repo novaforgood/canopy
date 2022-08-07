@@ -226,7 +226,7 @@ const SpaceHomepage: CustomPage = () => {
       </div>
       <SidePadding className="bg-gray-100">
         <div className="h-16"></div>
-        <Link href={`/space/${currentSpace?.slug}`}>{"< Mentors"}</Link>
+        <Link href={`/space/${currentSpace?.slug}`}>{"< Members"}</Link>
         <div className="h-8"></div>
 
         <div className="border border-black rounded-lg w-full flex flex-col pb-12 bg-white">

@@ -6,7 +6,7 @@ import { SidePadding } from "./layout/SidePadding";
 
 export function Footer() {
   return (
-    <SidePadding className="bg-green-700">
+    <SidePadding as="footer" className="bg-green-700">
       <div className="border-t-2 border-gray-700 pt-8 pb-12 flex gap-8 justify-between text-gray-100 font-sans text-sm">
         <div className="flex gap-4">
           <img

@@ -8,6 +8,7 @@ import {
   signOut as firebaseSignOut,
   createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword,
   signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
+  sendPasswordResetEmail as firebaseSendPasswordResetEmail,
   NextOrObserver,
   User,
   ErrorFn,
@@ -62,3 +63,6 @@ export const createUserWithEmailAndPassword = (
 // Sign in with email and password
 export const signInWithEmailAndPassword = (email: string, password: string) =>
   firebaseSignInWithEmailAndPassword(auth, email, password);
+
+export const sendPasswordResetEmail = (email: string) =>
+  firebaseSendPasswordResetEmail(auth, email);
