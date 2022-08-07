@@ -172,7 +172,16 @@ const LoginPage: CustomPage = () => {
               />
             </div>
 
-            <div className="h-16"></div>
+            <div className="h-4"></div>
+            <Link href="/reset-password">
+              <a>
+                <Text variant="body2" className="hover:underline text-gray-700">
+                  Forgot your password?
+                </Text>
+              </a>
+            </Link>
+
+            <div className="h-8"></div>
             <Button
               loading={signingIn}
               rounded

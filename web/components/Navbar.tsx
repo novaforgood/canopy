@@ -27,6 +27,7 @@ function MobileNavbar() {
   const { currentProfile, currentProfileHasRole } = useCurrentProfile();
 
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
+  const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
 
   const img = currentProfile?.profile_listing?.profile_listing_image?.image.url;
 
@@ -80,23 +81,28 @@ function MobileNavbar() {
           <div className="h-6"></div>
 
           <div className="flex flex-col gap-2">
-            <Button
-              className="w-full justify-center"
-              onClick={() => {
-                navigate(`/space/${currentSpace?.slug}`);
-              }}
-            >
-              Browse Community Profiles
-            </Button>
-            <Button
-              className="w-full justify-center"
-              variant="outline"
-              onClick={() => {
-                navigate(`/space/${currentSpace?.slug}/account`);
-              }}
-            >
-              Your Account
-            </Button>
+            {isMember && (
+              <>
+                <Button
+                  className="w-full justify-center"
+                  onClick={() => {
+                    navigate(`/space/${currentSpace?.slug}`);
+                  }}
+                >
+                  Browse Community Profiles
+                </Button>
+
+                <Button
+                  className="w-full justify-center"
+                  variant="outline"
+                  onClick={() => {
+                    navigate(`/space/${currentSpace?.slug}/account`);
+                  }}
+                >
+                  Your Account
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="h-8"></div>
@@ -111,21 +117,26 @@ function MobileNavbar() {
               </button>
             )}
 
-            <button
-              onClick={() => {
-                navigate(`/space/${currentSpace?.slug}/account/profile`);
-              }}
-            >
-              Edit Your Profile
-            </button>
-            {/* <button>Your Connections</button> */}
-            <button
-              onClick={() => {
-                navigate("/");
-              }}
-            >
-              Switch Community Spaces
-            </button>
+            {isMember && (
+              <>
+                <button
+                  onClick={() => {
+                    navigate(`/space/${currentSpace?.slug}/account/profile`);
+                  }}
+                >
+                  Edit Your Profile
+                </button>
+                {/* <button>Your Connections</button> */}
+                <button
+                  onClick={() => {
+                    navigate("/");
+                  }}
+                >
+                  Switch Community Spaces
+                </button>
+              </>
+            )}
+
             <button
               onClick={() => {
                 signOut().then(() => {
@@ -147,6 +158,7 @@ export function Navbar() {
   const { currentSpace } = useCurrentSpace();
   const { currentProfileHasRole } = useCurrentProfile();
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
+  const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
 
   const arr = router.asPath.split("/");
   const isInAdminDashboard = arr.includes("admin");
@@ -157,7 +169,15 @@ export function Navbar() {
         <SidePadding>
           <div className="flex items-center justify-between pt-12">
             <div className="flex">
-              <SpaceDropdown />
+              {!isMember ? (
+                <img
+                  src={"/assets/canopyLogo.svg"}
+                  alt="Canopy Logo"
+                  draggable={false}
+                />
+              ) : (
+                <SpaceDropdown />
+              )}
               {isAdmin &&
                 (isInAdminDashboard ? (
                   <Button
