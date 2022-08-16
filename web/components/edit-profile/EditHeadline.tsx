@@ -10,6 +10,7 @@ import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { Input, Text } from "../atomic";
 import { EditButton } from "../EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
+import { SimpleTextArea } from "../inputs/SimpleTextArea";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
 
@@ -53,7 +54,7 @@ export function EditHeadline() {
         <div className="p-8 py-16 w-96 flex flex-col">
           <Text variant="heading4">Headline</Text>
           <div className="h-4"></div>
-          <TextInput
+          <SimpleTextArea
             characterLimit={100}
             value={headlineInputValue}
             onValueChange={setHeadlineInputValue}

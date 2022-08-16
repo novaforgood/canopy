@@ -2,9 +2,9 @@
 // https://stackoverflow.com/a/53758827
 
 export function shuffleProfiles<T>(array: T[], seed: number) {
-  var m = array.length;
-  var t;
-  var i;
+  let m = array.length;
+  let t;
+  let i;
 
   while (m) {
     i = Math.floor(random(seed) * m--);
@@ -19,6 +19,6 @@ export function shuffleProfiles<T>(array: T[], seed: number) {
 }
 
 function random(seed: number) {
-  var x = Math.sin(seed++) * 10000;
+  const x = Math.sin(seed++) * 10000;
   return x - Math.floor(x);
 }
