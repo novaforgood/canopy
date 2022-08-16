@@ -21,6 +21,8 @@ import { ProfileCard } from "../ProfileCard";
 import { Tag } from "../Tag";
 
 import { SpaceSplashPage } from "./SpaceSplashPage";
+import { shuffleProfiles } from "./ShuffleProfiles";
+import { getDayOfYear } from "date-fns";
 
 type TagSelection = Record<string, Set<string>>;
 interface FilterBarProps {
@@ -154,6 +156,10 @@ export function SpaceLandingPage() {
     });
 
   const allProfileListings = profileListingData?.profile_listing ?? [];
+  const shuffledProfileListings = shuffleProfiles(
+    allProfileListings,
+    getDayOfYear(new Date())
+  );
 
   return (
     <div>
@@ -170,7 +176,7 @@ export function SpaceLandingPage() {
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {allProfileListings.map((listing, idx) => {
+        {shuffledProfileListings.map((listing, idx) => {
           const { first_name, last_name } = listing.profile.user;
 
           const tagNames =

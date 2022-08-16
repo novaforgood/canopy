@@ -4,7 +4,7 @@ import {
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
   Space_Listing_Question,
-  useUpdateListingHeadlineMutation,
+  useUpsertProfileListingMutation,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { Input, Text } from "../atomic";
@@ -18,7 +18,7 @@ export function EditHeadline() {
 
   const [headlineInputValue, setHeadlineInputValue] = useState("");
 
-  const [_, updateListingHeadline] = useUpdateListingHeadlineMutation();
+  const [__, upsertProfileListing] = useUpsertProfileListingMutation();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,9 +34,12 @@ export function EditHeadline() {
         onClose={() => setIsOpen(false)}
         actionText="Save"
         onAction={async () => {
-          await updateListingHeadline({
-            profile_id: currentProfile?.id ?? "",
-            headline: headlineInputValue,
+          await upsertProfileListing({
+            profile_listing: {
+              headline: headlineInputValue,
+              profile_id: currentProfile?.id ?? "",
+            },
+            update_columns: [Profile_Listing_Update_Column.Headline],
           });
 
           refetchCurrentProfile();
