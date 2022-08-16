@@ -5,7 +5,7 @@ import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
-type TextAreaProps = TextareaAutosizeProps &
+export type TextAreaProps = TextareaAutosizeProps &
   Omit<HTMLProps<HTMLTextAreaElement>, "style" | "ref"> & {
     onValueChange?: (value: string) => void;
   };
