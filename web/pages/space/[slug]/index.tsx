@@ -80,6 +80,62 @@ function CollapsibleTipsBar() {
   );
 }
 
+interface IconTipProps {
+  icon: ReactNode;
+  tip: string;
+}
+function IconTip(props: IconTipProps) {
+  const { icon, tip } = props;
+
+  return (
+    <div className="flex items-center gap-4">
+      <div className="border border-green-900 rounded-full w-10 h-10 p-2 shrink-0">
+        {icon}
+      </div>
+      <Text variant="body2">{tip}</Text>
+    </div>
+  );
+}
+
+function CollapsibleTipsBar() {
+  const [visible, setVisible] = useState(true);
+
+  const styles = classNames({
+    hidden: !visible,
+  });
+
+  return (
+    <div className={styles}>
+      <div className="bg-lime-100 border-b border-gray-600 text-green-800 w-full py-8 relative">
+        <SidePadding className="">
+          <div className="grid grid-rows sm:grid-cols-3 gap-4 sm:gap-12">
+            <IconTip
+              icon={<BxGroup />}
+              tip="Browse the community directory below"
+            />
+            <IconTip
+              icon={<BxLike />}
+              tip="Click the profile of someone you want to connect with"
+            />
+            <IconTip
+              icon={<BxEnvelope />}
+              tip="Contact them through the “Introduce Yourself” button!"
+            />
+          </div>
+        </SidePadding>
+        <button
+          className="absolute top-0 right-0"
+          onClick={() => {
+            setVisible(false);
+          }}
+        >
+          <BxX className="h-8 w-8 m-2 hover:text-green-700" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const SpaceHomepage: CustomPage = () => {
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
 
