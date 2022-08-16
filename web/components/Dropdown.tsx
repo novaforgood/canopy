@@ -28,6 +28,7 @@ import { signOut } from "../lib/firebase";
 
 import { Text } from "./atomic";
 import { ProfileImage } from "./ProfileImage";
+import { LocalStorage } from "../lib/localStorage";
 
 export function Dropdown() {
   const { userData } = useUserData();
@@ -129,6 +130,7 @@ export function Dropdown() {
                             className={styles}
                             onClick={() => {
                               signOut().then(() => {
+                                LocalStorage.clear();
                                 router.push("/");
                               });
                             }}

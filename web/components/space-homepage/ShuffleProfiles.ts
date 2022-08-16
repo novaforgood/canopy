@@ -1,7 +1,7 @@
 // code for shuffling based on seed taken from
 // https://stackoverflow.com/a/53758827
 
-export function shuffleProfiles(array: any[], seed: number) {
+export function shuffleProfiles<T>(array: T[], seed: number) {
   var m = array.length;
   var t;
   var i;

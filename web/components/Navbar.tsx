@@ -18,6 +18,7 @@ import { SidePadding } from "./layout/SidePadding";
 import { ProfileImage } from "./ProfileImage";
 import { SpaceDropdown } from "./SpaceDropdown";
 import { FadeTransition } from "./transitions/FadeTransition";
+import { LocalStorage } from "../lib/localStorage";
 
 function MobileNavbar() {
   const router = useRouter();
@@ -140,6 +141,7 @@ function MobileNavbar() {
             <button
               onClick={() => {
                 signOut().then(() => {
+                  LocalStorage.clear();
                   navigate("/");
                 });
               }}
