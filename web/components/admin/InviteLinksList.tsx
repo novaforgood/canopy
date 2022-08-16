@@ -132,7 +132,7 @@ export function InviteLinksList() {
               space_id: currentSpace.id,
               type: linkType,
               expires_at: new Date(
-                Date.now() + 1000 * 60 * 60 * 24 * 7 * 0
+                Date.now() + 1000 * 60 * 60 * 24 * 7
               ).toISOString(), // One week
             });
 
