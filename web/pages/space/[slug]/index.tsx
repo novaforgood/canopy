@@ -18,6 +18,7 @@ import {
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { CustomPage } from "../../../types";
+import { LocalStorage, LocalStorageKey } from "../../../lib/localStorage";
 
 interface IconTipProps {
   icon: ReactNode;
@@ -37,10 +38,13 @@ function IconTip(props: IconTipProps) {
 }
 
 function CollapsibleTipsBar() {
-  const [visible, setVisible] = useState(true);
+  // hidden if already seen before
+  const [hidden, setHidden] = useState(
+    LocalStorage.get(LocalStorageKey.SpaceHomepageBannerClosed)
+  );
 
   const styles = classNames({
-    hidden: !visible,
+    hidden: hidden,
   });
 
   return (
@@ -65,7 +69,8 @@ function CollapsibleTipsBar() {
         <button
           className="absolute top-0 right-0"
           onClick={() => {
-            setVisible(false);
+            setHidden(true);
+            LocalStorage.set(LocalStorageKey.SpaceHomepageBannerClosed, true);
           }}
         >
           <BxX className="h-8 w-8 m-2 hover:text-green-700" />

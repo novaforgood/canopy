@@ -156,7 +156,7 @@ query InviteLinks($space_id: uuid!) {
 mutation CreateInviteLink(
   $space_id: uuid!
   $type: space_invite_link_type_enum!
-  $expires_at: timestamptz!
+  $expires_at: timestamptz
 ) {
   insert_space_invite_link_one(
     object: { space_id: $space_id, type: $type, expires_at: $expires_at }

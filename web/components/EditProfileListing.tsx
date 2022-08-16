@@ -86,6 +86,11 @@ export function EditProfileListing(props: EditProfileListingProps) {
               <div className="h-1"></div>
               <Text variant="body1">
                 {currentProfile.profile_listing?.headline}
+                {/* EDIT BUTTON FOR HEADLINE */}
+                <EditButton
+                  className="mb-1 ml-1"
+                  onClick={socialsHandlers.open}
+                />
               </Text>
             </div>
           </div>

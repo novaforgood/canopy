@@ -1,4 +1,10 @@
-import { createFactory, Fragment, ImgHTMLAttributes, useState } from "react";
+import {
+  createFactory,
+  Fragment,
+  ImgHTMLAttributes,
+  useEffect,
+  useState,
+} from "react";
 
 import { useRouter } from "next/router";
 
@@ -16,9 +22,12 @@ import { Tag } from "../Tag";
 
 import { SpaceSplashPage } from "./SpaceSplashPage";
 
+type TagSelection = Record<string, Set<string>>;
 interface FilterBarProps {
-  selectedTagIds: Set<string>;
-  onChange: (newTagIds: Set<string>) => void;
+  selectedTagIds: TagSelection;
+  onChange: (newTagIds: TagSelection) => void;
+  // selectedTagIds: Set<string>;
+  // onChange: (newTagIds: Set<string>) => void;
 }
 function FilterBar(props: FilterBarProps) {
   const { selectedTagIds, onChange } = props;
@@ -34,6 +43,21 @@ function FilterBar(props: FilterBarProps) {
     return null;
   }
 
+  const tagAdded = (categoryId: string, tagId: string) => {
+    const updatedCategory = new Set([
+      ...Array.from(selectedTagIds[categoryId] ?? []),
+      tagId,
+    ]);
+    return { ...selectedTagIds, [categoryId]: updatedCategory };
+  };
+
+  const tagRemoved = (categoryId: string, tagId: string) => {
+    const updatedCategory = new Set(
+      Array.from(selectedTagIds[categoryId] ?? []).filter((id) => id !== tagId)
+    );
+    return { ...selectedTagIds, [categoryId]: updatedCategory };
+  };
+
   return (
     <div>
       <div className="flex items-center gap-4">
@@ -45,17 +69,17 @@ function FilterBar(props: FilterBarProps) {
                 key={category.id}
                 placeholder={category.title}
                 options={category.space_tags
-                  .filter((category) => !category.deleted)
+                  .filter((tag) => !tag.deleted)
                   .map((tag) => ({
                     value: tag.id,
                     label: tag.label,
                   }))}
                 value={null}
                 onSelect={(newTagId) => {
-                  if (newTagId)
-                    onChange(
-                      new Set([...Array.from(selectedTagIds), newTagId])
-                    );
+                  if (newTagId) onChange(tagAdded(category.id, newTagId));
+                  // onChange(
+                  //   new Set([...Array.from(selectedTagIds), newTagId])
+                  // );
                 }}
               />
             </div>
@@ -66,25 +90,27 @@ function FilterBar(props: FilterBarProps) {
       <div className="flex gap-2">
         {currentSpace?.space_tag_categories.map((category) => {
           return (
-            <Fragment key={category.id}>
+            <div key={category.id} className="flex gap-2 pr-4">
               {category.space_tags.map((tag) =>
-                selectedTagIds.has(tag.id) ? (
+                selectedTagIds[category.id] &&
+                selectedTagIds[category.id].has(tag.id) ? (
                   <Tag
                     text={tag.label}
                     key={tag.id}
                     onDeleteClick={() => {
-                      onChange(
-                        new Set(
-                          Array.from(selectedTagIds).filter(
-                            (id) => id !== tag.id
-                          )
-                        )
-                      );
+                      onChange(tagRemoved(category.id, tag.id));
+                      // onChange(
+                      //   new Set(
+                      //     Array.from(selectedTagIds).filter(
+                      //       (id) => id !== tag.id
+                      //     )
+                      //   )
+                      // );
                     }}
                   />
                 ) : null
               )}
-            </Fragment>
+            </div>
           );
         })}
       </div>
@@ -97,7 +123,7 @@ export function SpaceLandingPage() {
 
   const router = useRouter();
 
-  const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
+  const [selectedTagIds, setSelectedTagIds] = useState<TagSelection>({});
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
     useProfileListingsInSpaceQuery({
@@ -111,16 +137,18 @@ export function SpaceLandingPage() {
           },
           public: { _eq: true },
 
-          profile_listing_to_space_tags:
-            selectedTagIds.size > 0
-              ? {
-                  space_tag: {
-                    id: {
-                      _in: Array.from(selectedTagIds),
+          // filter by tags if tags selected
+          ...(Object.keys(selectedTagIds).length > 0
+            ? {
+                _and: Object.values(selectedTagIds)
+                  .filter((set) => set.size > 0)
+                  .map((categoryTagSet) => ({
+                    profile_listing_to_space_tags: {
+                      space_tag_id: { _in: Array.from(categoryTagSet) },
                     },
-                  },
-                }
-              : undefined,
+                  })),
+              }
+            : undefined),
         },
       },
     });
