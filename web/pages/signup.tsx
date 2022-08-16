@@ -114,7 +114,7 @@ const SignUpPage: CustomPage = () => {
             );
           }}
         >
-          <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16">
+          <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16 text-green-900">
             <Text variant="heading3">
               Sign up{router.query.redirect && " to continue"}
             </Text>
