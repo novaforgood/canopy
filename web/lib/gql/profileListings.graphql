@@ -90,6 +90,18 @@ mutation UpsertListingResponses(
   }
 }
 
+## Headline
+mutation UpdateListingHeadline($profile_id: uuid!, $headline: String!) {
+  update_profile_listing(
+    where: { profile_id: { _eq: $profile_id } }
+    _set: { headline: $headline }
+  ) {
+    returning {
+      id
+    }
+  }
+}
+
 ## Social media links
 
 query ProfileListingSocials($profile_listing_id: uuid!) {
