@@ -288,7 +288,7 @@ const SpaceHomepage: CustomPage = () => {
                     }}
                     disabled={profileId === currentProfile?.id}
                   >
-                    Introduce me
+                    Contact {first_name}
                   </Button>
                 </div>
               </div>

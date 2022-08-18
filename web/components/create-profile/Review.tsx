@@ -52,6 +52,7 @@ export function Review(props: ReviewProps) {
         <div className="h-8"></div>
         <EditProfileListing showPublishedToggle={false} />
         <div className="h-16"></div>
+
         <div className="flex">
           <Button
             variant="primary"
@@ -87,9 +88,19 @@ export function Review(props: ReviewProps) {
           </Button>
         </div>
         <div className="h-8"></div>
-        <Text variant="body2" className="text-gray-600">
-          Don’t worry, you can always edit your profile later!
-        </Text>
+        <div className="max-w-3xl">
+          <Text variant="body2" className="text-gray-600">
+            Don’t worry, you can always edit your profile later!
+          </Text>
+          <div className="h-4"></div>
+
+          <Text variant="body2" className="text-gray-400">
+            By publishing your profile, you are making it possible for others in
+            your community to reach out to you. Please always keep interactions
+            respectful and know that you never have to respond if you don’t want
+            to.
+          </Text>
+        </div>
 
         <Modal isOpen={publishModalOpened} onClose={() => {}}>
           <div className="bg-white px-12 pt-16 pb-8 rounded-md">
