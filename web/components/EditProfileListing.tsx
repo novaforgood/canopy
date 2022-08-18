@@ -10,6 +10,7 @@ import { Button, Text } from "./atomic";
 import { EditProfileImageModal } from "./edit-profile/EditProfileImageModal";
 import { EditProfileTags } from "./edit-profile/EditProfileTags";
 import { EditResponse } from "./edit-profile/EditResponse";
+import { EditHeadline } from "./edit-profile/EditHeadline";
 import { ProfileSocialsDisplay } from "./edit-socials-info/ProfileSocialsDisplay";
 import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
 import { EditButton } from "./EditButton";
@@ -84,9 +85,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
                 {first_name} {last_name}
               </Text>
               <div className="h-1"></div>
-              <Text variant="body1">
-                {currentProfile.profile_listing?.headline}
-              </Text>
+              <EditHeadline />
             </div>
           </div>
           <div className="h-16"></div>

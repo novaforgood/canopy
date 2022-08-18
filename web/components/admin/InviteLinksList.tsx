@@ -50,8 +50,10 @@ export function InviteLinksList() {
         {inviteLinksData?.space_invite_link?.map((inviteLink) => {
           const link = `${window.location.origin}/space/${currentSpace.slug}/join/${inviteLink.id}`;
 
-          const expiredTime = new Date(inviteLink.expires_at);
-          const isExpired = expiredTime.getTime() < Date.now();
+          const expiredTime = inviteLink.expires_at
+            ? new Date(inviteLink.expires_at)
+            : null;
+          const isExpired = expiredTime && expiredTime.getTime() < Date.now();
           return (
             <div
               key={inviteLink.id}
@@ -63,11 +65,9 @@ export function InviteLinksList() {
                 <Text bold>
                   {isExpired
                     ? "Expired"
+                    : expiredTime === null
+                    ? "Never"
                     : `${getTimeRelativeToNow(expiredTime)}`}
-                  {/* {format(
-                      new Date(inviteLink.expires_at),
-                      "MMM dd yyyy, h:mm a"
-                    )} */}
                 </Text>
               </Text>
               <Text className="text-gray-600">
@@ -145,6 +145,31 @@ export function InviteLinksList() {
           }}
         >
           Create Invite Link
+        </Button>
+        <Button
+          variant="cta"
+          disabled={!linkType}
+          onClick={async () => {
+            if (!linkType) {
+              toast.error("Please select a link type");
+              return;
+            }
+
+            const { data, error } = await createInviteLink({
+              space_id: currentSpace.id,
+              type: linkType,
+              expires_at: null,
+            });
+
+            if (error) {
+              toast.error(error.message);
+            } else {
+              toast.success("Invite link created");
+              refetchInviteLinks();
+            }
+          }}
+        >
+          Create Permanent Link
         </Button>
       </div>
     </div>

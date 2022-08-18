@@ -3,6 +3,7 @@ type JSONType = Record<string, unknown> | string | boolean | number;
 export enum LocalStorageKey {
   CreateSpace = "CreateSpace",
   LastVisitedSpaceId = "LastVisitedSpaceId",
+  SpaceHomepageBannerClosed = "SpaceHomepageBannerClosed",
 }
 
 export const LocalStorage = {
