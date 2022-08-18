@@ -8,6 +8,7 @@ import {
   useUpsertSpaceProfileSchemaMutation,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { resolveId } from "../../lib/tempId";
 import { Button, Text } from "../atomic";
 import CatchUnsavedChangesModal from "../modals/CatchUnsavedChangesModal";
 
@@ -50,10 +51,12 @@ export function EditProfileFormat() {
     await upsertSpaceProfileSchema({
       space_listing_questions: data.listingQuestions.map((question, index) => ({
         ...question,
+        id: resolveId(question.id),
         listing_order: index,
       })),
       space_tag_categories: data.tagCategories.map((category, index) => ({
         ...category,
+        id: resolveId(category.id),
         listing_order: index,
         space_tags: category.space_tags
           ? {
@@ -114,6 +117,7 @@ export function EditProfileFormat() {
       <EditProfileSchema
         data={data}
         onChange={(newData) => {
+          console.log(newData);
           setEdited(true);
           setData(newData);
         }}
