@@ -7,10 +7,56 @@ import {
   Space_Tag_Category_Insert_Input,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { getTempId, isTempId } from "../../lib/tempId";
 import { Text } from "../atomic";
 import { AddSectionButton } from "../create-space/AddSectionButton";
 import { EditQuestion } from "../create-space/EditQuestion";
 import { EditTagCategory } from "../create-space/EditTagCategory";
+
+/**
+ * If item has a uuid, mark it as deleted.
+ * Otherwise, set to null to be filtered out.
+ */
+function deleteItemFromList<TItem extends { id?: string | null }>(
+  list: TItem[],
+  idToDelete?: string | null
+) {
+  return list
+    .map((item: TItem) => {
+      if (!item.id || !idToDelete) {
+        return null;
+      }
+      if (item.id === idToDelete) {
+        if (isTempId(item.id)) {
+          return null;
+        } else {
+          return { ...item, deleted: true };
+        }
+      } else {
+        return item;
+      }
+    })
+    .filter((item) => item !== null) as TItem[];
+}
+
+/**
+ * If item in array has the same id, replace it with the new item
+ */
+function updateItemInList<TItem extends { id?: string | null }>(
+  list: TItem[],
+  newItem: TItem
+) {
+  return list.map((item: TItem) => {
+    if (!item.id) {
+      return item;
+    }
+    if (item.id === newItem.id) {
+      return newItem;
+    } else {
+      return item;
+    }
+  });
+}
 
 export type EditProfileSchemaData = {
   listingQuestions: Space_Listing_Question_Insert_Input[];
@@ -20,6 +66,12 @@ export type EditProfileSchemaData = {
 interface EditProfileSchemaProps {
   data: EditProfileSchemaData;
   onChange: (data: EditProfileSchemaData) => void;
+
+  /**
+   * If true, all listingQuestions and tagCategories must have a space_id.
+   *
+   * (false when creating a space)
+   */
   requireSpace?: boolean;
 }
 
@@ -58,24 +110,19 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                       question={question}
                       onSave={(newQuestion) => {
                         onChange({
-                          listingQuestions: [
-                            ...data.listingQuestions.slice(0, index),
-                            newQuestion,
-                            ...data.listingQuestions.slice(index + 1),
-                          ],
+                          listingQuestions: updateItemInList(
+                            data.listingQuestions,
+                            newQuestion
+                          ),
                           tagCategories: data.tagCategories,
                         });
                       }}
                       onDelete={() => {
-                        const delArr = question.id
-                          ? [{ ...question, deleted: true }]
-                          : [];
                         onChange({
-                          listingQuestions: [
-                            ...data.listingQuestions.slice(0, index),
-                            ...delArr,
-                            ...data.listingQuestions.slice(index + 1),
-                          ],
+                          listingQuestions: deleteItemFromList(
+                            data.listingQuestions,
+                            question.id
+                          ),
                           tagCategories: data.tagCategories,
                         });
                       }}
@@ -97,6 +144,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                     listingQuestions: [
                       ...data.listingQuestions,
                       {
+                        id: getTempId(),
                         space_id: currentSpace.id,
                         title: "New Profile Question",
                         char_count: 200,
@@ -110,6 +158,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                     listingQuestions: [
                       ...data.listingQuestions,
                       {
+                        id: getTempId(),
                         title: "New Profile Question",
                         char_count: 200,
                         deleted: false,
@@ -136,24 +185,19 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                       tagCategory={tagCategory}
                       onSave={(newTagCategory) => {
                         onChange({
-                          tagCategories: [
-                            ...data.tagCategories.slice(0, index),
-                            newTagCategory,
-                            ...data.tagCategories.slice(index + 1),
-                          ],
+                          tagCategories: updateItemInList(
+                            data.tagCategories,
+                            newTagCategory
+                          ),
                           listingQuestions: data.listingQuestions,
                         });
                       }}
                       onDelete={() => {
-                        const delArr = tagCategory.id
-                          ? [{ ...tagCategory, deleted: true }]
-                          : [];
                         onChange({
-                          tagCategories: [
-                            ...data.tagCategories.slice(0, index),
-                            ...delArr,
-                            ...data.tagCategories.slice(index + 1),
-                          ],
+                          tagCategories: deleteItemFromList(
+                            data.tagCategories,
+                            tagCategory.id
+                          ),
                           listingQuestions: data.listingQuestions,
                         });
                       }}
