@@ -6,5 +6,3 @@ alter table "public"."space_listing_question" add constraint "space_listing_ques
 
 alter table "public"."space_listing_question" drop constraint "space_listing_question_listing_order_space_id_id_key";
 alter table "public"."space_listing_question" add constraint "space_listing_question_listing_order_space_id_key" unique ("listing_order", "space_id");
-
-alter table "public"."space_tag" drop constraint "space_tag_label_space_tag_category_id_key";
