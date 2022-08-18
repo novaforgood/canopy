@@ -117,7 +117,6 @@ export function EditProfileFormat() {
       <EditProfileSchema
         data={data}
         onChange={(newData) => {
-          console.log(newData);
           setEdited(true);
           setData(newData);
         }}
