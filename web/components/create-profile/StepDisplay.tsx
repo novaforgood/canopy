@@ -8,11 +8,18 @@ interface StepDisplayProps {
   stepNumber: number;
   title: string;
   description: string;
+  secondaryDescription?: string;
   highlighted?: boolean;
 }
 
 export function StepDisplay(props: StepDisplayProps) {
-  const { stepNumber, title, description, highlighted = false } = props;
+  const {
+    stepNumber,
+    title,
+    description,
+    highlighted = false,
+    secondaryDescription,
+  } = props;
 
   const styles = classNames({
     "w-full px-6 py-3 rounded-md flex": true,
@@ -33,6 +40,14 @@ export function StepDisplay(props: StepDisplayProps) {
         <Text variant="body2" className="text-gray-600">
           {description}
         </Text>
+        {secondaryDescription && (
+          <>
+            <div className="h-2"></div>
+            <Text variant="body3" className="text-gray-400">
+              {secondaryDescription}
+            </Text>
+          </>
+        )}
       </div>
     </div>
   );
