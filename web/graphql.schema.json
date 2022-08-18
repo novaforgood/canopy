@@ -18383,12 +18383,6 @@
             "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
-          },
-          {
-            "name": "space_listing_question_space_id_listing_order_key",
-            "description": "unique or primary key constraint",
-            "isDeprecated": false,
-            "deprecationReason": null
           }
         ],
         "possibleTypes": null

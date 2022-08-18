@@ -7,10 +7,10 @@ import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
 
 import { Button, Text } from "./atomic";
+import { EditHeadline } from "./edit-profile/EditHeadline";
 import { EditProfileImageModal } from "./edit-profile/EditProfileImageModal";
 import { EditProfileTags } from "./edit-profile/EditProfileTags";
 import { EditResponse } from "./edit-profile/EditResponse";
-import { EditHeadline } from "./edit-profile/EditHeadline";
 import { ProfileSocialsDisplay } from "./edit-socials-info/ProfileSocialsDisplay";
 import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
 import { EditButton } from "./EditButton";
@@ -102,7 +102,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
                 <div className="h-4"></div>
 
                 <Button disabled rounded>
-                  Introduce me
+                  Contact {first_name}
                 </Button>
               </div>
             </div>
