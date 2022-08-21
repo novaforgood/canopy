@@ -31,8 +31,7 @@ export function SpaceSplashPage() {
       <div className="flex-1 self-stretch -mx-6 sm:mx-0">
         <SpaceCoverPhoto
           className="h-full w-full bg-gray-50"
-          // src={currentSpace?.space_cover_image?.image.url}
-          src={undefined}
+          src={currentSpace?.space_cover_image?.image.url}
         ></SpaceCoverPhoto>
       </div>
       <div className="flex-col flex-1 flex sm:hidden">
