@@ -94,12 +94,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
 
   const { currentSpace } = useCurrentSpace();
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd =
     (key: "listingQuestions" | "tagCategories") => (event: DragEndEvent) => {
