@@ -10,22 +10,24 @@ import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
+import { LocalStorage } from "../lib/localStorage";
 
 import { Button, Text } from "./atomic";
 import { Dropdown } from "./Dropdown";
 import { Responsive } from "./layout/Responsive";
 import { SidePadding } from "./layout/SidePadding";
+import { LoadingPlaceholderRect } from "./LoadingPlaceholderRect";
 import { ProfileImage } from "./ProfileImage";
 import { SpaceDropdown } from "./SpaceDropdown";
 import { FadeTransition } from "./transitions/FadeTransition";
-import { LocalStorage } from "../lib/localStorage";
 
 function MobileNavbar() {
   const router = useRouter();
 
-  const { currentSpace } = useCurrentSpace();
+  const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const { userData } = useUserData();
-  const { currentProfile, currentProfileHasRole } = useCurrentProfile();
+  const { currentProfile, currentProfileHasRole, fetchingCurrentProfile } =
+    useCurrentProfile();
 
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
   const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
@@ -157,8 +159,8 @@ function MobileNavbar() {
 
 export function Navbar() {
   const router = useRouter();
-  const { currentSpace } = useCurrentSpace();
-  const { currentProfileHasRole } = useCurrentProfile();
+  const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
+  const { currentProfileHasRole, fetchingCurrentProfile } = useCurrentProfile();
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
   const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
 
@@ -171,7 +173,9 @@ export function Navbar() {
         <SidePadding>
           <div className="flex items-center justify-between pt-12">
             <div className="flex">
-              {!isMember ? (
+              {fetchingCurrentProfile ? (
+                <LoadingPlaceholderRect className="h-10 w-64" />
+              ) : !isMember ? (
                 <img
                   src={"/assets/canopyLogo.svg"}
                   alt="Canopy Logo"

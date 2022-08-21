@@ -1,4 +1,4 @@
-import { ImgHTMLAttributes } from "react";
+import { ImgHTMLAttributes, useState } from "react";
 
 import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
@@ -14,39 +14,27 @@ type SpaceCoverPhotoProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
 
 export function SpaceCoverPhoto(props: SpaceCoverPhotoProps) {
   const { src, alt, className, style, ...rest } = props;
-  const { ref, width } = useElementSize();
-
-  const desiredHeight = (width * 3) / 4;
 
   const styles = classNames({
-    "bg-olive-200": true,
+    "bg-olive-200 h-full w-full flex items-center justify-center": true,
     [`${className}`]: true,
   });
 
-  return src ? (
-    <img
-      ref={ref}
-      src={src}
-      alt={alt}
-      className={styles}
-      draggable={false}
-      style={{ ...style, height: desiredHeight }}
-      {...rest}
-    />
-  ) : (
-    <div
-      ref={ref}
-      className={styles}
-      style={{
-        ...style,
-        height: desiredHeight,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      {...rest}
-    >
-      <BxsImage className="w-1/2 text-gray-50" />
+  return (
+    <div style={{ ...style, aspectRatio: "4 / 3" }}>
+      {src ? (
+        <img
+          src={src}
+          alt={alt}
+          className={styles}
+          draggable={false}
+          {...rest}
+        />
+      ) : (
+        <div className={styles} {...rest}>
+          <BxsImage className="w-1/2 text-gray-50" />
+        </div>
+      )}
     </div>
   );
 }

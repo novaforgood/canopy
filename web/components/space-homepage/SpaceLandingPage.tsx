@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 
+import { getDayOfYear } from "date-fns";
 import { useRouter } from "next/router";
 
 import {
@@ -20,9 +21,7 @@ import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { ProfileCard } from "../ProfileCard";
 import { Tag } from "../Tag";
 
-import { SpaceSplashPage } from "./SpaceSplashPage";
 import { shuffleProfiles } from "./ShuffleProfiles";
-import { getDayOfYear } from "date-fns";
 
 type TagSelection = Record<string, Set<string>>;
 interface FilterBarProps {
@@ -41,10 +40,6 @@ function FilterBar(props: FilterBarProps) {
       (category) => !category.deleted
     ) ?? [];
 
-  if (tagCategories.length === 0) {
-    return null;
-  }
-
   const tagAdded = (categoryId: string, tagId: string) => {
     const updatedCategory = new Set([
       ...Array.from(selectedTagIds[categoryId] ?? []),
@@ -59,6 +54,10 @@ function FilterBar(props: FilterBarProps) {
     );
     return { ...selectedTagIds, [categoryId]: updatedCategory };
   };
+
+  if (tagCategories.length === 0) {
+    return <div className="h-12" />;
+  }
 
   return (
     <div>
@@ -165,40 +164,45 @@ export function SpaceLandingPage() {
     <div>
       <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
-      {fetchingProfileListings && (
-        <div>
-          <Text italic>Loading...</Text>
+      {fetchingProfileListings ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {new Array(8).fill(0).map((_, i) => (
+            <div
+              className="h-80 animate-pulse bg-gray-100 rounded-md"
+              key={i}
+            ></div>
+          ))}
         </div>
-      )}
-      {allProfileListings.length === 0 && (
+      ) : allProfileListings.length === 0 ? (
         <div>
           <Text italic>No profiles found</Text>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {shuffledProfileListings.map((listing, idx) => {
+            const { first_name, last_name } = listing.profile.user;
+
+            const tagNames =
+              listing.profile_listing_to_space_tags?.map(
+                (tag) => tag.space_tag.label
+              ) ?? undefined;
+
+            return (
+              <ProfileCard
+                key={idx}
+                onClick={() => {
+                  router.push(`${router.asPath}/profile/${listing.profile.id}`);
+                }}
+                name={`${first_name} ${last_name}`}
+                imageUrl={listing.profile_listing_image?.image.url}
+                subtitle={listing.headline}
+                descriptionTitle={"Topics"}
+                tags={tagNames}
+              />
+            );
+          })}
+        </div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {shuffledProfileListings.map((listing, idx) => {
-          const { first_name, last_name } = listing.profile.user;
-
-          const tagNames =
-            listing.profile_listing_to_space_tags?.map(
-              (tag) => tag.space_tag.label
-            ) ?? undefined;
-
-          return (
-            <ProfileCard
-              key={idx}
-              onClick={() => {
-                router.push(`${router.asPath}/profile/${listing.profile.id}`);
-              }}
-              name={`${first_name} ${last_name}`}
-              imageUrl={listing.profile_listing_image?.image.url}
-              subtitle={listing.headline}
-              descriptionTitle={"Topics"}
-              tags={tagNames}
-            />
-          );
-        })}
-      </div>
     </div>
   );
 }
