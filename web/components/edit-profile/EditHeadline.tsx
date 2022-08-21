@@ -62,7 +62,9 @@ export function EditHeadline() {
         </div>
       </ActionModal>
       <Text variant="body1">
-        {currentProfile?.profile_listing?.headline}
+        {currentProfile?.profile_listing?.headline ?? (
+          <Text className="text-gray-600">Add a headline</Text>
+        )}
         <EditButton className="mb-1 ml-1" onClick={openModal} />
       </Text>
     </>

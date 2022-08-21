@@ -1,17 +1,31 @@
 import React from "react";
 
+import {
+  DndContext,
+  useSensor,
+  useSensors,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import toast from "react-hot-toast";
 
-import {
-  Space_Listing_Question_Insert_Input,
-  Space_Tag_Category_Insert_Input,
-} from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { getTempId, isTempId } from "../../lib/tempId";
 import { Text } from "../atomic";
-import { AddSectionButton } from "../create-space/AddSectionButton";
-import { EditQuestion } from "../create-space/EditQuestion";
-import { EditTagCategory } from "../create-space/EditTagCategory";
+
+import { AddSectionButton } from "./AddSectionButton";
+import { EditQuestion } from "./EditQuestion";
+import { EditTagCategory } from "./EditTagCategory";
+
+import type { NewListingQuestion, NewTagCategory } from "../../lib/types";
 
 /**
  * If item has a uuid, mark it as deleted.
@@ -59,8 +73,8 @@ function updateItemInList<TItem extends { id?: string | null }>(
 }
 
 export type EditProfileSchemaData = {
-  listingQuestions: Space_Listing_Question_Insert_Input[];
-  tagCategories: Space_Tag_Category_Insert_Input[];
+  listingQuestions: NewListingQuestion[];
+  tagCategories: NewTagCategory[];
 };
 
 interface EditProfileSchemaProps {
@@ -80,6 +94,26 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
 
   const { currentSpace } = useCurrentSpace();
 
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleDragEnd =
+    (key: "listingQuestions" | "tagCategories") => (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      if (!active || !over) {
+        return;
+      }
+
+      if (active.id !== over.id) {
+        const ids = data[key].map((item) => item.id);
+        const oldIndex = ids.indexOf(active.id as string);
+        const newIndex = ids.indexOf(over.id as string);
+
+        const newList = arrayMove(data[key], oldIndex, newIndex);
+        onChange({ ...data, [key]: newList });
+      }
+    };
+
   return (
     <div className="border border-black rounded-lg w-full flex flex-col pb-12">
       <div className="h-20 bg-gray-100 rounded-t-lg"></div>
@@ -98,38 +132,53 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <div className="pt-4 flex flex-col gap-12">
+            <div className="pt-4">
               <Text variant="heading4" bold className="-mb-4">
                 Profile Questions
               </Text>
-              {data.listingQuestions
-                .filter((item) => item.deleted === false)
-                .map((question, index) => {
-                  return (
-                    <EditQuestion
-                      question={question}
-                      onSave={(newQuestion) => {
-                        onChange({
-                          listingQuestions: updateItemInList(
-                            data.listingQuestions,
-                            newQuestion
-                          ),
-                          tagCategories: data.tagCategories,
-                        });
-                      }}
-                      onDelete={() => {
-                        onChange({
-                          listingQuestions: deleteItemFromList(
-                            data.listingQuestions,
-                            question.id
-                          ),
-                          tagCategories: data.tagCategories,
-                        });
-                      }}
-                      key={index}
-                    />
-                  );
-                })}
+              <div className="h-8"></div>
+              <div className="flex flex-col gap-12">
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd("listingQuestions")}
+                >
+                  <SortableContext
+                    items={data.listingQuestions}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {data.listingQuestions.map((question, index) => {
+                      if (question.deleted) {
+                        return null;
+                      }
+                      return (
+                        <EditQuestion
+                          question={question}
+                          onSave={(newQuestion) => {
+                            onChange({
+                              ...data,
+                              listingQuestions: updateItemInList(
+                                data.listingQuestions,
+                                newQuestion
+                              ),
+                            });
+                          }}
+                          onDelete={() => {
+                            onChange({
+                              ...data,
+                              listingQuestions: deleteItemFromList(
+                                data.listingQuestions,
+                                question.id
+                              ),
+                            });
+                          }}
+                          key={question.id}
+                        />
+                      );
+                    })}
+                  </SortableContext>
+                </DndContext>
+              </div>
             </div>
             <div className="h-8"></div>
             <AddSectionButton
@@ -173,38 +222,53 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
             </AddSectionButton>
           </div>
           <div className="flex flex-col">
-            <div className="bg-gray-50 rounded-md p-4 flex flex-col gap-12">
-              <Text variant="heading4" bold className="-mb-4">
+            <div className="bg-gray-50 rounded-md p-4 ">
+              <Text variant="heading4" bold>
                 Tags
               </Text>
-              {data.tagCategories
-                .filter((item) => item.deleted === false)
-                .map((tagCategory, index) => {
-                  return (
-                    <EditTagCategory
-                      tagCategory={tagCategory}
-                      onSave={(newTagCategory) => {
-                        onChange({
-                          tagCategories: updateItemInList(
-                            data.tagCategories,
-                            newTagCategory
-                          ),
-                          listingQuestions: data.listingQuestions,
-                        });
-                      }}
-                      onDelete={() => {
-                        onChange({
-                          tagCategories: deleteItemFromList(
-                            data.tagCategories,
-                            tagCategory.id
-                          ),
-                          listingQuestions: data.listingQuestions,
-                        });
-                      }}
-                      key={index}
-                    />
-                  );
-                })}
+              <div className="h-8"></div>
+              <div className="flex flex-col gap-12">
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd("tagCategories")}
+                >
+                  <SortableContext
+                    items={data.tagCategories}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {data.tagCategories.map((tagCategory, index) => {
+                      if (tagCategory.deleted) {
+                        return null;
+                      }
+                      return (
+                        <EditTagCategory
+                          tagCategory={tagCategory}
+                          onSave={(newTagCategory) => {
+                            onChange({
+                              tagCategories: updateItemInList(
+                                data.tagCategories,
+                                newTagCategory
+                              ),
+                              listingQuestions: data.listingQuestions,
+                            });
+                          }}
+                          onDelete={() => {
+                            onChange({
+                              tagCategories: deleteItemFromList(
+                                data.tagCategories,
+                                tagCategory.id
+                              ),
+                              listingQuestions: data.listingQuestions,
+                            });
+                          }}
+                          key={tagCategory.id}
+                        />
+                      );
+                    })}
+                  </SortableContext>
+                </DndContext>
+              </div>
             </div>
             <div className="h-2"></div>
             <AddSectionButton
@@ -218,6 +282,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                     tagCategories: [
                       ...data.tagCategories,
                       {
+                        id: getTempId(),
                         title: "New Tag Category",
                         deleted: false,
                         space_id: currentSpace.id,
@@ -230,6 +295,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                     tagCategories: [
                       ...data.tagCategories,
                       {
+                        id: getTempId(),
                         title: "New Tag Category",
                         deleted: false,
                       },

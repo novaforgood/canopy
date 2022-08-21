@@ -296,7 +296,10 @@ query ProfileById($profile_id: uuid!) {
         link
         type
       }
-      profile_listing_responses {
+      profile_listing_responses(
+        order_by: { space_listing_question: { listing_order: asc } }
+        where: { space_listing_question: { deleted: { _eq: false } } }
+      ) {
         id
         response_html
         space_listing_question {

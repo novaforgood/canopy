@@ -20,6 +20,7 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   underline?: boolean;
   medium?: boolean;
   className?: string;
+  loading?: boolean;
 };
 
 // Hack: List all sm:variants here so they don't get pruned by Tailwind.
@@ -52,13 +53,16 @@ export const Text = ({
   italic = false,
   underline = false,
   medium = false,
+  loading = false,
   className,
+  children,
   ...props
 }: TextProps) => {
   const styles = classNames({
-    "font-sans": true,
+    "font-sans relative": true,
     [getVariantStyles(mobileVariant)]: true,
     [appendSm(getVariantStyles(variant))]: true,
+    invisible: loading,
     "font-bold": bold,
     "font-medium": medium,
     italic: italic, // Styling needs to be polished
@@ -66,5 +70,16 @@ export const Text = ({
     [`${className}`]: true,
   });
 
-  return <span {...props} className={styles}></span>;
+  const loadingPlaceholderStyles = classNames({
+    "animate-pulse bg-gray-200 rounded-md absolute h-full w-full inset-0": true,
+    invisible: !loading,
+    visible: loading,
+  });
+
+  return (
+    <span {...props} className={styles}>
+      {loading ? "‎" : children}
+      <div className={loadingPlaceholderStyles} />
+    </span>
+  );
 };

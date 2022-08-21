@@ -20,6 +20,8 @@ import { useQueryParam } from "../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
 import { useUserData } from "../hooks/useUserData";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
+import { resolveId } from "../lib/tempId";
+import { NewListingQuestion, NewTagCategory } from "../lib/types";
 import { CustomPage } from "../types";
 
 const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
@@ -99,8 +101,8 @@ type CreateProgramState = {
   spaceSlug: string;
   editedSlug: boolean;
   coverImage: { id: string; url: string } | null;
-  listingQuestions: Space_Listing_Question_Insert_Input[];
-  tagCategories: Space_Tag_Category_Insert_Input[];
+  listingQuestions: NewListingQuestion[];
+  tagCategories: NewTagCategory[];
 };
 
 const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
@@ -113,11 +115,13 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   editedSlug: false,
   listingQuestions: [
     {
+      id: nanoid(),
       title: "About me",
       char_count: 250,
       deleted: false,
     },
     {
+      id: nanoid(),
       title: "You can talk to me about",
       char_count: 250,
       deleted: false,
@@ -125,6 +129,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   ],
   tagCategories: [
     {
+      id: nanoid(),
       title: "Major",
       deleted: false,
       space_tags: {
@@ -306,6 +311,7 @@ const CreatePage: CustomPage = () => {
                     space_listing_questions: {
                       data: state.listingQuestions.map((question, index) => ({
                         ...question,
+                        id: resolveId(question.id),
                         listing_order: index,
                       })),
                     },
@@ -316,8 +322,9 @@ const CreatePage: CustomPage = () => {
                         }
                       : undefined,
                     space_tag_categories: {
-                      data: state.tagCategories.map((question, index) => ({
-                        ...question,
+                      data: state.tagCategories.map((tagCategory, index) => ({
+                        ...tagCategory,
+                        id: resolveId(tagCategory.id),
                         listing_order: index,
                       })),
                     },

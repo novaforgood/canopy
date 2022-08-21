@@ -1,14 +1,10 @@
 import React from "react";
 
-import {
-  Space_Listing_Question_Insert_Input,
-  Space_Tag_Category_Insert_Input,
-} from "../../generated/graphql";
+import { Button, Text } from "../atomic";
 import {
   EditProfileSchema,
   EditProfileSchemaData,
-} from "../admin/EditProfileSchema";
-import { Button, Text } from "../atomic";
+} from "../edit-profile-schema/EditProfileSchema";
 
 export interface EnterProfileSchemaProps {
   onComplete: () => void;
