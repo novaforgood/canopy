@@ -33,8 +33,6 @@ export function ProfileCard(props: ProfileCardProps) {
     id,
   } = props;
 
-  const { ref, width } = useElementSize();
-
   const { attributes, setNodeRef, transform, transition } = useSortable({
     id,
     animateLayoutChanges: (args) => {
@@ -52,8 +50,6 @@ export function ProfileCard(props: ProfileCardProps) {
     transition,
   };
 
-  const desiredHeight = width;
-
   const numTags = 3;
   const processedTags = [
     ...tags.slice(0, numTags),
@@ -68,15 +64,13 @@ export function ProfileCard(props: ProfileCardProps) {
       style={style}
     >
       <div className="w-full border-none pb-4">
-        <div ref={ref} style={{ height: desiredHeight }}>
-          <ProfileImage
-            className="w-full h-full rounded-t-md"
-            rounded={false}
-            border={false}
-            src={imageUrl}
-            alt={name}
-          />
-        </div>
+        <ProfileImage
+          className="w-full h-full rounded-t-md"
+          rounded={false}
+          border={false}
+          src={imageUrl}
+          alt={name}
+        />
       </div>
       <div className="px-4 flex flex-col items-start w-full text-gray-900 ">
         <Text variant="heading4" className="text-left truncate w-full">

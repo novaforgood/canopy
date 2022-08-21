@@ -192,7 +192,7 @@ function IntroduceModal(props: IntroduceModalProps) {
 const SpaceHomepage: CustomPage = () => {
   const router = useRouter();
 
-  const { currentSpace } = useCurrentSpace();
+  const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
   const isLoggedIn = useIsLoggedIn();
 
@@ -200,23 +200,25 @@ const SpaceHomepage: CustomPage = () => {
   const [loginModalOpen, loginModalHandlers] = useDisclosure(false);
 
   const profileId = useQueryParam("profileId", "string");
-  const [{ data: profileData }] = useProfileByIdQuery({
-    variables: { profile_id: profileId ?? "" },
-  });
+  const [{ data: profileData, fetching: fetchingProfileData }] =
+    useProfileByIdQuery({
+      variables: { profile_id: profileId ?? "" },
+    });
 
-  if (!currentSpace) {
+  if (!currentSpace && !fetchingCurrentSpace) {
     return <div>404 - Space not found</div>;
   }
 
-  if (!profileData?.profile_by_pk?.profile_listing) {
+  if (!profileData?.profile_by_pk?.profile_listing && !fetchingProfileData) {
     return <div>404 - Profile listing not found</div>;
   }
 
-  const listing = profileData.profile_by_pk.profile_listing;
-  const { first_name, last_name, email } = profileData.profile_by_pk.user;
+  const listing = profileData?.profile_by_pk?.profile_listing;
+  const { first_name, last_name, email } =
+    profileData?.profile_by_pk?.user ?? {};
 
   const profileTagIds = new Set(
-    listing.profile_listing_to_space_tags.map((item) => item.space_tag_id)
+    listing?.profile_listing_to_space_tags.map((item) => item.space_tag_id)
   );
 
   return (
@@ -234,7 +236,7 @@ const SpaceHomepage: CustomPage = () => {
           <div className="px-4 -mt-4 sm:px-20 sm:-mt-8">
             <div className="flex items-center gap-6 sm:gap-12">
               <ProfileImage
-                src={listing.profile_listing_image?.image.url}
+                src={listing?.profile_listing_image?.image.url}
                 alt={`${first_name} ${last_name}`}
                 className="w-24 h-24 sm:h-48 sm:w-48"
               />
@@ -243,14 +245,14 @@ const SpaceHomepage: CustomPage = () => {
                   {first_name} {last_name}
                 </Text>
                 <div className="h-1"></div>
-                <Text variant="body1">{listing.headline}</Text>
+                <Text variant="body1">{listing?.headline}</Text>
               </div>
             </div>
             <div className="h-16"></div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="flex flex-col gap-8 p-6">
-                {listing.profile_listing_responses.map((response) => {
+                {listing?.profile_listing_responses.map((response) => {
                   return (
                     <div key={response.id}>
                       <Text
@@ -294,7 +296,7 @@ const SpaceHomepage: CustomPage = () => {
               </div>
               <div>
                 <div className="border border-olive-700 p-6 rounded-md flex flex-col gap-8">
-                  {currentSpace.space_tag_categories.map((category) => {
+                  {currentSpace?.space_tag_categories.map((category) => {
                     return (
                       <div key={category.id}>
                         <Text
@@ -330,11 +332,11 @@ const SpaceHomepage: CustomPage = () => {
                     Contact
                   </Text>
                   <div className="h-4"></div>
-                  <Text>{profileData.profile_by_pk.user.email}</Text>
+                  <Text>{email}</Text>
                   <div className="h-4"></div>
 
                   <ProfileSocialsDisplay
-                    profileListingId={listing.id}
+                    profileListingId={listing?.id ?? ""}
                     email={email}
                   />
 

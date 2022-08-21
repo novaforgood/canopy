@@ -135,6 +135,7 @@ export function SpaceLandingPage() {
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
     useProfileListingsInSpaceQuery({
+      pause: !currentSpace,
       variables: {
         where: {
           profile: {
