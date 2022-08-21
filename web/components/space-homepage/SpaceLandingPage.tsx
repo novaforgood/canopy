@@ -6,6 +6,13 @@ import {
   useState,
 } from "react";
 
+import { closestCenter, DndContext, MeasuringStrategy } from "@dnd-kit/core";
+import {
+  rectSortingStrategy,
+  rectSwappingStrategy,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { getDayOfYear } from "date-fns";
 import { useRouter } from "next/router";
 
@@ -164,7 +171,7 @@ export function SpaceLandingPage() {
     <div>
       <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
-      {fetchingProfileListings ? (
+      {fetchingProfileListings && profileListingData === undefined ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {new Array(8).fill(0).map((_, i) => (
             <div
@@ -179,28 +186,45 @@ export function SpaceLandingPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {shuffledProfileListings.map((listing, idx) => {
-            const { first_name, last_name } = listing.profile.user;
+          <DndContext
+            collisionDetection={closestCenter}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
+          >
+            <SortableContext
+              items={shuffledProfileListings}
+              strategy={rectSortingStrategy}
+            >
+              {shuffledProfileListings.map((listing, idx) => {
+                const { first_name, last_name } = listing.profile.user;
 
-            const tagNames =
-              listing.profile_listing_to_space_tags?.map(
-                (tag) => tag.space_tag.label
-              ) ?? undefined;
+                const tagNames =
+                  listing.profile_listing_to_space_tags?.map(
+                    (tag) => tag.space_tag.label
+                  ) ?? undefined;
 
-            return (
-              <ProfileCard
-                key={idx}
-                onClick={() => {
-                  router.push(`${router.asPath}/profile/${listing.profile.id}`);
-                }}
-                name={`${first_name} ${last_name}`}
-                imageUrl={listing.profile_listing_image?.image.url}
-                subtitle={listing.headline}
-                descriptionTitle={"Topics"}
-                tags={tagNames}
-              />
-            );
-          })}
+                return (
+                  <ProfileCard
+                    key={listing.id}
+                    id={listing.id}
+                    onClick={() => {
+                      router.push(
+                        `${router.asPath}/profile/${listing.profile.id}`
+                      );
+                    }}
+                    name={`${first_name} ${last_name}`}
+                    imageUrl={listing.profile_listing_image?.image.url}
+                    subtitle={listing.headline}
+                    descriptionTitle={"Topics"}
+                    tags={tagNames}
+                  />
+                );
+              })}
+            </SortableContext>
+          </DndContext>
         </div>
       )}
     </div>

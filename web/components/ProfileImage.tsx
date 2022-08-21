@@ -53,7 +53,14 @@ export function ProfileImage(props: ProfileImageProps) {
     [`${className}`]: true,
   });
   return src ? (
-    <img src={src} alt={alt} className={styles} draggable={false} {...rest} />
+    <img
+      src={src}
+      alt={alt}
+      className={styles}
+      draggable={false}
+      style={{ aspectRatio: "1/1" }}
+      {...rest}
+    />
   ) : (
     <div className={styles} {...rest}>
       <UserSvg className="w-2/3 h-2/3" />

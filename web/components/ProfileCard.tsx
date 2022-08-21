@@ -1,5 +1,8 @@
 import React from "react";
 
+import { useSortable, defaultAnimateLayoutChanges } from "@dnd-kit/sortable";
+import { Arguments } from "@dnd-kit/sortable/dist/hooks/useSortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useElementSize } from "@mantine/hooks";
 
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
@@ -16,6 +19,7 @@ interface ProfileCardProps {
   descriptionTitle: string;
   tags?: string[];
   onClick?: () => void;
+  id: string;
 }
 
 export function ProfileCard(props: ProfileCardProps) {
@@ -26,9 +30,27 @@ export function ProfileCard(props: ProfileCardProps) {
     imageUrl,
     tags = [],
     onClick = () => {},
+    id,
   } = props;
 
   const { ref, width } = useElementSize();
+
+  const { attributes, setNodeRef, transform, transition } = useSortable({
+    id,
+    animateLayoutChanges: (args) => {
+      const { isSorting } = args;
+
+      if (isSorting) {
+        return defaultAnimateLayoutChanges(args);
+      }
+
+      return true;
+    },
+  });
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  };
 
   const desiredHeight = width;
 
@@ -41,6 +63,9 @@ export function ProfileCard(props: ProfileCardProps) {
     <button
       onClick={onClick}
       className="bg-white border-gray-400 border-x border-y rounded-md flex flex-col items-start transition hover:border-green-500"
+      ref={setNodeRef}
+      {...attributes}
+      style={style}
     >
       <div className="w-full border-none pb-4">
         <div ref={ref} style={{ height: desiredHeight }}>
