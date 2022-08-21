@@ -10,9 +10,10 @@ import {
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { resolveId } from "../../lib/tempId";
 import { Button, Text } from "../atomic";
-import CatchUnsavedChangesModal from "../modals/CatchUnsavedChangesModal";
-
-import { EditProfileSchema, EditProfileSchemaData } from "./EditProfileSchema";
+import {
+  EditProfileSchema,
+  EditProfileSchemaData,
+} from "../edit-profile-schema/EditProfileSchema";
 
 export function EditProfileFormat() {
   const { currentSpace, refetchCurrentSpace } = useCurrentSpace();

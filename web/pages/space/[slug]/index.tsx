@@ -17,8 +17,8 @@ import {
 } from "../../../generated/icons/regular";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { CustomPage } from "../../../types";
 import { LocalStorage, LocalStorageKey } from "../../../lib/localStorage";
+import { CustomPage } from "../../../types";
 
 interface IconTipProps {
   icon: ReactNode;
@@ -83,11 +83,7 @@ function CollapsibleTipsBar() {
 const SpaceHomepage: CustomPage = () => {
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
 
-  if (fetchingCurrentSpace) {
-    return <div>Loading...</div>;
-  }
-
-  if (!currentSpace) {
+  if (!currentSpace && !fetchingCurrentSpace) {
     return <PageNotFound />;
   }
 
