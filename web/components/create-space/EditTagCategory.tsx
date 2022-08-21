@@ -1,26 +1,40 @@
 import React, { useCallback, useEffect, useState } from "react";
 
+import { useDroppable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import toast from "react-hot-toast";
 
 import {
   Space_Tag_Category_Insert_Input,
   Space_Tag_Insert_Input,
 } from "../../generated/graphql";
+import { NewTagCategory } from "../admin/types";
 import { Button, Input, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
+import { DragHandle } from "../DragHandle";
 import { EditButton } from "../EditButton";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
 import { Tag } from "../Tag";
 
 type EditTagCategoryProps = {
-  tagCategory: Space_Tag_Category_Insert_Input;
-  onSave?: (tagCategory: Space_Tag_Category_Insert_Input) => void;
+  tagCategory: NewTagCategory;
+  onSave?: (tagCategory: NewTagCategory) => void;
   onDelete?: () => void;
 };
 
 export function EditTagCategory(props: EditTagCategoryProps) {
   const { tagCategory, onSave = () => {}, onDelete = () => {} } = props;
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: props.tagCategory.id,
+    });
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  };
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -140,7 +154,12 @@ export function EditTagCategory(props: EditTagCategoryProps) {
           </div>
         </div>
       </ActionModal>
-      <div className="flex flex-col">
+      <div
+        className="flex flex-col cursor-auto"
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+      >
         <Text variant="subheading1">
           {tagCategory.title}
           <EditButton
@@ -149,6 +168,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
               setIsOpen(true);
             }}
           />
+          <DragHandle className="mb-1 ml-1" {...listeners} />
           <DeleteButton className="mb-1 ml-1" onClick={onDelete} />
         </Text>
         <div className="h-2"></div>

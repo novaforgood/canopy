@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 
+import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
+import { NewListingQuestion } from "../admin/types";
 import { Input, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
+import { DragHandle } from "../DragHandle";
 import { EditButton } from "../EditButton";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
@@ -14,13 +20,22 @@ const LOREM_IPSUM =
 const LOREM_IPSUM_REPEATED = LOREM_IPSUM.repeat(10);
 
 type EditQuestionProps = {
-  question: Space_Listing_Question_Insert_Input;
-  onSave?: (question: Space_Listing_Question_Insert_Input) => void;
+  question: NewListingQuestion;
+  onSave?: (question: NewListingQuestion) => void;
   onDelete?: () => void;
 };
 
 export function EditQuestion(props: EditQuestionProps) {
   const { question, onSave = () => {}, onDelete = () => {} } = props;
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: props.question.id,
+    });
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  };
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -74,7 +89,12 @@ export function EditQuestion(props: EditQuestionProps) {
           />
         </div>
       </ActionModal>
-      <div className="flex flex-col">
+      <div
+        className="flex flex-col cursor-auto"
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+      >
         <Text variant="subheading1">
           {question.title}
           <EditButton
@@ -83,6 +103,7 @@ export function EditQuestion(props: EditQuestionProps) {
               setIsOpen(true);
             }}
           />
+          <DragHandle className="mb-1 ml-1" {...listeners} />
           <DeleteButton className="mb-1 ml-1" onClick={onDelete} />
         </Text>
         <div className="h-1"></div>
