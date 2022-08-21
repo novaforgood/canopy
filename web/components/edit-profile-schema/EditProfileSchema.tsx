@@ -2,7 +2,6 @@ import React from "react";
 
 import {
   DndContext,
-  useDroppable,
   useSensor,
   useSensors,
   KeyboardSensor,
@@ -12,25 +11,21 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
-  rectSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import toast from "react-hot-toast";
 
-import {
-  Space_Listing_Question_Insert_Input,
-  Space_Tag_Category_Insert_Input,
-} from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { getTempId, isTempId } from "../../lib/tempId";
 import { Text } from "../atomic";
-import { AddSectionButton } from "../create-space/AddSectionButton";
-import { EditQuestion } from "../create-space/EditQuestion";
-import { EditTagCategory } from "../create-space/EditTagCategory";
 
-import { NewListingQuestion, NewTagCategory } from "./types";
+import { AddSectionButton } from "./AddSectionButton";
+import { EditQuestion } from "./EditQuestion";
+import { EditTagCategory } from "./EditTagCategory";
+
+import type { NewListingQuestion, NewTagCategory } from "../../lib/types";
 
 /**
  * If item has a uuid, mark it as deleted.

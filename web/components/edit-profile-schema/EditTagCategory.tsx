@@ -9,7 +9,7 @@ import {
   Space_Tag_Category_Insert_Input,
   Space_Tag_Insert_Input,
 } from "../../generated/graphql";
-import { NewTagCategory } from "../admin/types";
+import { NewListingQuestion, NewTagCategory } from "../../lib/types";
 import { Button, Input, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
 import { DragHandle } from "../DragHandle";

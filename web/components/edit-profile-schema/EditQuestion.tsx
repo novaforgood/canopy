@@ -5,7 +5,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
-import { NewListingQuestion } from "../admin/types";
+import { NewListingQuestion, NewTagCategory } from "../../lib/types";
 import { Input, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
 import { DragHandle } from "../DragHandle";
