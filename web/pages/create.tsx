@@ -20,11 +20,14 @@ import { useQueryParam } from "../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
 import { useUserData } from "../hooks/useUserData";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
-import { resolveId } from "../lib/tempId";
+import { getTempId, resolveId } from "../lib/tempId";
 import { NewListingQuestion, NewTagCategory } from "../lib/types";
 import { CustomPage } from "../types";
 
-const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 6);
+const generateSlugId = customAlphabet(
+  "0123456789abcdefghijklmnopqrstuvwxyz",
+  6
+);
 
 function slugify(name: string) {
   return name
@@ -35,7 +38,7 @@ function slugify(name: string) {
 }
 
 function slugifyAndAppendRandomString(name: string) {
-  return `${slugify(name)}-${nanoid()}`;
+  return `${slugify(name)}-${generateSlugId()}`;
 }
 
 function makeReadableError(message: string) {
@@ -115,13 +118,13 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   editedSlug: false,
   listingQuestions: [
     {
-      id: nanoid(),
+      id: getTempId(),
       title: "About me",
       char_count: 250,
       deleted: false,
     },
     {
-      id: nanoid(),
+      id: getTempId(),
       title: "You can talk to me about",
       char_count: 250,
       deleted: false,
@@ -129,7 +132,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
   ],
   tagCategories: [
     {
-      id: nanoid(),
+      id: getTempId(),
       title: "Major",
       deleted: false,
       space_tags: {

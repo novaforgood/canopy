@@ -8,6 +8,7 @@ export function useCurrentSpace() {
   const router = useRouter();
   const [{ data: spaceData, fetching }, refetchCurrentSpace] =
     useSpaceBySlugQuery({
+      pause: !router.query.slug,
       variables: { slug: router.query.slug as string },
     });
   const space = spaceData?.space[0] ?? null;

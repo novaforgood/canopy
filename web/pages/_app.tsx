@@ -3,6 +3,7 @@ import { Suspense, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { RecoilRoot, useRecoilState } from "recoil";
+import { useClient } from "urql";
 
 import { Footer } from "../components/Footer";
 import { useSpaceBySlugQuery } from "../generated/graphql";
@@ -75,6 +76,7 @@ function App({ Component, pageProps }: CustomAppProps) {
   }, [spaceSlug, executeQuery, previousSlug]);
   const spaceId = spaceData?.space[0]?.id;
 
+  const client = useClient();
   useEffect(() => {
     const lastVisitedSpaceId = LocalStorage.get(
       LocalStorageKey.LastVisitedSpaceId
