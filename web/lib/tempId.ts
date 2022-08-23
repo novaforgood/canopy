@@ -1,13 +1,14 @@
 import { nanoid } from "nanoid";
 
 const TEMP_ID_SIZE = 21; // Make sure this is different from uuid size (which is 36)
+const UUID_SIZE = 36; // length of uuid
 
 export function getTempId() {
   return nanoid(TEMP_ID_SIZE);
 }
 
 export function isTempId(id: string) {
-  return id.length === TEMP_ID_SIZE;
+  return id.length !== UUID_SIZE;
 }
 
 /**

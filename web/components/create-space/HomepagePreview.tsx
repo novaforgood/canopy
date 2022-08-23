@@ -54,7 +54,7 @@ export function HomepagePreview(props: HomepagePreviewProps) {
       </div>
 
       <div className="h-8"></div>
-      <div className="flex w-full items-center gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <div className={titleAndDescriptionStyles}>
           <Text variant="heading4">{title}</Text>
           <HtmlDisplay html={description} className="text-xs" />

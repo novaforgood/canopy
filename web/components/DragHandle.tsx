@@ -5,14 +5,19 @@ import classNames from "classnames";
 import { BxMove, BxMoveVertical } from "../generated/icons/regular";
 import { BxsPencil, BxsTrash, BxsTrashAlt } from "../generated/icons/solid";
 
-type DragHandleProps = ButtonHTMLAttributes<HTMLButtonElement>;
+type DragHandleProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  sizeClassName?: string;
+};
 
 export function DragHandle(props: DragHandleProps) {
-  const { className, ...rest } = props;
+  const { className, sizeClassName, ...rest } = props;
 
   const styles = classNames({
-    "w-5 h-5 text-gray-600 hover:text-gray-500 inline cursor-grab": true,
+    "text-gray-600 hover:text-gray-500 inline cursor-grab flex items-center":
+      true,
+    "w-5 h-5": !sizeClassName,
     [`${className}`]: true,
+    [`${sizeClassName}`]: true,
   });
 
   return (
