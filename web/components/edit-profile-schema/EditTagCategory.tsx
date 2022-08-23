@@ -330,13 +330,13 @@ export function EditTagCategory(props: EditTagCategoryProps) {
         <span className="inline-block align-baseline">
           <Text variant="subheading1">{tagCategory.title}</Text>
           <EditButton
-            className=""
+            className="ml-1"
             onClick={() => {
               setIsOpen(true);
             }}
           />
-          <DragHandle className="" {...listeners} />
-          <DeleteButton className="" onClick={onDelete} />
+          <DragHandle className="ml-1" {...listeners} />
+          <DeleteButton className="ml-1" onClick={onDelete} />
         </span>
 
         <div className="h-2"></div>

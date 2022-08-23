@@ -98,13 +98,13 @@ export function EditQuestion(props: EditQuestionProps) {
         <Text variant="subheading1">
           {question.title}
           <EditButton
-            className="mb-1 ml-1"
+            className="ml-1"
             onClick={() => {
               setIsOpen(true);
             }}
           />
-          <DragHandle className="mb-1 ml-1" {...listeners} />
-          <DeleteButton className="mb-1 ml-1" onClick={onDelete} />
+          <DragHandle className="ml-1" {...listeners} />
+          <DeleteButton className="ml-1" onClick={onDelete} />
         </Text>
         <div className="h-1"></div>
         <Text variant="body2" className="text-gray-600">
