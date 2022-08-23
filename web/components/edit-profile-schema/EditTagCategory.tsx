@@ -143,15 +143,15 @@ export function EditTagCategory(props: EditTagCategoryProps) {
     if (existingTagIndex !== -1) {
       const existingTag = tags[existingTagIndex];
       if (existingTag.deleted === true) {
-        setTags((prev) =>
-          prev.map((tag) => {
-            if (tag.label === newTag) {
-              return { ...tag, deleted: false };
-            } else {
-              return tag;
-            }
-          })
-        );
+        setTags((prev) => {
+          return [
+            ...prev.filter((tag) => tag.id !== existingTag.id),
+            {
+              ...existingTag,
+              deleted: false,
+            },
+          ];
+        });
         setNewTag("");
       } else {
         toast.error(`Tag ${newTag} already exists`);
