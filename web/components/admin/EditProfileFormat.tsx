@@ -61,7 +61,11 @@ export function EditProfileFormat() {
         listing_order: index,
         space_tags: category.space_tags
           ? {
-              data: category.space_tags.data,
+              data: category.space_tags.data.map((tag, index) => ({
+                ...tag,
+                id: resolveId(tag.id),
+                listing_order: index,
+              })),
               on_conflict: {
                 constraint: Space_Tag_Constraint.SpaceTagPkey,
                 update_columns: [
