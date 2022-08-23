@@ -89,10 +89,7 @@ query SpaceBySlug($slug: String!) {
       deleted
       space_id
       listing_order
-      space_tags(
-        order_by: { listing_order: asc }
-        where: { deleted: { _eq: false } }
-      ) {
+      space_tags(order_by: { listing_order: asc }) {
         id
         label
         deleted
