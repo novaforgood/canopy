@@ -34,16 +34,18 @@ insert_permissions:
         - deleted
         - id
         - label
+        - listing_order
         - space_tag_category_id
       backend_only: false
 select_permissions:
   - role: public
     permission:
       columns:
-        - id
-        - space_tag_category_id
-        - label
         - deleted
+        - id
+        - label
+        - listing_order
+        - space_tag_category_id
       filter:
         _or:
           - space_tag_category:
@@ -57,6 +59,7 @@ select_permissions:
         - deleted
         - id
         - label
+        - listing_order
         - space_tag_category_id
       filter:
         _or:
@@ -71,6 +74,7 @@ update_permissions:
       columns:
         - deleted
         - label
+        - listing_order
       filter:
         _or:
           - _and:

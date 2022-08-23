@@ -17,7 +17,6 @@ export function isTempId(id: string) {
  * Used when posting to the database--we want postgres to generate a new id for us.
  */
 export function resolveId(id?: string | null) {
-  console.log(id);
   if (!id) return undefined;
   return isTempId(id) ? undefined : id;
 }

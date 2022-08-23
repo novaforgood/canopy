@@ -4,13 +4,14 @@ import classNames from "classnames";
 
 import { BxX } from "../generated/icons/regular";
 
-interface TagProps {
+export interface TagProps {
   text: string;
   onDeleteClick?: () => void;
+  renderRightIcon?: () => React.ReactNode;
   variant?: "primary" | "outline";
 }
 export function Tag(props: TagProps) {
-  const { text, onDeleteClick, variant = "primary" } = props;
+  const { text, renderRightIcon, onDeleteClick, variant = "primary" } = props;
 
   const tagContainerStyles = classNames({
     "rounded-full flex items-center px-3 py-1": true,
@@ -29,12 +30,14 @@ export function Tag(props: TagProps) {
       <div className={tagStyles} style={{ fontWeight: 500 }}>
         {text}
       </div>
-      {onDeleteClick && (
-        <BxX
-          className="w-5 h-5 ml-2 -mr-1 cursor-pointer text-black hover:text-gray-600"
-          onClick={onDeleteClick}
-        />
-      )}
+      {renderRightIcon
+        ? renderRightIcon()
+        : onDeleteClick && (
+            <BxX
+              className="w-5 h-5 ml-2 -mr-1 cursor-pointer text-black hover:text-gray-600"
+              onClick={onDeleteClick}
+            />
+          )}
     </div>
   );
 }

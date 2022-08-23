@@ -136,7 +136,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
       title: "Major",
       deleted: false,
       space_tags: {
-        data: [{ label: "Economics", deleted: false }],
+        data: [{ label: "Economics", deleted: false, id: getTempId() }],
       },
     },
   ],
@@ -329,6 +329,14 @@ const CreatePage: CustomPage = () => {
                         ...tagCategory,
                         id: resolveId(tagCategory.id),
                         listing_order: index,
+                        space_tags: {
+                          data:
+                            tagCategory.space_tags?.data.map((tag, index) => ({
+                              ...tag,
+                              id: resolveId(tag.id),
+                              listing_order: index,
+                            })) ?? [],
+                        },
                       })),
                     },
                   },
