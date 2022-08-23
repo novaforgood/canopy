@@ -143,15 +143,15 @@ export function EditTagCategory(props: EditTagCategoryProps) {
     if (existingTagIndex !== -1) {
       const existingTag = tags[existingTagIndex];
       if (existingTag.deleted === true) {
-        setTags((prev) =>
-          prev.map((tag) => {
-            if (tag.label === newTag) {
-              return { ...tag, deleted: false };
-            } else {
-              return tag;
-            }
-          })
-        );
+        setTags((prev) => {
+          return [
+            ...prev.filter((tag) => tag.id !== existingTag.id),
+            {
+              ...existingTag,
+              deleted: false,
+            },
+          ];
+        });
         setNewTag("");
       } else {
         toast.error(`Tag ${newTag} already exists`);
@@ -330,13 +330,13 @@ export function EditTagCategory(props: EditTagCategoryProps) {
         <span className="inline-block align-baseline">
           <Text variant="subheading1">{tagCategory.title}</Text>
           <EditButton
-            className=""
+            className="ml-1"
             onClick={() => {
               setIsOpen(true);
             }}
           />
-          <DragHandle className="" {...listeners} />
-          <DeleteButton className="" onClick={onDelete} />
+          <DragHandle className="ml-1" {...listeners} />
+          <DeleteButton className="ml-1" onClick={onDelete} />
         </span>
 
         <div className="h-2"></div>
