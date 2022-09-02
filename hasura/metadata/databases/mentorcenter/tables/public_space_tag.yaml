@@ -5,6 +5,14 @@ object_relationships:
   - name: space_tag_category
     using:
       foreign_key_constraint_on: space_tag_category_id
+array_relationships:
+  - name: profile_listing_to_space_tags
+    using:
+      foreign_key_constraint_on:
+        column: space_tag_id
+        table:
+          schema: public
+          name: profile_listing_to_space_tag
 insert_permissions:
   - role: user
     permission:
@@ -30,22 +38,40 @@ insert_permissions:
               space:
                 owner_id:
                   _eq: X-Hasura-User-Id
+          - _and:
+              - _exists:
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: MemberWhoCanList
+                  _table:
+                    schema: public
+                    name: profile_to_profile_role_flattened
+              - space_tag_category:
+                  rigid_select:
+                    _eq: false
+              - status:
+                  _eq: Pending
       columns:
-        - deleted
         - id
         - label
         - listing_order
         - space_tag_category_id
+        - status
       backend_only: false
 select_permissions:
   - role: public
     permission:
       columns:
-        - deleted
         - id
         - label
         - listing_order
         - space_tag_category_id
+        - status
       filter:
         _or:
           - space_tag_category:
@@ -56,11 +82,11 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - deleted
         - id
         - label
         - listing_order
         - space_tag_category_id
+        - status
       filter:
         _or:
           - space_tag_category:
@@ -72,9 +98,10 @@ update_permissions:
   - role: user
     permission:
       columns:
-        - deleted
         - label
         - listing_order
+        - space_tag_category_id
+        - status
       filter:
         _or:
           - _and:
