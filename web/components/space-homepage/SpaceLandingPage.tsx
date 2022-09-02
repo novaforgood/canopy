@@ -23,6 +23,7 @@ import {
 import { BxFilter } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
+import { isTagOfficial } from "../../lib/tags";
 import { Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { ProfileCard } from "../ProfileCard";
@@ -77,7 +78,7 @@ function FilterBar(props: FilterBarProps) {
                 key={category.id}
                 placeholder={category.title}
                 options={category.space_tags
-                  .filter((tag) => !tag.deleted)
+                  .filter((tag) => isTagOfficial(tag))
                   .map((tag) => ({
                     value: tag.id,
                     label: tag.label,

@@ -116,7 +116,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
                         return (
                           <EditProfileTags
                             key={category.id}
-                            tagCategory={category}
+                            tagCategoryId={category.id}
                           />
                         );
                       })}

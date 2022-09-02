@@ -15,6 +15,7 @@ import {
   Space_Listing_Question_Insert_Input,
   useCreateOwnerProfileInNewSpaceMutation,
   Space_Tag_Category_Insert_Input,
+  Space_Tag_Status_Enum,
 } from "../generated/graphql";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useUpdateQueryParams } from "../hooks/useUpdateQueryParams";
@@ -135,8 +136,15 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
       id: getTempId(),
       title: "Major",
       deleted: false,
+      rigid_select: true,
       space_tags: {
-        data: [{ label: "Economics", deleted: false, id: getTempId() }],
+        data: [
+          {
+            label: "Economics",
+            status: Space_Tag_Status_Enum.Accepted,
+            id: getTempId(),
+          },
+        ],
       },
     },
   ],

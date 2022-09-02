@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 
 import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
+import { EditProfileTags } from "../../../../components/admin/edit-profile-tags/EditProfileTags";
 import { EditHomepage } from "../../../../components/admin/EditHomepage";
 import { EditProfileFormat } from "../../../../components/admin/EditProfileFormat";
 import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
@@ -24,6 +25,7 @@ enum ManageSpaceTabs {
   Members = "Members",
   PrivacySettings = "Privacy Settings",
   EditProfileFormat = "Edit Profile Format",
+  EditProfileTags = "Edit Tags",
   EditHomepage = "Edit Homepage",
 }
 
@@ -31,6 +33,7 @@ const MAP_TAB_TO_COMPONENT = {
   [ManageSpaceTabs.Members]: MembersList,
   [ManageSpaceTabs.PrivacySettings]: SetPrivacySettings,
   [ManageSpaceTabs.EditProfileFormat]: EditProfileFormat,
+  [ManageSpaceTabs.EditProfileTags]: EditProfileTags,
   [ManageSpaceTabs.EditHomepage]: EditHomepage,
 };
 
@@ -38,6 +41,7 @@ const MAP_TAB_TO_TITLE = {
   [ManageSpaceTabs.Members]: "Members",
   [ManageSpaceTabs.PrivacySettings]: "Privacy Settings",
   [ManageSpaceTabs.EditProfileFormat]: "Edit Profile Format",
+  [ManageSpaceTabs.EditProfileTags]: "Edit Profile Tags",
   [ManageSpaceTabs.EditHomepage]: "Edit Homepage",
 };
 
@@ -48,7 +52,11 @@ function ManageSpace() {
     ManageSpaceTabs.Members
   );
 
-  const Component = MAP_TAB_TO_COMPONENT[selectedTab];
+  const Component = useMemo(
+    () => MAP_TAB_TO_COMPONENT[selectedTab],
+    [selectedTab]
+  );
+
   return (
     <RoundedCard className="w-full overflow-x-auto">
       <div className="flex items-center gap-2">

@@ -10,6 +10,9 @@ import {
   useSetProfileListingTagsMutation,
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
+  Space_Tag_Constraint,
+  Space_Tag_Update_Column,
+  Space_Tag_Status_Enum,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
@@ -17,6 +20,12 @@ import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { Tag } from "../Tag";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
+
+type SelectedTag = {
+  label: string;
+  tagCategoryId: string;
+  tagId: string | null;
+};
 
 export interface EnterTagsProps {
   onComplete: () => void;
@@ -38,13 +47,19 @@ export function EnterTags(props: EnterTagsProps) {
 
   const [_, setProfileListingTags] = useSetProfileListingTagsMutation();
 
-  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+  const [selectedTags, setSelectedTags] = useState<SelectedTag[]>([]);
 
   const initSpaceTags =
     currentProfile?.profile_listing?.profile_listing_to_space_tags;
   useEffect(() => {
     if (initSpaceTags) {
-      setSelectedTags(new Set(initSpaceTags.map((item) => item.space_tag_id)));
+      setSelectedTags(
+        initSpaceTags.map((tag) => ({
+          label: tag.space_tag.label,
+          tagCategoryId: tag.space_tag.space_tag_category_id,
+          tagId: tag.space_tag_id,
+        }))
+      );
     }
   }, [initSpaceTags]);
 
@@ -56,10 +71,10 @@ export function EnterTags(props: EnterTagsProps) {
           toast.error("No current profile");
           return;
         }
+        console.log(selectedTags);
         await setProfileListingTags({
           profile_id: currentProfile.id,
-          inputs: Array.from(selectedTags).map((tagId) => ({
-            space_tag_id: tagId,
+          inputs: selectedTags.map((tag) => ({
             profile_listing: {
               data: {
                 profile_id: currentProfile.id,
@@ -70,9 +85,36 @@ export function EnterTags(props: EnterTagsProps) {
                 update_columns: [Profile_Listing_Update_Column.ProfileId],
               },
             },
+            space_tag_id: tag.tagId ?? undefined,
+            space_tag: tag.tagId
+              ? undefined
+              : {
+                  data: {
+                    label: tag.label,
+                    space_tag_category_id: tag.tagCategoryId,
+                    status: Space_Tag_Status_Enum.Pending,
+                  },
+                  on_conflict: {
+                    constraint:
+                      Space_Tag_Constraint.SpaceTagLabelSpaceTagCategoryIdKey,
+                    update_columns: [
+                      Space_Tag_Update_Column.SpaceTagCategoryId,
+                    ],
+                  },
+                },
           })),
-        });
-        onComplete();
+        })
+          .then((res) => {
+            if (res.error) {
+              console.log(res.error);
+              throw new Error(res.error.message);
+            } else {
+              onComplete();
+            }
+          })
+          .catch((error) => {
+            toast.error("Error when saving tags: " + error.message);
+          });
       }}
       onSecondaryAction={onSkip}
     >
@@ -93,34 +135,81 @@ export function EnterTags(props: EnterTagsProps) {
                         label: tag.label,
                         value: tag.id,
                       }))
-                      .filter((tag) => !selectedTags.has(tag.value))}
+                      .filter((tag) => {
+                        return !selectedTags.some(
+                          (selectedTag) =>
+                            selectedTag.label === tag.label &&
+                            selectedTag.tagCategoryId === category.id
+                        );
+                      })}
                     value={null}
-                    onSelect={(value) => {
-                      if (!value) return;
+                    onSelect={(value, label) => {
+                      if (!value || !label) return;
                       setSelectedTags((prev) => {
-                        return new Set([...Array.from(prev), value]);
+                        return [
+                          ...prev,
+                          {
+                            label: label,
+                            tagCategoryId: category.id,
+                            tagId: value,
+                          },
+                        ];
                       });
                     }}
+                    onExtraOptionSelect={(newInput) => {
+                      const tagExists = category.space_tags.some(
+                        (tag) => tag.label === newInput
+                      );
+                      const tagSelected = selectedTags.some(
+                        (tag) => tag.label === newInput
+                      );
+                      if (tagExists || tagSelected) {
+                        toast.error("Cannot add duplicate tag");
+                        return;
+                      }
+
+                      setSelectedTags((prev) => {
+                        return [
+                          ...prev,
+                          {
+                            label: newInput,
+                            tagCategoryId: category.id,
+                            tagId: null,
+                          },
+                        ];
+                      });
+                    }}
+                    renderExtraOption={
+                      category.rigid_select
+                        ? undefined
+                        : (value) => {
+                            return (
+                              <span>
+                                Create tag:{" "}
+                                <Text variant="body2" bold>
+                                  {value}
+                                </Text>
+                              </span>
+                            );
+                          }
+                    }
                   />
                 </div>
 
                 <div className="flex flex-wrap gap-2 py-3">
-                  {category.space_tags.map((tag) => {
-                    const selected = selectedTags.has(tag.id);
-
-                    return selected ? (
+                  {selectedTags.map((tag) => {
+                    if (tag.tagCategoryId !== category.id) return null;
+                    return (
                       <Tag
-                        key={tag.id}
+                        key={tag.label}
                         text={tag.label}
                         onDeleteClick={() => {
                           setSelectedTags((prev) => {
-                            const newSet = new Set(Array.from(prev));
-                            newSet.delete(tag.id);
-                            return newSet;
+                            return prev.filter((t) => t.label !== tag.label);
                           });
                         }}
                       ></Tag>
-                    ) : null;
+                    );
                   })}
                 </div>
               </div>

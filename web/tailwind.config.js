@@ -31,6 +31,7 @@ module.exports = {
         body1: "1rem",
         body2: "0.875rem",
         body3: "0.75rem",
+        body4: "0.625rem",
       },
     },
     colors: {

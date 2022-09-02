@@ -25,7 +25,9 @@ import toast from "react-hot-toast";
 import {
   Space_Tag_Category_Insert_Input,
   Space_Tag_Insert_Input,
+  Space_Tag_Status_Enum,
 } from "../../generated/graphql";
+import { showTagOnProfile } from "../../lib/tags";
 import { getTempId } from "../../lib/tempId";
 import {
   NewListingQuestion,
@@ -142,13 +144,13 @@ export function EditTagCategory(props: EditTagCategoryProps) {
     const existingTagIndex = tags.findIndex((tag) => tag.label === newTag);
     if (existingTagIndex !== -1) {
       const existingTag = tags[existingTagIndex];
-      if (existingTag.deleted === true) {
+      if (existingTag.status !== Space_Tag_Status_Enum.Accepted) {
         setTags((prev) => {
           return [
             ...prev.filter((tag) => tag.id !== existingTag.id),
             {
               ...existingTag,
-              deleted: false,
+              status: Space_Tag_Status_Enum.Accepted,
             },
           ];
         });
@@ -160,7 +162,12 @@ export function EditTagCategory(props: EditTagCategoryProps) {
     } else {
       setTags((prev) => [
         ...prev,
-        { label: newTag, deleted: false, id: getTempId() },
+        {
+          label: newTag,
+          deleted: false,
+          id: getTempId(),
+          status: Space_Tag_Status_Enum.Accepted,
+        },
       ]);
       setNewTag("");
     }
@@ -282,40 +289,38 @@ export function EditTagCategory(props: EditTagCategoryProps) {
                 items={tags}
                 strategy={verticalListSortingStrategy}
               >
-                {tags
-                  .filter((tag) => !tag.deleted)
-                  .map((tag, index) => {
-                    if (tag.deleted) {
-                      return null;
-                    }
-                    return (
-                      <EditTag
-                        key={tag.id}
-                        tagId={tag.id}
-                        mode={editMode}
-                        text={tag.label ?? ""}
-                        onDeleteClick={() => {
-                          setTags((prev) => {
-                            return prev
-                              .map((t) => {
-                                if (!t.id) {
-                                  if (t.label === tag.label) {
-                                    return null;
-                                  } else {
-                                    return t;
-                                  }
-                                } else if (t.id === tag.id) {
-                                  return { ...t, deleted: true };
+                {tags.map((tag) => {
+                  if (!showTagOnProfile(tag, tagCategory)) {
+                    return null;
+                  }
+                  return (
+                    <EditTag
+                      key={tag.id}
+                      tagId={tag.id}
+                      mode={editMode}
+                      text={tag.label ?? ""}
+                      onDeleteClick={() => {
+                        setTags((prev) => {
+                          return prev
+                            .map((t) => {
+                              if (!t.id) {
+                                if (t.label === tag.label) {
+                                  return null;
                                 } else {
                                   return t;
                                 }
-                              })
-                              .filter((v) => v !== null) as NewSpaceTag[];
-                          });
-                        }}
-                      />
-                    );
-                  })}
+                              } else if (t.id === tag.id) {
+                                return { ...t, deleted: true };
+                              } else {
+                                return t;
+                              }
+                            })
+                            .filter((v) => v !== null) as NewSpaceTag[];
+                        });
+                      }}
+                    />
+                  );
+                })}
               </SortableContext>
             </DndContext>
           </div>
@@ -342,7 +347,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
         <div className="h-2"></div>
         <div className="flex flex-wrap items-start gap-2">
           {tagCategory.space_tags?.data
-            .filter((tag) => !tag.deleted)
+            .filter((tag) => tag.status !== Space_Tag_Status_Enum.Deleted)
             .map((tag, index) => (
               <Tag key={index} text={tag.label ?? ""} />
             ))}
