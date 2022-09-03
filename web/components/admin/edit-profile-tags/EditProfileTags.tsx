@@ -12,12 +12,9 @@ import classNames from "classnames";
 import toast from "react-hot-toast";
 
 import {
-  Profile_Listing_Constraint,
-  Profile_Listing_Update_Column,
   Space_Tag_Constraint,
   Space_Tag_Status_Enum,
   Space_Tag_Update_Column,
-  useSetProfileListingTagsMutation,
   useSpaceTagCategoriesQuery,
   useTagCountsQuery,
   useUpsertSpaceProfileSchemaMutation,
@@ -25,7 +22,7 @@ import {
 import { BxDownArrow, BxDownArrowAlt } from "../../../generated/icons/regular";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { isTempId } from "../../../lib/tempId";
+import { isTempId, resolveId } from "../../../lib/tempId";
 import { NewSpaceTag, NewTagCategory } from "../../../lib/types";
 import { Button, Select, Text } from "../../atomic";
 import { RoundedCard } from "../../RoundedCard";
@@ -173,6 +170,7 @@ export function EditProfileTags() {
           data:
             data?.space_tags?.data.map((tag, index) => ({
               ...tag,
+              id: resolveId(tag.id),
               listing_order: index,
             })) ?? [],
           on_conflict: {
@@ -191,12 +189,12 @@ export function EditProfileTags() {
           toast.error(result.error.message);
         } else {
           toast.success("Saved");
+          refetchData();
           setEdited(false);
         }
       })
       .catch((err) => {
         toast.error(err.message);
-        refetchData();
       })
       .finally(() => {
         setLoading(false);
@@ -209,6 +207,7 @@ export function EditProfileTags() {
       <div className="h-2"></div>
       <Select
         className="w-64"
+        placeholder="Select..."
         options={tagCategoryOptions}
         value={selectedTagCategoryId}
         onSelect={(newVal) => {

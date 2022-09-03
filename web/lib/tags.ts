@@ -10,9 +10,11 @@ export function showTagOnProfile(
   tag: { status: Space_Tag_Status_Enum },
   tagCategory: { rigid_select: boolean }
 ) {
-  return (
-    !tagCategory.rigid_select || tag.status === Space_Tag_Status_Enum.Accepted
-  );
+  if (tagCategory.rigid_select) {
+    return tag.status === Space_Tag_Status_Enum.Accepted;
+  } else {
+    return tag.status !== Space_Tag_Status_Enum.Deleted;
+  }
 }
 
 /**

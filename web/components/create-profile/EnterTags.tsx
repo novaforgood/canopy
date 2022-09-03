@@ -146,6 +146,16 @@ export function EnterTags(props: EnterTagsProps) {
                     onSelect={(value, label) => {
                       if (!value || !label) return;
                       setSelectedTags((prev) => {
+                        if (
+                          category.space_tags.some(
+                            (tag) =>
+                              tag.label === label &&
+                              tag.status === Space_Tag_Status_Enum.Deleted
+                          )
+                        ) {
+                          toast.error("This tag has been deleted");
+                          return prev;
+                        }
                         return [
                           ...prev,
                           {
@@ -157,14 +167,20 @@ export function EnterTags(props: EnterTagsProps) {
                       });
                     }}
                     onExtraOptionSelect={(newInput) => {
-                      const tagExists = category.space_tags.some(
+                      const tagExists = category.space_tags.find(
                         (tag) => tag.label === newInput
                       );
-                      const tagSelected = selectedTags.some(
+                      const tagSelected = selectedTags.find(
                         (tag) => tag.label === newInput
                       );
                       if (tagExists || tagSelected) {
-                        toast.error("Cannot add duplicate tag");
+                        if (
+                          tagExists?.status === Space_Tag_Status_Enum.Deleted
+                        ) {
+                          toast.error("This tag has been banned by the admin.");
+                        } else {
+                          toast.error("Cannot add duplicate tag");
+                        }
                         return;
                       }
 

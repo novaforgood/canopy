@@ -117,6 +117,9 @@ export function EditProfileListing(props: EditProfileListingProps) {
                           <EditProfileTags
                             key={category.id}
                             tagCategoryId={category.id}
+                            profileListingId={
+                              currentProfile.profile_listing?.id ?? ""
+                            }
                           />
                         );
                       })}

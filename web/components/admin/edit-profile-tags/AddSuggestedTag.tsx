@@ -37,14 +37,24 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
     [tagCountsData?.space_tag_category_by_pk?.space_tags]
   );
 
+  const pendingTags = tagCategory.space_tags?.data.filter(
+    (tag) => tag.status === Space_Tag_Status_Enum.Pending
+  );
   return (
     <div className="w-full">
-      {tagCategory.rigid_select ? (
+      {tagCategory.rigid_select && (
+        <>
+          <div className="h-4"></div>
+          <Text variant="body2">
+            Allow users to suggest their own tag using the toggle switch above.
+          </Text>
+        </>
+      )}
+      {pendingTags && pendingTags.length === 0 ? (
         <>
           <div className="h-4"></div>
           <Text className="text-gray-600" variant="body2">
-            You must allow users to suggest their own tag first, using the
-            toggle switch above.
+            No pending tags.
           </Text>
         </>
       ) : (
@@ -69,49 +79,47 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
           </div>
           <div className="h-4"></div>
           <div className="flex flex-col gap-1.5 max-h-96 overflow-y-scroll overscroll-contain pr-3">
-            {tagCategory.space_tags?.data
-              .filter((tag) => tag.status === Space_Tag_Status_Enum.Pending)
-              .map((tag) => (
-                <PendingTagItem
-                  key={tag.id}
-                  tag={tag}
-                  onApprove={() => {
-                    onChange({
-                      ...tagCategory,
-                      space_tags: {
-                        ...tagCategory.space_tags,
-                        data:
-                          tagCategory.space_tags?.data.map((tagItem) =>
-                            tagItem.id === tag.id
-                              ? {
-                                  ...tagItem,
-                                  status: Space_Tag_Status_Enum.Accepted,
-                                }
-                              : tagItem
-                          ) ?? [],
-                      },
-                    });
-                  }}
-                  onDeny={() => {
-                    onChange({
-                      ...tagCategory,
-                      space_tags: {
-                        ...tagCategory.space_tags,
-                        data:
-                          tagCategory.space_tags?.data.map((tagItem) =>
-                            tagItem.id === tag.id
-                              ? {
-                                  ...tagItem,
-                                  status: Space_Tag_Status_Enum.Deleted,
-                                }
-                              : tagItem
-                          ) ?? [],
-                      },
-                    });
-                  }}
-                  count={tagCountsMap?.[tag.id] ?? 0}
-                />
-              ))}
+            {pendingTags?.map((tag) => (
+              <PendingTagItem
+                key={tag.id}
+                tag={tag}
+                onApprove={() => {
+                  onChange({
+                    ...tagCategory,
+                    space_tags: {
+                      ...tagCategory.space_tags,
+                      data:
+                        tagCategory.space_tags?.data.map((tagItem) =>
+                          tagItem.id === tag.id
+                            ? {
+                                ...tagItem,
+                                status: Space_Tag_Status_Enum.Accepted,
+                              }
+                            : tagItem
+                        ) ?? [],
+                    },
+                  });
+                }}
+                onDeny={() => {
+                  onChange({
+                    ...tagCategory,
+                    space_tags: {
+                      ...tagCategory.space_tags,
+                      data:
+                        tagCategory.space_tags?.data.map((tagItem) =>
+                          tagItem.id === tag.id
+                            ? {
+                                ...tagItem,
+                                status: Space_Tag_Status_Enum.Deleted,
+                              }
+                            : tagItem
+                        ) ?? [],
+                    },
+                  });
+                }}
+                count={tagCountsMap?.[tag.id] ?? 0}
+              />
+            ))}
           </div>
         </>
       )}

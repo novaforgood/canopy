@@ -377,6 +377,17 @@ query ProfileListing($profile_listing_id: uuid!) {
         title
       }
     }
+    profile_listing_to_space_tags(
+      where: { space_tag: { status: { _neq: Deleted } } }
+    ) {
+      id
+      space_tag_id
+      space_tag {
+        id
+        space_tag_category_id
+        label
+      }
+    }
     profile {
       id
       user {
