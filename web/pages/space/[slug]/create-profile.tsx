@@ -103,15 +103,20 @@ const ListerOnboardingPage: CustomPage = () => {
   return (
     <div className="flex flex-col sm:flex-row sm:h-screen">
       <div className="bg-olive-100 p-6 sm:p-12 sm:pt-40 sm:h-screen shrink-0 flex flex-col items-start justify-between">
-        <StageNavigator
-          currentStage={currentStage}
-          stages={ALL_LISTER_STAGES}
-          enabledStages={ALL_LISTER_STAGES.map((s) => s.value)}
-          onStageClick={(newStage) => {
-            navStage(newStage);
-          }}
-        />
-        <BackButton onClick={navBack} />
+        <div className="w-full">
+          <StageNavigator
+            currentStage={currentStage}
+            stages={ALL_LISTER_STAGES}
+            enabledStages={ALL_LISTER_STAGES.map((s) => s.value)}
+            onStageClick={(newStage) => {
+              navStage(newStage);
+            }}
+          />
+        </div>
+        <div>
+          <div className="h-2"></div>
+          <BackButton onClick={navBack} />
+        </div>
       </div>
 
       <div className="relative w-full overflow-y-auto bg-gray-50">

@@ -20,4 +20,5 @@
 - "!include public_space_listing_question.yaml"
 - "!include public_space_tag.yaml"
 - "!include public_space_tag_category.yaml"
+- "!include public_space_tag_status.yaml"
 - "!include public_user.yaml"

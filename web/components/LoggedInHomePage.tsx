@@ -69,6 +69,7 @@ export function LoggedInHomePage() {
             Create new directory
           </Button>
         </div>
+        <div className="h-16"></div>
       </SidePadding>
     </>
   );

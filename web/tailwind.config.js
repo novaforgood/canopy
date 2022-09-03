@@ -7,6 +7,20 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        enter: "enter 200ms ease-out forwards",
+        leave: "leave 150ms ease-in forwards",
+      },
+      keyframes: {
+        enter: {
+          "0%": { transform: "scale(0.9)", opacity: 0 },
+          "100%": { transform: "scale(1)", opacity: 1 },
+        },
+        leave: {
+          "0%": { transform: "scale(1)", opacity: 1 },
+          "100%": { transform: "scale(0.9)", opacity: 0 },
+        },
+      },
       transitionProperty: {
         height: "height",
       },
@@ -31,6 +45,7 @@ module.exports = {
         body1: "1rem",
         body2: "0.875rem",
         body3: "0.75rem",
+        body4: "0.625rem",
       },
     },
     colors: {

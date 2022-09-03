@@ -109,7 +109,11 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
         const oldIndex = ids.indexOf(active.id as string);
         const newIndex = ids.indexOf(over.id as string);
 
-        const newList = arrayMove(data[key], oldIndex, newIndex);
+        const newList = arrayMove<NewListingQuestion | NewTagCategory>(
+          data[key],
+          oldIndex,
+          newIndex
+        );
         onChange({ ...data, [key]: newList });
       }
     };
@@ -286,6 +290,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                         title: "New Tag Category",
                         deleted: false,
                         space_id: currentSpace.id,
+                        rigid_select: true,
                       },
                     ],
                     listingQuestions: data.listingQuestions,
@@ -298,6 +303,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                         id: getTempId(),
                         title: "New Tag Category",
                         deleted: false,
+                        rigid_select: true,
                       },
                     ],
                     listingQuestions: data.listingQuestions,

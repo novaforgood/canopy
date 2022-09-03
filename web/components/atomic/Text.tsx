@@ -11,7 +11,9 @@ type TextVariant =
   | "subheading2"
   | "body1"
   | "body2"
-  | "body3";
+  | "body3"
+  | "body4";
+
 type TextProps = HTMLAttributes<HTMLDivElement> & {
   variant?: TextVariant;
   mobileVariant?: TextVariant;
@@ -44,6 +46,7 @@ function getVariantStyles(variant: TextVariant) {
     "text-body1": variant === "body1",
     "text-body2": variant === "body2",
     "text-body3": variant === "body3",
+    "text-body4": variant === "body4",
   });
 }
 export const Text = ({

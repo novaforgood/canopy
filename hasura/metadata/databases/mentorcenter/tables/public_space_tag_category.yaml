@@ -40,6 +40,7 @@ insert_permissions:
         - deleted
         - id
         - listing_order
+        - rigid_select
         - space_id
         - title
       backend_only: false
@@ -47,11 +48,12 @@ select_permissions:
   - role: public
     permission:
       columns:
-        - id
-        - title
-        - space_id
-        - listing_order
         - deleted
+        - id
+        - listing_order
+        - rigid_select
+        - space_id
+        - title
         - updated_at
       filter:
         _or:
@@ -65,6 +67,7 @@ select_permissions:
         - deleted
         - id
         - listing_order
+        - rigid_select
         - space_id
         - title
       filter:
@@ -79,6 +82,7 @@ update_permissions:
       columns:
         - deleted
         - listing_order
+        - rigid_select
         - title
       filter:
         _or:

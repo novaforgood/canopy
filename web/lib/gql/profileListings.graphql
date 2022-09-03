@@ -142,6 +142,8 @@ mutation SetProfileListingTags(
   ) {
     returning {
       id
+      profile_listing_id
+      space_tag_id
       space_tag {
         id
         label
@@ -157,6 +159,7 @@ mutation SetProfileListingTags(
     returning {
       id
       profile_listing_id
+      space_tag_id
       space_tag {
         id
         label

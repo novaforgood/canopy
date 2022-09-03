@@ -40,6 +40,7 @@ export function EditProfileFormat() {
           space_tags: { data: category.space_tags },
         })) ?? [],
     });
+    setEdited(false);
   }, [
     currentSpace?.space_listing_questions,
     currentSpace?.space_tag_categories,
@@ -67,10 +68,12 @@ export function EditProfileFormat() {
                 listing_order: index,
               })),
               on_conflict: {
-                constraint: Space_Tag_Constraint.SpaceTagPkey,
+                constraint:
+                  Space_Tag_Constraint.SpaceTagLabelSpaceTagCategoryIdKey,
                 update_columns: [
                   Space_Tag_Update_Column.Label,
-                  Space_Tag_Update_Column.Deleted,
+                  Space_Tag_Update_Column.Status,
+                  Space_Tag_Update_Column.ListingOrder,
                 ],
               },
             }
@@ -81,7 +84,6 @@ export function EditProfileFormat() {
         if (result.error) {
           toast.error(result.error.message);
         } else {
-          setEdited(false);
           toast.success("Saved");
           refetchCurrentSpace();
         }
