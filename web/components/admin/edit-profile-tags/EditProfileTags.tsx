@@ -273,7 +273,7 @@ export function EditProfileTags() {
                   <Tab.List className="flex items-center gap-8">
                     <CustomTab title="Create tags"></CustomTab>
                     <CustomTab title="Approve tags from members"></CustomTab>
-                    <CustomTab title="View deleted tags"></CustomTab>
+                    <CustomTab title="View banned tags"></CustomTab>
                   </Tab.List>
                   <Tab.Panels>
                     <Tab.Panel>

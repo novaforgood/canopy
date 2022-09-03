@@ -62,9 +62,8 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
           <div className="h-4"></div>
           <Text className="text-gray-600" variant="body2">
             These tags were inputted by members. They appear on profiles but not
-            the directory filter. Click the checkmark to add tag to official
-            directory list. Or, click X to delete the tag and hide it from
-            everywhere.
+            the directory filters. Click the checkmark to make the tag official.
+            Or, click X to ban the tag and prevent users from setting it.
           </Text>
           <div className="h-6"></div>
           <div className="flex items-center gap-3 pl-2 select-none">

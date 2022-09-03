@@ -41,8 +41,9 @@ export function ViewDeletedTags(props: ViewDeletedTagsProps) {
     <div className="w-full">
       <div className="h-4"></div>
       <Text className="text-gray-600" variant="body2">
-        You marked the following tags as deleted. They will not appear in member
-        profiles or directory filters.
+        You marked the following tags as banned. They will not appear in member
+        profiles or directory filters. Click {'"Restore'} to make the tag
+        official again.
       </Text>
       <div className="h-6"></div>
       <div className="flex items-center gap-3 pl-2 select-none">
