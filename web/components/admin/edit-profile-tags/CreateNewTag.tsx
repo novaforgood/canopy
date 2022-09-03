@@ -10,11 +10,11 @@ import { TextInput } from "../../inputs/TextInput";
 
 interface CreateNewTagProps {
   tagCategory: NewTagCategory;
-  onAddTag: (newTagCategory: NewTagCategory) => void;
+  onChange: (newTagCategory: NewTagCategory) => void;
 }
 
 export function CreateNewTag(props: CreateNewTagProps) {
-  const { tagCategory, onAddTag } = props;
+  const { tagCategory, onChange } = props;
   const [newTag, setNewTag] = useState("");
   const addTag = useCallback(() => {
     if (newTag.length === 0) {
@@ -26,7 +26,7 @@ export function CreateNewTag(props: CreateNewTagProps) {
     const existingTag = currentTags.find((tag) => tag.label === newTag);
     if (existingTag) {
       if (existingTag.status === Space_Tag_Status_Enum.Deleted) {
-        onAddTag({
+        onChange({
           ...tagCategory,
           space_tags: {
             data: [
@@ -41,7 +41,7 @@ export function CreateNewTag(props: CreateNewTagProps) {
         return;
       }
     } else {
-      onAddTag({
+      onChange({
         ...tagCategory,
         space_tags: {
           data: [
@@ -56,7 +56,7 @@ export function CreateNewTag(props: CreateNewTagProps) {
       });
       setNewTag("");
     }
-  }, [newTag, tagCategory, onAddTag]);
+  }, [newTag, tagCategory, onChange]);
 
   return (
     <div className="">

@@ -206,10 +206,13 @@ query SpaceTagCategories($space_id: uuid!) {
     id
     title
     deleted
+    space_id
+    listing_order
     rigid_select
-    space_tags {
+    space_tags(order_by: { listing_order: asc }) {
       id
       label
+      listing_order
       status
     }
   }

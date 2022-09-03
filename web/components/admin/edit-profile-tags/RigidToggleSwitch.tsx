@@ -21,12 +21,9 @@ interface RigidToggleSwitchProps {
 export default function RigidToggleSwitch(props: RigidToggleSwitchProps) {
   const { tagCategoryId } = props;
 
-  console.log(tagCategoryId);
   const [{ data, fetching }] = useTagCategoryRigidSelectQuery({
     variables: { tag_category_id: tagCategoryId },
   });
-
-  console.log(fetching);
 
   const [_, updateSpaceTagCategory] = useUpdateSpaceTagCategoryMutation();
 

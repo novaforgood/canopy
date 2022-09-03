@@ -68,7 +68,8 @@ export function EditProfileFormat() {
                 listing_order: index,
               })),
               on_conflict: {
-                constraint: Space_Tag_Constraint.SpaceTagPkey,
+                constraint:
+                  Space_Tag_Constraint.SpaceTagLabelSpaceTagCategoryIdKey,
                 update_columns: [
                   Space_Tag_Update_Column.Label,
                   Space_Tag_Update_Column.Status,

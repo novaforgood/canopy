@@ -11,11 +11,11 @@ import { PendingTagItem } from "./PendingTagItem";
 
 interface AddSuggestedTagProps {
   tagCategory: NewTagCategory;
-  onAddTag: (newTagCategory: NewTagCategory) => void;
+  onChange: (newTagCategory: NewTagCategory) => void;
 }
 
 export function AddSuggestedTag(props: AddSuggestedTagProps) {
-  const { tagCategory, onAddTag } = props;
+  const { tagCategory, onChange } = props;
 
   const [{ data: tagCountsData }] = useTagCountsQuery({
     variables: {
@@ -51,8 +51,10 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
         <>
           <div className="h-4"></div>
           <Text className="text-gray-600" variant="body2">
-            These tags were inputted by members. Click the checkmark to add tag
-            to official directory list.
+            These tags were inputted by members. They appear on profiles but not
+            the directory filter. Click the checkmark to add tag to official
+            directory list. Or, click X to delete the tag and hide it from
+            everywhere.
           </Text>
           <div className="h-6"></div>
           <div className="flex items-center gap-3 pl-2 select-none">
@@ -62,7 +64,7 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
               </Text>
             </div>
             <Text variant="body2" className="text-gray-600" italic>
-              number of member usages
+              number of members with this tag
             </Text>
           </div>
           <div className="h-4"></div>
@@ -73,10 +75,42 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
                 <PendingTagItem
                   key={tag.id}
                   tag={tag}
-                  onApprove={() => {}}
-                  onDeny={() => {}}
-                  count={tagCountsMap?.[tag.id ?? ""] ?? 0}
-                ></PendingTagItem>
+                  onApprove={() => {
+                    onChange({
+                      ...tagCategory,
+                      space_tags: {
+                        ...tagCategory.space_tags,
+                        data:
+                          tagCategory.space_tags?.data.map((tagItem) =>
+                            tagItem.id === tag.id
+                              ? {
+                                  ...tagItem,
+                                  status: Space_Tag_Status_Enum.Accepted,
+                                }
+                              : tagItem
+                          ) ?? [],
+                      },
+                    });
+                  }}
+                  onDeny={() => {
+                    onChange({
+                      ...tagCategory,
+                      space_tags: {
+                        ...tagCategory.space_tags,
+                        data:
+                          tagCategory.space_tags?.data.map((tagItem) =>
+                            tagItem.id === tag.id
+                              ? {
+                                  ...tagItem,
+                                  status: Space_Tag_Status_Enum.Deleted,
+                                }
+                              : tagItem
+                          ) ?? [],
+                      },
+                    });
+                  }}
+                  count={tagCountsMap?.[tag.id] ?? 0}
+                />
               ))}
           </div>
         </>

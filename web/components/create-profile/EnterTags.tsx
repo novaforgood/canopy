@@ -71,7 +71,7 @@ export function EnterTags(props: EnterTagsProps) {
           toast.error("No current profile");
           return;
         }
-        console.log(selectedTags);
+
         await setProfileListingTags({
           profile_id: currentProfile.id,
           inputs: selectedTags.map((tag) => ({
