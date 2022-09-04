@@ -310,7 +310,10 @@ export function EditTagCategory(props: EditTagCategoryProps) {
                                   return t;
                                 }
                               } else if (t.id === tag.id) {
-                                return { ...t, deleted: true };
+                                return {
+                                  ...t,
+                                  status: Space_Tag_Status_Enum.Deleted,
+                                };
                               } else {
                                 return t;
                               }
