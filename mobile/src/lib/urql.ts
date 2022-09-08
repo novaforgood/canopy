@@ -1,15 +1,15 @@
-import { devtoolsExchange } from "@urql/devtools";
 import { cacheExchange } from "@urql/exchange-graphcache";
 import { createClient, dedupExchange, fetchExchange } from "urql";
 
 import schema from "../generated/graphql";
 
-import { requireEnv } from "./env";
+import Constants from "expo-constants";
+import { getGraphqlEndpoint } from "./apiUrl";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
   return createClient({
-    url: requireEnv("NEXT_PUBLIC_GRAPHQL_ENDPOINT"),
+    url: getGraphqlEndpoint(),
     requestPolicy: "cache-and-network",
     maskTypename: true,
     fetchOptions: () => {
@@ -22,7 +22,6 @@ export function getUrqlClient(jwt: string) {
       };
     },
     exchanges: [
-      devtoolsExchange,
       dedupExchange,
       cacheExchange({
         schema,

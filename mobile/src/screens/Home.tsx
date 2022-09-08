@@ -1,34 +1,40 @@
-import { Button, View } from "react-native";
+import type { StackScreenProps } from "@react-navigation/stack";
 import { Box } from "../components/atomic/Box";
+import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
+import { useAllProfilesOfUserQuery } from "../generated/graphql";
+import { useUserData } from "../hooks/useUserData";
+import type { RootStackParams } from "../types/navigation";
 
-function HomeScreen({ navigation }) {
-  const spaces = [
-    { name: "Propel Water Lovers", id: "we-love-propel" },
-    { name: "Propel Water Haters", id: "no-propel-water" },
-    { name: "Ae", id: "ae" },
-  ];
+function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
+  const spaces = [{ spaceSlug: "test-space-1", spaceName: "Test Space 1" }];
+
+  const { userData } = useUserData();
+  const [{ data: profileData }] = useAllProfilesOfUserQuery({
+    variables: { user_id: userData?.id ?? "" },
+  });
 
   return (
-    <View>
-      <Box backgroundColor="olive100" height="100%">
-        <Text variant="subheading1" padding={4}>
-          Welcome to Canopy Mobile!
+    <Box>
+      <Box>
+        <Text variant="heading3">
+          Welcome to Canopy Mobile, {userData?.first_name}!
         </Text>
-        {spaces.map((item) => (
-          <Button
-            title={item.name}
-            key={item.id}
-            onPress={() =>
-              navigation.navigate("Directory", {
-                spaceid: item.id,
-                spaceName: item.name,
-              })
-            }
-          />
-        ))}
+        {profileData?.profile.map((profile) => {
+          return (
+            <Button
+              onPress={() => {
+                navigation.navigate("Directory", {
+                  spaceSlug: profile.space.slug,
+                });
+              }}
+            >
+              {profile.space.name}
+            </Button>
+          );
+        })}
       </Box>
-    </View>
+    </Box>
   );
 }
 

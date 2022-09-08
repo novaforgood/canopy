@@ -76,7 +76,6 @@ function App({ Component, pageProps }: CustomAppProps) {
   }, [spaceSlug, executeQuery, previousSlug]);
   const spaceId = spaceData?.space[0]?.id;
 
-  const client = useClient();
   useEffect(() => {
     const lastVisitedSpaceId = LocalStorage.get(
       LocalStorageKey.LastVisitedSpaceId

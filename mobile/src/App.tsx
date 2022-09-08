@@ -1,25 +1,48 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ThemeProvider } from "@shopify/restyle";
 import { useFonts } from "expo-font";
-import { Rubik_400Regular } from "@expo-google-fonts/dev";
-import React from "react";
+import {
+  Rubik_400Regular,
+  Rubik_700Bold,
+  Rubik_500Medium,
+  Rubik_400Regular_Italic,
+  Rubik_700Bold_Italic,
+  Rubik_500Medium_Italic,
+} from "@expo-google-fonts/rubik";
+import React, { useCallback, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RootNavigator } from "./navigation/RootNavigator";
 import theme from "./theme";
+import { RecoilRoot, useRecoilState } from "recoil";
+import { AuthProvider } from "./providers/AuthProvider";
+import { UrqlProvider } from "./providers/UrqlProvider";
 
-export default function App() {
+function App() {
   let [fontsLoaded] = useFonts({
     Rubik_400Regular,
+    Rubik_700Bold,
+    Rubik_500Medium,
+    Rubik_400Regular_Italic,
+    Rubik_700Bold_Italic,
+    Rubik_500Medium_Italic,
   });
 
-  if (!fontsLoaded) return null;
-
+  if (!fontsLoaded) {
+    return <Text>Loading...</Text>;
+  }
   return (
-    <ThemeProvider theme={theme}>
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
-    </ThemeProvider>
+    <RecoilRoot>
+      <AuthProvider>
+        <UrqlProvider>
+          <ThemeProvider theme={theme}>
+            <NavigationContainer>
+              <RootNavigator />
+            </NavigationContainer>
+          </ThemeProvider>
+        </UrqlProvider>
+      </AuthProvider>
+    </RecoilRoot>
   );
 }
+
+export default App;
