@@ -12,6 +12,9 @@ export default function App() {
   let [fontsLoaded] = useFonts({
     Rubik_400Regular,
   });
+
+  if (!fontsLoaded) return null;
+
   return (
     <ThemeProvider theme={theme}>
       <NavigationContainer>
