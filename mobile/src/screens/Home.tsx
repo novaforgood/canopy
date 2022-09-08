@@ -1,33 +1,26 @@
-import { Button, View } from "react-native";
-import { Box } from "../components/atomic/Box";
-import { Text } from "../components/atomic/Text";
+import type { StackScreenProps } from "@react-navigation/stack";
+import { Button, Text, View } from "react-native";
+import type { RootStackParams } from "../types/navigation";
 
-function HomeScreen({ navigation }) {
-  const spaces = [
-    { name: "Propel Water Lovers", id: "we-love-propel" },
-    { name: "Propel Water Haters", id: "no-propel-water" },
-    { name: "Ae", id: "ae" },
-  ];
+function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
+  const spaces = [{ spaceSlug: "test-space-1", spaceName: "Test Space 1" }];
 
   return (
     <View>
-      <Box backgroundColor="olive100" height="100%">
-        <Text variant="subheading1" padding={4}>
-          Welcome to Canopy Mobile!
-        </Text>
+      <View>
+        <Text>Welcome to Canopy Mobile!</Text>
         {spaces.map((item) => (
           <Button
-            title={item.name}
-            key={item.id}
+            title={item.spaceName}
+            key={item.spaceSlug}
             onPress={() =>
               navigation.navigate("Directory", {
-                spaceid: item.id,
-                spaceName: item.name,
+                spaceSlug: item.spaceSlug,
               })
             }
           />
         ))}
-      </Box>
+      </View>
     </View>
   );
 }

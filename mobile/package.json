@@ -5,16 +5,20 @@
   "private": true,
   "dependencies": {
     "@expo-google-fonts/dev": "^0.2.2",
+    "@expo-google-fonts/rubik": "^0.2.2",
     "@react-navigation/bottom-tabs": "^6.3.3",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
+    "@react-navigation/stack": "^6.2.3",
     "@shopify/restyle": "^2.1.0",
     "@urql/devtools": "^2.0.3",
     "@urql/exchange-graphcache": "^5.0.1",
     "date-fns": "^2.29.2",
     "dotenv": "^16.0.2",
     "expo": "^46.0.0",
+    "expo-dev-client": "~1.2.1",
     "expo-font": "~10.2.0",
+    "expo-secure-store": "~11.3.0",
     "firebase": "^9.9.4",
     "graphql": "^15.8.0",
     "react": "18.0.0",
@@ -25,7 +29,8 @@
     "react-native-web": "~0.18.7",
     "recoil": "^0.7.5",
     "urql": "^3.0.3",
-    "expo-secure-store": "~11.3.0"
+    "expo-auth-session": "~3.7.1",
+    "expo-random": "~12.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",

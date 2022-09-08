@@ -1,19 +1,154 @@
 import { createTheme } from "@shopify/restyle";
 import { Platform } from "react-native";
 
-const fontWeight = (weight: string) => {
-  if (Platform.OS === "ios") {
-    return { fontWeight: weight };
-  } else {
-    return { fontFamily: "Inter-" + weight };
-  }
+type BaseTextVariant =
+  | "heading1"
+  | "heading2"
+  | "heading3"
+  | "heading4"
+  | "subheading1"
+  | "subheading2"
+  | "body1"
+  | "body2"
+  | "body3";
+
+const textSizes: Record<BaseTextVariant, { fontSize: number }> = {
+  heading1: { fontSize: 56 },
+  heading2: { fontSize: 44 },
+  heading3: { fontSize: 36 },
+  heading4: { fontSize: 24 },
+  subheading1: { fontSize: 20 },
+  subheading2: { fontSize: 18 },
+  body1: { fontSize: 16 },
+  body2: { fontSize: 14 },
+  body3: { fontSize: 12 },
+} as const;
+
+const BASE_FONT = "Rubik";
+const FONT_WEIGHTS = ["400Regular", "500Medium", "700Bold"] as const;
+type FontWeight = typeof FONT_WEIGHTS[number];
+
+const ITALIC = "Italic";
+
+const MAP_WEIGHT_TO_NAME: Record<FontWeight, string> = {
+  "400Regular": "",
+  "500Medium": "Medium",
+  "700Bold": "Bold",
 };
+
+export type TextVariant =
+  | "heading1"
+  | "heading1Medium"
+  | "heading1MediumItalic"
+  | "heading1Bold"
+  | "heading1BoldItalic"
+  | "heading2"
+  | "heading2Medium"
+  | "heading2MediumItalic"
+  | "heading2Bold"
+  | "heading2BoldItalic"
+  | "heading3"
+  | "heading3Medium"
+  | "heading3MediumItalic"
+  | "heading3Bold"
+  | "heading3BoldItalic"
+  | "heading4"
+  | "heading4Medium"
+  | "heading4MediumItalic"
+  | "heading4Bold"
+  | "heading4BoldItalic"
+  | "subheading1"
+  | "subheading1Medium"
+  | "subheading1MediumItalic"
+  | "subheading1Bold"
+  | "subheading1BoldItalic"
+  | "subheading2"
+  | "subheading2Medium"
+  | "subheading2MediumItalic"
+  | "subheading2Bold"
+  | "subheading2BoldItalic"
+  | "body1"
+  | "body1Medium"
+  | "body1MediumItalic"
+  | "body1Bold"
+  | "body1BoldItalic"
+  | "body2"
+  | "body2Medium"
+  | "body2MediumItalic"
+  | "body2Bold"
+  | "body2BoldItalic"
+  | "body3"
+  | "body3Medium"
+  | "body3MediumItalic"
+  | "body3Bold"
+  | "body3BoldItalic";
+
+function makeTextVariants() {
+  const baseVariants: BaseTextVariant[] = [
+    "heading1",
+    "heading2",
+    "heading3",
+    "heading4",
+    "subheading1",
+    "subheading2",
+    "body1",
+    "body2",
+    "body3",
+  ];
+
+  return baseVariants.reduce((acc, variant) => {
+    FONT_WEIGHTS.forEach((weight) => {
+      const weightName = MAP_WEIGHT_TO_NAME[weight];
+      acc[variant + weightName] = {
+        ...textSizes[variant],
+        fontFamily: [BASE_FONT, weight].join("_"),
+      };
+      acc[variant + weightName + ITALIC] = {
+        ...textSizes[variant],
+        fontFamily: [BASE_FONT, weight, ITALIC].join("_"),
+      };
+    });
+    return acc;
+  }, {} as Record<string, any>) as Record<TextVariant, any>;
+}
+
+const textVariants = makeTextVariants();
+
+const buttonVariants = {
+  primary: {
+    bg: "gray900",
+  },
+  cta: {
+    bg: "brandPrimary",
+  },
+} as const;
+
+export type ButtonVariant = keyof typeof buttonVariants;
+
+export const buttonTextStyles: Record<
+  ButtonVariant,
+  { variant: TextVariant; color: keyof Theme["colors"] }
+> = {
+  primary: {
+    variant: "body1",
+    color: "gray100",
+  },
+  cta: {
+    variant: "body1",
+    color: "gray100",
+  },
+} as const;
+
+type Base = "base";
+type Append = "append";
+type Product = Base | Append;
 
 const theme = createTheme({
   colors: {
     black: "#000000",
     white: "#FFFFFF",
     transparent: "transparent",
+    systemError: "red",
 
     gray50: "#FAFAFB",
     gray100: "#EFF0F0",
@@ -94,99 +229,12 @@ const theme = createTheme({
       color: "gray900",
       fontFamily: "Rubik_400Regular",
     },
-    heading1: {
-      fontSize: 56,
-    },
-    heading2: {
-      fontSize: 44,
-    },
-    heading3: {
-      fontSize: 36,
-    },
-    heading4: {
-      fontSize: 24,
-    },
-    subheading1: {
-      fontSize: 20,
-    },
-    subheading2: {
-      fontSize: 18,
-    },
-    body1: {
-      fontSize: 16,
-    },
-    body2: {
-      fontSize: 14,
-    },
-    body3: {
-      fontSize: 12,
-    },
+    ...textVariants,
   },
   buttonVariants: {
-    primary: {
-      bg: "gray900",
-    },
-    cta: {
-      bg: "brandPrimary",
-    },
-    ghost: {
-      bg: "gray100",
-      borderColor: "gray400",
-      borderWidth: 1,
-    },
-    ghostS: {
-      height: 40,
-      px: 16,
-      bg: "gray100",
-      borderColor: "gray400",
-      borderWidth: 1,
-    },
-    disabled: {
-      bg: "gray200",
-    },
-    qrCode: {
-      bg: "overlayWhite10",
-    },
-    numkey: {
-      height: null,
-      borderRadius: 32,
-      bg: "gray100",
-      borderColor: "gray300",
-      borderWidth: 1,
-    },
+    ...buttonVariants,
   },
 });
 
 export type Theme = typeof theme;
 export default theme;
-
-export const themeButtonText = {
-  primary: {
-    textVariant: "buttonM",
-    color: "gray100",
-  },
-  cta: {
-    textVariant: "buttonM",
-    color: "gray100",
-  },
-  ghost: {
-    textVariant: "buttonM",
-    color: "gray900",
-  },
-  ghostS: {
-    textVariant: "buttonS",
-    color: "gray900",
-  },
-  disabled: {
-    textVariant: "buttonM",
-    color: "gray600",
-  },
-  qrCode: {
-    textVariant: "buttonM",
-    color: "gray100",
-  },
-  numkey: {
-    textVariant: "numkey",
-    color: "gray900",
-  },
-} as const;

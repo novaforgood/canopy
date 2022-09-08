@@ -1,5 +1,4 @@
-import { View } from "react-native";
-import { Text } from "../../components/atomic/Text";
+import { Text, View } from "react-native";
 
 function Messages() {
   return (
