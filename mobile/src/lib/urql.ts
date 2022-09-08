@@ -4,11 +4,12 @@ import { createClient, dedupExchange, fetchExchange } from "urql";
 import schema from "../generated/graphql";
 
 import Constants from "expo-constants";
+import { getGraphqlEndpoint } from "./apiUrl";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
   return createClient({
-    url: Constants.manifest?.extra?.["GRAPHQL_ENDPOINT"],
+    url: getGraphqlEndpoint(),
     requestPolicy: "cache-and-network",
     maskTypename: true,
     fetchOptions: () => {

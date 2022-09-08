@@ -70,7 +70,7 @@ export function SignInScreen({
           const api =
             typeof manifest?.packagerOpts === `object` &&
             manifest.packagerOpts.dev
-              ? manifest?.debuggerHost?.split(`:`).shift().concat(`:3000`)
+              ? manifest?.debuggerHost?.split(`:`).shift()?.concat(`:3000`)
               : `api.example.com`;
 
           console.log(`http://${api}/api/auth/upsertUserData`);

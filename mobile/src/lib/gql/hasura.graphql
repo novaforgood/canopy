@@ -52,3 +52,60 @@ query SpaceBySlug($slug: String!) {
     }
   }
 }
+
+query AllProfilesOfUser($user_id: String!) {
+  profile(where: { user_id: { _eq: $user_id } }) {
+    id
+    profile_roles {
+      id
+      profile_role
+    }
+    profile_listing {
+      id
+      public
+      headline
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+      profile_listing_to_space_tags(
+        where: { space_tag: { status: { _neq: Deleted } } }
+      ) {
+        id
+        space_tag_id
+        space_tag {
+          id
+          space_tag_category_id
+          label
+        }
+      }
+    }
+
+    flattened_profile_roles {
+      id
+      profile_id
+      profile_role
+    }
+    space {
+      id
+      name
+      slug
+      space_cover_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+    }
+    user {
+      id
+      email
+      first_name
+      last_name
+    }
+  }
+}
