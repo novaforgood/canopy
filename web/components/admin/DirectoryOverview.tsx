@@ -134,7 +134,7 @@ export function DirectoryOverview() {
               )
             }
           />
-          <Button className="h-8">placeholder</Button>
+          {/* <Button className="h-8">placeholder</Button> */}
         </div>
         <div className="h-4"></div>
       </Responsive>
