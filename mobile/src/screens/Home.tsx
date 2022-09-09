@@ -4,6 +4,7 @@ import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
+import { signOut } from "../lib/firebase";
 import type { RootStackParams } from "../types/navigation";
 
 function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
@@ -33,6 +34,9 @@ function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
             </Button>
           );
         })}
+      </Box>
+      <Box p={4}>
+        <Button onPress={signOut}>Sign out</Button>
       </Box>
     </Box>
   );
