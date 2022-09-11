@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: connection_request
+  schema: public
 object_relationships:
   - name: receiver_profile
     using:
@@ -31,6 +31,9 @@ select_permissions:
                   space_id:
                     _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -39,9 +42,6 @@ select_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: Admin
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
       allow_aggregations: true
 update_permissions:
   - role: user

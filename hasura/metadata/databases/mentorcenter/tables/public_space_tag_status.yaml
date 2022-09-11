@@ -1,4 +1,4 @@
 table:
-  schema: public
   name: space_tag_status
+  schema: public
 is_enum: true

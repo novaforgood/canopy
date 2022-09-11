@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: profile_listing_social
+  schema: public
 object_relationships:
   - name: profile_listing
     using:
@@ -18,7 +18,6 @@ insert_permissions:
         - link
         - profile_listing_id
         - type
-      backend_only: false
 select_permissions:
   - role: public
     permission:
@@ -71,6 +70,7 @@ update_permissions:
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         _or:
           - profile_listing:

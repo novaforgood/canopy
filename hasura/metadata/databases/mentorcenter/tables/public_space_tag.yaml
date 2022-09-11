@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: space_tag
+  schema: public
 object_relationships:
   - name: space_tag_category
     using:
@@ -11,8 +11,8 @@ array_relationships:
       foreign_key_constraint_on:
         column: space_tag_id
         table:
-          schema: public
           name: profile_listing_to_space_tag
+          schema: public
 insert_permissions:
   - role: user
     permission:
@@ -23,6 +23,9 @@ insert_permissions:
                   space_id:
                     _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -31,15 +34,15 @@ insert_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: Admin
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
           - space_tag_category:
               space:
                 owner_id:
                   _eq: X-Hasura-User-Id
           - _and:
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -48,9 +51,6 @@ insert_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: MemberWhoCanList
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
               - space_tag_category:
                   rigid_select:
                     _eq: false
@@ -62,7 +62,6 @@ insert_permissions:
         - listing_order
         - space_tag_category_id
         - status
-      backend_only: false
 select_permissions:
   - role: public
     permission:
@@ -109,6 +108,9 @@ update_permissions:
                   space_id:
                     _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -117,9 +119,6 @@ update_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: Admin
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
           - space_tag_category:
               space:
                 owner_id:
@@ -128,6 +127,7 @@ update_permissions:
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         _or:
           - _and:
@@ -135,6 +135,9 @@ delete_permissions:
                   space_id:
                     _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -143,9 +146,6 @@ delete_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: Admin
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
           - space_tag_category:
               space:
                 owner_id:

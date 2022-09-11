@@ -1,14 +1,14 @@
 table:
-  schema: public
   name: profile
+  schema: public
 object_relationships:
   - name: profile_listing
     using:
       foreign_key_constraint_on:
         column: profile_id
         table:
-          schema: public
           name: profile_listing
+          schema: public
   - name: space
     using:
       foreign_key_constraint_on: space_id
@@ -19,19 +19,19 @@ array_relationships:
   - name: flattened_profile_roles
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: profile_to_profile_role_flattened
-        insertion_order: null
         column_mapping:
           id: profile_id
+        insertion_order: null
+        remote_table:
+          name: profile_to_profile_role_flattened
+          schema: public
   - name: profile_roles
     using:
       foreign_key_constraint_on:
         column: profile_id
         table:
-          schema: public
           name: profile_to_profile_role
+          schema: public
 insert_permissions:
   - role: user
     permission:
@@ -47,7 +47,6 @@ insert_permissions:
         - created_at
         - space_id
         - user_id
-      backend_only: false
 select_permissions:
   - role: public
     permission:

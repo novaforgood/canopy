@@ -1,0 +1,35 @@
+table:
+  name: chat_room
+  schema: public
+array_relationships:
+  - name: profile_to_chat_rooms
+    using:
+      foreign_key_constraint_on:
+        column: chat_room_id
+        table:
+          name: profile_to_chat_room
+          schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - profile_to_chat_rooms:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id
+      columns:
+        - created_at
+        - id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - created_at
+        - id
+      filter:
+        _or:
+          - profile_to_chat_rooms:
+              profile:
+                user_id:
+                  _eq: X-Hasura-User-Id

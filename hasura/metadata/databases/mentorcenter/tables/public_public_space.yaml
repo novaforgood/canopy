@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: public_space
+  schema: public
 select_permissions:
   - role: public
     permission:

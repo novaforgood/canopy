@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: profile_listing_to_space_tag
+  schema: public
 object_relationships:
   - name: profile_listing
     using:
@@ -20,7 +20,6 @@ insert_permissions:
       columns:
         - profile_listing_id
         - space_tag_id
-      backend_only: false
 select_permissions:
   - role: public
     permission:
@@ -71,6 +70,7 @@ update_permissions:
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         _or:
           - profile_listing:

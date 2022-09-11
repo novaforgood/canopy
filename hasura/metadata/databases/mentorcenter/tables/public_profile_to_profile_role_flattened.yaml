@@ -1,25 +1,25 @@
 table:
-  schema: public
   name: profile_to_profile_role_flattened
+  schema: public
 object_relationships:
   - name: profile
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: profile
-        insertion_order: null
         column_mapping:
           profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profile
+          schema: public
   - name: space
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: space
-        insertion_order: null
         column_mapping:
           space_id: id
+        insertion_order: null
+        remote_table:
+          name: space
+          schema: public
 select_permissions:
   - role: public
     permission:

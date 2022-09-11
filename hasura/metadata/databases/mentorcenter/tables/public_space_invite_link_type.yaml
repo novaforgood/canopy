@@ -1,4 +1,4 @@
 table:
-  schema: public
   name: space_invite_link_type
+  schema: public
 is_enum: true
