@@ -341,6 +341,13 @@ query ProfileById($profile_id: uuid!) {
       profile_role
     }
   }
+  profile_to_chat_room(
+    where: {
+      chat_room: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
+    }
+  ) {
+    chat_room_id
+  }
 }
 
 mutation UpdateProfileRole($profile_role: profile_role_enum!, $row_id: uuid!) {

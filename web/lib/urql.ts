@@ -1,13 +1,36 @@
+import { isServer } from "./index";
 import { devtoolsExchange } from "@urql/devtools";
 import { cacheExchange } from "@urql/exchange-graphcache";
-import { createClient, dedupExchange, fetchExchange } from "urql";
+import {
+  createClient,
+  dedupExchange,
+  fetchExchange,
+  subscriptionExchange,
+} from "urql";
 
 import schema from "../generated/graphql";
 
 import { requireEnv } from "./env";
+import { createClient as createWSClient } from "graphql-ws";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
+
+  const wsClient = isServer()
+    ? null
+    : createWSClient({
+        url: requireEnv("NEXT_PUBLIC_GRAPHQL_WS_ENDPOINT"),
+        connectionParams: {
+          headers: {
+            authorization: `Bearer ${jwt}`,
+          },
+        },
+      });
+
+  if (!wsClient) {
+    return null;
+  }
+
   return createClient({
     url: requireEnv("NEXT_PUBLIC_GRAPHQL_ENDPOINT"),
     requestPolicy: "cache-and-network",
@@ -47,6 +70,16 @@ export function getUrqlClient(jwt: string) {
       //   },
       // }),
       fetchExchange,
+      subscriptionExchange({
+        forwardSubscription: (operation) => ({
+          subscribe: (sink) => {
+            const dispose = wsClient.subscribe(operation, sink);
+            return {
+              unsubscribe: dispose,
+            };
+          },
+        }),
+      }),
     ],
   });
 }
