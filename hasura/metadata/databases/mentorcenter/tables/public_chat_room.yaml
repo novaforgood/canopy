@@ -2,6 +2,13 @@ table:
   name: chat_room
   schema: public
 array_relationships:
+  - name: chat_messages
+    using:
+      foreign_key_constraint_on:
+        column: chat_room_id
+        table:
+          name: chat_message
+          schema: public
   - name: profile_to_chat_rooms
     using:
       foreign_key_constraint_on:
