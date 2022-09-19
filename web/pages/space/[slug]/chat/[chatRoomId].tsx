@@ -33,9 +33,23 @@ import { Tooltip } from "../../../../components/tooltips";
 
 const promiseQueue = new PromiseQueue();
 
+const FIVE_MINUTES = 1000 * 60 * 5;
+const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+const ONE_DAY = 1000 * 60 * 60 * 24;
+
 type ChatMessage = MessagesQuery["chat_message"][number];
 
-const FIVE_MINUTES = 1000 * 60 * 5;
+function formatDateTooltip(date: Date): string {
+  const timeAgo = Math.abs(date.getTime() - Date.now());
+  if (timeAgo > ONE_WEEK) {
+    return format(date, "MMM d, yyyy 'at' h:mm a");
+  } else if (timeAgo > ONE_DAY) {
+    return format(date, "EEEE 'at' h:mm a");
+  } else {
+    return format(date, "h:mm a");
+  }
+}
+
 function shouldBreak(
   message1: ChatMessage | null,
   message2: ChatMessage | null
@@ -144,174 +158,167 @@ const NewChatPage: CustomPage = () => {
     promiseQueue.enqueue(promise);
   }, [message, chatRoomId, currentProfile, sendMessage]);
 
-  if (!currentProfile) {
-    return <div>Not logged in</div>;
-  }
-
   const otherProfile =
     chatRoomData?.chat_room_by_pk?.profile_to_chat_rooms[0].profile;
-  if (!otherProfile) {
-    return <div>Profile not found</div>;
-  }
 
-  const { first_name, last_name } = otherProfile.user;
-  const image = otherProfile.profile_listing?.profile_listing_image?.image;
+  const { first_name, last_name } = otherProfile?.user ?? {};
+  const image = otherProfile?.profile_listing?.profile_listing_image?.image;
 
   const messagesList = messagesData?.chat_message ?? [];
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-md">
-      <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4">
+      <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
         <ProfileImage src={image?.url} className="h-10 w-10" />
 
         <div>
-          <Text>
+          <Text loading={!first_name}>
             {first_name} {last_name}
           </Text>
           <div></div>
-          <Text variant="body2" className="text-gray-700">
-            {otherProfile.profile_listing?.headline}
+          <Text
+            variant="body2"
+            className="text-gray-700"
+            loading={!otherProfile}
+          >
+            {otherProfile?.profile_listing?.headline}
           </Text>
         </div>
       </div>
 
       <div className="flex flex-1 flex-col-reverse overflow-y-auto overscroll-contain p-4">
-        {messagesList.map((message, idx) => {
-          // Note: Messages are ordered by created_at DESC
-          const prevMessage = messagesList[idx + 1] ?? null;
-          const nextMessage = messagesList[idx - 1] ?? null;
+        {currentProfile &&
+          messagesList.map((message, idx) => {
+            // Note: Messages are ordered by created_at DESC
+            const prevMessage = messagesList[idx + 1] ?? null;
+            const nextMessage = messagesList[idx - 1] ?? null;
 
-          const breakBefore = shouldBreak(prevMessage, message);
-          const breakAfter = shouldBreak(message, nextMessage);
+            const breakBefore = shouldBreak(prevMessage, message);
+            const breakAfter = shouldBreak(message, nextMessage);
 
-          let messageJsxElement = null;
-          if (message.sender_profile_id === currentProfile.id) {
-            // Sent by me. Render chat bubble with my profile image on the right.
-            const isPending = typeof message.id === "string";
+            let messageJsxElement = null;
+            if (message.sender_profile_id === currentProfile.id) {
+              // Sent by me. Render chat bubble with my profile image on the right.
+              const isPending = typeof message.id === "string";
 
-            // Find next message sent by me
+              // Find next message sent by me
 
-            let nextMessageSentByMe = null;
-            for (let j = idx - 1; j >= 0; j--) {
-              const msg = messagesList[j];
-              if (msg.sender_profile_id === currentProfile.id) {
-                nextMessageSentByMe = msg;
-                break;
+              let nextMessageSentByMe = null;
+              for (let j = idx - 1; j >= 0; j--) {
+                const msg = messagesList[j];
+                if (msg.sender_profile_id === currentProfile.id) {
+                  nextMessageSentByMe = msg;
+                  break;
+                }
               }
-            }
-            let isLastDelivered =
-              !isPending &&
-              (nextMessage === null ||
-                nextMessageSentByMe === null ||
-                typeof nextMessageSentByMe.id === "string");
+              let isLastDelivered =
+                !isPending &&
+                (nextMessage === null ||
+                  nextMessageSentByMe === null ||
+                  typeof nextMessageSentByMe.id === "string");
 
-            messageJsxElement = (
-              <div className="flex items-end gap-3">
-                <div className="flex-1"></div>
+              messageJsxElement = (
+                <div className="flex items-end gap-3">
+                  <div className="flex-1"></div>
 
-                <div
-                  className={classNames({
-                    "flex flex-col items-end": true,
-                    "mb-4": breakAfter,
-                    "mb-1": !breakAfter,
-                  })}
-                >
-                  <Tooltip
-                    content={format(
-                      new Date(message.created_at),
-                      "MMM d, yyyy h:mm a"
-                    )}
-                    placement="left"
-                    delayMs={[500, 0]}
+                  <div
+                    className={classNames({
+                      "flex flex-col items-end": true,
+                      "mb-4": breakAfter,
+                      "mb-1": !breakAfter,
+                    })}
                   >
-                    <div
-                      className={classNames({
-                        "ml-20 rounded-l-lg px-4 py-1.5": true,
-                        "bg-lime-300": isPending,
-                        "bg-lime-400": !isPending,
-                        "rounded-tr-lg": breakBefore,
-                        "rounded-br-lg": breakAfter,
-                      })}
+                    <Tooltip
+                      content={formatDateTooltip(new Date(message.created_at))}
+                      placement="left"
+                      delayMs={[500, 0]}
                     >
-                      <Text>{message.text}</Text>
-                    </div>
-                  </Tooltip>
-
-                  {isLastDelivered && (
-                    <Text variant="body3" className="mt-px text-gray-700">
-                      Delivered
-                    </Text>
-                  )}
-                </div>
-              </div>
-            );
-          } else {
-            // Sent by other. Render chat bubble with their profile image on the left.
-
-            messageJsxElement = (
-              <div className="flex items-end gap-3">
-                <div
-                  className={classNames({
-                    "flex items-end gap-3": true,
-                    "mb-4": breakAfter,
-                    "mb-1": !breakAfter,
-                  })}
-                >
-                  {breakAfter ? (
-                    <div className="relative w-10 shrink-0">
-                      <Tooltip
-                        content={`${first_name} ${last_name}`}
-                        placement="left"
+                      <div
+                        className={classNames({
+                          "ml-20 whitespace-pre rounded-l-lg px-4 py-1.5": true,
+                          "bg-lime-300": isPending,
+                          "bg-lime-400": !isPending,
+                          "rounded-tr-lg": breakBefore,
+                          "rounded-br-lg": breakAfter,
+                        })}
                       >
-                        <div className="absolute bottom-0 h-10 w-10 shrink-0">
-                          <ProfileImage
-                            src={image?.url}
-                            className="h-10 w-10"
-                          />
-                        </div>
-                      </Tooltip>
-                    </div>
-                  ) : (
-                    <div className="w-10 shrink-0"></div>
-                  )}
-                  <Tooltip
-                    content={format(
-                      new Date(message.created_at),
-                      "MMM d, yyyy h:mm a"
+                        <Text>{message.text}</Text>
+                      </div>
+                    </Tooltip>
+
+                    {isLastDelivered && (
+                      <Text variant="body3" className="mt-px text-gray-700">
+                        Delivered
+                      </Text>
                     )}
-                    placement="left"
-                    delayMs={[500, 0]}
-                  >
-                    <div
-                      className={classNames({
-                        "rounded-r-lg bg-gray-100 px-4 py-1.5": true,
-                        "rounded-tl-lg": breakBefore,
-                        "rounded-bl-lg": breakAfter,
-                      })}
-                    >
-                      <Text>{message.text}</Text>
-                    </div>
-                  </Tooltip>
+                  </div>
                 </div>
-                <div className="flex-1"></div>
+              );
+            } else {
+              // Sent by other. Render chat bubble with their profile image on the left.
+
+              messageJsxElement = (
+                <div className="flex items-end gap-3">
+                  <div
+                    className={classNames({
+                      "flex items-end gap-3": true,
+                      "mb-4": breakAfter,
+                      "mb-1": !breakAfter,
+                    })}
+                  >
+                    {breakAfter ? (
+                      <div className="relative w-10 shrink-0">
+                        <Tooltip
+                          content={`${first_name} ${last_name}`}
+                          placement="left"
+                        >
+                          <div className="absolute bottom-0 h-10 w-10 shrink-0">
+                            <ProfileImage
+                              src={image?.url}
+                              className="h-10 w-10"
+                            />
+                          </div>
+                        </Tooltip>
+                      </div>
+                    ) : (
+                      <div className="w-10 shrink-0"></div>
+                    )}
+                    <Tooltip
+                      content={formatDateTooltip(new Date(message.created_at))}
+                      placement="left"
+                      delayMs={[500, 0]}
+                    >
+                      <div
+                        className={classNames({
+                          "whitespace-pre rounded-r-lg bg-gray-100 px-4 py-1.5":
+                            true,
+                          "rounded-tl-lg": breakBefore,
+                          "rounded-bl-lg": breakAfter,
+                        })}
+                      >
+                        <Text>{message.text}</Text>
+                      </div>
+                    </Tooltip>
+                  </div>
+                  <div className="flex-1"></div>
+                </div>
+              );
+            }
+
+            return (
+              <div key={message.id}>
+                {breakBefore && (
+                  <div className="mt-4 mb-2 flex w-full items-center justify-center">
+                    <Text className="text-gray-700" variant="body3">
+                      {format(new Date(message.created_at), "MMM d, h:mm a")}
+                    </Text>
+                  </div>
+                )}
+                {messageJsxElement}
               </div>
             );
-          }
-
-          return (
-            <div key={message.id}>
-              {breakBefore && (
-                <div className="mt-4 mb-2 flex w-full items-center justify-center">
-                  <Text className="text-gray-700" variant="body3">
-                    {format(new Date(message.created_at), "MMM d, h:mm a")}
-                  </Text>
-                </div>
-              )}
-              {messageJsxElement}
-            </div>
-          );
-        })}
-        {!noMoreMessages && (
+          })}
+        {currentProfile && !noMoreMessages && (
           <div className="my-4 flex w-full justify-center">
             <Button
               variant="secondary"

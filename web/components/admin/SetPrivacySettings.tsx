@@ -75,9 +75,16 @@ export function SetPrivacySettings() {
             },
             space_id: currentSpace.id,
           })
-            .then(() => {
-              setEdited(false);
-              toast.success("Saved settings");
+            .then((res) => {
+              if (res.error) {
+                throw new Error(res.error.message);
+              } else {
+                setEdited(false);
+                toast.success("Saved settings");
+              }
+            })
+            .catch((err) => {
+              toast.error(err.message);
             })
             .finally(() => {
               setLoading(false);
