@@ -1,20 +1,16 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 
 import { faker } from "@faker-js/faker";
 import { useDisclosure } from "@mantine/hooks";
 import { LexRuntime } from "aws-sdk";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import toast from "react-hot-toast";
 
-import { EmailType } from "../../../../common/types";
-import { Button, Select, Text, Textarea } from "../../../../components/atomic";
-import { SelectAutocomplete } from "../../../../components/atomic/SelectAutocomplete";
+import { Button, Select, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
 import { SidePadding } from "../../../../components/layout/SidePadding";
-import { ActionModal } from "../../../../components/modals/ActionModal";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { Tag } from "../../../../components/Tag";
@@ -23,176 +19,17 @@ import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
-import { useUserData } from "../../../../hooks/useUserData";
-import { apiClient } from "../../../../lib/apiClient";
-import { getTimezoneSelectOptions } from "../../../../lib/timezone";
 import { CustomPage } from "../../../../types";
+import { BxMessageDetail } from "../../../../generated/icons/regular";
+import { IntroduceModal } from "../../../../components/profile-page/IntroduceModal";
+import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
+import { MessageModal } from "../../../../components/profile-page/MessageModal";
 
-const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-interface PleaseLogInModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-function PleaseLogInModal(props: PleaseLogInModalProps) {
-  const { isOpen, onClose } = props;
-
-  const router = useRouter();
-
-  return (
-    <ActionModal
-      isOpen={isOpen}
-      actionText={"Login"}
-      onAction={() => {
-        router.push(`/login?redirect=${router.asPath}`);
-      }}
-      secondaryActionText="Cancel"
-      onSecondaryAction={onClose}
-      onClose={onClose}
-    >
-      <div className="p-8 w-80">
-        <Text>Please log in so we can introduce you.</Text>
-      </div>
-    </ActionModal>
-  );
-}
-
-interface IntroduceModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  profileId: string | null;
-}
-function IntroduceModal(props: IntroduceModalProps) {
-  const { isOpen, onClose, profileId } = props;
-
-  const { userData } = useUserData();
-  const { currentProfile } = useCurrentProfile();
-  const [introMsg, setIntroMsg] = useState("");
-  const [avail, setAvail] = useState("");
-
-  const [timezone, setTimezone] = useState<string | null>(defaultTz);
-
-  useEffect(() => {
-    if (isOpen) {
-      setIntroMsg("");
-      setAvail("");
-      setTimezone(defaultTz);
-    }
-  }, [isOpen]);
-
-  const [{ data: profileData }] = useProfileByIdQuery({
-    variables: { profile_id: profileId ?? "" },
-  });
-
-  if (!profileData?.profile_by_pk) {
-    return null;
-  }
-
-  return (
-    <>
-      <ActionModal
-        isOpen={isOpen}
-        actionText={"Send introduction"}
-        onClose={onClose}
-        onAction={async () => {
-          if (!avail) {
-            toast.error("Please enter your availability");
-            return;
-          }
-
-          if (!currentProfile) {
-            toast.error("Please login to send an intro");
-            return;
-          }
-
-          if (!profileId) {
-            toast.error("Please select a profile to send an intro");
-            return;
-          }
-
-          await apiClient
-            .post("/api/services/sendEmail", {
-              type: EmailType.Connect,
-              payload: {
-                senderProfileId: currentProfile.id,
-                receiverProfileId: profileId,
-                introMessage: introMsg,
-                availability: avail,
-                timezone,
-              },
-            })
-            .then(() => {
-              toast.success("Intro sent!");
-              onClose();
-            })
-            .catch((err) => {
-              toast.error(err.message);
-            });
-        }}
-        actionDisabled={!avail || !timezone}
-        secondaryActionText={"Cancel"}
-        onSecondaryAction={onClose}
-      >
-        <div className="pt-8 px-16">
-          <div className="w-96 flex flex-col items-center ">
-            <Text variant="heading4">{`Let's introduce you to ${profileData.profile_by_pk.user.first_name}`}</Text>
-            <div className="h-4"></div>
-            <Text className="text-gray-600 text-center" variant="body2">
-              {"We'll"} send an email to{" "}
-              {profileData.profile_by_pk.user.first_name}, as well as you at{" "}
-              <Text variant="body2" className="text-black">
-                {userData?.email}
-              </Text>
-              .
-            </Text>
-            <div className="h-8"></div>
-
-            <div className="flex flex-col w-96 gap-8">
-              <div className="w-full flex flex-col">
-                <Text className="text-gray-600 mb-2">
-                  Optional intro message
-                </Text>
-                <Textarea
-                  minRows={4}
-                  value={introMsg}
-                  onValueChange={setIntroMsg}
-                  placeholder="Example: Hi, I’m Billy! I am a Student at Taylor Middle School. Would you be free for a 30 minute chat about dinosaurs? Thank you for your consideration. "
-                />
-              </div>
-              <div className="w-full flex flex-col">
-                <Text className="text-gray-600 mb-2">
-                  Please add your general availability*
-                </Text>
-                <Textarea
-                  value={avail}
-                  onValueChange={setAvail}
-                  placeholder="Example: Monday and Tuesday nights after 7pm. All day Saturday and Sunday."
-                ></Textarea>
-              </div>
-              <div className="w-full flex flex-col items-start">
-                <Text className="text-gray-600 mb-2">
-                  Please select your timezone*
-                </Text>
-                <SelectAutocomplete
-                  options={getTimezoneSelectOptions()}
-                  value={timezone}
-                  onSelect={setTimezone}
-                  className="w-96"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="h-16"></div>
-        </div>
-      </ActionModal>
-    </>
-  );
-}
 const SpaceHomepage: CustomPage = () => {
   const router = useRouter();
 
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
+  const spaceSlug = useQueryParam("slug", "string");
   const { currentProfile } = useCurrentProfile();
   const isLoggedIn = useIsLoggedIn();
 
@@ -200,10 +37,12 @@ const SpaceHomepage: CustomPage = () => {
   const [loginModalOpen, loginModalHandlers] = useDisclosure(false);
 
   const profileId = useQueryParam("profileId", "string");
-  const [{ data: profileData, fetching: fetchingProfileData }] =
-    useProfileByIdQuery({
-      variables: { profile_id: profileId ?? "" },
-    });
+  const [
+    { data: profileData, fetching: fetchingProfileData },
+    refetchProfileById,
+  ] = useProfileByIdQuery({
+    variables: { profile_id: profileId ?? "" },
+  });
 
   if (!currentSpace && !fetchingCurrentSpace) {
     return <div>404 - Space not found</div>;
@@ -228,29 +67,52 @@ const SpaceHomepage: CustomPage = () => {
       </div>
       <SidePadding className="bg-gray-100">
         <div className="h-16"></div>
-        <Link href={`/space/${currentSpace?.slug}`}>{"< Members"}</Link>
+        <Link href={`/space/${spaceSlug}`}>{"< Members"}</Link>
         <div className="h-8"></div>
 
-        <div className="border border-black rounded-lg w-full flex flex-col pb-12 bg-white">
-          <div className="h-16 sm:h-32 bg-olive-100 rounded-t-lg"></div>
-          <div className="px-4 -mt-4 sm:px-20 sm:-mt-8">
-            <div className="flex items-center gap-6 sm:gap-12">
-              <ProfileImage
-                src={listing?.profile_listing_image?.image.url}
-                alt={`${first_name} ${last_name}`}
-                className="w-24 h-24 sm:h-48 sm:w-48"
-              />
-              <div className="flex flex-col mt-4">
-                <Text variant="heading3" mobileVariant="heading4">
-                  {first_name} {last_name}
-                </Text>
-                <div className="h-1"></div>
-                <Text variant="body1">{listing?.headline}</Text>
+        <div className="flex w-full flex-col rounded-lg border border-black bg-white pb-12">
+          <div className="h-16 rounded-t-lg bg-olive-100 sm:h-32"></div>
+          <div className="-mt-4 px-4 sm:-mt-8 sm:px-20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6 sm:gap-12">
+                <ProfileImage
+                  src={listing?.profile_listing_image?.image.url}
+                  alt={`${first_name} ${last_name}`}
+                  className="h-24 w-24 sm:h-48 sm:w-48"
+                />
+                <div className="mt-4 flex flex-col">
+                  <Text variant="heading3" mobileVariant="heading4">
+                    {first_name} {last_name}
+                  </Text>
+                  <div className="h-1"></div>
+                  <Text variant="body1">{listing?.headline}</Text>
+                </div>
               </div>
+              <Button
+                rounded
+                className="flex items-center"
+                onClick={() => {
+                  if (isLoggedIn) {
+                    const chatRoomId =
+                      profileData?.profile_to_chat_room[0]?.chat_room_id;
+                    if (chatRoomId) {
+                      router.push(`/space/${spaceSlug}/chat/${chatRoomId}`);
+                    } else {
+                      handlers.open();
+                    }
+                  } else {
+                    loginModalHandlers.open();
+                  }
+                }}
+                disabled={profileId === currentProfile?.id}
+              >
+                <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
+                Message
+              </Button>
             </div>
             <div className="h-16"></div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div className="flex flex-col gap-8 p-6">
                 {listing?.profile_listing_responses.map((response) => {
                   return (
@@ -270,7 +132,7 @@ const SpaceHomepage: CustomPage = () => {
                     </div>
                   );
                 })}
-                <div>
+                {/* <div>
                   <Text
                     variant="heading4"
                     mobileVariant="subheading1"
@@ -292,10 +154,10 @@ const SpaceHomepage: CustomPage = () => {
                   >
                     Contact {first_name}
                   </Button>
-                </div>
+                </div> */}
               </div>
               <div>
-                <div className="border border-olive-700 p-6 rounded-md flex flex-col gap-8">
+                <div className="flex flex-col gap-8 rounded-md border border-olive-700 p-6">
                   {currentSpace?.space_tag_categories.map((category) => {
                     return (
                       <div key={category.id}>
@@ -323,13 +185,13 @@ const SpaceHomepage: CustomPage = () => {
                   })}
                 </div>
                 <div className="h-8"></div>
-                <div className="border border-olive-700 p-6 rounded-md">
+                <div className="rounded-md border border-olive-700 p-6">
                   <Text
                     variant="heading4"
                     mobileVariant="subheading1"
                     className="text-green-800"
                   >
-                    Contact
+                    Profiles
                   </Text>
                   <div className="h-4"></div>
                   <Text>{email}</Text>
@@ -347,22 +209,23 @@ const SpaceHomepage: CustomPage = () => {
           </div>
         </div>
         <div className="h-32"></div>
-        <IntroduceModal
+        <MessageModal
           isOpen={open}
           onClose={handlers.close}
           profileId={profileId}
+          onMessageSent={refetchProfileById}
         />
         <PleaseLogInModal
           isOpen={loginModalOpen}
           onClose={loginModalHandlers.close}
         />
       </SidePadding>
-      <SidePadding className="bg-olive-100 border-t border-green-900 h-64 flex justify-center items-center">
-        <div className="w-full h-full flex justify-center items-center">
+      <SidePadding className="flex h-64 items-center justify-center border-t border-green-900 bg-olive-100">
+        <div className="flex h-full w-full items-center justify-center">
           <Button
             variant="outline"
             onClick={() => {
-              router.push(`/space/${currentSpace?.slug}`);
+              router.push(`/space/${spaceSlug}`);
             }}
           >
             View more members

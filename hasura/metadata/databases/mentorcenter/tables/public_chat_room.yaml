@@ -16,18 +16,6 @@ array_relationships:
         table:
           name: profile_to_chat_room
           schema: public
-insert_permissions:
-  - role: user
-    permission:
-      check:
-        _or:
-          - profile_to_chat_rooms:
-              profile:
-                user_id:
-                  _eq: X-Hasura-User-Id
-      columns:
-        - created_at
-        - id
 select_permissions:
   - role: user
     permission:

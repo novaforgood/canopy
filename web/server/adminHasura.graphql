@@ -64,6 +64,23 @@ query GetProfile($profile_id: uuid!) {
   }
 }
 
+query GetChatRoomWithProfiles($profile_id_1: uuid!, $profile_id_2: uuid!) {
+  chat_room(
+    where: {
+      _and: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id_1 } } }
+      profile_to_chat_rooms: { profile_id: { _eq: $profile_id_2 } }
+    }
+  ) {
+    id
+  }
+}
+
+mutation InsertChatRoomOne($data: chat_room_insert_input!) {
+  insert_chat_room_one(object: $data) {
+    id
+  }
+}
+
 mutation InsertConnectionRequest($data: connection_request_insert_input!) {
   insert_connection_request_one(object: $data) {
     id

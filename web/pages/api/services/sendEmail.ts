@@ -33,7 +33,6 @@ export default applyMiddleware({
   authenticated: true,
   validationSchema: connectEmailSchema,
 }).post(async (req, res) => {
-  console.log("Sending email");
   switch (req.body.type) {
     case EmailType.Connect: {
       const {
