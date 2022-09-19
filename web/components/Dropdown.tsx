@@ -25,10 +25,10 @@ import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
+import { LocalStorage } from "../lib/localStorage";
 
 import { Text } from "./atomic";
 import { ProfileImage } from "./ProfileImage";
-import { LocalStorage } from "../lib/localStorage";
 
 export function Dropdown() {
   const { userData } = useUserData();
@@ -67,7 +67,7 @@ export function Dropdown() {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute z-10 right-0 top-full mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md border border-gray-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Menu.Items className="absolute right-0 top-full z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {isLoggedIn ? (
                   <>
                     <Menu.Item>
@@ -87,7 +87,7 @@ export function Dropdown() {
                               );
                             }}
                           >
-                            <BxsUserAccount className="w-5 h-5 mr-2" />
+                            <BxsUserAccount className="mr-2 h-5 w-5" />
                             <Text variant="body2">My account</Text>
                           </button>
                         );
@@ -110,7 +110,7 @@ export function Dropdown() {
                               );
                             }}
                           >
-                            <BxsUser className="w-5 h-5 mr-2" />
+                            <BxsUser className="mr-2 h-5 w-5" />
                             <Text variant="body2">Edit my profile</Text>
                           </button>
                         );
@@ -135,7 +135,7 @@ export function Dropdown() {
                               });
                             }}
                           >
-                            <BxLogOut className="h-5 w-5 mr-2" />
+                            <BxLogOut className="mr-2 h-5 w-5" />
                             <Text variant="body2">Log out</Text>
                           </button>
                         );
@@ -158,7 +158,7 @@ export function Dropdown() {
                             router.push("/login");
                           }}
                         >
-                          <BxLogIn className="h-5 w-5 mr-2" />
+                          <BxLogIn className="mr-2 h-5 w-5" />
                           <Text variant="body2">Log in</Text>
                         </button>
                       );

@@ -1,6 +1,7 @@
-import { isServer } from "./index";
 import { devtoolsExchange } from "@urql/devtools";
 import { cacheExchange } from "@urql/exchange-graphcache";
+import { createClient as createWSClient } from "graphql-ws";
+import { nanoid } from "nanoid";
 import {
   createClient,
   dedupExchange,
@@ -9,18 +10,18 @@ import {
   subscriptionExchange,
 } from "urql";
 
+import { MESSAGES_PER_FETCH } from "../components/chats/constants";
 import schema from "../generated/graphql";
 
 import { requireEnv } from "./env";
-import { createClient as createWSClient } from "graphql-ws";
-import { MESSAGES_PER_FETCH } from "../components/chats/constants";
-import { nanoid } from "nanoid";
 import {
   chatMessageResolver,
   insertChatMessageUpdater,
   chatMessageStreamUpdater,
   optimisticInsertChatMessageResolver,
 } from "./urql-chat-resolvers";
+
+import { isServer } from "./index";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);

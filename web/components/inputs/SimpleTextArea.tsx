@@ -3,8 +3,8 @@ import { cloneElement, ReactElement, ReactNode, useId } from "react";
 import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
 
-import { Textarea, TextAreaProps } from "../atomic/Textarea";
 import { Text } from "../atomic/Text";
+import { Textarea, TextAreaProps } from "../atomic/Textarea";
 
 type SimpleTextAreaProps = TextAreaProps & {
   label?: string;
@@ -29,15 +29,15 @@ export function SimpleTextArea(props: SimpleTextAreaProps) {
     characterLimit && value.length > characterLimit;
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex w-full flex-col">
       {label && (
-        <label htmlFor={uuid} className="block text-sm font-bold mb-1">
+        <label htmlFor={uuid} className="mb-1 block text-sm font-bold">
           {label}
         </label>
       )}
       <div className="relative">
         {renderPrefix && (
-          <div className="absolute inset-y-0 left-0 pl-3 text-gray-700 flex items-center pointer-events-none">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-700">
             {cloneElement(renderPrefix(), { ref: ref })}
           </div>
         )}
@@ -59,7 +59,7 @@ export function SimpleTextArea(props: SimpleTextAreaProps) {
         />
       </div>
       {characterLimit && (
-        <Text italic className="text-gray-600 self-end mt-1">
+        <Text italic className="mt-1 self-end text-gray-600">
           {`${rest.value?.toString().length}/${characterLimit} characters`}
         </Text>
       )}

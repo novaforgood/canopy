@@ -12,18 +12,18 @@ import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
+import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
+import { IntroduceModal } from "../../../../components/profile-page/IntroduceModal";
+import { MessageModal } from "../../../../components/profile-page/MessageModal";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
+import { BxMessageDetail } from "../../../../generated/icons/regular";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { CustomPage } from "../../../../types";
-import { BxMessageDetail } from "../../../../generated/icons/regular";
-import { IntroduceModal } from "../../../../components/profile-page/IntroduceModal";
-import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
-import { MessageModal } from "../../../../components/profile-page/MessageModal";
 
 const SpaceHomepage: CustomPage = () => {
   const router = useRouter();

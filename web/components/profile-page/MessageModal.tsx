@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
+
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
+
 import { EmailType } from "../../common/types";
-import { Text, Textarea } from "../atomic";
-import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { ActionModal } from "../modals/ActionModal";
 import { useProfileByIdQuery } from "../../generated/graphql";
+import { BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
 import { getTimezoneSelectOptions } from "../../lib/timezone";
-import { BxSend } from "../../generated/icons/regular";
-import { useQueryParam } from "../../hooks/useQueryParam";
-import { useRouter } from "next/router";
+import { Text, Textarea } from "../atomic";
+import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { ActionModal } from "../modals/ActionModal";
 
 export const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -57,7 +59,14 @@ export function MessageModal(props: MessageModalProps) {
     }
 
     await apiClient
-      .post<any, { chatRoomId: string }>("/api/chat/createChatRoom", {
+      .post<
+        {
+          senderProfileId: string;
+          receiverProfileId: string;
+          firstMessage: string;
+        },
+        { chatRoomId: string }
+      >("/api/chat/createChatRoom", {
         senderProfileId: currentProfile.id,
         receiverProfileId: profileId,
         firstMessage: introMsg,

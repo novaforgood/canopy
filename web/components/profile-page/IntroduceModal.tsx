@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
+
 import toast from "react-hot-toast";
+
 import { EmailType } from "../../common/types";
-import { Text, Textarea } from "../atomic";
-import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { ActionModal } from "../modals/ActionModal";
 import { useProfileByIdQuery } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
 import { getTimezoneSelectOptions } from "../../lib/timezone";
+import { Text, Textarea } from "../atomic";
+import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { ActionModal } from "../modals/ActionModal";
 
 export const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

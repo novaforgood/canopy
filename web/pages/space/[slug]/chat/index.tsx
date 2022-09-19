@@ -1,9 +1,5 @@
-import { CustomPage } from "../../../../types";
 import { ChatLayout } from "../../../../components/chats/ChatLayout";
-
-type Shit = {
-  shitter: string;
-};
+import { CustomPage } from "../../../../types";
 
 const NewChatPage: CustomPage = () => {
   return (

@@ -1,11 +1,22 @@
-import { useRouter } from "next/router";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
+import classNames from "classnames";
+import { format } from "date-fns";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
+
+import { Button, Text, Textarea } from "../../../../components/atomic";
+import { IconButton } from "../../../../components/buttons/IconButton";
+import { ChatLayout } from "../../../../components/chats/ChatLayout";
+import {
+  DEFAULT_ID_CAP,
+  MESSAGES_PER_FETCH,
+} from "../../../../components/chats/constants";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
+import { ProfileImage } from "../../../../components/ProfileImage";
 import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSplashPage";
-import { CustomPage } from "../../../../types";
-import { ChatLayout } from "../../../../components/chats/ChatLayout";
+import { Tooltip } from "../../../../components/tooltips";
 import {
   Chat_Message,
   MessagesQuery,
@@ -15,21 +26,11 @@ import {
   useMessagesStreamSubscription,
   useSendMessageMutation,
 } from "../../../../generated/graphql";
-import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
-import { ProfileImage } from "../../../../components/ProfileImage";
-import { Button, Text, Textarea } from "../../../../components/atomic";
-import { format } from "date-fns";
-import classNames from "classnames";
 import { BxMailSend, BxSend } from "../../../../generated/icons/regular";
 import { BxsSend } from "../../../../generated/icons/solid";
-import toast from "react-hot-toast";
-import {
-  DEFAULT_ID_CAP,
-  MESSAGES_PER_FETCH,
-} from "../../../../components/chats/constants";
-import { PromiseQueue } from "./PromiseQueue";
-import { IconButton } from "../../../../components/buttons/IconButton";
-import { Tooltip } from "../../../../components/tooltips";
+import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
+import { PromiseQueue } from "../../../../lib/PromiseQueue";
+import { CustomPage } from "../../../../types";
 
 const promiseQueue = new PromiseQueue();
 
@@ -115,7 +116,7 @@ const NewChatPage: CustomPage = () => {
     if (minId > 0) {
       setIdCap(minId);
     }
-  }, [messagesData]);
+  }, [minId]);
 
   const loadMoreDisabled = idCap === minId;
 
@@ -147,7 +148,6 @@ const NewChatPage: CustomPage = () => {
       .then((res) => {
         if (res.error) {
           throw new Error(res.error.message);
-        } else {
         }
       })
       .catch((error) => {
@@ -211,7 +211,7 @@ const NewChatPage: CustomPage = () => {
                   break;
                 }
               }
-              let isLastDelivered =
+              const isLastDelivered =
                 !isPending &&
                 (nextMessage === null ||
                   nextMessageSentByMe === null ||

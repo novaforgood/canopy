@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+
 import {
   Variables,
   Resolver,
@@ -6,6 +8,7 @@ import {
   OptimisticMutationResolver,
 } from "@urql/exchange-graphcache";
 import { nanoid } from "nanoid";
+
 import {
   MESSAGES_PER_FETCH,
   DEFAULT_ID_CAP,
@@ -132,7 +135,7 @@ export const chatMessageResolver: Resolver = (
 
   const visited = new Set();
   let result: NullArray<string> = [];
-  let prevOffset: number | null = null;
+  const prevOffset: number | null = null;
 
   for (let i = 0; i < size; i++) {
     const { fieldKey, arguments: args } = fieldInfos[i];

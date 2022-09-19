@@ -1,8 +1,8 @@
-export class PromiseQueue {
-  private queue: Promise<any>[] = [];
+export class PromiseQueue<T> {
+  private queue: Promise<T>[] = [];
   private isProcessing = false;
 
-  public enqueue = (promise: Promise<any>) => {
+  public enqueue = (promise: Promise<T>) => {
     this.queue.push(promise);
     this.processQueue();
   };

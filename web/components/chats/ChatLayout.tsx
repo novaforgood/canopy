@@ -1,18 +1,20 @@
 import { ReactNode } from "react";
-import { Text } from "../atomic";
+
+import classNames from "classnames";
+import { format, formatDistanceStrict } from "date-fns";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { useAllChatRoomsQuery } from "../../generated/graphql";
 import { BxMessageAdd } from "../../generated/icons/regular";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { getTimeRelativeToNow } from "../../lib";
+import { Text } from "../atomic";
+import { IconButton } from "../buttons/IconButton";
 import { SidePadding } from "../layout/SidePadding";
 import { Navbar } from "../Navbar";
-import { useAllChatRoomsQuery } from "../../generated/graphql";
-import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { ProfileImage } from "../ProfileImage";
-import { format, formatDistanceStrict } from "date-fns";
-import { getTimeRelativeToNow } from "../../lib";
-import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import classNames from "classnames";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { IconButton } from "../buttons/IconButton";
 
 interface ChatLayoutProps {
   children?: ReactNode;
@@ -43,10 +45,12 @@ export function ChatLayout(props: ChatLayoutProps) {
           <div className="w-72 shrink-0">
             <div className="flex h-12 w-full items-center justify-between gap-8 px-4">
               <Text variant="heading4">Direct Messages</Text>
-              <Link href={`/space/${currentSpace?.slug}/chat/new`}>
-                <IconButton
-                  icon={<BxMessageAdd className="h-5 w-5" />}
-                ></IconButton>
+              <Link href={`/space/${currentSpace?.slug}/chat/new`} passHref>
+                <a>
+                  <IconButton
+                    icon={<BxMessageAdd className="h-5 w-5" />}
+                  ></IconButton>
+                </a>
               </Link>
             </div>
             <div className="my-4 h-px w-full bg-olive-600"></div>

@@ -1,19 +1,20 @@
-import { useRouter } from "next/router";
 import { ReactNode } from "react";
 
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { Button, Text } from "../../../../components/atomic";
+import { ChatLayout } from "../../../../components/chats/ChatLayout";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
 import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSplashPage";
-import { CustomPage } from "../../../../types";
-import { ChatLayout } from "../../../../components/chats/ChatLayout";
-import { Button, Text } from "../../../../components/atomic";
 import {
   BxMessage,
   BxMessageAlt,
   BxMessageDetail,
 } from "../../../../generated/icons/regular";
-import Link from "next/link";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { CustomPage } from "../../../../types";
 
 const NewChatPage: CustomPage = () => {
   const router = useRouter();
