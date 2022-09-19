@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
@@ -7,24 +7,58 @@ import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSpla
 import { CustomPage } from "../../../../types";
 import { ChatLayout } from "../../../../components/chats/ChatLayout";
 import {
-  MessagesSubscription,
+  Chat_Message,
+  MessagesQuery,
+  MessagesStreamSubscription,
   useChatRoomQuery,
-  useMessagesSubscription,
+  useMessagesQuery,
+  useMessagesStreamSubscription,
   useSendMessageMutation,
 } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { ProfileImage } from "../../../../components/ProfileImage";
-import { Text, Textarea } from "../../../../components/atomic";
+import { Button, Text, Textarea } from "../../../../components/atomic";
 import { format } from "date-fns";
 import classNames from "classnames";
 import { BxMailSend, BxSend } from "../../../../generated/icons/regular";
 import { BxsSend } from "../../../../generated/icons/solid";
 import toast from "react-hot-toast";
+import {
+  DEFAULT_ID_CAP,
+  MESSAGES_PER_FETCH,
+} from "../../../../components/chats/constants";
+import { PromiseQueue } from "./PromiseQueue";
+import { IconButton } from "../../../../components/buttons/IconButton";
+import { Tooltip } from "../../../../components/tooltips";
+
+const promiseQueue = new PromiseQueue();
+
+type ChatMessage = MessagesQuery["chat_message"][number];
+
+const FIVE_MINUTES = 1000 * 60 * 5;
+function shouldBreak(
+  message1: ChatMessage | null,
+  message2: ChatMessage | null
+) {
+  if (!message1 || !message2) {
+    return true;
+  }
+  const date1 = new Date(message1.created_at);
+  const date2 = new Date(message2.created_at);
+  const diff = date2.getTime() - date1.getTime();
+
+  return (
+    diff > FIVE_MINUTES ||
+    message1.sender_profile_id !== message2.sender_profile_id
+  );
+}
 
 const NewChatPage: CustomPage = () => {
   const router = useRouter();
   const { currentProfile } = useCurrentProfile();
   const chatRoomId = router.query.chatRoomId as string;
+
+  const [currentTime] = useState(new Date());
 
   const [{ data: chatRoomData }] = useChatRoomQuery({
     variables: {
@@ -33,24 +67,53 @@ const NewChatPage: CustomPage = () => {
     },
   });
 
-  const [{ data: messagesData }] = useMessagesSubscription<
-    MessagesSubscription["chat_message_stream"]
-  >(
+  useMessagesStreamSubscription<number>({
+    variables: { chat_room_id: chatRoomId, after: currentTime.toISOString() },
+  });
+
+  const [idCap, setIdCap] = useState(DEFAULT_ID_CAP);
+
+  const [{ data: messagesData, fetching: fetchingMessages }] = useMessagesQuery(
     {
       variables: {
         chat_room_id: chatRoomId,
+        limit: MESSAGES_PER_FETCH,
+        id_cap: idCap,
       },
-    },
-    (messages = [], response) => {
-      const ret = [...messages, ...response.chat_message_stream];
-      return ret.filter((v, i, a) => a.findIndex((v2) => v2.id === v.id) === i);
     }
   );
+
+  const firstMessageId =
+    chatRoomData?.chat_room_by_pk?.first_chat_message[0].id;
+
+  const minId = useMemo(() => {
+    if (!messagesData) {
+      return null;
+    }
+    const ids = messagesData?.chat_message.map((m) => m.id);
+    return Math.min(...ids);
+  }, [messagesData]);
+
+  const noMoreMessages = minId === firstMessageId;
+
+  const fetchMore = useCallback(() => {
+    if (!minId) return;
+    if (minId > 0) {
+      setIdCap(minId);
+    }
+  }, [messagesData]);
+
+  const loadMoreDisabled = idCap === minId;
 
   const [_, sendMessage] = useSendMessageMutation();
   const [message, setMessage] = useState("");
 
   const onMessageSubmit = useCallback(async () => {
+    const processedMessage = message.trim();
+    if (processedMessage.length === 0) {
+      return;
+    }
+
     if (!chatRoomId) {
       toast.error("No chat room id");
       return;
@@ -59,9 +122,8 @@ const NewChatPage: CustomPage = () => {
       toast.error("No current profile");
       return;
     }
-
-    const processedMessage = message.trim();
-    await sendMessage({
+    setMessage("");
+    const promise = sendMessage({
       input: {
         chat_room_id: chatRoomId,
         sender_profile_id: currentProfile.id,
@@ -72,13 +134,15 @@ const NewChatPage: CustomPage = () => {
         if (res.error) {
           throw new Error(res.error.message);
         } else {
-          setMessage("");
         }
       })
       .catch((error) => {
         toast.error(`Error sending message: ${error.message}`);
-      });
-  }, [chatRoomId, currentProfile, message, sendMessage]);
+      })
+      .finally(() => {});
+
+    promiseQueue.enqueue(promise);
+  }, [message, chatRoomId, currentProfile, sendMessage]);
 
   if (!currentProfile) {
     return <div>Not logged in</div>;
@@ -93,11 +157,11 @@ const NewChatPage: CustomPage = () => {
   const { first_name, last_name } = otherProfile.user;
   const image = otherProfile.profile_listing?.profile_listing_image?.image;
 
-  console.log(messagesData);
+  const messagesList = messagesData?.chat_message ?? [];
 
   return (
-    <div className="overflow-hidden rounded-md">
-      <div className="flex items-center gap-3 bg-olive-50 p-4">
+    <div className="flex h-full flex-col overflow-hidden rounded-md">
+      <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4">
         <ProfileImage src={image?.url} className="h-10 w-10" />
 
         <div>
@@ -111,42 +175,71 @@ const NewChatPage: CustomPage = () => {
         </div>
       </div>
 
-      <div className="p-4">
-        {messagesData?.map((message, idx) => {
-          const prevMessage = messagesData[idx - 1] ?? null;
-          const nextMessage = messagesData[idx + 1] ?? null;
+      <div className="flex flex-1 flex-col-reverse overflow-y-auto overscroll-contain p-4">
+        {messagesList.map((message, idx) => {
+          // Note: Messages are ordered by created_at DESC
+          const prevMessage = messagesList[idx + 1] ?? null;
+          const nextMessage = messagesList[idx - 1] ?? null;
 
-          const nextMessageIsFromDifferentSender =
-            nextMessage?.sender_profile_id !== message.sender_profile_id;
-          const prevMessageIsFromDifferentSender =
-            prevMessage?.sender_profile_id !== message.sender_profile_id;
+          const breakBefore = shouldBreak(prevMessage, message);
+          const breakAfter = shouldBreak(message, nextMessage);
 
+          let messageJsxElement = null;
           if (message.sender_profile_id === currentProfile.id) {
             // Sent by me. Render chat bubble with my profile image on the right.
+            const isPending = typeof message.id === "string";
 
-            return (
-              <div className="flex items-end gap-3" key={message.id}>
+            // Find next message sent by me
+
+            let nextMessageSentByMe = null;
+            for (let j = idx - 1; j >= 0; j--) {
+              const msg = messagesList[j];
+              if (msg.sender_profile_id === currentProfile.id) {
+                nextMessageSentByMe = msg;
+                break;
+              }
+            }
+            let isLastDelivered =
+              !isPending &&
+              (nextMessage === null ||
+                nextMessageSentByMe === null ||
+                typeof nextMessageSentByMe.id === "string");
+
+            messageJsxElement = (
+              <div className="flex items-end gap-3">
                 <div className="flex-1"></div>
 
                 <div
                   className={classNames({
                     "flex flex-col items-end": true,
-                    "mb-4": nextMessageIsFromDifferentSender,
-                    "mb-1": !nextMessageIsFromDifferentSender,
+                    "mb-4": breakAfter,
+                    "mb-1": !breakAfter,
                   })}
                 >
-                  <div
-                    className={classNames({
-                      "rounded-l-lg bg-lime-400 px-4 py-1.5": true,
-                      "rounded-tr-lg": prevMessageIsFromDifferentSender,
-                      "rounded-br-lg": nextMessageIsFromDifferentSender,
-                    })}
+                  <Tooltip
+                    content={format(
+                      new Date(message.created_at),
+                      "MMM d, yyyy h:mm a"
+                    )}
+                    placement="left"
+                    delayMs={[500, 0]}
                   >
-                    <Text>{message.text}</Text>
-                  </div>
-                  {nextMessageIsFromDifferentSender && (
-                    <Text className="mt-1 text-gray-700" variant="body3">
-                      {format(new Date(message.created_at), "h:mm a")}
+                    <div
+                      className={classNames({
+                        "ml-20 rounded-l-lg px-4 py-1.5": true,
+                        "bg-lime-300": isPending,
+                        "bg-lime-400": !isPending,
+                        "rounded-tr-lg": breakBefore,
+                        "rounded-br-lg": breakAfter,
+                      })}
+                    >
+                      <Text>{message.text}</Text>
+                    </div>
+                  </Tooltip>
+
+                  {isLastDelivered && (
+                    <Text variant="body3" className="mt-px text-gray-700">
+                      Delivered
                     </Text>
                   )}
                 </div>
@@ -155,59 +248,104 @@ const NewChatPage: CustomPage = () => {
           } else {
             // Sent by other. Render chat bubble with their profile image on the left.
 
-            return (
-              <div className="flex items-end gap-3" key={message.id}>
+            messageJsxElement = (
+              <div className="flex items-end gap-3">
                 <div
                   className={classNames({
                     "flex items-end gap-3": true,
-                    "mb-4": nextMessageIsFromDifferentSender,
-                    "mb-1": !nextMessageIsFromDifferentSender,
+                    "mb-4": breakAfter,
+                    "mb-1": !breakAfter,
                   })}
                 >
-                  {nextMessageIsFromDifferentSender ? (
-                    <ProfileImage src={image?.url} className="mb-4 h-10 w-10" />
+                  {breakAfter ? (
+                    <div className="relative w-10 shrink-0">
+                      <Tooltip
+                        content={`${first_name} ${last_name}`}
+                        placement="left"
+                      >
+                        <div className="absolute bottom-0 h-10 w-10 shrink-0">
+                          <ProfileImage
+                            src={image?.url}
+                            className="h-10 w-10"
+                          />
+                        </div>
+                      </Tooltip>
+                    </div>
                   ) : (
-                    <div className="w-10"></div>
+                    <div className="w-10 shrink-0"></div>
                   )}
-                  <div
-                    className={classNames({
-                      "flex flex-col items-start": true,
-                    })}
+                  <Tooltip
+                    content={format(
+                      new Date(message.created_at),
+                      "MMM d, yyyy h:mm a"
+                    )}
+                    placement="left"
+                    delayMs={[500, 0]}
                   >
                     <div
                       className={classNames({
                         "rounded-r-lg bg-gray-100 px-4 py-1.5": true,
-                        "rounded-tl-lg": prevMessageIsFromDifferentSender,
-                        "rounded-bl-lg": nextMessageIsFromDifferentSender,
+                        "rounded-tl-lg": breakBefore,
+                        "rounded-bl-lg": breakAfter,
                       })}
                     >
                       <Text>{message.text}</Text>
                     </div>
-                    {nextMessageIsFromDifferentSender && (
-                      <Text className="mt-1 text-gray-700" variant="body3">
-                        {format(new Date(message.created_at), "h:mm a")}
-                      </Text>
-                    )}
-                  </div>
+                  </Tooltip>
                 </div>
                 <div className="flex-1"></div>
               </div>
             );
           }
+
+          return (
+            <div key={message.id}>
+              {breakBefore && (
+                <div className="mt-4 mb-2 flex w-full items-center justify-center">
+                  <Text className="text-gray-700" variant="body3">
+                    {format(new Date(message.created_at), "MMM d, h:mm a")}
+                  </Text>
+                </div>
+              )}
+              {messageJsxElement}
+            </div>
+          );
         })}
+        {!noMoreMessages && (
+          <div className="my-4 flex w-full justify-center">
+            <Button
+              variant="secondary"
+              loading={loadMoreDisabled}
+              size="small"
+              onClick={() => {
+                fetchMore();
+              }}
+            >
+              Load more...
+            </Button>
+          </div>
+        )}
       </div>
-      <div className="h-px w-full bg-gray-600"></div>
-      <div className="flex items-center gap-4 p-4 pl-16">
+      <div className="h-px w-full shrink-0 bg-gray-600"></div>
+      <div className="flex shrink-0 items-center gap-2 p-4 pl-16">
         <Textarea
           placeholder={`Type a message to ${first_name}`}
           minRows={1}
           className="w-full"
           value={message}
           onValueChange={setMessage}
+          // Submit on enter without shift being held down.
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              onMessageSubmit();
+            }
+          }}
         />
-        <button onClick={onMessageSubmit}>
-          <BxSend className="h-8 w-8" />
-        </button>
+        <IconButton
+          onClick={onMessageSubmit}
+          icon={<BxSend className="h-6 w-6" />}
+        ></IconButton>
       </div>
     </div>
   );
@@ -216,4 +354,5 @@ const NewChatPage: CustomPage = () => {
 NewChatPage.getLayout = (page) => {
   return <ChatLayout>{page}</ChatLayout>;
 };
+
 export default NewChatPage;

@@ -5,6 +5,7 @@ import {
   createClient,
   dedupExchange,
   fetchExchange,
+  stringifyVariables,
   subscriptionExchange,
 } from "urql";
 
@@ -12,6 +13,14 @@ import schema from "../generated/graphql";
 
 import { requireEnv } from "./env";
 import { createClient as createWSClient } from "graphql-ws";
+import { MESSAGES_PER_FETCH } from "../components/chats/constants";
+import { nanoid } from "nanoid";
+import {
+  chatMessageResolver,
+  insertChatMessageUpdater,
+  chatMessageStreamUpdater,
+  optimisticInsertChatMessageResolver,
+} from "./urql-chat-resolvers";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
@@ -56,6 +65,17 @@ export function getUrqlClient(jwt: string) {
           profile_aggregate_fields: () => null,
           connection_request_aggregate: () => null,
           connection_request_aggregate_fields: () => null,
+        },
+
+        resolvers: {
+          query_root: { chat_message: chatMessageResolver },
+        },
+        updates: {
+          Mutation: { insert_chat_message_one: insertChatMessageUpdater },
+          Subscription: { chat_message_stream: chatMessageStreamUpdater },
+        },
+        optimistic: {
+          insert_chat_message_one: optimisticInsertChatMessageResolver,
         },
       }),
       // retryExchange({
