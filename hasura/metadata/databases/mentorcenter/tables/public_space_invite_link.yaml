@@ -1,16 +1,16 @@
 table:
-  schema: public
   name: space_invite_link
+  schema: public
 object_relationships:
   - name: space
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: space
-        insertion_order: null
         column_mapping:
           space_id: id
+        insertion_order: null
+        remote_table:
+          name: space
+          schema: public
 insert_permissions:
   - role: user
     permission:
@@ -20,6 +20,9 @@ insert_permissions:
               - space_id:
                   _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -28,14 +31,10 @@ insert_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: Admin
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
       columns:
         - expires_at
         - space_id
         - type
-      backend_only: false
 select_permissions:
   - role: user
     permission:
@@ -48,6 +47,9 @@ select_permissions:
       filter:
         _or:
           - _exists:
+              _table:
+                name: profile_to_profile_role_flattened
+                schema: public
               _where:
                 _and:
                   - user_id:
@@ -56,18 +58,19 @@ select_permissions:
                       _eq: X-Hasura-Space-Id
                   - profile_role:
                       _eq: Admin
-              _table:
-                schema: public
-                name: profile_to_profile_role_flattened
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         _or:
           - _and:
               - space_id:
                   _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -76,6 +79,3 @@ delete_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: Admin
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened

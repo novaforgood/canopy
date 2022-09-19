@@ -1,13 +1,46 @@
 import { devtoolsExchange } from "@urql/devtools";
 import { cacheExchange } from "@urql/exchange-graphcache";
-import { createClient, dedupExchange, fetchExchange } from "urql";
+import { createClient as createWSClient } from "graphql-ws";
+import { nanoid } from "nanoid";
+import {
+  createClient,
+  dedupExchange,
+  fetchExchange,
+  stringifyVariables,
+  subscriptionExchange,
+} from "urql";
 
+import { MESSAGES_PER_FETCH } from "../components/chats/constants";
 import schema from "../generated/graphql";
 
 import { requireEnv } from "./env";
+import {
+  chatMessageResolver,
+  insertChatMessageUpdater,
+  chatMessageStreamUpdater,
+  optimisticInsertChatMessageResolver,
+} from "./urql-chat-resolvers";
+
+import { isServer } from "./index";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
+
+  const wsClient = isServer()
+    ? null
+    : createWSClient({
+        url: requireEnv("NEXT_PUBLIC_GRAPHQL_WS_ENDPOINT"),
+        connectionParams: {
+          headers: {
+            authorization: `Bearer ${jwt}`,
+          },
+        },
+      });
+
+  if (!wsClient) {
+    return null;
+  }
+
   return createClient({
     url: requireEnv("NEXT_PUBLIC_GRAPHQL_ENDPOINT"),
     requestPolicy: "cache-and-network",
@@ -34,6 +67,17 @@ export function getUrqlClient(jwt: string) {
           connection_request_aggregate: () => null,
           connection_request_aggregate_fields: () => null,
         },
+
+        resolvers: {
+          query_root: { chat_message: chatMessageResolver },
+        },
+        updates: {
+          Mutation: { insert_chat_message_one: insertChatMessageUpdater },
+          Subscription: { chat_message_stream: chatMessageStreamUpdater },
+        },
+        optimistic: {
+          insert_chat_message_one: optimisticInsertChatMessageResolver,
+        },
       }),
       // retryExchange({
       //   maxNumberAttempts: 2,
@@ -47,6 +91,16 @@ export function getUrqlClient(jwt: string) {
       //   },
       // }),
       fetchExchange,
+      subscriptionExchange({
+        forwardSubscription: (operation) => ({
+          subscribe: (sink) => {
+            const dispose = wsClient.subscribe(operation, sink);
+            return {
+              unsubscribe: dispose,
+            };
+          },
+        }),
+      }),
     ],
   });
 }

@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: space_listing_question
+  schema: public
 object_relationships:
   - name: space
     using:
@@ -14,6 +14,9 @@ insert_permissions:
               owner_id:
                 _eq: X-Hasura-User-Id
           - _exists:
+              _table:
+                name: profile_to_profile_role_flattened
+                schema: public
               _where:
                 _and:
                   - user_id:
@@ -22,9 +25,6 @@ insert_permissions:
                       _eq: X-Hasura-Space-Id
                   - profile_role:
                       _eq: Admin
-              _table:
-                schema: public
-                name: profile_to_profile_role_flattened
       columns:
         - char_count
         - deleted
@@ -32,7 +32,6 @@ insert_permissions:
         - listing_order
         - space_id
         - title
-      backend_only: false
 select_permissions:
   - role: public
     permission:
@@ -79,6 +78,9 @@ update_permissions:
               owner_id:
                 _eq: X-Hasura-User-Id
           - _exists:
+              _table:
+                name: profile_to_profile_role_flattened
+                schema: public
               _where:
                 _and:
                   - user_id:
@@ -87,19 +89,20 @@ update_permissions:
                       _eq: X-Hasura-Space-Id
                   - profile_role:
                       _eq: Admin
-              _table:
-                schema: public
-                name: profile_to_profile_role_flattened
       check: null
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         _or:
           - space:
               owner_id:
                 _eq: X-Hasura-User-Id
           - _exists:
+              _table:
+                name: profile_to_profile_role_flattened
+                schema: public
               _where:
                 _and:
                   - user_id:
@@ -108,6 +111,3 @@ delete_permissions:
                       _eq: X-Hasura-Space-Id
                   - profile_role:
                       _eq: Admin
-              _table:
-                schema: public
-                name: profile_to_profile_role_flattened

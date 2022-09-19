@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: profile_listing
+  schema: public
 object_relationships:
   - name: profile
     using:
@@ -8,34 +8,34 @@ object_relationships:
   - name: profile_listing_image
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: profile_listing_image
-        insertion_order: null
         column_mapping:
           id: profile_listing_id
+        insertion_order: null
+        remote_table:
+          name: profile_listing_image
+          schema: public
 array_relationships:
   - name: profile_listing_responses
     using:
       foreign_key_constraint_on:
         column: profile_listing_id
         table:
-          schema: public
           name: profile_listing_response
+          schema: public
   - name: profile_listing_socials
     using:
       foreign_key_constraint_on:
         column: profile_listing_id
         table:
-          schema: public
           name: profile_listing_social
+          schema: public
   - name: profile_listing_to_space_tags
     using:
       foreign_key_constraint_on:
         column: profile_listing_id
         table:
-          schema: public
           name: profile_listing_to_space_tag
+          schema: public
 insert_permissions:
   - role: user
     permission:
@@ -46,6 +46,9 @@ insert_permissions:
                   space_id:
                     _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -54,14 +57,10 @@ insert_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: MemberWhoCanList
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
       columns:
         - headline
         - profile_id
         - public
-      backend_only: false
 select_permissions:
   - role: public
     permission:
@@ -111,6 +110,9 @@ update_permissions:
                   space_id:
                     _eq: X-Hasura-Space-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -119,7 +121,4 @@ update_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: MemberWhoCanList
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
       check: null

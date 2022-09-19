@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect } from "react";
+import { ReactNode, Suspense, useCallback, useEffect } from "react";
 
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
@@ -91,10 +91,11 @@ function App({ Component, pageProps }: CustomAppProps) {
     }
   }, [spaceId, setSession, refreshSession]);
 
+  const getLayout = Component.getLayout || ((page: ReactNode) => page);
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Toaster />
-      <Component {...pageProps} />
+      {getLayout(<Component {...pageProps} />)}
       {Component.showFooter !== false && <Footer />}
     </Suspense>
   );

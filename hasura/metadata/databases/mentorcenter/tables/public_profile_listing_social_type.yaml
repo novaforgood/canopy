@@ -1,4 +1,4 @@
 table:
-  schema: public
   name: profile_listing_social_type
+  schema: public
 is_enum: true

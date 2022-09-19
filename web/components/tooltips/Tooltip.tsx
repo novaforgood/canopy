@@ -1,29 +1,20 @@
-import { ReactNode, useState } from "react";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css"; // optional
 
-export interface TooltipProps {
-  children: ReactNode;
-  show: boolean;
-  tooltipText: string;
+interface TooltipProps {
+  children: React.ReactElement;
+  content: React.ReactNode | string;
+  placement?: "top" | "bottom" | "left" | "right";
+  // If array, it's [show, hide] in ms
+  delayMs?: number | [number, number];
 }
+
 export function Tooltip(props: TooltipProps) {
-  const { children, show, tooltipText } = props;
+  const { children, content, placement = "top", delayMs = 0 } = props;
+
   return (
-    <div className="relative flex flex-col items-center">
-      {show && (
-        <div className="absolute bottom-full mb-2 mx-auto text-xs bg-black text-white rounded py-1 px-4 whitespace-nowrap pointer-events-none">
-          {tooltipText}
-          <svg
-            className="absolute text-black h-2 w-full left-0 top-full"
-            x="0px"
-            y="0px"
-            viewBox="0 0 255 255"
-            xmlSpace="preserve"
-          >
-            <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
-          </svg>
-        </div>
-      )}
+    <Tippy content={content} placement={placement} delay={delayMs}>
       {children}
-    </div>
+    </Tippy>
   );
 }

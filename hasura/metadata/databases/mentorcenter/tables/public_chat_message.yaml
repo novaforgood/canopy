@@ -1,0 +1,57 @@
+table:
+  name: chat_message
+  schema: public
+object_relationships:
+  - name: chat_room
+    using:
+      foreign_key_constraint_on: chat_room_id
+  - name: sender_profile
+    using:
+      foreign_key_constraint_on: sender_profile_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - _and:
+              - chat_room:
+                  profile_to_chat_rooms:
+                    profile:
+                      user_id:
+                        _eq: X-Hasura-User-Id
+              - sender_profile:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+      columns:
+        - chat_room_id
+        - deleted
+        - id
+        - sender_profile_id
+        - text
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - chat_room_id
+        - sender_profile_id
+        - text
+        - created_at
+        - deleted
+      filter:
+        _or:
+          - chat_room:
+              profile_to_chat_rooms:
+                profile:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - deleted
+      filter:
+        sender_profile:
+          user_id:
+            _eq: X-Hasura-User-Id
+      check: null

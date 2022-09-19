@@ -1,0 +1,121 @@
+# Get all chats, including latest message of each chat
+query AllChatRooms($profile_id: uuid!) {
+  chat_room(
+    where: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
+  ) {
+    id
+    created_at
+    profile_to_chat_rooms(where: { profile_id: { _neq: $profile_id } }) {
+      id
+      profile {
+        id
+        user {
+          id
+          first_name
+          last_name
+        }
+        profile_listing {
+          id
+          headline
+          profile_listing_image {
+            id
+            image {
+              url
+              id
+            }
+          }
+        }
+      }
+    }
+    chat_messages(limit: 1, order_by: { id: desc }) {
+      id
+      text
+      sender_profile_id
+      created_at
+    }
+  }
+}
+
+query ChatRoom($chat_room_id: uuid!, $profile_id: uuid!) {
+  chat_room_by_pk(id: $chat_room_id) {
+    id
+    created_at
+    first_chat_message: chat_messages(limit: 1, order_by: { id: asc }) {
+      id
+      text
+      sender_profile_id
+      created_at
+    }
+    profile_to_chat_rooms(where: { profile_id: { _neq: $profile_id } }) {
+      id
+      profile {
+        user {
+          id
+          first_name
+          last_name
+        }
+        id
+        profile_listing {
+          id
+          headline
+          profile_listing_image {
+            id
+            image {
+              url
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Get messages
+subscription MessagesStream($chat_room_id: uuid!, $after: timestamptz!) {
+  chat_message_stream(
+    batch_size: 10
+    cursor: { initial_value: { id: 0 } }
+    where: {
+      chat_room_id: { _eq: $chat_room_id }
+      created_at: { _gte: $after }
+    }
+  ) {
+    id
+    deleted
+    chat_room_id
+    sender_profile_id
+    text
+    created_at
+  }
+}
+# Identical query (see https://github.com/FormidableLabs/urql/discussions/2257)
+query Messages($chat_room_id: uuid!, $limit: Int!, $id_cap: bigint!) {
+  chat_message(
+    limit: $limit
+    order_by: { id: desc }
+    where: { chat_room_id: { _eq: $chat_room_id }, id: { _lt: $id_cap } }
+  ) {
+    id
+    deleted
+    chat_room_id
+    sender_profile_id
+    text
+    created_at
+  }
+}
+
+# Send a message
+
+mutation SendMessage($input: chat_message_insert_input!) {
+  insert_chat_message_one(object: $input) {
+    id
+    deleted
+    created_at
+    chat_room_id
+    text
+    sender_profile_id
+  }
+}
+
+# Begin a chat
