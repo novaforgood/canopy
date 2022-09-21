@@ -8,6 +8,7 @@ import { BxMenu, BxX } from "../generated/icons/regular";
 import { BxsCog, BxsHome, BxsWrench } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { useQueryParam } from "../hooks/useQueryParam";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
 import { LocalStorage } from "../lib/localStorage";
@@ -51,7 +52,7 @@ function MobileNavbar() {
   };
 
   return (
-    <div className="w-full overscroll-none relative">
+    <div className="relative w-full overscroll-none">
       <div className="flex items-center justify-between bg-gray-50 py-3 px-4">
         <Text>{currentSpace?.name}</Text>
         <button onClick={() => setExpanded((prev) => !prev)}>
@@ -72,7 +73,7 @@ function MobileNavbar() {
         leave="transition-opacity ease-linear duration-150"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        className="bg-white absolute top-full w-full h-screen"
+        className="absolute top-full h-screen w-full bg-white"
       >
         <div className="px-8 pt-12">
           <div className="flex items-center gap-2">
@@ -166,6 +167,10 @@ export function Navbar() {
 
   const arr = router.asPath.split("/");
   const isInAdminDashboard = arr.includes("admin");
+  const spaceSlug = useQueryParam("slug", "string");
+  const isHome = arr[arr.length - 1] === spaceSlug;
+  console.log(arr);
+  console.log(spaceSlug);
 
   return (
     <>
@@ -184,30 +189,30 @@ export function Navbar() {
               ) : (
                 <SpaceDropdown />
               )}
-              {isAdmin &&
-                (isInAdminDashboard ? (
-                  <Button
-                    size="small"
-                    className={"flex items-center ml-6"}
-                    onClick={() => {
-                      router.push(`/space/${currentSpace?.slug}`);
-                    }}
-                  >
-                    <BxsHome className="w-5 h-5 mr-2" />
-                    <Text variant="body1">Directory Homepage</Text>
-                  </Button>
-                ) : (
-                  <Button
-                    size="small"
-                    className={"flex items-center ml-6"}
-                    onClick={() => {
-                      router.push(`/space/${currentSpace?.slug}/admin`);
-                    }}
-                  >
-                    <BxsCog className="w-5 h-5 mr-2" />
-                    <Text variant="body1">Admin Dashboard</Text>
-                  </Button>
-                ))}
+              {!isHome && (
+                <Button
+                  size="small"
+                  className={"ml-6 flex items-center"}
+                  onClick={() => {
+                    router.push(`/space/${currentSpace?.slug}`);
+                  }}
+                >
+                  <BxsHome className="mr-2 h-5 w-5" />
+                  <Text variant="body1">Directory Homepage</Text>
+                </Button>
+              )}
+              {isAdmin && isHome && (
+                <Button
+                  size="small"
+                  className={"ml-6 flex items-center"}
+                  onClick={() => {
+                    router.push(`/space/${currentSpace?.slug}/admin`);
+                  }}
+                >
+                  <BxsCog className="mr-2 h-5 w-5" />
+                  <Text variant="body1">Admin Dashboard</Text>
+                </Button>
+              )}
             </div>
             <Dropdown />
           </div>
@@ -215,7 +220,7 @@ export function Navbar() {
       </Responsive>
       <Responsive mode="mobile-only" className="">
         <div className="h-16"></div>
-        <div className="h-16 fixed w-full top-0 z-10 bg-white">
+        <div className="fixed top-0 z-10 h-16 w-full bg-white">
           <MobileNavbar />
         </div>
       </Responsive>

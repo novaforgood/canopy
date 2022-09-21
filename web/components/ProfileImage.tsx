@@ -47,7 +47,7 @@ export function ProfileImage(props: ProfileImageProps) {
 
   const styles = classNames({
     "bg-gray-100 shrink-0 select-none": true,
-    "border border-green-700": border,
+    "border border-green-500": border,
     "rounded-full": rounded,
     "bg-olive-200 text-gray-50 flex items-center justify-center": !src,
     [`${className}`]: true,
@@ -64,7 +64,7 @@ export function ProfileImage(props: ProfileImageProps) {
           {...rest}
         />
       ) : (
-        <UserSvg className="w-2/3 h-2/3" />
+        <UserSvg className="h-2/3 w-2/3" />
       )}
     </div>
   );

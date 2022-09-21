@@ -54,7 +54,7 @@ export function ChatLayout(props: ChatLayoutProps) {
               </Link>
             </div>
             <div className="my-4 h-px w-full bg-olive-600"></div>
-            <div className="flex flex-col gap-2 p-4">
+            <div className="flex flex-col p-4">
               {data?.chat_room.map((room) => {
                 const otherProfile = room.profile_to_chat_rooms[0].profile;
 
@@ -72,13 +72,13 @@ export function ChatLayout(props: ChatLayoutProps) {
                   >
                     <a
                       className={classNames({
-                        "w-full rounded-md p-2 transition": true,
-                        "pointer-events-none bg-gray-50": selected,
-                        "hover:bg-gray-100": !selected,
+                        "w-full rounded-md p-3 transition": true,
+                        "pointer-events-none bg-gray-100": selected,
+                        "hover:bg-gray-200": !selected,
                       })}
                     >
-                      <div className="flex w-full items-center gap-2">
-                        <ProfileImage src={image?.url} className="h-8 w-8" />
+                      <div className="flex w-full items-center gap-4">
+                        <ProfileImage src={image?.url} className="h-10 w-10" />
 
                         <div className="flex min-w-0 flex-1 flex-col">
                           <Text>

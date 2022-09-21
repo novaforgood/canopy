@@ -62,10 +62,7 @@ function shouldBreak(
   const date2 = new Date(message2.created_at);
   const diff = date2.getTime() - date1.getTime();
 
-  return (
-    diff > FIVE_MINUTES ||
-    message1.sender_profile_id !== message2.sender_profile_id
-  );
+  return diff > FIVE_MINUTES;
 }
 
 const NewChatPage: CustomPage = () => {
@@ -186,7 +183,7 @@ const NewChatPage: CustomPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col-reverse overflow-y-auto overscroll-contain p-4">
+      <div className="flex flex-1 flex-col-reverse overflow-y-scroll overscroll-contain p-4">
         {currentProfile &&
           messagesList.map((message, idx) => {
             // Note: Messages are ordered by created_at DESC
@@ -195,6 +192,9 @@ const NewChatPage: CustomPage = () => {
 
             const breakBefore = shouldBreak(prevMessage, message);
             const breakAfter = shouldBreak(message, nextMessage);
+
+            const nextMessageIsFromDifferentSender =
+              nextMessage?.sender_profile_id !== message.sender_profile_id;
 
             let messageJsxElement = null;
             if (message.sender_profile_id === currentProfile.id) {
@@ -235,7 +235,8 @@ const NewChatPage: CustomPage = () => {
                     >
                       <div
                         className={classNames({
-                          "ml-20 whitespace-pre rounded-l-lg px-4 py-1.5": true,
+                          "ml-12 whitespace-pre-wrap rounded-l-lg px-4 py-1.5 lg:ml-20":
+                            true,
                           "bg-lime-300": isPending,
                           "bg-lime-400": !isPending,
                           "rounded-tr-lg": breakBefore,
@@ -257,16 +258,19 @@ const NewChatPage: CustomPage = () => {
             } else {
               // Sent by other. Render chat bubble with their profile image on the left.
 
+              const isLastMessage =
+                breakAfter || nextMessageIsFromDifferentSender;
+
               messageJsxElement = (
                 <div className="flex items-end gap-3">
                   <div
                     className={classNames({
                       "flex items-end gap-3": true,
-                      "mb-4": breakAfter,
-                      "mb-1": !breakAfter,
+                      "mb-4": isLastMessage,
+                      "mb-1": !isLastMessage,
                     })}
                   >
-                    {breakAfter ? (
+                    {nextMessageIsFromDifferentSender ? (
                       <div className="relative w-10 shrink-0">
                         <Tooltip
                           content={`${first_name} ${last_name}`}
@@ -290,7 +294,7 @@ const NewChatPage: CustomPage = () => {
                     >
                       <div
                         className={classNames({
-                          "whitespace-pre rounded-r-lg bg-gray-100 px-4 py-1.5":
+                          "mr-12 whitespace-pre-wrap rounded-r-lg bg-gray-100 px-4 py-1.5 lg:mr-20":
                             true,
                           "rounded-tl-lg": breakBefore,
                           "rounded-bl-lg": breakAfter,
