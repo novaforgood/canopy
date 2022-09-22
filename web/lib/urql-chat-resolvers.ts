@@ -136,18 +136,13 @@ export const chatMessageResolver: Resolver = (
   const visited = new Set();
   let result: NullArray<string> = [];
 
-  console.log(fieldInfos);
-
   for (let i = 0; i < fieldInfos.length; i++) {
     const { fieldKey, arguments: args } = fieldInfos[i];
     if (args === null || !compareArgs(fieldArgs, args)) {
-      console.log("Cyad");
       continue;
-    } else [console.log("Pass")];
+    }
 
     const links = cache.resolve(entityKey, fieldKey) as string[];
-
-    console.log(links);
 
     const tempResult: NullArray<string> = [];
 

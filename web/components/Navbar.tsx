@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 
 import { Transition } from "@headlessui/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Profile_Role_Enum } from "../generated/graphql";
-import { BxMenu, BxX } from "../generated/icons/regular";
+import {
+  BxMenu,
+  BxMessage,
+  BxMessageDetail,
+  BxX,
+} from "../generated/icons/regular";
 import { BxsCog, BxsHome, BxsWrench } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
@@ -14,6 +20,7 @@ import { signOut } from "../lib/firebase";
 import { LocalStorage } from "../lib/localStorage";
 
 import { Button, Text } from "./atomic";
+import { IconButton } from "./buttons/IconButton";
 import { Dropdown } from "./Dropdown";
 import { Responsive } from "./layout/Responsive";
 import { SidePadding } from "./layout/SidePadding";
@@ -34,6 +41,8 @@ function MobileNavbar() {
   const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
 
   const img = currentProfile?.profile_listing?.profile_listing_image?.image.url;
+
+  const spaceSlug = useQueryParam("slug", "string");
 
   const [expanded, setExpanded] = useState(false);
 
@@ -90,7 +99,7 @@ function MobileNavbar() {
                 <Button
                   className="w-full justify-center"
                   onClick={() => {
-                    navigate(`/space/${currentSpace?.slug}`);
+                    navigate(`/space/${spaceSlug}`);
                   }}
                 >
                   Browse Community Profiles
@@ -100,7 +109,7 @@ function MobileNavbar() {
                   className="w-full justify-center"
                   variant="outline"
                   onClick={() => {
-                    navigate(`/space/${currentSpace?.slug}/account`);
+                    navigate(`/space/${spaceSlug}/account`);
                   }}
                 >
                   Your Account
@@ -114,7 +123,7 @@ function MobileNavbar() {
             {isAdmin && (
               <button
                 onClick={() => {
-                  navigate(`/space/${currentSpace?.slug}/admin`);
+                  navigate(`/space/${spaceSlug}/admin`);
                 }}
               >
                 Admin settings
@@ -125,7 +134,7 @@ function MobileNavbar() {
               <>
                 <button
                   onClick={() => {
-                    navigate(`/space/${currentSpace?.slug}/account/profile`);
+                    navigate(`/space/${spaceSlug}/account/profile`);
                   }}
                 >
                   Edit Your Profile
@@ -169,8 +178,6 @@ export function Navbar() {
   const isInAdminDashboard = arr.includes("admin");
   const spaceSlug = useQueryParam("slug", "string");
   const isHome = arr[arr.length - 1] === spaceSlug;
-  console.log(arr);
-  console.log(spaceSlug);
 
   return (
     <>
@@ -194,7 +201,7 @@ export function Navbar() {
                   size="small"
                   className={"ml-6 flex items-center"}
                   onClick={() => {
-                    router.push(`/space/${currentSpace?.slug}`);
+                    router.push(`/space/${spaceSlug}`);
                   }}
                 >
                   <BxsHome className="mr-2 h-5 w-5" />
@@ -206,7 +213,7 @@ export function Navbar() {
                   size="small"
                   className={"ml-6 flex items-center"}
                   onClick={() => {
-                    router.push(`/space/${currentSpace?.slug}/admin`);
+                    router.push(`/space/${spaceSlug}/admin`);
                   }}
                 >
                   <BxsCog className="mr-2 h-5 w-5" />
@@ -214,7 +221,14 @@ export function Navbar() {
                 </Button>
               )}
             </div>
-            <Dropdown />
+            <div className="flex items-center gap-4">
+              <Link href={`/space/${spaceSlug}/chat`} passHref>
+                <a>
+                  <IconButton icon={<BxMessageDetail className="h-5 w-5" />} />
+                </a>
+              </Link>
+              <Dropdown />
+            </div>
           </div>
         </SidePadding>
       </Responsive>

@@ -40,7 +40,7 @@ const ONE_DAY = 1000 * 60 * 60 * 24;
 
 type ChatMessage = MessagesQuery["chat_message"][number];
 
-function formatDateTooltip(date: Date): string {
+function formatDateConcisely(date: Date): string {
   const timeAgo = Math.abs(date.getTime() - Date.now());
   if (timeAgo > ONE_WEEK) {
     return format(date, "MMM d, yyyy 'at' h:mm a");
@@ -229,7 +229,9 @@ const NewChatPage: CustomPage = () => {
                     })}
                   >
                     <Tooltip
-                      content={formatDateTooltip(new Date(message.created_at))}
+                      content={formatDateConcisely(
+                        new Date(message.created_at)
+                      )}
                       placement="left"
                       delayMs={[500, 0]}
                     >
@@ -288,7 +290,9 @@ const NewChatPage: CustomPage = () => {
                       <div className="w-10 shrink-0"></div>
                     )}
                     <Tooltip
-                      content={formatDateTooltip(new Date(message.created_at))}
+                      content={formatDateConcisely(
+                        new Date(message.created_at)
+                      )}
                       placement="left"
                       delayMs={[500, 0]}
                     >
@@ -314,7 +318,7 @@ const NewChatPage: CustomPage = () => {
                 {breakBefore && (
                   <div className="mt-4 mb-2 flex w-full items-center justify-center">
                     <Text className="text-gray-700" variant="body3">
-                      {format(new Date(message.created_at), "MMM d, h:mm a")}
+                      {formatDateConcisely(new Date(message.created_at))}
                     </Text>
                   </div>
                 )}
