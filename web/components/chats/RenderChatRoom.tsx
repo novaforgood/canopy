@@ -376,9 +376,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                           "rounded-bl-lg": breakAfter,
                         })}
                       >
-                        <Text>
-                          {message.id} {message.text}
-                        </Text>
+                        <Text>{message.text}</Text>
                       </div>
                     </Tooltip>
                   </div>
@@ -416,23 +414,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
         )}
       </div>
       <div className="h-px w-full shrink-0 bg-gray-600"></div>
-      <div className="h-16">
-        <div className="flex">
-          <Text>
-            Latest read by me:{" "}
-            {myProfileEntry?.latest_read_chat_message_id ?? "NULL"}
-          </Text>
-          <Button size="small" onClick={markLatestMessageAsRead}>
-            Mark as read
-          </Button>
-        </div>
-        <div>
-          <Text>
-            Latest read by other guy:{" "}
-            {otherProfileEntry?.latest_read_chat_message_id ?? "NULL"}
-          </Text>
-        </div>
-      </div>
+
       <div className="flex shrink-0 items-center gap-2 p-4 pl-16">
         <Textarea
           placeholder={`Type a message to ${first_name}`}
