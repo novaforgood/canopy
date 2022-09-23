@@ -118,18 +118,25 @@ export function EnterTags(props: EnterTagsProps) {
       }}
       onSecondaryAction={onSkip}
     >
-      <div className="flex flex-col items-start gap-16 w-full">
+      <div className="flex w-full flex-col items-start gap-16">
         <div className="h-8"></div>
         {spaceCategories.map((category) => {
           return (
-            <div className="flex flex-col items-start w-full" key={category.id}>
-              <Text variant="subheading2" className="text-gray-600 font-bold">
+            <div className="flex w-full flex-col items-start" key={category.id}>
+              <Text variant="subheading2" className="font-bold text-gray-600">
                 {category.title}
               </Text>
+              <div className="h-2"></div>
+
               <div className="h-4"></div>
               <div className="flex flex-col gap-4 md:flex-row md:gap-16">
                 <div className="w-72">
                   <SelectAutocomplete
+                    placeholder={
+                      category.rigid_select
+                        ? "Select tag…"
+                        : "Select tag or type to suggest…"
+                    }
                     options={category.space_tags
                       .map((tag) => ({
                         label: tag.label,

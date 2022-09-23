@@ -218,18 +218,18 @@ const SignUpPage: CustomPage = () => {
                 }}
               />
             </div>
-            <div className="h-4"></div>
+            <div className="h-6"></div>
             <div className="w-96">
               <Text className="text-gray-600" variant="body2">
                 By creating an account, you agree to our{" "}
                 <Link href="/privacy" passHref>
-                  <a className="underline" target="_blank">
+                  <a className="text-green-900 underline" target="_blank">
                     Privacy Policy
                   </a>
                 </Link>{" "}
                 and{" "}
                 <Link href="/terms" passHref>
-                  <a className="underline" target="_blank">
+                  <a className="text-green-900 underline" target="_blank">
                     Terms of Use
                   </a>
                 </Link>

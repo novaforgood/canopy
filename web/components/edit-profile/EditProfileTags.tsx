@@ -141,11 +141,16 @@ export function EditProfileTags(props: EditProfileTagsProps) {
         secondaryActionText="Cancel"
         onSecondaryAction={closeModalAndReset}
       >
-        <div className="p-8 py-16 w-96 flex flex-col">
+        <div className="flex w-96 flex-col p-8 py-16">
           <Text variant="heading4">{tagCategory.title}</Text>
           <div className="h-4"></div>
           <div className="w-72">
             <SelectAutocomplete
+              placeholder={
+                tagCategory.rigid_select
+                  ? "Select tag…"
+                  : "Select tag or type to suggest…"
+              }
               options={tagCategory.space_tags
                 .filter((item) => showTagOnProfile(item, tagCategory))
                 .map((tag) => ({

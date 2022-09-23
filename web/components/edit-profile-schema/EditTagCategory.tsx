@@ -35,6 +35,7 @@ import {
   NewTagCategory,
 } from "../../lib/types";
 import { Button, Input, Text } from "../atomic";
+import { CheckBox } from "../atomic/CheckBox";
 import { DeleteButton } from "../DeleteButton";
 import { DragHandle } from "../DragHandle";
 import { EditButton } from "../EditButton";
@@ -104,6 +105,9 @@ export function EditTagCategory(props: EditTagCategoryProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const [title, setTitle] = useState(tagCategory.title ?? "");
+  const [rigidSelect, setRigidSelect] = useState(
+    tagCategory.rigid_select ?? false
+  );
   const [tags, setTags] = useState<NewSpaceTag[]>(
     tagCategory.space_tags?.data ?? []
   );
@@ -196,7 +200,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
         actionText="Done editing"
         onAction={onClose}
       >
-        <div className="p-8 py-16 w-96 flex flex-col">
+        <div className="flex w-96 flex-col p-8 py-16">
           <Text variant="heading4" className="text-center">
             Edit tag category
           </Text>
@@ -207,6 +211,14 @@ export function EditTagCategory(props: EditTagCategoryProps) {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
             className="mb-4"
+          />
+          <div className="h-4"></div>
+          <CheckBox
+            label={"Allow users to suggest their own tags"}
+            checked={!rigidSelect}
+            onChange={(newVal) => {
+              setRigidSelect((prev) => !prev);
+            }}
           />
           <div className="h-8"></div>
           <Text className="text-gray-700">
@@ -227,7 +239,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
             <Button
               size="small"
               variant="outline"
-              className="px-2 shrink-0"
+              className="shrink-0 px-2"
               disabled={newTag.length === 0}
               onClick={addTag}
             >
@@ -238,7 +250,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
           <div className="h-4"></div>
           <div>
             <button
-              className="text-xs hover:underline text-gray-600"
+              className="text-xs text-gray-600 hover:underline"
               onClick={() => {
                 setEditMode(editMode === "reorder" ? "normal" : "reorder");
               }}
@@ -250,7 +262,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
           {editMode === "reorder" && (
             <div>
               <button
-                className="text-xs hover:underline text-gray-600"
+                className="text-xs text-gray-600 hover:underline"
                 onClick={() => {
                   // Sort tags alphabetically
                   setTags((prev) => [
@@ -329,7 +341,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
         </div>
       </ActionModal>
       <div
-        className="flex flex-col cursor-auto"
+        className="flex cursor-auto flex-col"
         ref={setNodeRef}
         style={style}
         {...attributes}
