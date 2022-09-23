@@ -265,7 +265,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
         <ProfileImage src={image?.url} className="mr-3 h-10 w-10" />
 
         <div>
-          <Text loading={!first_name}>
+          <Text loading={!first_name} loadingWidthClassName="w-4">
             {first_name} {last_name}
           </Text>
           <div></div>

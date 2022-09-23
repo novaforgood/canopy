@@ -28,8 +28,6 @@ interface DesktopChatLayoutProps {
 function DesktopChatLayout(props: DesktopChatLayoutProps) {
   const { children } = props;
 
-  console.log("FUCK I GOT RENDEREDD");
-
   const router = useRouter();
 
   const { currentProfile } = useCurrentProfile();

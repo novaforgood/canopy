@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { format, formatDistanceStrict } from "date-fns";
@@ -19,22 +19,48 @@ import { SidePadding } from "../layout/SidePadding";
 import { Navbar } from "../Navbar";
 import { ProfileImage } from "../ProfileImage";
 
-function formatTimeSuperConcise(date: Date): string {
-  const formatString = formatDistanceStrict(date, new Date())
-    .replace(" minutes", "m")
-    .replace(" hours", "h")
-    .replace(" days", "d")
-    .replace(" weeks", "w");
+function useTimeFormatter() {
+  const [timeNow, setTimeNow] = useState(new Date());
 
-  if (formatString.includes("seconds")) {
-    return "1m";
-  } else {
-    return formatString;
-  }
+  // Update timenow every 10s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeNow(new Date());
+    }, 10000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const formatTimeSuperConcise = useCallback(
+    (date: Date) => {
+      const formatString = formatDistanceStrict(date, timeNow)
+        .replace(" minutes", "m")
+        .replace(" hours", "h")
+        .replace(" days", "d")
+        .replace(" weeks", "w");
+
+      if (formatString.includes("second")) {
+        return "<1m";
+      } else {
+        return formatString;
+      }
+    },
+    [timeNow]
+  );
+
+  return useMemo(
+    () => ({
+      formatTimeSuperConcise,
+    }),
+    [formatTimeSuperConcise]
+  );
 }
 
 export function ChatRoomList() {
   const router = useRouter();
+
+  const { formatTimeSuperConcise } = useTimeFormatter();
 
   const { currentProfile } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
@@ -66,7 +92,9 @@ export function ChatRoomList() {
       <div className="flex h-full flex-col overflow-hidden overflow-y-scroll pt-2 md:p-2">
         {fetching && (
           <div className="ml-4 md:ml-0">
-            <Text variant="body1">Loading...</Text>
+            <Text variant="body1" loading={true} loadingWidthClassName="w-32">
+              Loading...
+            </Text>
           </div>
         )}
         {chatRooms.map((room) => {

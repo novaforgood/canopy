@@ -27,7 +27,9 @@ const NewChatPage: CustomPage = () => {
           <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
             <ProfileImage className="h-10 w-10" />
 
-            <Text>Loading...</Text>
+            <Text loading={true} loadingWidthClassName="w-32">
+              Loading...
+            </Text>
           </div>
         </div>
       )}

@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Transition } from "@headlessui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Profile_Role_Enum } from "../generated/graphql";
+import {
+  Profile_Role_Enum,
+  useAllChatRoomsSubscription,
+} from "../generated/graphql";
 import {
   BxMenu,
   BxMessage,
@@ -14,6 +17,7 @@ import {
 import { BxsCog, BxsHome, BxsWrench } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
@@ -167,10 +171,11 @@ function MobileNavbar() {
   );
 }
 
-export function Navbar() {
+function DesktopNavbar() {
   const router = useRouter();
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
-  const { currentProfileHasRole, fetchingCurrentProfile } = useCurrentProfile();
+  const { currentProfileHasRole, fetchingCurrentProfile, currentProfile } =
+    useCurrentProfile();
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
   const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
 
@@ -179,65 +184,111 @@ export function Navbar() {
   const spaceSlug = useQueryParam("slug", "string");
   const isHome = arr[arr.length - 1] === spaceSlug;
 
+  const [{ data, fetching }] = useAllChatRoomsSubscription({
+    variables: { profile_id: currentProfile?.id ?? "" },
+  });
+
+  const numUnreadMessages = useMemo(
+    () =>
+      data?.chat_room.reduce((acc, room) => {
+        const myProfileEntry = room.profile_to_chat_rooms.find(
+          (entry) => entry.profile.id === currentProfile?.id
+        );
+        if (!myProfileEntry) return acc;
+        const latestMessage = room.chat_messages[0];
+        if (!latestMessage) return acc;
+
+        const shouldNotHighlight =
+          // Latest message was sent by me
+          latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+          // Latest message sent by the other guy was read
+          (myProfileEntry.latest_read_chat_message_id &&
+            latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
+
+        if (shouldNotHighlight) {
+          return acc;
+        } else {
+          return acc + 1;
+        }
+      }, 0),
+    [data, currentProfile?.id]
+  );
+
+  return (
+    <SidePadding>
+      <div className="flex items-center justify-between pt-12">
+        <div className="flex">
+          {fetchingCurrentProfile ? (
+            <LoadingPlaceholderRect className="h-10 w-64" />
+          ) : !isMember ? (
+            <img
+              src={"/assets/canopyLogo.svg"}
+              alt="Canopy Logo"
+              draggable={false}
+            />
+          ) : (
+            <SpaceDropdown />
+          )}
+          {!isHome && (
+            <Button
+              size="small"
+              className={"ml-6 flex items-center"}
+              onClick={() => {
+                router.push(`/space/${spaceSlug}`);
+              }}
+            >
+              <BxsHome className="mr-2 h-5 w-5" />
+              <Text variant="body1">Directory Homepage</Text>
+            </Button>
+          )}
+          {isAdmin && isHome && (
+            <Button
+              size="small"
+              className={"ml-6 flex items-center"}
+              onClick={() => {
+                router.push(`/space/${spaceSlug}/admin`);
+              }}
+            >
+              <BxsCog className="mr-2 h-5 w-5" />
+              <Text variant="body1">Admin Dashboard</Text>
+            </Button>
+          )}
+        </div>
+        <div className="flex items-center gap-4">
+          <Link href={`/space/${spaceSlug}/chat`} passHref>
+            <a className="relative">
+              {numUnreadMessages && numUnreadMessages > 0 ? (
+                <div
+                  className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
+                              bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
+                >
+                  {numUnreadMessages}
+                </div>
+              ) : null}
+              <IconButton icon={<BxMessageDetail className="h-6 w-6" />} />
+            </a>
+          </Link>
+          <Dropdown />
+        </div>
+      </div>
+    </SidePadding>
+  );
+}
+
+export function Navbar() {
+  const renderDesktop = useMediaQuery({ showIfBiggerThan: "md" });
   return (
     <>
-      <Responsive mode="desktop-only">
-        <SidePadding>
-          <div className="flex items-center justify-between pt-12">
-            <div className="flex">
-              {fetchingCurrentProfile ? (
-                <LoadingPlaceholderRect className="h-10 w-64" />
-              ) : !isMember ? (
-                <img
-                  src={"/assets/canopyLogo.svg"}
-                  alt="Canopy Logo"
-                  draggable={false}
-                />
-              ) : (
-                <SpaceDropdown />
-              )}
-              {!isHome && (
-                <Button
-                  size="small"
-                  className={"ml-6 flex items-center"}
-                  onClick={() => {
-                    router.push(`/space/${spaceSlug}`);
-                  }}
-                >
-                  <BxsHome className="mr-2 h-5 w-5" />
-                  <Text variant="body1">Directory Homepage</Text>
-                </Button>
-              )}
-              {isAdmin && isHome && (
-                <Button
-                  size="small"
-                  className={"ml-6 flex items-center"}
-                  onClick={() => {
-                    router.push(`/space/${spaceSlug}/admin`);
-                  }}
-                >
-                  <BxsCog className="mr-2 h-5 w-5" />
-                  <Text variant="body1">Admin Dashboard</Text>
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center gap-4">
-              <Link href={`/space/${spaceSlug}/chat`} passHref>
-                <a>
-                  <IconButton icon={<BxMessageDetail className="h-5 w-5" />} />
-                </a>
-              </Link>
-              <Dropdown />
-            </div>
+      {renderDesktop ? (
+        <DesktopNavbar />
+      ) : (
+        <>
+          <div className="h-16"></div>
+          <div className="fixed top-0 z-10 h-16 w-full bg-white shadow-md">
+            <MobileNavbar />
           </div>
-        </SidePadding>
-      </Responsive>
-      <Responsive mode="mobile-only" className="">
-        <div className="h-16"></div>
-        <div className="fixed top-0 z-10 h-16 w-full bg-white shadow-md">
-          <MobileNavbar />
-        </div>
-      </Responsive>
+        </>
+      )}
     </>
   );
 }
