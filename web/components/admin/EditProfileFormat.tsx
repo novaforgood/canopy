@@ -103,19 +103,11 @@ export function EditProfileFormat() {
 
   return (
     <div className="w-full">
-      <Button
-        disabled={!edited}
-        rounded
-        onClick={saveChanges}
-        loading={loading}
-      >
-        Save changes
-      </Button>
       {edited && (
         <>
-          <div className="h-2"></div>
           <Text variant="body2" style={{ color: "red" }}>
-            You must click {'"Save Changes"'} for your changes to take effect.
+            You must click {'"Save Changes"'} down below for your changes to
+            take effect.
           </Text>
         </>
       )}
@@ -128,6 +120,15 @@ export function EditProfileFormat() {
           setData(newData);
         }}
       />
+      <div className="h-8"></div>
+      <Button
+        disabled={!edited}
+        rounded
+        onClick={saveChanges}
+        loading={loading}
+      >
+        Save changes
+      </Button>
       {/* <CatchUnsavedChangesModal unsavedChangesExist={edited} /> */}
     </div>
   );

@@ -14,5 +14,6 @@ const TermsPage: CustomPage = () => {
 };
 
 TermsPage.showFooter = false;
+TermsPage.requiredAuthorizations = [];
 
 export default TermsPage;
