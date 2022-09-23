@@ -133,8 +133,6 @@ export function EditProfileTags() {
       spaceTagCategoriesData?.space_tag_category.find(
         (category) => category.id === selectedTagCategoryId
       ) ?? null;
-    console.log("useEffect triggered");
-    console.log(selectedTagCategory);
     if (!selectedTagCategory) return;
 
     console.log(selectedTagCategory);
@@ -235,15 +233,6 @@ export function EditProfileTags() {
               <Text variant="subheading1">
                 Add official tag options for {`"${data.title}"`}
               </Text>
-              <div className="h-4"></div>
-              <Button
-                disabled={!edited}
-                rounded
-                onClick={saveChanges}
-                loading={loading}
-              >
-                Save changes
-              </Button>
 
               {edited && (
                 <>
@@ -348,6 +337,16 @@ export function EditProfileTags() {
                     ))}
                 </div>
               </RoundedCard>
+
+              <div className="h-8"></div>
+              <Button
+                disabled={!edited}
+                rounded
+                onClick={saveChanges}
+                loading={loading}
+              >
+                Save changes
+              </Button>
             </div>
           </div>
         ) : (

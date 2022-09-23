@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useSetState } from "@mantine/hooks";
 import { updateProfile } from "firebase/auth";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 
@@ -217,7 +218,24 @@ const SignUpPage: CustomPage = () => {
                 }}
               />
             </div>
-
+            <div className="h-4"></div>
+            <div className="w-96">
+              <Text className="text-gray-600" variant="body2">
+                By creating an account, you agree to our{" "}
+                <Link href="/privacy" passHref>
+                  <a className="underline" target="_blank">
+                    Privacy Policy
+                  </a>
+                </Link>{" "}
+                and{" "}
+                <Link href="/terms" passHref>
+                  <a className="underline" target="_blank">
+                    Terms of Use
+                  </a>
+                </Link>
+                .
+              </Text>
+            </div>
             <div className="h-8"></div>
             <Button
               rounded

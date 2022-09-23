@@ -58,13 +58,13 @@ function ManageSpace() {
   );
 
   return (
-    <RoundedCard className="w-full overflow-x-auto">
+    <RoundedCard className="w-full overflow-x-auto min-h-screen flex flex-col">
       <div className="flex items-center gap-2">
         <BxsCog className="h-7 w-7" />
         <Text variant="heading4">Manage Space</Text>
       </div>
-      <div className="h-6 sm:h-12"></div>
-      <div className="flex flex-col sm:flex-row items-start w-full">
+      <div className="h-6 sm:h-12 shrink-0"></div>
+      <div className="flex flex-col sm:flex-row items-start w-full flex-1">
         <Responsive mode="desktop-only">
           <div className="flex flex-col items-start whitespace-nowrap">
             <div className="flex flex-col items-end gap-3 w-full">
@@ -111,7 +111,7 @@ function ManageSpace() {
           <div className="h-8"></div>
         </Responsive>
 
-        <div className="min-h-screen sm:w-full">
+        <div className="flex-1 overflow-y-auto sm:w-full">
           <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-8"></div>
           <Component />

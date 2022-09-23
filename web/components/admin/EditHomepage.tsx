@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
@@ -37,77 +37,77 @@ export function EditHomepage() {
   const [_, updateSpace] = useUpdateSpaceMutation();
   const [__, upsertCoverImage] = useUpsertSpaceCoverImageMutation();
 
+  const saveHomepage = useCallback(async () => {
+    if (!currentSpace) {
+      toast.error("No space");
+      return;
+    }
+    setLoading(true);
+
+    const imageData =
+      editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
+
+    if (imageData && editedCoverPhoto) {
+      const res = await uploadImage(imageData).catch((err) => {
+        toast.error(err.message);
+        return null;
+      });
+      if (!res) {
+        setLoading(false);
+        toast.error("Image failed to upload");
+        return;
+      }
+
+      const image = res.data.image;
+
+      const res2 = await upsertCoverImage({
+        image_id: image.id,
+        space_id: currentSpace.id,
+      }).catch((err) => {
+        toast.error(err.message);
+        return null;
+      });
+      if (!res2) {
+        setLoading(false);
+        toast.error("Upsert cover image failed");
+        return;
+      }
+    }
+
+    updateSpace({
+      variables: {
+        name: spaceName,
+        description_html: spaceDescriptionHtml,
+      },
+      space_id: currentSpace.id,
+    })
+      .then((res) => {
+        if (res.error) {
+          throw new Error(res.error.message);
+        }
+        setEdited(false);
+        toast.success("Saved settings");
+      })
+      .catch((e) => {
+        toast.error(e.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
   return (
     <div className="flex flex-col items-start">
-      <Button
-        disabled={!edited && !editedCoverPhoto}
-        rounded
-        onClick={async () => {
-          if (!currentSpace) {
-            toast.error("No space");
-            return;
-          }
-          setLoading(true);
-
-          const imageData =
-            editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
-
-          if (imageData && editedCoverPhoto) {
-            const res = await uploadImage(imageData).catch((err) => {
-              toast.error(err.message);
-              return null;
-            });
-            if (!res) {
-              setLoading(false);
-              toast.error("Image failed to upload");
-              return;
-            }
-
-            const image = res.data.image;
-
-            const res2 = await upsertCoverImage({
-              image_id: image.id,
-              space_id: currentSpace.id,
-            }).catch((err) => {
-              toast.error(err.message);
-              return null;
-            });
-            if (!res2) {
-              setLoading(false);
-              toast.error("Upsert cover image failed");
-              return;
-            }
-          }
-
-          updateSpace({
-            variables: {
-              name: spaceName,
-              description_html: spaceDescriptionHtml,
-            },
-            space_id: currentSpace.id,
-          })
-            .then(() => {
-              setEdited(false);
-              toast.success("Saved settings");
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        }}
-        loading={loading}
-      >
-        Save changes
-      </Button>
       {edited && (
         <>
           <div className="h-2"></div>
           <Text variant="body2" style={{ color: "red" }}>
-            You must click {'"Save Changes"'} for your changes to take effect.
+            You must click {'"Save Changes"'} down below for your changes to
+            take effect.
           </Text>
         </>
       )}
 
-      <div className="h-16"></div>
+      <div className="h-8"></div>
       <Text variant="subheading1" bold>
         Space name
       </Text>
@@ -167,6 +167,16 @@ export function EditHomepage() {
           editor.current = ref;
         }}
       />
+
+      <div className="h-16"></div>
+      <Button
+        disabled={!edited && !editedCoverPhoto}
+        rounded
+        onClick={saveHomepage}
+        loading={loading}
+      >
+        Save changes
+      </Button>
     </div>
   );
 }
