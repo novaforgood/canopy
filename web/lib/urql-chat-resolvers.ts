@@ -258,3 +258,19 @@ export const optimisticInsertChatMessageResolver: OptimisticMutationResolver = (
     deleted: false,
   };
 };
+
+export const optimisticUpdateProfileToChatRoomResolver: OptimisticMutationResolver =
+  (args, cache, info) => {
+    console.log({
+      __typename: "profile_to_chat_room",
+      id: (args as any)?.pk_columns?.id,
+      latest_read_chat_message_id: (args as any)?._set
+        ?.latest_read_chat_message_id,
+    });
+    return {
+      __typename: "profile_to_chat_room",
+      id: (args as any)?.pk_columns?.id,
+      latest_read_chat_message_id: (args as any)?._set
+        ?.latest_read_chat_message_id,
+    };
+  };

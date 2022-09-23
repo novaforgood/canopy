@@ -1,12 +1,14 @@
 # Get all chats, including latest message of each chat
-query AllChatRooms($profile_id: uuid!) {
+subscription AllChatRooms($profile_id: uuid!) {
   chat_room(
     where: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
+    order_by: { chat_messages_aggregate: { max: { id: desc } } }
   ) {
     id
     created_at
-    profile_to_chat_rooms(where: { profile_id: { _neq: $profile_id } }) {
+    profile_to_chat_rooms {
       id
+      latest_read_chat_message_id
       profile {
         id
         user {
@@ -36,7 +38,7 @@ query AllChatRooms($profile_id: uuid!) {
   }
 }
 
-query ChatRoom($chat_room_id: uuid!, $profile_id: uuid!) {
+subscription ChatRoom($chat_room_id: uuid!) {
   chat_room_by_pk(id: $chat_room_id) {
     id
     created_at
@@ -46,8 +48,9 @@ query ChatRoom($chat_room_id: uuid!, $profile_id: uuid!) {
       sender_profile_id
       created_at
     }
-    profile_to_chat_rooms(where: { profile_id: { _neq: $profile_id } }) {
+    profile_to_chat_rooms {
       id
+      latest_read_chat_message_id
       profile {
         user {
           id
@@ -118,4 +121,16 @@ mutation SendMessage($input: chat_message_insert_input!) {
   }
 }
 
-# Begin a chat
+# Updated latest read message
+mutation UpdateLatestReadMessage(
+  $id: uuid!
+  $latest_read_chat_message_id: bigint!
+) {
+  update_profile_to_chat_room_by_pk(
+    pk_columns: { id: $id }
+    _set: { latest_read_chat_message_id: $latest_read_chat_message_id }
+  ) {
+    id
+    latest_read_chat_message_id
+  }
+}

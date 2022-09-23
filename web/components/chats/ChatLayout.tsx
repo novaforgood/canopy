@@ -5,16 +5,31 @@ import { format, formatDistanceStrict } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useAllChatRoomsQuery } from "../../generated/graphql";
+import { useAllChatRoomsSubscription } from "../../generated/graphql";
 import { BxMessageAdd } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import { getTimeRelativeToNow } from "../../lib";
 import { Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
 import { SidePadding } from "../layout/SidePadding";
 import { Navbar } from "../Navbar";
 import { ProfileImage } from "../ProfileImage";
+
+function formatTimeSuperConcise(date: Date): string {
+  const formatString = formatDistanceStrict(date, new Date())
+    .replace(" minutes", "m")
+    .replace(" hours", "h")
+    .replace(" days", "d")
+    .replace(" weeks", "w");
+
+  if (formatString.includes("seconds")) {
+    return "1m";
+  } else {
+    return formatString;
+  }
+}
 
 interface ChatLayoutProps {
   children?: ReactNode;
@@ -27,9 +42,11 @@ export function ChatLayout(props: ChatLayoutProps) {
 
   const { currentProfile } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
-  const [{ data }] = useAllChatRoomsQuery({
+  const [{ data }] = useAllChatRoomsSubscription({
     variables: { profile_id: currentProfile?.id ?? "" },
   });
+
+  const chatRoomId = useQueryParam("chatRoomId", "string");
 
   return (
     <div className="flex h-screen flex-col">
@@ -56,14 +73,48 @@ export function ChatLayout(props: ChatLayoutProps) {
             <div className="my-4 h-px w-full bg-olive-600"></div>
             <div className="flex flex-col p-4">
               {data?.chat_room.map((room) => {
-                const otherProfile = room.profile_to_chat_rooms[0].profile;
+                const otherProfileEntry = room.profile_to_chat_rooms.find(
+                  (p) => p.profile.id !== currentProfile?.id
+                );
+                const myProfileEntry = room.profile_to_chat_rooms.find(
+                  (p) => p.profile.id === currentProfile?.id
+                );
 
-                const { first_name, last_name } = otherProfile.user;
+                if (!otherProfileEntry || !myProfileEntry) {
+                  return null;
+                }
+
+                const { first_name, last_name } =
+                  otherProfileEntry.profile.user;
                 const image =
-                  otherProfile.profile_listing?.profile_listing_image?.image;
+                  otherProfileEntry.profile.profile_listing
+                    ?.profile_listing_image?.image;
                 const latestMessage = room.chat_messages[0];
 
                 const selected = router.query.chatRoomId === room.id;
+
+                const shouldNotHighlight =
+                  // Latest message was sent by me
+                  latestMessage.sender_profile_id ===
+                    myProfileEntry.profile.id ||
+                  // Currently viewing the chat room
+                  room.id === chatRoomId ||
+                  // Latest message sent by the other guy was read
+                  (myProfileEntry.latest_read_chat_message_id &&
+                    latestMessage.id <=
+                      myProfileEntry.latest_read_chat_message_id);
+
+                // console.log("-");
+                // console.log(
+                //   "Other profile entry",
+                //   otherProfileEntry.profile.user.first_name
+                // );
+                // console.log(
+                //   "latest",
+                //   latestMessage.id,
+                //   "latest read",
+                //   myProfileEntry.latest_read_chat_message_id
+                // );
 
                 return (
                   <Link
@@ -74,7 +125,7 @@ export function ChatLayout(props: ChatLayoutProps) {
                       className={classNames({
                         "w-full rounded-md p-3 transition": true,
                         "pointer-events-none bg-gray-100": selected,
-                        "hover:bg-gray-200": !selected,
+                        "hover:bg-gray-100": !selected,
                       })}
                     >
                       <div className="flex w-full items-center gap-4">
@@ -86,8 +137,12 @@ export function ChatLayout(props: ChatLayoutProps) {
                           </Text>
                           <div className="flex w-full items-center">
                             <Text
-                              className="truncate text-gray-800"
+                              className={classNames({
+                                truncate: true,
+                                "text-gray-800": shouldNotHighlight,
+                              })}
                               variant="body3"
+                              bold={!shouldNotHighlight}
                             >
                               {latestMessage?.sender_profile_id ===
                               currentProfile?.id
@@ -100,14 +155,9 @@ export function ChatLayout(props: ChatLayoutProps) {
                               variant="body3"
                               className="shrink-0 whitespace-nowrap text-right text-gray-500"
                             >
-                              {formatDistanceStrict(
-                                new Date(latestMessage?.created_at ?? ""),
-                                new Date()
-                              )
-                                .replace(" minutes", "m")
-                                .replace(" hours", "h")
-                                .replace(" days", "d")
-                                .replace(" weeks", "w")}
+                              {formatTimeSuperConcise(
+                                new Date(latestMessage?.created_at ?? "")
+                              )}
                             </Text>
                           </div>
                         </div>
