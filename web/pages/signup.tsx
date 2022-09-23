@@ -5,7 +5,7 @@ import { updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 
-import { Button, Text } from "../components/atomic";
+import { Button, Input, Text } from "../components/atomic";
 import { TextInput } from "../components/inputs/TextInput";
 import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
@@ -35,6 +35,12 @@ const SignUpPage: CustomPage = () => {
   const [signingInWithGoogle, setSigningInWithGoogle] = useState(false);
 
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      redirectUsingQueryParam("/");
+    }
+  }, [isLoggedIn, redirectUsingQueryParam]);
 
   const signUp = async () => {
     if (!formData.firstName) {
@@ -114,13 +120,13 @@ const SignUpPage: CustomPage = () => {
             );
           }}
         >
-          <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16 text-green-900">
+          <div className="flex h-full flex-col items-start justify-center px-6 text-green-900 sm:px-16">
             <Text variant="heading3">
               Sign up{router.query.redirect && " to continue"}
             </Text>
             <div className="h-8"></div>
             <button
-              className="border rounded-md w-full sm:w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
+              className="flex w-full items-center justify-center gap-4 rounded-md border py-2 transition hover:bg-gray-50 active:translate-y-px sm:w-96"
               onClick={() => {
                 setSigningInWithGoogle(true);
                 signInWithGoogle()
@@ -160,14 +166,14 @@ const SignUpPage: CustomPage = () => {
             </button>
 
             <div className="h-8"></div>
-            <div className="w-full sm:w-96 flex items-center gap-4 select-none">
-              <div className="flex-1 h-0.5 bg-gray-50"></div>
+            <div className="flex w-full select-none items-center gap-4 sm:w-96">
+              <div className="h-0.5 flex-1 bg-gray-50"></div>
               <div className="text-gray-300">or</div>
-              <div className="flex-1 h-0.5 bg-gray-50"></div>
+              <div className="h-0.5 flex-1 bg-gray-50"></div>
             </div>
             <div className="h-8"></div>
 
-            <div className="flex flex-col gap-4 w-full sm:w-96">
+            <div className="flex w-full flex-col gap-4 sm:w-96">
               <div className="flex gap-4">
                 <TextInput
                   className="w-full"
