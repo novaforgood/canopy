@@ -1,18 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Transition } from "@headlessui/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Profile_Role_Enum } from "../generated/graphql";
-import { BxMenu, BxX } from "../generated/icons/regular";
+import {
+  Profile_Role_Enum,
+  useAllChatRoomsSubscription,
+} from "../generated/graphql";
+import {
+  BxMenu,
+  BxMessage,
+  BxMessageDetail,
+  BxX,
+} from "../generated/icons/regular";
 import { BxsCog, BxsHome, BxsWrench } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { useMediaQuery } from "../hooks/useMediaQuery";
+import { useQueryParam } from "../hooks/useQueryParam";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
 import { LocalStorage } from "../lib/localStorage";
 
 import { Button, Text } from "./atomic";
+import { IconButton } from "./buttons/IconButton";
 import { Dropdown } from "./Dropdown";
 import { Responsive } from "./layout/Responsive";
 import { SidePadding } from "./layout/SidePadding";
@@ -34,6 +46,8 @@ function MobileNavbar() {
 
   const img = currentProfile?.profile_listing?.profile_listing_image?.image.url;
 
+  const spaceSlug = useQueryParam("slug", "string");
+
   const [expanded, setExpanded] = useState(false);
 
   // Doesn't work in safari anyways.
@@ -51,7 +65,7 @@ function MobileNavbar() {
   };
 
   return (
-    <div className="w-full overscroll-none relative">
+    <div className="relative w-full overscroll-none">
       <div className="flex items-center justify-between bg-gray-50 py-3 px-4">
         <Text>{currentSpace?.name}</Text>
         <button onClick={() => setExpanded((prev) => !prev)}>
@@ -72,7 +86,7 @@ function MobileNavbar() {
         leave="transition-opacity ease-linear duration-150"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        className="bg-white absolute top-full w-full h-screen"
+        className="absolute top-full h-screen w-full bg-white"
       >
         <div className="px-8 pt-12">
           <div className="flex items-center gap-2">
@@ -89,7 +103,7 @@ function MobileNavbar() {
                 <Button
                   className="w-full justify-center"
                   onClick={() => {
-                    navigate(`/space/${currentSpace?.slug}`);
+                    navigate(`/space/${spaceSlug}`);
                   }}
                 >
                   Browse Community Profiles
@@ -99,7 +113,7 @@ function MobileNavbar() {
                   className="w-full justify-center"
                   variant="outline"
                   onClick={() => {
-                    navigate(`/space/${currentSpace?.slug}/account`);
+                    navigate(`/space/${spaceSlug}/account`);
                   }}
                 >
                   Your Account
@@ -113,7 +127,7 @@ function MobileNavbar() {
             {isAdmin && (
               <button
                 onClick={() => {
-                  navigate(`/space/${currentSpace?.slug}/admin`);
+                  navigate(`/space/${spaceSlug}/admin`);
                 }}
               >
                 Admin settings
@@ -124,7 +138,7 @@ function MobileNavbar() {
               <>
                 <button
                   onClick={() => {
-                    navigate(`/space/${currentSpace?.slug}/account/profile`);
+                    navigate(`/space/${spaceSlug}/account/profile`);
                   }}
                 >
                   Edit Your Profile
@@ -157,68 +171,124 @@ function MobileNavbar() {
   );
 }
 
-export function Navbar() {
+function DesktopNavbar() {
   const router = useRouter();
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
-  const { currentProfileHasRole, fetchingCurrentProfile } = useCurrentProfile();
+  const { currentProfileHasRole, fetchingCurrentProfile, currentProfile } =
+    useCurrentProfile();
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
   const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
 
   const arr = router.asPath.split("/");
   const isInAdminDashboard = arr.includes("admin");
+  const spaceSlug = useQueryParam("slug", "string");
+  const isHome = arr[arr.length - 1] === spaceSlug;
+
+  const [{ data, fetching }] = useAllChatRoomsSubscription({
+    variables: { profile_id: currentProfile?.id ?? "" },
+  });
+
+  const numUnreadMessages = useMemo(
+    () =>
+      data?.chat_room.reduce((acc, room) => {
+        const myProfileEntry = room.profile_to_chat_rooms.find(
+          (entry) => entry.profile.id === currentProfile?.id
+        );
+        if (!myProfileEntry) return acc;
+        const latestMessage = room.chat_messages[0];
+        if (!latestMessage) return acc;
+
+        const shouldNotHighlight =
+          // Latest message was sent by me
+          latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+          // Latest message sent by the other guy was read
+          (myProfileEntry.latest_read_chat_message_id &&
+            latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
+
+        if (shouldNotHighlight) {
+          return acc;
+        } else {
+          return acc + 1;
+        }
+      }, 0),
+    [data, currentProfile?.id]
+  );
 
   return (
-    <>
-      <Responsive mode="desktop-only">
-        <SidePadding>
-          <div className="flex items-center justify-between pt-12">
-            <div className="flex">
-              {fetchingCurrentProfile ? (
-                <LoadingPlaceholderRect className="h-10 w-64" />
-              ) : !isMember ? (
-                <img
-                  src={"/assets/canopyLogo.svg"}
-                  alt="Canopy Logo"
-                  draggable={false}
-                />
-              ) : (
-                <SpaceDropdown />
-              )}
-              {isAdmin &&
-                (isInAdminDashboard ? (
-                  <Button
-                    size="small"
-                    className={"flex items-center ml-6"}
-                    onClick={() => {
-                      router.push(`/space/${currentSpace?.slug}`);
-                    }}
-                  >
-                    <BxsHome className="w-5 h-5 mr-2" />
-                    <Text variant="body1">Directory Homepage</Text>
-                  </Button>
-                ) : (
-                  <Button
-                    size="small"
-                    className={"flex items-center ml-6"}
-                    onClick={() => {
-                      router.push(`/space/${currentSpace?.slug}/admin`);
-                    }}
-                  >
-                    <BxsCog className="w-5 h-5 mr-2" />
-                    <Text variant="body1">Admin Dashboard</Text>
-                  </Button>
-                ))}
-            </div>
-            <Dropdown />
-          </div>
-        </SidePadding>
-      </Responsive>
-      <Responsive mode="mobile-only" className="">
-        <div className="h-16"></div>
-        <div className="h-16 fixed w-full top-0 z-10 bg-white">
-          <MobileNavbar />
+    <SidePadding>
+      <div className="flex items-center justify-between pt-12">
+        <div className="flex">
+          {fetchingCurrentProfile ? (
+            <LoadingPlaceholderRect className="h-10 w-64" />
+          ) : !isMember ? (
+            <img
+              src={"/assets/canopyLogo.svg"}
+              alt="Canopy Logo"
+              draggable={false}
+            />
+          ) : (
+            <SpaceDropdown />
+          )}
+          {!isHome && (
+            <Button
+              size="small"
+              className={"ml-6 flex items-center"}
+              onClick={() => {
+                router.push(`/space/${spaceSlug}`);
+              }}
+            >
+              <BxsHome className="mr-2 h-5 w-5" />
+              <Text variant="body1">Directory Homepage</Text>
+            </Button>
+          )}
+          {isAdmin && isHome && (
+            <Button
+              size="small"
+              className={"ml-6 flex items-center"}
+              onClick={() => {
+                router.push(`/space/${spaceSlug}/admin`);
+              }}
+            >
+              <BxsCog className="mr-2 h-5 w-5" />
+              <Text variant="body1">Admin Dashboard</Text>
+            </Button>
+          )}
         </div>
-      </Responsive>
+        <div className="flex items-center gap-4">
+          <Link href={`/space/${spaceSlug}/chat`} passHref>
+            <a className="relative">
+              {numUnreadMessages && numUnreadMessages > 0 ? (
+                <div
+                  className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
+                              bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
+                >
+                  {numUnreadMessages}
+                </div>
+              ) : null}
+              <IconButton icon={<BxMessageDetail className="h-6 w-6" />} />
+            </a>
+          </Link>
+          <Dropdown />
+        </div>
+      </div>
+    </SidePadding>
+  );
+}
+
+export function Navbar() {
+  const renderDesktop = useMediaQuery({ showIfBiggerThan: "md" });
+  return (
+    <>
+      {renderDesktop ? (
+        <DesktopNavbar />
+      ) : (
+        <>
+          <div className="h-16"></div>
+          <div className="fixed top-0 z-10 h-16 w-full bg-white shadow-md">
+            <MobileNavbar />
+          </div>
+        </>
+      )}
     </>
   );
 }

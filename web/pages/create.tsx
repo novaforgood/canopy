@@ -136,7 +136,7 @@ const DEFAULT_CREATE_PROGRAM_STATE: CreateProgramState = {
       id: getTempId(),
       title: "Major",
       deleted: false,
-      rigid_select: true,
+      rigid_select: false,
       space_tags: {
         data: [
           {
@@ -225,8 +225,8 @@ const CreatePage: CustomPage = () => {
     return null;
   }
   return (
-    <div className="flex flex-col sm:flex-row h-screen">
-      <div className="bg-olive-100 p-6 sm:p-12 sm:pt-40 sm:h-screen flex-none">
+    <div className="flex h-screen flex-col sm:flex-row">
+      <div className="flex-none bg-olive-100 p-6 sm:h-screen sm:p-12 sm:pt-40">
         <StageNavigator
           currentStage={currentStage}
           stages={ALL_CREATE_STAGES}
@@ -236,7 +236,7 @@ const CreatePage: CustomPage = () => {
           }}
         />
       </div>
-      <div className="px-16 py-20 w-full h-screen flex flex-col items-start overflow-y-auto bg-gray-50">
+      <div className="flex h-screen w-full flex-col items-start overflow-y-auto bg-gray-50 px-16 py-20">
         <BackButton
           onClick={() => {
             switch (currentStage) {

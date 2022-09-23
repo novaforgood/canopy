@@ -19,6 +19,7 @@ import {
   insertChatMessageUpdater,
   chatMessageStreamUpdater,
   optimisticInsertChatMessageResolver,
+  optimisticUpdateProfileToChatRoomResolver,
 } from "./urql-chat-resolvers";
 
 import { isServer } from "./index";
@@ -77,6 +78,8 @@ export function getUrqlClient(jwt: string) {
         },
         optimistic: {
           insert_chat_message_one: optimisticInsertChatMessageResolver,
+          update_profile_to_chat_room_by_pk:
+            optimisticUpdateProfileToChatRoomResolver,
         },
       }),
       // retryExchange({

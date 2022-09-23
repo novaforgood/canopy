@@ -5,30 +5,7 @@ import toast from "react-hot-toast";
 import { Button, Text } from "../../components/atomic";
 import { useUpdateSpaceMutation } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-
-function CheckBox(props: {
-  label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  const { label, checked, onChange } = props;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.checked);
-  };
-
-  return (
-    <div className="flex items-baseline gap-4">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={handleChange}
-        className="form-checkbox h-4 w-4 shrink-0"
-      />
-      <Text variant="body1">{label}</Text>
-    </div>
-  );
-}
+import { CheckBox } from "../atomic/CheckBox";
 
 type SpaceAttributes = {
   public: boolean;

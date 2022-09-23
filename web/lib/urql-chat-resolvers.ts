@@ -87,7 +87,8 @@ const compareArgs = (
 
   const fieldsThatCanBeDifferent = ["limit", "where.id._lt"];
 
-  for (const key in fieldArgsKeys) {
+  const allKeys = Array.from(fieldArgsKeys);
+  for (const key of allKeys) {
     if (fieldsThatCanBeDifferent.includes(key)) {
       continue;
     }
@@ -128,18 +129,15 @@ export const chatMessageResolver: Resolver = (
 
   const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
 
-  const size = fieldInfos.length;
-  if (size === 0) {
+  if (fieldInfos.length === 0) {
     return undefined;
   }
 
   const visited = new Set();
   let result: NullArray<string> = [];
-  const prevOffset: number | null = null;
 
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i < fieldInfos.length; i++) {
     const { fieldKey, arguments: args } = fieldInfos[i];
-
     if (args === null || !compareArgs(fieldArgs, args)) {
       continue;
     }
@@ -260,3 +258,13 @@ export const optimisticInsertChatMessageResolver: OptimisticMutationResolver = (
     deleted: false,
   };
 };
+
+export const optimisticUpdateProfileToChatRoomResolver: OptimisticMutationResolver =
+  (args, cache, info) => {
+    return {
+      __typename: "profile_to_chat_room",
+      id: (args as any)?.pk_columns?.id,
+      latest_read_chat_message_id: (args as any)?._set
+        ?.latest_read_chat_message_id,
+    };
+  };

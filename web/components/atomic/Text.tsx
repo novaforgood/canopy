@@ -23,6 +23,7 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   medium?: boolean;
   className?: string;
   loading?: boolean;
+  loadingWidthClassName?: string;
 };
 
 // Hack: List all sm:variants here so they don't get pruned by Tailwind.
@@ -59,6 +60,7 @@ export const Text = ({
   loading = false,
   className,
   children,
+  loadingWidthClassName,
   ...props
 }: TextProps) => {
   const styles = classNames({
@@ -74,7 +76,9 @@ export const Text = ({
   });
 
   const loadingPlaceholderStyles = classNames({
-    "animate-pulse bg-gray-200 rounded-md absolute h-full w-full inset-0": true,
+    "animate-pulse bg-gray-200 rounded-md absolute h-full inset-0": true,
+    "w-full": !loadingWidthClassName,
+    [`${loadingWidthClassName}`]: loadingWidthClassName,
     invisible: !loading,
     visible: loading,
   });
