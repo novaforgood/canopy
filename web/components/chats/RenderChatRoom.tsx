@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import {
@@ -10,9 +11,11 @@ import {
   useSendMessageMutation,
   useUpdateLatestReadMessageMutation,
 } from "../../generated/graphql";
-import { BxSend } from "../../generated/icons/regular";
+import { BxChevronLeft, BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { usePrevious } from "../../hooks/usePrevious";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { Button, Text, Textarea } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
@@ -59,6 +62,15 @@ export interface RenderChatRoomProps {
 
 export function RenderChatRoom(props: RenderChatRoomProps) {
   const { chatRoom } = props;
+
+  const router = useRouter();
+  const renderDesktopMode = useMediaQuery({
+    showIfBiggerThan: "md",
+  });
+  const spaceSlug = useQueryParam("slug", "string");
+  const chatRoomId = useQueryParam("chatRoomId", "string");
+  const baseRoute = `/space/${spaceSlug}/chat`;
+
   const [currentTime] = useState(new Date());
 
   const { currentProfile } = useCurrentProfile();
@@ -239,8 +251,18 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-md">
-      <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
-        <ProfileImage src={image?.url} className="h-10 w-10" />
+      <div className="flex h-16 shrink-0 items-center bg-olive-50 px-4 shadow-sm">
+        {!renderDesktopMode && (
+          <button
+            className="-ml-2 mr-2 flex h-8 w-8 items-center justify-center rounded-full hover:bg-olive-100"
+            onClick={() => {
+              router.push(baseRoute);
+            }}
+          >
+            <BxChevronLeft className="h-10 w-10" />
+          </button>
+        )}
+        <ProfileImage src={image?.url} className="mr-3 h-10 w-10" />
 
         <div>
           <Text loading={!first_name}>
@@ -344,7 +366,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                       "mb-1": !isLastMessage,
                     })}
                   >
-                    {nextMessageIsFromDifferentSender ? (
+                    {isLastMessage ? (
                       <div className="relative w-10 shrink-0">
                         <Tooltip
                           content={`${first_name} ${last_name}`}

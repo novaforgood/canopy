@@ -234,7 +234,7 @@ export function Navbar() {
       </Responsive>
       <Responsive mode="mobile-only" className="">
         <div className="h-16"></div>
-        <div className="fixed top-0 z-10 h-16 w-full bg-white">
+        <div className="fixed top-0 z-10 h-16 w-full bg-white shadow-md">
           <MobileNavbar />
         </div>
       </Responsive>
