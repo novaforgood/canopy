@@ -1,6 +1,7 @@
 import { useDisclosure } from "@mantine/hooks";
 
 import { Profile_Role_Enum, useProfileImageQuery } from "../generated/graphql";
+import { BxMessageDetail } from "../generated/icons/regular";
 import { BxsPencil } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
@@ -8,6 +9,7 @@ import { useUserData } from "../hooks/useUserData";
 
 import { Button, Text } from "./atomic";
 import { EditHeadline } from "./edit-profile/EditHeadline";
+import { EditName } from "./edit-profile/EditName";
 import { EditProfileImageModal } from "./edit-profile/EditProfileImageModal";
 import { EditProfileTags } from "./edit-profile/EditProfileTags";
 import { EditResponse } from "./edit-profile/EditResponse";
@@ -77,15 +79,24 @@ export function EditProfileListing(props: EditProfileListingProps) {
       <div className="flex w-full max-w-3xl flex-col rounded-lg border border-black bg-white pb-12">
         <div className="h-20 rounded-t-lg bg-gray-100"></div>
         <div className="-mt-4 px-4 sm:px-12">
-          <div className="flex items-center gap-6 sm:gap-12">
-            <EditProfileImage />
-            <div className="mt-4 flex flex-col">
-              <Text variant="heading4">
-                {first_name} {last_name}
-              </Text>
-              <div className="h-1"></div>
-              <EditHeadline />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6 sm:gap-12">
+              <EditProfileImage />
+              <div className="mt-4 flex flex-col">
+                <div className="flex">
+                  <Text variant="heading4">
+                    {first_name} {last_name}
+                  </Text>
+                  <EditName />
+                </div>
+                <div className="h-1"></div>
+                <EditHeadline />
+              </div>
             </div>
+            <Button rounded className="flex items-center" disabled={true}>
+              <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
+              Message
+            </Button>
           </div>
           <div className="h-16"></div>
 
@@ -96,14 +107,6 @@ export function EditProfileListing(props: EditProfileListingProps) {
                 .map((question) => {
                   return <EditResponse key={question.id} question={question} />;
                 })}
-              <div>
-                <Text variant="subheading1">{"Let's talk!"}</Text>
-                <div className="h-4"></div>
-
-                <Button disabled rounded>
-                  Contact {first_name}
-                </Button>
-              </div>
             </div>
             <div>
               {currentSpace.space_tag_categories.length > 0 && (

@@ -11,8 +11,8 @@ query GetInviteLink($invite_link_id: uuid!) {
 mutation UpsertUser(
   $id: String!
   $email: String!
-  $first_name: String!
-  $last_name: String!
+  $first_name: String
+  $last_name: String
 ) {
   insert_user_one(
     object: {

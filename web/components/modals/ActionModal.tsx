@@ -14,6 +14,7 @@ export interface ActionModalProps {
   onSecondaryAction?: () => Promise<void> | void;
 
   onClose?: () => void;
+  closeWhenClickedOutside?: boolean;
 }
 
 export function ActionModal({
@@ -25,11 +26,15 @@ export function ActionModal({
   onAction = () => {},
   secondaryActionText,
   onSecondaryAction = () => {},
+  closeWhenClickedOutside = false,
 }: ActionModalProps) {
   const [loadingAction, setLoadingAction] = useState(false);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={closeWhenClickedOutside ? onClose : () => {}}
+    >
       <div className="rounded-md bg-white">
         <div className="flex justify-end p-4 pb-0">
           <button onClick={onClose} className="h-6 w-6">

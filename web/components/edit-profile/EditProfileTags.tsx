@@ -127,9 +127,9 @@ export function EditProfileTags(props: EditProfileTagsProps) {
           })
             .then((res) => {
               if (res.error) {
-                console.log(res.error);
                 throw new Error(res.error.message);
               } else {
+                toast.success("Tags saved");
                 refetchCurrentProfile();
                 setIsOpen(false);
               }
