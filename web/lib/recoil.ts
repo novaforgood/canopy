@@ -14,3 +14,8 @@ export const mustSaveAtom = atom<boolean>({
   key: "mustSave",
   default: false,
 });
+
+export const notificationsCountAtom = atom<number>({
+  key: "notificationsCount",
+  default: 0,
+});
