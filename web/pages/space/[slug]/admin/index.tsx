@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
 
 import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
 import { EditProfileTags } from "../../../../components/admin/edit-profile-tags/EditProfileTags";
@@ -20,6 +21,7 @@ import { BxLink, BxRightArrowAlt } from "../../../../generated/icons/regular";
 import { BxsCog, BxsReport } from "../../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../../../hooks/useSaveChangesState";
 
 enum ManageSpaceTabs {
   Members = "Members",
@@ -57,17 +59,19 @@ function ManageSpace() {
     [selectedTab]
   );
 
+  const { validateChangesSaved } = useSaveChangesState();
+
   return (
-    <RoundedCard className="w-full overflow-x-auto min-h-screen flex flex-col">
+    <RoundedCard className="flex min-h-screen w-full flex-col overflow-x-auto">
       <div className="flex items-center gap-2">
         <BxsCog className="h-7 w-7" />
         <Text variant="heading4">Manage Space</Text>
       </div>
-      <div className="h-6 sm:h-12 shrink-0"></div>
-      <div className="flex flex-col sm:flex-row items-start w-full flex-1">
+      <div className="h-6 shrink-0 sm:h-12"></div>
+      <div className="flex w-full flex-1 flex-col items-start sm:flex-row">
         <Responsive mode="desktop-only">
           <div className="flex flex-col items-start whitespace-nowrap">
-            <div className="flex flex-col items-end gap-3 w-full">
+            <div className="flex w-full flex-col items-end gap-3">
               {ALL_TABS.map((tab) => {
                 const styles = classNames({
                   "flex items-center": true,
@@ -76,7 +80,11 @@ function ManageSpace() {
                 return (
                   <button
                     key={tab}
-                    onClick={() => setSelectedTab(tab)}
+                    onClick={() => {
+                      validateChangesSaved().then((leave) => {
+                        if (leave) setSelectedTab(tab);
+                      });
+                    }}
                     className={styles}
                   >
                     <Text variant="body1">{MAP_TAB_TO_TITLE[tab]}</Text>
@@ -92,7 +100,7 @@ function ManageSpace() {
           </div>
         </Responsive>
         <Responsive mode="desktop-only" className="self-stretch">
-          <div className="self-stretch w-0.25 h-full bg-gray-300 shrink-0 mx-8"></div>
+          <div className="mx-8 h-full w-0.25 shrink-0 self-stretch bg-gray-300"></div>
         </Responsive>
         <Responsive mode="mobile-only" className="w-full">
           <Select

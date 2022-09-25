@@ -8,6 +8,7 @@ import {
   useUpsertSpaceProfileSchemaMutation,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { resolveId } from "../../lib/tempId";
 import { Button, Text } from "../atomic";
 import {
@@ -23,7 +24,7 @@ export function EditProfileFormat() {
     tagCategories: [],
   });
 
-  const [edited, setEdited] = useState(false);
+  const { mustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
     if (
@@ -40,10 +41,11 @@ export function EditProfileFormat() {
           space_tags: { data: category.space_tags },
         })) ?? [],
     });
-    setEdited(false);
+    setMustSave(false);
   }, [
     currentSpace?.space_listing_questions,
     currentSpace?.space_tag_categories,
+    setMustSave,
   ]);
 
   const [loading, setLoading] = useState(false);
@@ -103,7 +105,7 @@ export function EditProfileFormat() {
 
   return (
     <div className="w-full">
-      {edited && (
+      {mustSave && (
         <>
           <Text variant="body2" style={{ color: "red" }}>
             You must click {'"Save Changes"'} down below for your changes to
@@ -116,13 +118,13 @@ export function EditProfileFormat() {
       <EditProfileSchema
         data={data}
         onChange={(newData) => {
-          setEdited(true);
+          setMustSave(true);
           setData(newData);
         }}
       />
       <div className="h-8"></div>
       <Button
-        disabled={!edited}
+        disabled={!mustSave}
         rounded
         onClick={saveChanges}
         loading={loading}

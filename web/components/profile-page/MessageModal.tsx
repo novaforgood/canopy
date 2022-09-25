@@ -135,7 +135,7 @@ export function MessageModal(props: MessageModalProps) {
                     minRows={3}
                     value={introMsg}
                     onValueChange={setIntroMsg}
-                    placeholder="Example: Hi, I’m Billy! I am a Student at Taylor Middle School. Would you be free for a 30 minute chat about dinosaurs?"
+                    placeholder="Example: Hi, I’m Billy! I can’t believe that someone else here is interested in dinosaurs. Maybe we could chat about it sometime? :)"
                   />
                 </div>
               )}

@@ -6,6 +6,7 @@ import { RecoilRoot, useRecoilState } from "recoil";
 import { useClient } from "urql";
 
 import { Footer } from "../components/Footer";
+import { CatchUnsavedChanges } from "../components/singletons/CatchUnsavedChanges";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
@@ -94,6 +95,7 @@ function App({ Component, pageProps }: CustomAppProps) {
   const getLayout = Component.getLayout || ((page: ReactNode) => page);
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      <CatchUnsavedChanges />
       <Toaster />
       {getLayout(<Component {...pageProps} />)}
       {Component.showFooter !== false && <Footer />}

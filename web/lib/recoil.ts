@@ -9,3 +9,8 @@ export const sessionAtom = atom<Session | undefined>({
   key: "userJwt", // unique ID (with respect to other atoms/selectors)
   default: undefined, // default value (aka initial value)
 });
+
+export const mustSaveAtom = atom<boolean>({
+  key: "mustSave",
+  default: false,
+});

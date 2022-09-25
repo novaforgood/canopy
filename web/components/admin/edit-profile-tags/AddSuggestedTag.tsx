@@ -40,12 +40,14 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
   const pendingTags = tagCategory.space_tags?.data.filter(
     (tag) => tag.status === Space_Tag_Status_Enum.Pending
   );
+
+  console.log(tagCategory.rigid_select);
   return (
     <div className="w-full">
       {tagCategory.rigid_select && (
         <>
           <div className="h-4"></div>
-          <Text variant="body2">
+          <Text variant="body2" italic medium>
             Allow users to suggest their own tag using the toggle switch above.
           </Text>
         </>
@@ -66,8 +68,8 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
             Or, click X to ban the tag and prevent users from setting it.
           </Text>
           <div className="h-6"></div>
-          <div className="flex items-center gap-3 pl-2 select-none">
-            <div className="rounded-full h-8 w-8 bg-gray-200 flex items-center justify-center">
+          <div className="flex select-none items-center gap-3 pl-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
               <Text variant="body3" bold>
                 #
               </Text>
@@ -77,7 +79,7 @@ export function AddSuggestedTag(props: AddSuggestedTagProps) {
             </Text>
           </div>
           <div className="h-4"></div>
-          <div className="flex flex-col gap-1.5 max-h-96 overflow-y-scroll overscroll-contain pr-3">
+          <div className="flex max-h-96 flex-col gap-1.5 overflow-y-scroll overscroll-contain pr-3">
             {pendingTags?.map((tag) => (
               <PendingTagItem
                 key={tag.id}
