@@ -51,27 +51,41 @@ export function EditProfileImageModal(props: EditProfileImageModalProps) {
           toast.error("Current profile not defined");
           return;
         }
+
         const imageData =
           editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
+        if (!imageData) {
+          toast.error("No image selected");
+          return;
+        }
 
         // If image exists, upload it
-        if (imageData) {
-          const res = await uploadImage(imageData).catch((err) => {
-            toast.error(err.message);
-            return null;
-          });
-          if (!res) return;
-
-          const imageId = res.data.image.id;
-          await insertProfileImage({
-            image_id: imageId,
-            profile_id: currentProfile.id,
-          });
-          refetchCurrentProfile();
-          onClose();
-        } else {
-          toast.error("No image selected");
+        const res = await uploadImage(imageData).catch((err) => {
+          toast.error(err.message);
+          return null;
+        });
+        if (!res) {
+          toast.error("Failed to upload image");
+          return;
         }
+
+        const imageId = res.data.image.id;
+        await insertProfileImage({
+          image_id: imageId,
+          profile_id: currentProfile.id,
+        })
+          .then((res) => {
+            if (res.error) {
+              throw new Error(res.error.message);
+            } else {
+              toast.success("Profile image updated");
+              refetchCurrentProfile();
+              onClose();
+            }
+          })
+          .catch((err) => {
+            toast.error(err.message);
+          });
       }}
       secondaryActionText={"Cancel"}
       onSecondaryAction={onClose}

@@ -6,9 +6,11 @@ import {
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
   Space_Listing_Question,
+  useUpdateUserMutation,
   useUpsertProfileListingMutation,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useUserData } from "../../hooks/useUserData";
 import { Input, Text } from "../atomic";
 import { EditButton } from "../EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
@@ -16,17 +18,18 @@ import { SimpleTextArea } from "../inputs/SimpleTextArea";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
 
-export function EditHeadline() {
-  const { currentProfile, refetchCurrentProfile } = useCurrentProfile();
+export function EditName() {
+  const [firstNameInputValue, setFirstNameInputValue] = useState("");
+  const [lastNameInputValue, setLastNameInputValue] = useState("");
+  const { userData, refetchUserData } = useUserData();
 
-  const [headlineInputValue, setHeadlineInputValue] = useState("");
-
-  const [__, upsertProfileListing] = useUpsertProfileListingMutation();
+  const [_, updateUser] = useUpdateUserMutation();
 
   const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => {
-    setHeadlineInputValue(currentProfile?.profile_listing?.headline ?? "");
+    setFirstNameInputValue(userData?.first_name ?? "");
+    setLastNameInputValue(userData?.last_name ?? "");
     setIsOpen(true);
   };
 
@@ -37,25 +40,28 @@ export function EditHeadline() {
         onClose={() => setIsOpen(false)}
         actionText="Save"
         onAction={async () => {
-          await upsertProfileListing({
-            profile_listing: {
-              headline: headlineInputValue,
-              profile_id: currentProfile?.id ?? "",
-            },
-            update_columns: [Profile_Listing_Update_Column.Headline],
+          if (!userData?.id) {
+            toast.error("No user id");
+            return;
+          }
+
+          await updateUser({
+            id: userData.id,
+            first_name: firstNameInputValue,
+            last_name: lastNameInputValue,
           })
             .then((res) => {
               if (res.error) {
                 throw new Error(res.error.message);
               } else {
-                toast.success("Saved headline");
+                toast.success("Saved name");
               }
             })
             .catch((e) => {
               toast.error(e.message);
             });
 
-          refetchCurrentProfile();
+          refetchUserData();
           setIsOpen(false);
         }}
         secondaryActionText="Cancel"
@@ -64,19 +70,26 @@ export function EditHeadline() {
         }}
       >
         <div className="flex w-96 flex-col p-8 py-16">
-          <Text variant="heading4">Headline</Text>
+          <Text variant="heading4">Name</Text>
+          <div className="h-2"></div>
+          <Text className="text-gray-700" italic>
+            Note: Your name is shared across all directories you are a part of.
+          </Text>
+          <div className="h-6"></div>
+          <TextInput
+            label="First name"
+            value={firstNameInputValue}
+            onValueChange={setFirstNameInputValue}
+          />
           <div className="h-4"></div>
-          <SimpleTextArea
-            characterLimit={100}
-            value={headlineInputValue}
-            onValueChange={setHeadlineInputValue}
+          <TextInput
+            label="Last name"
+            value={lastNameInputValue}
+            onValueChange={setLastNameInputValue}
           />
         </div>
       </ActionModal>
       <Text variant="body1">
-        {currentProfile?.profile_listing?.headline ?? (
-          <Text className="text-gray-600">Add a headline</Text>
-        )}
         <EditButton className="mb-1 ml-1" onClick={openModal} />
       </Text>
     </>

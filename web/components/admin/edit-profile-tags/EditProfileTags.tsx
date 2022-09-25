@@ -45,7 +45,7 @@ function CustomTab(props: CustomTabProps) {
       {({ selected }) => (
         <div
           className={classNames({
-            "pb-1 border-b-2": true,
+            "border-b-2 pb-1": true,
             "border-gray-400": !selected,
             "border-gray-900": selected,
           })}
@@ -101,10 +101,12 @@ export function EditProfileTags() {
 
   const tagCategoryOptions = useMemo(
     () =>
-      spaceTagCategoriesData?.space_tag_category.map((category) => ({
-        label: category.title,
-        value: category.id,
-      })) ?? [],
+      spaceTagCategoriesData?.space_tag_category
+        .filter((cat) => cat.deleted === false)
+        .map((category) => ({
+          label: category.title,
+          value: category.id,
+        })) ?? [],
     [spaceTagCategoriesData?.space_tag_category]
   );
 
@@ -220,7 +222,7 @@ export function EditProfileTags() {
           }
         }}
       />
-      <div className="h-0.25 w-full bg-black my-12"></div>
+      <div className="my-12 h-0.25 w-full bg-black"></div>
       {data ? (
         visible ? (
           <div className="animate-enter">
@@ -278,7 +280,7 @@ export function EditProfileTags() {
                 </Tab.Group>
               </RoundedCard>
               <div className="h-2"></div>
-              <div className="w-full flex justify-center">
+              <div className="flex w-full justify-center">
                 <BxDownArrowAlt className="h-8 w-8" />
               </div>
               <div className="h-2"></div>
@@ -291,8 +293,8 @@ export function EditProfileTags() {
                   These appear in the directory filters.
                 </Text>
                 <div className="h-6"></div>
-                <div className="flex items-center gap-3 pl-2 select-none">
-                  <div className="rounded-full h-8 w-8 bg-gray-200 flex items-center justify-center">
+                <div className="flex select-none items-center gap-3 pl-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
                     <Text variant="body3" bold>
                       #
                     </Text>
@@ -302,7 +304,7 @@ export function EditProfileTags() {
                   </Text>
                 </div>
                 <div className="h-4"></div>
-                <div className="flex flex-col gap-1.5 max-h-96 overflow-y-scroll overscroll-contain pr-3">
+                <div className="flex max-h-96 flex-col gap-1.5 overflow-y-scroll overscroll-contain pr-3">
                   {data.space_tags?.data
                     .filter(
                       (tag) => tag.status === Space_Tag_Status_Enum.Accepted

@@ -82,6 +82,9 @@ const SignUpPage: CustomPage = () => {
               headers: {
                 authorization: `Bearer ${tokenResult.token}`,
               },
+              body: JSON.stringify({
+                updateName: true,
+              }),
             });
             await redirectUsingQueryParam("/");
           } else {

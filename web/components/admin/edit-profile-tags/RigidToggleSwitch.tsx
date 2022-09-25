@@ -13,6 +13,7 @@ import { BxsHide, BxsShow } from "../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { Text } from "../../atomic";
+import { CheckBox } from "../../atomic/CheckBox";
 import { ToggleSwitch } from "../../atomic/ToggleSwitch";
 
 interface RigidToggleSwitchProps {
@@ -27,21 +28,21 @@ export default function RigidToggleSwitch(props: RigidToggleSwitchProps) {
 
   const [_, updateSpaceTagCategory] = useUpdateSpaceTagCategoryMutation();
 
-  const isNotRigid = data?.space_tag_category_by_pk?.rigid_select ?? false;
+  const isRigid = data?.space_tag_category_by_pk?.rigid_select ?? false;
   const title = data?.space_tag_category_by_pk?.title ?? "";
 
   if (fetching) return null;
 
   return (
-    <div className="flex gap-4 items-center">
-      <ToggleSwitch
-        enabled={isNotRigid}
+    <div className="flex items-center gap-4">
+      <CheckBox
+        checked={!isRigid}
         onChange={async (newVal) => {
           toast.promise(
             updateSpaceTagCategory({
               space_tag_category_id: tagCategoryId,
               variables: {
-                rigid_select: newVal,
+                rigid_select: !newVal,
               },
             }),
             {
@@ -51,8 +52,8 @@ export default function RigidToggleSwitch(props: RigidToggleSwitchProps) {
             }
           );
         }}
-      ></ToggleSwitch>
-      <Text>Allow anyone to suggest tags for {`"${title}"`}</Text>
+        label={`Allow anyone to suggest tags for "${title}"`}
+      ></CheckBox>
     </div>
   );
 }
