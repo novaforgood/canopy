@@ -1,12 +1,7 @@
 import React from "react";
 
 import { useSortable, defaultAnimateLayoutChanges } from "@dnd-kit/sortable";
-import { Arguments } from "@dnd-kit/sortable/dist/hooks/useSortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useElementSize } from "@mantine/hooks";
-
-import { useAllProfilesOfUserQuery } from "../generated/graphql";
-import { useUserData } from "../hooks/useUserData";
 
 import { Text } from "./atomic";
 import { ProfileImage } from "./ProfileImage";
