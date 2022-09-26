@@ -201,7 +201,8 @@ function DesktopNavbar() {
               draggable={false}
             />
           ) : (
-            <SpaceDropdown />
+            // <SpaceDropdown />
+            <Text variant="heading4">{currentSpace?.name}</Text>
           )}
           {!isHome && spaceSlug && (
             <Button

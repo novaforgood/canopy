@@ -24,6 +24,7 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
+import Head from "next/head";
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
@@ -142,6 +143,10 @@ function App({ Component, pageProps }: CustomAppProps) {
     <Suspense fallback={<div>Loading...</div>}>
       <CatchUnsavedChanges />
       <Toaster />
+      <Head>
+        <title>Canopy</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       {getLayout(<Component {...pageProps} />)}
       {Component.showFooter !== false && <Footer />}
     </Suspense>
