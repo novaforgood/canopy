@@ -10,6 +10,8 @@ function validateMiddleware<T>(
   schema: z.Schema<T>
 ): Middleware<NextApiRequest, NextApiResponse> {
   return async (req, res, next) => {
+    console.log("parsing body", req.body);
+    console.log(typeof req.body);
     const result = schema.safeParse(req.body);
 
     if (result.success) {

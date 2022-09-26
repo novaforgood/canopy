@@ -81,12 +81,12 @@ const SignUpPage: CustomPage = () => {
               method: "POST",
               headers: {
                 authorization: `Bearer ${tokenResult.token}`,
+                "Content-Type": "application/json",
               },
-              body: JSON.stringify({
-                updateName: true,
-              }),
+              body: JSON.stringify({ updateName: true }),
+            }).then(() => {
+              return redirectUsingQueryParam("/");
             });
-            await redirectUsingQueryParam("/");
           } else {
             console.log(router.query);
             await router.push({ pathname: "/verify", query: router.query });
@@ -100,6 +100,7 @@ const SignUpPage: CustomPage = () => {
           );
         } else {
           toast.error(e.message);
+          handleError(e);
         }
         signOut();
       })
@@ -141,13 +142,16 @@ const SignUpPage: CustomPage = () => {
 
                     if (isNewUser) {
                       const idToken = await userCred.user.getIdToken();
-                      await fetch(`/api/auth/upsertUserData`, {
+                      fetch(`/api/auth/upsertUserData`, {
                         method: "POST",
                         headers: {
                           authorization: `Bearer ${idToken}`,
+                          "Content-Type": "application/json",
                         },
+                        body: JSON.stringify({ updateName: true }),
+                      }).then(() => {
+                        redirectUsingQueryParam("/");
                       });
-                      await redirectUsingQueryParam("/");
                     } else {
                       // User already has an account
                       toast.error(
@@ -216,7 +220,7 @@ const SignUpPage: CustomPage = () => {
                 }}
                 onKeyUp={async (e) => {
                   if (e.key === "Enter") {
-                    await signUp();
+                    signUp();
                   }
                 }}
               />
@@ -244,7 +248,7 @@ const SignUpPage: CustomPage = () => {
               rounded
               loading={loading}
               onClick={async (e) => {
-                await signUp();
+                signUp();
               }}
             >
               Create account
