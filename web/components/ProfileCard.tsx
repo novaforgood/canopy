@@ -1,12 +1,7 @@
 import React from "react";
 
 import { useSortable, defaultAnimateLayoutChanges } from "@dnd-kit/sortable";
-import { Arguments } from "@dnd-kit/sortable/dist/hooks/useSortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useElementSize } from "@mantine/hooks";
-
-import { useAllProfilesOfUserQuery } from "../generated/graphql";
-import { useUserData } from "../hooks/useUserData";
 
 import { Text } from "./atomic";
 import { ProfileImage } from "./ProfileImage";
@@ -50,30 +45,32 @@ export function ProfileCard(props: ProfileCardProps) {
     transition,
   };
 
-  const numTags = 3;
-  const processedTags = [
-    ...tags.slice(0, numTags),
-    `+ ${tags.length - numTags} more`,
-  ];
+  const numTags = 5;
+  const remainingTags = tags.length - numTags;
+  const processedTags = tags.slice(0, numTags);
+  if (remainingTags > 0) {
+    processedTags.push(`+${remainingTags} more…`);
+  }
+
   return (
     <button
       onClick={onClick}
-      className="bg-white border-gray-400 border-x border-y rounded-md flex flex-col items-start transition hover:border-green-500"
+      className="flex flex-col items-start rounded-md border-x border-y border-gray-400 bg-white transition hover:border-green-500"
       ref={setNodeRef}
       {...attributes}
       style={style}
     >
       <div className="w-full border-none pb-4">
         <ProfileImage
-          className="w-full h-full rounded-t-md"
+          className="h-full w-full rounded-t-md"
           rounded={false}
           border={false}
           src={imageUrl}
           alt={name}
         />
       </div>
-      <div className="px-4 flex flex-col items-start w-full text-gray-900 ">
-        <Text variant="heading4" className="text-left truncate w-full">
+      <div className="flex w-full flex-col items-start px-4 text-gray-900 ">
+        <Text variant="heading4" className="w-full truncate text-left">
           {name}
         </Text>
         <div className="h-1"></div>
@@ -82,17 +79,23 @@ export function ProfileCard(props: ProfileCardProps) {
             <Text variant="body2" className="text-left">
               {subtitle}
             </Text>
-            <div className="h-4"></div>
           </>
         )}
+        <div className="h-4"></div>
         <Text variant="body2" medium className="text-gray-800">
           {descriptionTitle}
         </Text>
-        <div className="h-2"></div>
-        <div className="mb-4 text-gray-500 text-ellipsis overflow-hidden flex flex-wrap gap-1">
-          {tags.length > 0 ? (
-            tags.map((tag, index) => (
-              <Tag key={index} text={tag} variant="outline" />
+        <div className="h-1.5"></div>
+        <div className="mb-4 flex w-full flex-wrap gap-1 overflow-hidden text-ellipsis text-left text-gray-500">
+          {processedTags.length > 0 ? (
+            processedTags.map((tag, index) => (
+              <Tag
+                key={index}
+                text={tag}
+                variant="outline"
+                className="justify-self-stretch"
+                style={{ maxWidth: "calc(50% - 0.125rem)" }}
+              />
             ))
           ) : (
             <Text italic>none</Text>

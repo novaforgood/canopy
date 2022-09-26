@@ -26,6 +26,8 @@ import { CustomPage } from "../types";
 
 const LoginPage: CustomPage = () => {
   const [signingIn, setSigningIn] = useState(false);
+  const [signingInWithGoogle, setSigningInWithGoogle] = useState(false);
+
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
   const { userData } = useUserData();
@@ -44,7 +46,7 @@ const LoginPage: CustomPage = () => {
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
-    setSigningIn(true);
+    setSigningInWithGoogle(true);
     signInWithGoogle()
       .then(async (userCred) => {
         const isNewUser =
@@ -64,6 +66,7 @@ const LoginPage: CustomPage = () => {
             method: "POST",
             headers: {
               authorization: `Bearer ${idToken}`,
+              "Content-Type": "application/json",
             },
           });
           await redirectUsingQueryParam("/");
@@ -74,7 +77,7 @@ const LoginPage: CustomPage = () => {
         handleError(e);
       })
       .finally(() => {
-        setSigningIn(false);
+        setSigningInWithGoogle(false);
       });
   };
 
@@ -91,6 +94,7 @@ const LoginPage: CustomPage = () => {
             method: "POST",
             headers: {
               authorization: `Bearer ${tokenResult.token}`,
+              "Content-Type": "application/json",
             },
           });
           await redirectUsingQueryParam("/");
@@ -107,10 +111,28 @@ const LoginPage: CustomPage = () => {
 
   return (
     <div className="h-screen">
-      {signingIn ? (
-        <div>Signing in... </div>
+      {signingIn || signingInWithGoogle ? (
+        <TwoThirdsPageLayout>
+          <div className="flex h-screen flex-col items-start justify-center px-16">
+            <Text variant="heading1">Signing in...</Text>
+            {signingInWithGoogle && (
+              <>
+                <div className="h-8"></div>
+                <Text>
+                  Sign in to your Google account on the popup to complete login.
+                </Text>
+              </>
+            )}
+            <div className="h-40"></div>
+          </div>
+        </TwoThirdsPageLayout>
       ) : isLoggedIn ? (
-        <div>Redirecting...</div>
+        <TwoThirdsPageLayout>
+          <div className="flex h-screen flex-col items-start justify-center px-16">
+            <Text variant="heading1">Redirecting...</Text>
+            <div className="h-40"></div>
+          </div>
+        </TwoThirdsPageLayout>
       ) : (
         <TwoThirdsPageLayout
           renderLeft={() => {
@@ -123,13 +145,13 @@ const LoginPage: CustomPage = () => {
             );
           }}
         >
-          <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16 text-green-900">
+          <div className="flex h-full flex-col items-start justify-center px-6 text-green-900 sm:px-16">
             <Text variant="heading3">
               Login{router.query.redirect && " to continue"}
             </Text>
             <div className="h-8"></div>
             <button
-              className="border rounded-md w-full sm:w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
+              className="flex w-full items-center justify-center gap-4 rounded-md border py-2 transition hover:bg-gray-50 active:translate-y-px sm:w-96"
               onClick={googleSignIn}
             >
               <BxlGoogle className="h-6 w-6" />
@@ -137,10 +159,10 @@ const LoginPage: CustomPage = () => {
             </button>
 
             <div className="h-8"></div>
-            <div className="w-full sm:w-96 flex items-center gap-4 select-none">
-              <div className="flex-1 h-0.5 bg-gray-50"></div>
+            <div className="flex w-full select-none items-center gap-4 sm:w-96">
+              <div className="h-0.5 flex-1 bg-gray-50"></div>
               <div className="text-gray-300">or</div>
-              <div className="flex-1 h-0.5 bg-gray-50"></div>
+              <div className="h-0.5 flex-1 bg-gray-50"></div>
             </div>
             <div className="h-8"></div>
 
@@ -175,7 +197,7 @@ const LoginPage: CustomPage = () => {
             <div className="h-4"></div>
             <Link href="/reset-password">
               <a>
-                <Text variant="body2" className="hover:underline text-gray-700">
+                <Text variant="body2" className="text-gray-700 hover:underline">
                   Forgot your password?
                 </Text>
               </a>
@@ -183,7 +205,7 @@ const LoginPage: CustomPage = () => {
 
             <div className="h-8"></div>
             <Button
-              loading={signingIn}
+              loading={signingIn || signingInWithGoogle}
               rounded
               onClick={(e) => {
                 signInManually(formData.email, formData.password);

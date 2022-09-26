@@ -83,16 +83,17 @@ export function Dropdown() {
                             className={styles}
                             onClick={() => {
                               router.push(
-                                `/space/${currentSpace?.slug}/account`
+                                `/space/${currentSpace?.slug}/account/profile`
                               );
                             }}
                           >
-                            <BxsUserAccount className="mr-2 h-5 w-5" />
-                            <Text variant="body2">My account</Text>
+                            <BxsUser className="mr-2 h-5 w-5" />
+                            <Text variant="body2">Edit profile</Text>
                           </button>
                         );
                       }}
                     </Menu.Item>
+
                     <Menu.Item>
                       {({ active }) => {
                         const styles = classNames({
@@ -105,13 +106,11 @@ export function Dropdown() {
                           <button
                             className={styles}
                             onClick={() => {
-                              router.push(
-                                `/space/${currentSpace?.slug}/account/profile`
-                              );
+                              router.push(`/`);
                             }}
                           >
-                            <BxsUser className="mr-2 h-5 w-5" />
-                            <Text variant="body2">Edit my profile</Text>
+                            <BxTransfer className="mr-2 h-5 w-5 flex-none" />
+                            <Text variant="body2">Change directory</Text>
                           </button>
                         );
                       }}
