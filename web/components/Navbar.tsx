@@ -203,7 +203,7 @@ function DesktopNavbar() {
           ) : (
             <SpaceDropdown />
           )}
-          {!isHome && (
+          {!isHome && spaceSlug && (
             <Button
               size="small"
               className={"ml-6 flex items-center"}

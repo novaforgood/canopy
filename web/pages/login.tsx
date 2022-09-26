@@ -26,6 +26,8 @@ import { CustomPage } from "../types";
 
 const LoginPage: CustomPage = () => {
   const [signingIn, setSigningIn] = useState(false);
+  const [signingInWithGoogle, setSigningInWithGoogle] = useState(false);
+
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
   const { userData } = useUserData();
@@ -44,7 +46,7 @@ const LoginPage: CustomPage = () => {
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
-    setSigningIn(true);
+    setSigningInWithGoogle(true);
     signInWithGoogle()
       .then(async (userCred) => {
         const isNewUser =
@@ -75,7 +77,7 @@ const LoginPage: CustomPage = () => {
         handleError(e);
       })
       .finally(() => {
-        setSigningIn(false);
+        setSigningInWithGoogle(false);
       });
   };
 
@@ -109,10 +111,28 @@ const LoginPage: CustomPage = () => {
 
   return (
     <div className="h-screen">
-      {signingIn ? (
-        <div>Signing in... </div>
+      {signingIn || signingInWithGoogle ? (
+        <TwoThirdsPageLayout>
+          <div className="flex h-screen flex-col items-start justify-center px-16">
+            <Text variant="heading1">Signing in...</Text>
+            {signingInWithGoogle && (
+              <>
+                <div className="h-8"></div>
+                <Text>
+                  Sign in to your Google account on the popup to complete login.
+                </Text>
+              </>
+            )}
+            <div className="h-40"></div>
+          </div>
+        </TwoThirdsPageLayout>
       ) : isLoggedIn ? (
-        <div>Redirecting...</div>
+        <TwoThirdsPageLayout>
+          <div className="flex h-screen flex-col items-start justify-center px-16">
+            <Text variant="heading1">Redirecting...</Text>
+            <div className="h-40"></div>
+          </div>
+        </TwoThirdsPageLayout>
       ) : (
         <TwoThirdsPageLayout
           renderLeft={() => {
@@ -185,7 +205,7 @@ const LoginPage: CustomPage = () => {
 
             <div className="h-8"></div>
             <Button
-              loading={signingIn}
+              loading={signingIn || signingInWithGoogle}
               rounded
               onClick={(e) => {
                 signInManually(formData.email, formData.password);
