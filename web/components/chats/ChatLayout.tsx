@@ -67,13 +67,18 @@ interface MobileChatLayoutProps {
 function MobileChatLayout(props: MobileChatLayoutProps) {
   const { children } = props;
 
+  const router = useRouter();
   const spaceSlug = useQueryParam("spaceSlug", "string");
   const chatRoomId = useQueryParam("chatRoomId", "string");
 
   const baseRoute = `/space/${spaceSlug}/chat`;
 
+  const isNewChatPage = router.route === "/space/[slug]/chat/new";
+
   return (
-    <div className="h-full">{chatRoomId ? children : <ChatRoomList />}</div>
+    <div className="h-full">
+      {isNewChatPage ? children : chatRoomId ? children : <ChatRoomList />}
+    </div>
   );
 }
 interface ChatLayoutProps {

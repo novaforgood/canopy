@@ -82,7 +82,7 @@ function FilterBar(props: FilterBarProps) {
 
   return (
     <div>
-      <div className="flex items-center gap-4">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:gap-4">
         <Text>Filter by:</Text>
         {tagCategories.map((category) => {
           return (
@@ -92,6 +92,9 @@ function FilterBar(props: FilterBarProps) {
                 placeholder={category.title}
                 options={category.space_tags
                   .filter((tag) => isTagOfficial(tag))
+                  .filter(
+                    (t) => !(selectedTagIds[category.id]?.has(t.id) ?? false)
+                  )
                   .map((tag) => ({
                     value: tag.id,
                     label: tag.label,
@@ -109,7 +112,7 @@ function FilterBar(props: FilterBarProps) {
         })}
       </div>
       <div className="h-4"></div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {currentSpace?.space_tag_categories.map((category) => {
           const selectedTags = category.space_tags.filter(
             (t) => selectedTagIds[category.id]?.has(t.id) ?? false
@@ -117,7 +120,7 @@ function FilterBar(props: FilterBarProps) {
 
           if (selectedTags.length === 0) return null;
           return (
-            <div key={category.id} className="mr-4 flex gap-2">
+            <div key={category.id} className="mr-4 flex flex-wrap gap-2">
               {selectedTags.map((tag) => (
                 <Tag
                   text={tag.label}
@@ -189,10 +192,14 @@ export function SpaceLandingPage() {
       },
     });
 
-  const allProfileListings = profileListingData?.profile_listing ?? [];
-  const shuffledProfileListings = shuffleProfiles(
-    allProfileListings,
-    getDayOfYear(new Date())
+  const allProfileListings = useMemo(
+    () => profileListingData?.profile_listing ?? [],
+    [profileListingData?.profile_listing]
+  );
+
+  const shuffledProfileListings = useMemo(
+    () => shuffleProfiles(allProfileListings, getDayOfYear(new Date())),
+    [allProfileListings]
   );
 
   return (
