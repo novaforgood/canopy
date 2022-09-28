@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { requireServerEnv } from "../../../server/env";
 import {
   executeGetChatRoomWithProfilesQuery,
   executeGetProfileQuery,
@@ -7,8 +8,12 @@ import {
 } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiFail, makeApiSuccess } from "../../../server/response";
+import { sendgridMail } from "../../../server/sendgrid";
 
-const connectEmailSchema = z.object({
+const PLACEHOLDER_IMAGE_URL = `https://canopy-prod.s3.us-west-2.amazonaws.com/placeholder_profile_pic.jpg`;
+const HOST_URL = requireServerEnv("HOST_URL");
+
+const createChatRoomSchema = z.object({
   senderProfileId: z.string(),
   receiverProfileId: z.string(),
   firstMessage: z.string(),
@@ -16,7 +21,7 @@ const connectEmailSchema = z.object({
 
 export default applyMiddleware({
   authenticated: true,
-  validationSchema: connectEmailSchema,
+  validationSchema: createChatRoomSchema,
 }).post(async (req, res) => {
   const { senderProfileId, receiverProfileId, firstMessage } = req.body;
 
@@ -80,6 +85,37 @@ export default applyMiddleware({
   if (error || !chatRoomId) {
     throw makeApiFail(error?.message ?? "Chat room creation error");
   }
+
+  const { name: spaceName, slug: spaceSlug } = receiverData.profile_by_pk.space;
+
+  // Send e-mail
+  const dynamicTemplateData = {
+    sender: {
+      firstName: sender.first_name,
+      lastName: sender.last_name,
+      headline: senderData.profile_by_pk.profile_listing?.headline ?? "",
+      profilePicUrl:
+        senderData.profile_by_pk.profile_listing?.profile_listing_image?.image
+          .url ?? PLACEHOLDER_IMAGE_URL,
+    },
+    replyUrl: `${HOST_URL}/space/${spaceSlug}/chat/${chatRoomId}`,
+    message: firstMessage,
+    spaceName: spaceName,
+  };
+  await sendgridMail
+    .send({
+      from: {
+        email: "connect@joincanopy.org",
+        name: "Canopy",
+      },
+      to: receiver.email,
+      templateId: "d-a36dca61b0a9433f904787ced5e00686",
+      dynamicTemplateData: dynamicTemplateData,
+    })
+    .catch((err) => {
+      // We don't want to fail the request if the e-mail fails to send
+      console.error(err);
+    });
 
   const response = makeApiSuccess({ chatRoomId: chatRoomId });
   res.status(response.code).json(response);

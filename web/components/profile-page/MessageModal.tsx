@@ -132,7 +132,7 @@ export function MessageModal(props: MessageModalProps) {
                 <div className="flex w-full flex-col">
                   <Text className="mb-2 text-gray-600">Message</Text>
                   <Textarea
-                    minRows={3}
+                    minRows={4}
                     value={introMsg}
                     onValueChange={setIntroMsg}
                     placeholder="Example: Hi, I’m Billy! I can’t believe that someone else here is interested in dinosaurs. Maybe we could chat about it sometime? :)"

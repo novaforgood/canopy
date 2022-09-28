@@ -51,6 +51,17 @@ mutation InsertImage($data: image_insert_input!) {
 query GetProfile($profile_id: uuid!) {
   profile_by_pk(id: $profile_id) {
     id
+    profile_listing {
+      id
+      headline
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+    }
     user {
       id
       first_name
@@ -60,6 +71,7 @@ query GetProfile($profile_id: uuid!) {
     space {
       id
       name
+      slug
     }
   }
 }

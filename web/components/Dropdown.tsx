@@ -23,6 +23,7 @@ import {
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { useQueryParam } from "../hooks/useQueryParam";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
 import { LocalStorage } from "../lib/localStorage";
@@ -32,8 +33,9 @@ import { ProfileImage } from "./ProfileImage";
 
 export function Dropdown() {
   const { userData } = useUserData();
-  const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
+
+  const spaceSlug = useQueryParam("slug", "string");
 
   const img = currentProfile?.profile_listing?.profile_listing_image?.image.url;
 
@@ -70,51 +72,54 @@ export function Dropdown() {
               <Menu.Items className="absolute right-0 top-full z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {isLoggedIn ? (
                   <>
-                    <Menu.Item>
-                      {({ active }) => {
-                        const styles = classNames({
-                          "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                            true,
-                          "bg-white": !active,
-                          "bg-gray-50": active,
-                        });
-                        return (
-                          <button
-                            className={styles}
-                            onClick={() => {
-                              router.push(
-                                `/space/${currentSpace?.slug}/account/profile`
-                              );
-                            }}
-                          >
-                            <BxsUser className="mr-2 h-5 w-5" />
-                            <Text variant="body2">Edit profile</Text>
-                          </button>
-                        );
-                      }}
-                    </Menu.Item>
-
-                    <Menu.Item>
-                      {({ active }) => {
-                        const styles = classNames({
-                          "group flex w-full items-center rounded-md px-2 py-3 text-sm":
-                            true,
-                          "bg-white": !active,
-                          "bg-gray-50": active,
-                        });
-                        return (
-                          <button
-                            className={styles}
-                            onClick={() => {
-                              router.push(`/`);
-                            }}
-                          >
-                            <BxTransfer className="mr-2 h-5 w-5 flex-none" />
-                            <Text variant="body2">Change directory</Text>
-                          </button>
-                        );
-                      }}
-                    </Menu.Item>
+                    {spaceSlug && (
+                      <>
+                        <Menu.Item>
+                          {({ active }) => {
+                            const styles = classNames({
+                              "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                                true,
+                              "bg-white": !active,
+                              "bg-gray-50": active,
+                            });
+                            return (
+                              <button
+                                className={styles}
+                                onClick={() => {
+                                  router.push(
+                                    `/space/${spaceSlug}/account/profile`
+                                  );
+                                }}
+                              >
+                                <BxsUser className="mr-2 h-5 w-5" />
+                                <Text variant="body2">Edit profile</Text>
+                              </button>
+                            );
+                          }}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => {
+                            const styles = classNames({
+                              "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                                true,
+                              "bg-white": !active,
+                              "bg-gray-50": active,
+                            });
+                            return (
+                              <button
+                                className={styles}
+                                onClick={() => {
+                                  router.push(`/`);
+                                }}
+                              >
+                                <BxTransfer className="mr-2 h-5 w-5 flex-none" />
+                                <Text variant="body2">Change directory</Text>
+                              </button>
+                            );
+                          }}
+                        </Menu.Item>
+                      </>
+                    )}
 
                     <Menu.Item>
                       {({ active }) => {
