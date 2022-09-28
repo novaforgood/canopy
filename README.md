@@ -1,4 +1,5 @@
 <br/><br/>
+
 <p align="center">
 	<img src="/web/public/assets/canopyLogo.svg" width="200"/>
 </p>
@@ -22,10 +23,20 @@ NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
+
 NEXT_PUBLIC_GRAPHQL_ENDPOINT=
+NEXT_PUBLIC_GRAPHQL_WS_ENDPOINT=
+
 
 FIREBASE_SERVICE_ACCOUNT=
 GRAPHQL_ADMIN_SECRET=
+SENDGRID_API_KEY=
+HOST_URL=
+
+AWS_ENV_ACCESS_KEY_ID=
+AWS_ENV_SECRET_ACCESS_KEY=
+AWS_ENV_REGION=
+AWS_ENV_S3_BUCKET=
 ```
 
 Run the project:
@@ -33,7 +44,8 @@ Run the project:
 ```
 cd web
 npm install
-npm run build:graphql
+npm run introspect
+npm run build:all
 npm run dev
 ```
 
@@ -60,13 +72,13 @@ docker-compose up -d
 Apply metadata and migrations. (Only necessary if you recently pulled changes and need to update your local instance to match the metadata/migrations in the repo.)
 
 ```
-hasura metadata apply
-hasura migrate apply --all-databases
-hasura metadata reload
+hasura metadata apply --admin-secret "myadminsecretkey"
+hasura migrate apply --all-databases --admin-secret "myadminsecretkey"
+hasura metadata reload --admin-secret "myadminsecretkey"
 ```
 
 Start Hasura console
 
 ```
-hasura console --endpoint "http://localhost:8080"  --admin-secret "myadminsecretkey" // Connect to local instance
+hasura console --admin-secret "myadminsecretkey" // Connect to local instance
 ```
