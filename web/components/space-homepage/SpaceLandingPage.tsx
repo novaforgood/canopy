@@ -177,9 +177,11 @@ export function SpaceLandingPage() {
                 _and: Object.values(selectedTagIds)
                   .filter((set) => set.size > 0)
                   .map((categoryTagSet) => ({
-                    profile_listing_to_space_tags: {
-                      space_tag_id: { _in: Array.from(categoryTagSet) },
-                    },
+                    _and: Array.from(categoryTagSet).map((tagId) => ({
+                      profile_listing_to_space_tags: {
+                        space_tag_id: { _eq: tagId },
+                      },
+                    })),
                   })),
               }
             : undefined),

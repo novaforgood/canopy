@@ -45,7 +45,7 @@ export function ProfileCard(props: ProfileCardProps) {
     transition,
   };
 
-  const numTags = 5;
+  const numTags = 3;
   const remainingTags = tags.length - numTags;
   const processedTags = tags.slice(0, numTags);
   if (remainingTags > 0) {
@@ -93,8 +93,8 @@ export function ProfileCard(props: ProfileCardProps) {
                 key={index}
                 text={tag}
                 variant="outline"
-                className="justify-self-stretch"
-                style={{ maxWidth: "calc(50% - 0.125rem)" }}
+                // className="justify-self-stretch"
+                // style={{ maxWidth: "calc(50% - 0.125rem)" }}
               />
             ))
           ) : (
