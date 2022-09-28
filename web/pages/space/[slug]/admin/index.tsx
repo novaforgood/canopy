@@ -148,8 +148,8 @@ export default function AdminPage() {
       <Navbar />
       <SidePadding className="min-h-screen">
         <div className="h-16"></div>
-        <Breadcrumbs />
-        <div className="h-16"></div>
+        {/* <Breadcrumbs />
+        <div className="h-16"></div> */}
         <Text variant="heading2">Admin dashboard</Text>
         <div className="h-8"></div>
         <RoundedCard className="w-full">

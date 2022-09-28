@@ -253,7 +253,7 @@ function DesktopNavbar() {
 }
 
 export function Navbar() {
-  const renderDesktop = useMediaQuery({ showIfBiggerThan: "md" });
+  const renderDesktop = useMediaQuery({ showIfBiggerThan: "md" }, true);
   return (
     <>
       {renderDesktop ? (

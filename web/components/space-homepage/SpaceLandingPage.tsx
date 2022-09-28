@@ -189,10 +189,14 @@ export function SpaceLandingPage() {
       },
     });
 
-  const allProfileListings = profileListingData?.profile_listing ?? [];
-  const shuffledProfileListings = shuffleProfiles(
-    allProfileListings,
-    getDayOfYear(new Date())
+  const allProfileListings = useMemo(
+    () => profileListingData?.profile_listing ?? [],
+    [profileListingData?.profile_listing]
+  );
+
+  const shuffledProfileListings = useMemo(
+    () => shuffleProfiles(allProfileListings, getDayOfYear(new Date())),
+    [allProfileListings]
   );
 
   return (
