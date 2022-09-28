@@ -9,20 +9,34 @@ import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
 import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSplashPage";
 import {
-  BxMessage,
-  BxMessageAlt,
+  BxChevronLeft,
   BxMessageDetail,
 } from "../../../../generated/icons/regular";
+import { useMediaQuery } from "../../../../hooks/useMediaQuery";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { CustomPage } from "../../../../types";
 
 const NewChatPage: CustomPage = () => {
   const router = useRouter();
   const spaceSlug = useQueryParam("slug", "string");
+  const baseRoute = `/space/${spaceSlug}/chat`;
+  const renderDesktopMode = useMediaQuery({
+    showIfBiggerThan: "md",
+  });
 
   return (
     <div className="overflow-hidden rounded-md">
       <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
+        {!renderDesktopMode && (
+          <button
+            className="-ml-2 mr-2 flex h-8 w-8 items-center justify-center rounded-full hover:bg-olive-100"
+            onClick={() => {
+              router.push(baseRoute);
+            }}
+          >
+            <BxChevronLeft className="h-10 w-10" />
+          </button>
+        )}
         <Text>Connect with someone new</Text>
       </div>
 
