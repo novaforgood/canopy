@@ -73,7 +73,7 @@ const SpaceHomepage: CustomPage = () => {
         <div className="flex w-full flex-col rounded-lg border border-black bg-white pb-12">
           <div className="h-16 rounded-t-lg bg-olive-100 sm:h-32"></div>
           <div className="-mt-4 px-4 sm:-mt-8 sm:px-20">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-6 sm:gap-12">
                 <ProfileImage
                   src={listing?.profile_listing_image?.image.url}
@@ -113,7 +113,7 @@ const SpaceHomepage: CustomPage = () => {
             <div className="h-16"></div>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div className="flex flex-col gap-8 p-6">
+              <div className="flex flex-col gap-8 sm:p-6">
                 {listing?.profile_listing_responses.map((response) => {
                   return (
                     <div key={response.id}>
@@ -157,8 +157,11 @@ const SpaceHomepage: CustomPage = () => {
                 </div> */}
               </div>
               <div>
-                <div className="flex flex-col gap-8 rounded-md border border-olive-700 p-6">
+                <div className="flex flex-col gap-8 rounded-md border-olive-700 sm:border sm:p-6">
                   {currentSpace?.space_tag_categories.map((category) => {
+                    const tags = category.space_tags.filter((tag) =>
+                      profileTagIds.has(tag.id)
+                    );
                     return (
                       <div key={category.id}>
                         <Text
@@ -170,22 +173,28 @@ const SpaceHomepage: CustomPage = () => {
                         </Text>
                         <div className="h-4"></div>
                         <div className="flex flex-wrap gap-2">
-                          {category.space_tags.map((tag) => {
-                            if (!profileTagIds.has(tag.id)) {
-                              return null;
-                            } else {
+                          {tags.length > 0 ? (
+                            tags.map((tag) => {
                               return (
                                 <Tag key={tag.id} text={tag.label ?? ""} />
                               );
-                            }
-                          })}
+                            })
+                          ) : (
+                            <Text
+                              variant="body1"
+                              className="text-gray-700"
+                              italic
+                            >
+                              No tags
+                            </Text>
+                          )}
                         </div>
                       </div>
                     );
                   })}
                 </div>
                 <div className="h-8"></div>
-                <div className="rounded-md border border-olive-700 p-6">
+                <div className="rounded-md border-olive-700 sm:border sm:p-6">
                   <Text
                     variant="heading4"
                     mobileVariant="subheading1"

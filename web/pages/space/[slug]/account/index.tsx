@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
-import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
-import { MembersList } from "../../../../components/admin/MembersList";
 import { Button, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
-import { EditProfileListing } from "../../../../components/EditProfileListing";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
@@ -18,12 +15,7 @@ import {
   useConnectionRequestsQuery,
   useUpdateConnectionRequestMutation,
 } from "../../../../generated/graphql";
-import { BxShow, BxUserCircle } from "../../../../generated/icons/regular";
-import {
-  BxsReport,
-  BxsShow,
-  BxsUserCircle,
-} from "../../../../generated/icons/solid";
+import { BxsReport, BxsUserCircle } from "../../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useUserData } from "../../../../hooks/useUserData";
@@ -57,12 +49,12 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
 
   const { first_name, last_name } = otherProfile.user;
   return (
-    <div className="flex items-center gap-4 w-full">
+    <div className="flex w-full items-center gap-4">
       <ProfileImage
         src={otherProfile.profile_listing?.profile_listing_image?.image.url}
         className="h-10 w-10"
       />
-      <div className="flex-1 truncate flex flex-col items-start">
+      <div className="flex flex-1 flex-col items-start truncate">
         <Text className="flex-1 truncate">
           {first_name} {last_name}
         </Text>
@@ -74,7 +66,7 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
         <Button
           variant="outline"
           size="small"
-          className="shrink-0 w-28 justify-center"
+          className="w-28 shrink-0 justify-center"
           disabled
         >
           Met with
@@ -83,7 +75,7 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
         <Button
           variant="outline"
           size="small"
-          className="shrink-0 w-28 justify-center"
+          className="w-28 shrink-0 justify-center"
           loading={loading}
           onClick={() => {
             setLoading(true);
@@ -146,8 +138,8 @@ export default function AccountPage() {
         </Text>
         <div className="h-8"></div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex flex-col gap-4 items-start flex-1">
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex flex-1 flex-col items-start gap-4">
             <RoundedCard className="w-full">
               <div className="flex items-center gap-2">
                 <BxsUserCircle className="h-7 w-7 text-gray-600" />
@@ -186,7 +178,7 @@ export default function AccountPage() {
             <div className="h-8"></div>
 
             {connectionRequests.length === 0 && (
-              <div className="p-4 rounded-md border">
+              <div className="rounded-md border p-4">
                 <Text>No connections yet!</Text>
                 <div className="h-2"></div>
                 <Button
@@ -199,7 +191,7 @@ export default function AccountPage() {
                 </Button>
               </div>
             )}
-            <div className="flex flex-col items-start gap-4 w-full">
+            <div className="flex w-full flex-col items-start gap-4">
               {connectionRequests.map((request) => {
                 return (
                   <EditConnectionRequest

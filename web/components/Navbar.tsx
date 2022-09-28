@@ -111,7 +111,7 @@ function MobileNavbar() {
                   Browse Community Profiles
                 </Button>
 
-                <Button
+                {/* <Button
                   className="w-full justify-center"
                   variant="outline"
                   onClick={() => {
@@ -119,23 +119,25 @@ function MobileNavbar() {
                   }}
                 >
                   Your Account
-                </Button>
+                </Button> */}
+
+                {isAdmin && (
+                  <Button
+                    className="w-full justify-center"
+                    variant="outline"
+                    onClick={() => {
+                      navigate(`/space/${spaceSlug}/admin`);
+                    }}
+                  >
+                    Admin dashboard
+                  </Button>
+                )}
               </>
             )}
           </div>
 
           <div className="h-8"></div>
           <div className="flex flex-col items-start gap-4">
-            {isAdmin && (
-              <button
-                onClick={() => {
-                  navigate(`/space/${spaceSlug}/admin`);
-                }}
-              >
-                Admin settings
-              </button>
-            )}
-
             {isMember && (
               <>
                 <button
