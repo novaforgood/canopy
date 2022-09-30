@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { Button, Text } from "../../components/atomic";
 import { useUpdateSpaceMutation } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { CheckBox } from "../atomic/CheckBox";
 
 type SpaceAttributes = {
@@ -19,7 +20,7 @@ export function SetPrivacySettings() {
   const { currentSpace } = useCurrentSpace();
 
   const [attributes, setAttributes] = useState<SpaceAttributes>();
-  const [edited, setEdited] = useState(false);
+  const { mustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
     if (currentSpace) {
@@ -37,7 +38,7 @@ export function SetPrivacySettings() {
 
   return (
     <div className="">
-      {edited && (
+      {mustSave && (
         <>
           <Text variant="body2" style={{ color: "red" }}>
             You must click {'"Save Changes"'} for your changes to take effect.
@@ -49,13 +50,13 @@ export function SetPrivacySettings() {
         label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
         checked={attributes.public}
         onChange={(newVal) => {
-          setEdited(true);
+          setMustSave(true);
           setAttributes({ ...attributes, public: newVal });
         }}
       />
       <div className="h-8"></div>
       <Button
-        disabled={!edited}
+        disabled={!mustSave}
         rounded
         onClick={() => {
           if (!currentSpace) {
@@ -73,7 +74,7 @@ export function SetPrivacySettings() {
               if (res.error) {
                 throw new Error(res.error.message);
               } else {
-                setEdited(false);
+                setMustSave(false);
                 toast.success("Saved settings");
               }
             })

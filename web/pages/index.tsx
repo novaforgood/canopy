@@ -17,9 +17,14 @@ function LandingPage() {
   return (
     <div>
       <div className="bg-gray-100">
-        <SidePadding className="w-full px-6 pt-4 sm:pt-16 sm:px-32">
-          <div className="flex flex-col sm:flex-row gap-4 items-start w-full sm:items-center justify-between">
-            <img src={"/assets/canopyLogo.svg"} alt="Canopy Logo" />
+        <SidePadding className="w-full px-6 pt-4 sm:px-32 sm:pt-16">
+          <div className="flex w-full flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <img
+              src={"/assets/canopy_logo.svg"}
+              draggable={false}
+              alt="Canopy Logo"
+              className="h-10"
+            />
             <div className="flex">
               {
                 <Button
@@ -45,8 +50,8 @@ function LandingPage() {
               }
             </div>
           </div>
-          <div className="grid sm:grid-cols-2 gap-16 items-end w-full">
-            <div className="flex flex-col justify-start items-start pt-24 sm:pt-32">
+          <div className="grid w-full items-end gap-16 sm:grid-cols-2">
+            <div className="flex flex-col items-start justify-start pt-24 sm:pt-32">
               <Text variant="heading2" mobileVariant="heading3">
                 Create a support structure for your community
               </Text>

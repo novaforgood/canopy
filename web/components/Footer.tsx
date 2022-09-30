@@ -10,7 +10,7 @@ export function Footer() {
       <div className="flex justify-between gap-8 border-t-2 border-gray-700 pt-8 pb-12 font-sans text-sm text-gray-100">
         <div className="flex gap-4">
           <img
-            src="/assets/canopy_logo_square.svg"
+            src="/assets/canopy_logo_circle.svg"
             alt="logo"
             className="h-10 w-10"
             draggable={false}

@@ -3,6 +3,8 @@ import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
 import { Space_Tag_Status_Enum } from "../../../generated/graphql";
+import { BxTrash, BxTrashAlt } from "../../../generated/icons/regular";
+import { BxsTrash } from "../../../generated/icons/solid";
 import { getTempId } from "../../../lib/tempId";
 import { NewSpaceTag, NewTagCategory } from "../../../lib/types";
 import { Button, Text } from "../../atomic";
@@ -62,11 +64,12 @@ export function CreateNewTag(props: CreateNewTagProps) {
     <div className="">
       <div className="h-4"></div>
       <Text className="text-gray-600" variant="body2">
-        Type and hit “enter” to add a tag to the official list. Click the X in
-        Official Directory tags to remove.
+        Type and hit “enter” to add a tag to the official list. Click the{" "}
+        <BxsTrash className="inline h-4 w-4" /> in Official Directory tags to
+        remove.
       </Text>
       <div className="h-2"></div>
-      <div className="flex items-center gap-2 w-96">
+      <div className="flex w-96 items-center gap-2">
         <TextInput
           value={newTag}
           onValueChange={setNewTag}
@@ -80,7 +83,7 @@ export function CreateNewTag(props: CreateNewTagProps) {
         <Button
           size="small"
           variant="outline"
-          className="px-2 shrink-0"
+          className="shrink-0 px-2"
           disabled={newTag.length === 0}
           onClick={addTag}
         >

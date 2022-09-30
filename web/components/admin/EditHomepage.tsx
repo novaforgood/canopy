@@ -9,6 +9,7 @@ import {
 } from "../../generated/graphql";
 import { BxsCloudUpload } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { uploadImage } from "../../lib/image";
 import { Button, Text } from "../atomic";
 import { ImageUploader } from "../ImageUploader";
@@ -31,7 +32,8 @@ export function EditHomepage() {
 
   const editor = useRef<AvatarEditor | null>(null);
 
-  const [edited, setEdited] = useState(false);
+  const { mustSave, setMustSave } = useSaveChangesState();
+
   const [editedCoverPhoto, setEditedCoverPhoto] = useState(false);
   const [loading, setLoading] = useState(false);
   const [_, updateSpace] = useUpdateSpaceMutation();
@@ -85,7 +87,7 @@ export function EditHomepage() {
         if (res.error) {
           throw new Error(res.error.message);
         }
-        setEdited(false);
+        setMustSave(false);
         toast.success("Saved settings");
       })
       .catch((e) => {
@@ -94,10 +96,19 @@ export function EditHomepage() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [
+    currentSpace,
+    editedCoverPhoto,
+    setMustSave,
+    spaceDescriptionHtml,
+    spaceName,
+    updateSpace,
+    upsertCoverImage,
+  ]);
+
   return (
     <div className="flex flex-col items-start">
-      {edited && (
+      {mustSave && (
         <>
           <div className="h-2"></div>
           <Text variant="body2" style={{ color: "red" }}>
@@ -116,7 +127,7 @@ export function EditHomepage() {
         <TextInput
           value={spaceName}
           onValueChange={(newValue) => {
-            setEdited(true);
+            setMustSave(true);
             setSpaceName(newValue);
           }}
         ></TextInput>
@@ -133,7 +144,7 @@ export function EditHomepage() {
           initContent={currentSpace?.description_html ?? undefined}
           characterLimit={300}
           onUpdate={({ editor }) => {
-            setEdited(true);
+            setMustSave(true);
             setSpaceDescriptionHtml(editor.getHTML());
           }}
         />
@@ -161,7 +172,7 @@ export function EditHomepage() {
         width={600}
         showZoom
         renderUploadIcon={() => (
-          <BxsCloudUpload className="text-gray-500 h-32 w-32 -mb-2" />
+          <BxsCloudUpload className="-mb-2 h-32 w-32 text-gray-500" />
         )}
         getRef={(ref) => {
           editor.current = ref;
@@ -170,7 +181,7 @@ export function EditHomepage() {
 
       <div className="h-16"></div>
       <Button
-        disabled={!edited && !editedCoverPhoto}
+        disabled={!mustSave && !editedCoverPhoto}
         rounded
         onClick={saveHomepage}
         loading={loading}
