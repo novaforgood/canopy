@@ -198,7 +198,8 @@ function DesktopNavbar() {
             <LoadingPlaceholderRect className="h-10 w-64" />
           ) : !isMember ? (
             <img
-              src={"/assets/canopyLogo.svg"}
+              src={"/assets/canopy_logo.svg"}
+              className="h-10"
               alt="Canopy Logo"
               draggable={false}
             />

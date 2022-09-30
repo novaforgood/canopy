@@ -6,60 +6,13 @@ import { TwoThirdsPageLayout } from "../../../components/layout/TwoThirdsPageLay
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { CustomPage } from "../../../types";
 
-function RegularWelcomePage() {
-  const router = useRouter();
-  const { currentSpace } = useCurrentSpace();
-  return (
-    <TwoThirdsPageLayout>
-      <div className="h-screen flex flex-col items-start pt-16 sm:pt-32 px-6 sm:px-16 w-full sm:max-w-2xl">
-        <Text variant="heading2" mobileVariant="heading3">
-          Welcome to {currentSpace?.name}!
-        </Text>
-
-        <div className="h-12"></div>
-        <Text className="text-gray-600">Here are your next steps:</Text>
-        <div className="h-8"></div>
-        <div className="w-full sm:w-160 flex flex-col gap-4">
-          <StepDisplay
-            stepNumber={1}
-            title="Complete your profile"
-            description="It takes 3 minutes, and your profile can be edited or unpublished at any time."
-          />
-          <StepDisplay
-            stepNumber={2}
-            title="Publish your profile in the community directory"
-            description="Other community members will reach out to you through a profile contact button"
-          />
-          <StepDisplay
-            stepNumber={3}
-            title="Wait for a connection request!"
-            description="Whenever someone reaches out, you will be notified via email. Please respond promptly to schedule a meeting time"
-          />
-        </div>
-        <div className="h-16"></div>
-        <Button
-          variant="primary"
-          rounded
-          onClick={() => {
-            router.push(`/space/${currentSpace?.slug}`);
-          }}
-        >
-          Create my profile
-        </Button>
-
-        <div className="h-40"></div>
-      </div>
-    </TwoThirdsPageLayout>
-  );
-}
-
 function ListerWelcomePage() {
   const router = useRouter();
   const { currentSpace } = useCurrentSpace();
 
   return (
     <TwoThirdsPageLayout>
-      <div className="sm:h-screen flex flex-col items-start justify-start pt-12 sm:pt-24 px-16 max-w-2xl">
+      <div className="flex max-w-2xl flex-col items-start justify-start px-16 pt-12 sm:h-screen sm:pt-24">
         <Text variant="heading2" mobileVariant="heading3">
           Welcome to {currentSpace?.name}!
         </Text>
@@ -67,7 +20,7 @@ function ListerWelcomePage() {
         <div className="h-12"></div>
         <Text className="text-gray-600">Here are your next steps:</Text>
         <div className="h-8"></div>
-        <div className="w-full sm:w-160 flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4 sm:w-160">
           <StepDisplay
             stepNumber={1}
             title="Complete your profile"
@@ -77,12 +30,12 @@ function ListerWelcomePage() {
           <StepDisplay
             stepNumber={2}
             title="Publish your profile in the community directory"
-            description="Other community members will reach out to you through a profile contact button"
+            description="Other community members will be able to chat with you on Canopy or reach out through your other linked accounts."
           />
           <StepDisplay
             stepNumber={3}
             title="Wait for a connection request!"
-            description="Whenever someone reaches out, you will be notified via email. Please respond promptly to schedule a meeting time"
+            description="You will be notified via email when someone starts a chat with you on Canopy. Be sure to regularly check your promotions inbox and junk folder!"
           />
         </div>
         <div className="h-16"></div>

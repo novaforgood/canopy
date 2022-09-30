@@ -18,7 +18,11 @@ import { MessageModal } from "../../../../components/profile-page/MessageModal";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
-import { BxMessageDetail } from "../../../../generated/icons/regular";
+import {
+  BxEdit,
+  BxMessageDetail,
+  BxUser,
+} from "../../../../generated/icons/regular";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
@@ -43,6 +47,8 @@ const SpaceHomepage: CustomPage = () => {
   ] = useProfileByIdQuery({
     variables: { profile_id: profileId ?? "" },
   });
+
+  const isMyProfile = profileId === currentProfile?.id;
 
   if (!currentSpace && !fetchingCurrentSpace) {
     return <div>404 - Space not found</div>;
@@ -88,27 +94,38 @@ const SpaceHomepage: CustomPage = () => {
                   <Text variant="body1">{listing?.headline}</Text>
                 </div>
               </div>
-              <Button
-                rounded
-                className="flex items-center"
-                onClick={() => {
-                  if (isLoggedIn) {
-                    const chatRoomId =
-                      profileData?.profile_to_chat_room[0]?.chat_room_id;
-                    if (chatRoomId) {
-                      router.push(`/space/${spaceSlug}/chat/${chatRoomId}`);
+              {isMyProfile ? (
+                <Link href={`/space/${spaceSlug}/account/profile`} passHref>
+                  <a>
+                    <Button rounded>
+                      <BxEdit className="-ml-2 mr-2 h-5 w-5" />
+                      Edit profile
+                    </Button>
+                  </a>
+                </Link>
+              ) : (
+                <Button
+                  rounded
+                  className="flex items-center"
+                  onClick={() => {
+                    if (isLoggedIn) {
+                      const chatRoomId =
+                        profileData?.profile_to_chat_room[0]?.chat_room_id;
+                      if (chatRoomId) {
+                        router.push(`/space/${spaceSlug}/chat/${chatRoomId}`);
+                      } else {
+                        handlers.open();
+                      }
                     } else {
-                      handlers.open();
+                      loginModalHandlers.open();
                     }
-                  } else {
-                    loginModalHandlers.open();
-                  }
-                }}
-                disabled={profileId === currentProfile?.id}
-              >
-                <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
-                Message
-              </Button>
+                  }}
+                  disabled={isMyProfile}
+                >
+                  <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
+                  Message
+                </Button>
+              )}
             </div>
             <div className="h-16"></div>
 

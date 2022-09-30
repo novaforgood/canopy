@@ -54,7 +54,7 @@ function DirectoryOverviewInfoBox(props: {
   label: string;
 }) {
   return (
-    <div className="flex flex-col justify-start bg-gray-100 p-4 rounded-lg grow">
+    <div className="flex grow flex-col justify-start rounded-lg bg-gray-100 p-4">
       <Text variant="heading3">{props.amount}</Text>
       <Text variant="body2">{props.label}</Text>
     </div>
@@ -83,7 +83,7 @@ export function DirectoryOverview() {
 
   return (
     <>
-      <div className="flex items-center justify-between flex-wrap">
+      <div className="flex flex-wrap items-center justify-between">
         <div className="flex items-center gap-2">
           <BxStar className="h-7 w-7" />
           <Text variant="heading4">Directory Overview</Text>
@@ -121,7 +121,7 @@ export function DirectoryOverview() {
       </Text>
       <div className="h-4"></div>
       <Responsive mode="mobile-only">
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
           <Select
             placeholder="Select date range"
             className="w-40 shrink-0"
@@ -138,7 +138,7 @@ export function DirectoryOverview() {
         </div>
         <div className="h-4"></div>
       </Responsive>
-      <div className="grid sm:grid-cols-5 grid-cols-2 gap-4 overflow-x-auto">
+      <div className="grid grid-cols-2 gap-4 overflow-x-auto sm:grid-cols-5">
         <DirectoryOverviewInfoBox
           label="general members"
           amount={adminDashData?.general_member_count.aggregate?.count ?? "--"}
@@ -151,7 +151,7 @@ export function DirectoryOverview() {
           label="new members"
           amount={adminDashData?.new_member_count.aggregate?.count ?? "--"}
         />
-        <DirectoryOverviewInfoBox
+        {/* <DirectoryOverviewInfoBox
           label="requests sent"
           amount={adminDashData?.requests_sent_count.aggregate?.count ?? "--"}
         />
@@ -160,7 +160,7 @@ export function DirectoryOverview() {
           amount={
             adminDashData?.confirmed_meeting_count.aggregate?.count ?? "--"
           }
-        />
+        /> */}
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 <br/><br/>
 
 <p align="center">
-	<img src="/web/public/assets/canopyLogo.svg" width="200"/>
+	<img src="/web/public/assets/canopy_logo.svg" width="200"/>
 </p>
 <br/>
 

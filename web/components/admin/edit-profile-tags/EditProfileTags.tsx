@@ -22,6 +22,7 @@ import {
 import { BxDownArrow, BxDownArrowAlt } from "../../../generated/icons/regular";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../../hooks/useSaveChangesState";
 import { isTempId, resolveId } from "../../../lib/tempId";
 import { NewSpaceTag, NewTagCategory } from "../../../lib/types";
 import { Button, Select, Text } from "../../atomic";
@@ -110,7 +111,8 @@ export function EditProfileTags() {
     [spaceTagCategoriesData?.space_tag_category]
   );
 
-  const [edited, setEdited] = useState(false);
+  const { mustSave, setMustSave } = useSaveChangesState();
+
   const [tabIndex, setTabIndex] = useState(0);
   const [visible, setVisible] = useState(false);
 
@@ -118,9 +120,9 @@ export function EditProfileTags() {
   const setData: Dispatch<SetStateAction<NewTagCategory | null>> = useCallback(
     (d) => {
       _setData(d);
-      setEdited(true);
+      setMustSave(true);
     },
-    []
+    [setMustSave]
   );
 
   useEffect(() => {
@@ -142,15 +144,20 @@ export function EditProfileTags() {
       ...selectedTagCategory,
       space_tags: { data: selectedTagCategory.space_tags },
     });
-    setEdited(false);
-  }, [selectedTagCategoryId, spaceTagCategoriesData, setData]);
+    setMustSave(false);
+  }, [
+    spaceTagCategoriesData?.space_tag_category,
+    setData,
+    setMustSave,
+    selectedTagCategoryId,
+  ]);
 
   useEffect(() => {
-    if (edited) {
+    if (mustSave) {
       return;
     }
     updateData();
-  }, [edited, updateData]);
+  }, [mustSave, updateData]);
 
   const [loading, setLoading] = useState(false);
   const [_, upsertSpaceProfileSchema] = useUpsertSpaceProfileSchemaMutation();
@@ -190,7 +197,7 @@ export function EditProfileTags() {
         } else {
           toast.success("Saved");
           refetchData();
-          setEdited(false);
+          setMustSave(false);
         }
       })
       .catch((err) => {
@@ -199,7 +206,13 @@ export function EditProfileTags() {
       .finally(() => {
         setLoading(false);
       });
-  }, [data, refetchData, selectedTagCategoryId, upsertSpaceProfileSchema]);
+  }, [
+    data,
+    refetchData,
+    selectedTagCategoryId,
+    setMustSave,
+    upsertSpaceProfileSchema,
+  ]);
 
   return (
     <div className="w-full">
@@ -212,13 +225,13 @@ export function EditProfileTags() {
         value={selectedTagCategoryId}
         onSelect={(newVal) => {
           const canChange =
-            !edited ||
+            !mustSave ||
             window.confirm(
               "You have unsaved changes. Discard current changes?"
             );
           if (canChange) {
             setSelectedTagCategoryId(newVal);
-            setEdited(false);
+            setMustSave(false);
           }
         }}
       />
@@ -236,7 +249,7 @@ export function EditProfileTags() {
                 Add official tag options for {`"${data.title}"`}
               </Text>
 
-              {edited && (
+              {mustSave && (
                 <>
                   <div className="h-2"></div>
                   <Text variant="body2" style={{ color: "red" }}>
@@ -342,7 +355,7 @@ export function EditProfileTags() {
 
               <div className="h-8"></div>
               <Button
-                disabled={!edited}
+                disabled={!mustSave}
                 rounded
                 onClick={saveChanges}
                 loading={loading}

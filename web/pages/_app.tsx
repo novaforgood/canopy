@@ -6,6 +6,7 @@ import { RecoilRoot, useRecoilState, useSetRecoilState } from "recoil";
 import { useClient } from "urql";
 
 import { Footer } from "../components/Footer";
+import { Metadata } from "../components/Metadata";
 import { CatchUnsavedChanges } from "../components/singletons/CatchUnsavedChanges";
 import {
   useAllChatRoomsSubscription,
@@ -143,10 +144,7 @@ function App({ Component, pageProps }: CustomAppProps) {
     <Suspense fallback={<div>Loading...</div>}>
       <CatchUnsavedChanges />
       <Toaster />
-      <Head>
-        <title>Canopy</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Metadata />
       {getLayout(<Component {...pageProps} />)}
       {Component.showFooter !== false && <Footer />}
     </Suspense>
