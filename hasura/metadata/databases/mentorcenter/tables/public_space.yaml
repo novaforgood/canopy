@@ -1,36 +1,36 @@
 table:
-  schema: public
   name: space
+  schema: public
 object_relationships:
   - name: space_cover_image
     using:
       foreign_key_constraint_on:
         column: space_id
         table:
-          schema: public
           name: space_cover_image
+          schema: public
 array_relationships:
   - name: profiles
     using:
       foreign_key_constraint_on:
         column: space_id
         table:
-          schema: public
           name: profile
+          schema: public
   - name: space_listing_questions
     using:
       foreign_key_constraint_on:
         column: space_id
         table:
-          schema: public
           name: space_listing_question
+          schema: public
   - name: space_tag_categories
     using:
       foreign_key_constraint_on:
         column: space_id
         table:
-          schema: public
           name: space_tag_category
+          schema: public
 insert_permissions:
   - role: user
     permission:
@@ -43,7 +43,6 @@ insert_permissions:
         - name
         - owner_id
         - slug
-      backend_only: false
 select_permissions:
   - role: public
     permission:
@@ -82,15 +81,28 @@ update_permissions:
         - attributes
         - description_html
         - name
-        - owner_id
         - slug
       filter:
-        owner_id:
-          _eq: X-Hasura-User-Id
+        _or:
+          - owner_id:
+              _eq: X-Hasura-User-Id
+          - _exists:
+              _table:
+                name: profile_to_profile_role_flattened
+                schema: public
+              _where:
+                _and:
+                  - user_id:
+                      _eq: X-Hasura-User-Id
+                  - space_id:
+                      _eq: X-Hasura-Space-Id
+                  - profile_role:
+                      _eq: Admin
       check: null
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         owner_id:
           _eq: X-Hasura-User-Id

@@ -7,7 +7,7 @@ export function RoundedCard(props: {
   const { children, className } = props;
 
   const styles = classNames({
-    "bg-white rounded-md border border-gray-300 p-6": true,
+    "bg-white rounded-md border border-gray-300 p-2 sm:p-6": true,
     [`${className}`]: true,
   });
   return <div className={styles}>{children}</div>;

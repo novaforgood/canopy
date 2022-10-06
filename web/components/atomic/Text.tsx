@@ -11,7 +11,9 @@ type TextVariant =
   | "subheading2"
   | "body1"
   | "body2"
-  | "body3";
+  | "body3"
+  | "body4";
+
 type TextProps = HTMLAttributes<HTMLDivElement> & {
   variant?: TextVariant;
   mobileVariant?: TextVariant;
@@ -21,6 +23,7 @@ type TextProps = HTMLAttributes<HTMLDivElement> & {
   medium?: boolean;
   className?: string;
   loading?: boolean;
+  loadingWidthClassName?: string;
 };
 
 // Hack: List all sm:variants here so they don't get pruned by Tailwind.
@@ -44,6 +47,7 @@ function getVariantStyles(variant: TextVariant) {
     "text-body1": variant === "body1",
     "text-body2": variant === "body2",
     "text-body3": variant === "body3",
+    "text-body4": variant === "body4",
   });
 }
 export const Text = ({
@@ -56,6 +60,7 @@ export const Text = ({
   loading = false,
   className,
   children,
+  loadingWidthClassName,
   ...props
 }: TextProps) => {
   const styles = classNames({
@@ -71,7 +76,9 @@ export const Text = ({
   });
 
   const loadingPlaceholderStyles = classNames({
-    "animate-pulse bg-gray-200 rounded-md absolute h-full w-full inset-0": true,
+    "animate-pulse bg-gray-200 rounded-md absolute h-full inset-0": true,
+    "w-full": !loadingWidthClassName,
+    [`${loadingWidthClassName}`]: loadingWidthClassName,
     invisible: !loading,
     visible: loading,
   });

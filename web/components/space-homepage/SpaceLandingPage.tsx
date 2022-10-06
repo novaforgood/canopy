@@ -2,7 +2,9 @@ import {
   createFactory,
   Fragment,
   ImgHTMLAttributes,
+  useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -23,6 +25,7 @@ import {
 import { BxFilter } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useUserData } from "../../hooks/useUserData";
+import { isTagOfficial } from "../../lib/tags";
 import { Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { ProfileCard } from "../ProfileCard";
@@ -42,25 +45,36 @@ function FilterBar(props: FilterBarProps) {
 
   const { currentSpace } = useCurrentSpace();
 
-  const tagCategories =
-    currentSpace?.space_tag_categories.filter(
-      (category) => !category.deleted
-    ) ?? [];
+  const tagCategories = useMemo(
+    () =>
+      currentSpace?.space_tag_categories.filter(
+        (category) => !category.deleted
+      ) ?? [],
+    [currentSpace?.space_tag_categories]
+  );
 
-  const tagAdded = (categoryId: string, tagId: string) => {
-    const updatedCategory = new Set([
-      ...Array.from(selectedTagIds[categoryId] ?? []),
-      tagId,
-    ]);
-    return { ...selectedTagIds, [categoryId]: updatedCategory };
-  };
+  const tagAdded = useCallback(
+    (categoryId: string, tagId: string) => {
+      const updatedCategory = new Set([
+        ...Array.from(selectedTagIds[categoryId] ?? []),
+        tagId,
+      ]);
+      return { ...selectedTagIds, [categoryId]: updatedCategory };
+    },
+    [selectedTagIds]
+  );
 
-  const tagRemoved = (categoryId: string, tagId: string) => {
-    const updatedCategory = new Set(
-      Array.from(selectedTagIds[categoryId] ?? []).filter((id) => id !== tagId)
-    );
-    return { ...selectedTagIds, [categoryId]: updatedCategory };
-  };
+  const tagRemoved = useCallback(
+    (categoryId: string, tagId: string) => {
+      const updatedCategory = new Set(
+        Array.from(selectedTagIds[categoryId] ?? []).filter(
+          (id) => id !== tagId
+        )
+      );
+      return { ...selectedTagIds, [categoryId]: updatedCategory };
+    },
+    [selectedTagIds]
+  );
 
   if (tagCategories.length === 0) {
     return <div className="h-12" />;
@@ -68,7 +82,7 @@ function FilterBar(props: FilterBarProps) {
 
   return (
     <div>
-      <div className="flex items-center gap-4">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:gap-4">
         <Text>Filter by:</Text>
         {tagCategories.map((category) => {
           return (
@@ -77,7 +91,10 @@ function FilterBar(props: FilterBarProps) {
                 key={category.id}
                 placeholder={category.title}
                 options={category.space_tags
-                  .filter((tag) => !tag.deleted)
+                  .filter((tag) => isTagOfficial(tag))
+                  .filter(
+                    (t) => !(selectedTagIds[category.id]?.has(t.id) ?? false)
+                  )
                   .map((tag) => ({
                     value: tag.id,
                     label: tag.label,
@@ -95,29 +112,31 @@ function FilterBar(props: FilterBarProps) {
         })}
       </div>
       <div className="h-4"></div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {currentSpace?.space_tag_categories.map((category) => {
+          const selectedTags = category.space_tags.filter(
+            (t) => selectedTagIds[category.id]?.has(t.id) ?? false
+          );
+
+          if (selectedTags.length === 0) return null;
           return (
-            <div key={category.id} className="flex gap-2 pr-4">
-              {category.space_tags.map((tag) =>
-                selectedTagIds[category.id] &&
-                selectedTagIds[category.id].has(tag.id) ? (
-                  <Tag
-                    text={tag.label}
-                    key={tag.id}
-                    onDeleteClick={() => {
-                      onChange(tagRemoved(category.id, tag.id));
-                      // onChange(
-                      //   new Set(
-                      //     Array.from(selectedTagIds).filter(
-                      //       (id) => id !== tag.id
-                      //     )
-                      //   )
-                      // );
-                    }}
-                  />
-                ) : null
-              )}
+            <div key={category.id} className="mr-4 flex flex-wrap gap-2">
+              {selectedTags.map((tag) => (
+                <Tag
+                  text={tag.label}
+                  key={tag.id}
+                  onDeleteClick={() => {
+                    onChange(tagRemoved(category.id, tag.id));
+                    // onChange(
+                    //   new Set(
+                    //     Array.from(selectedTagIds).filter(
+                    //       (id) => id !== tag.id
+                    //     )
+                    //   )
+                    // );
+                  }}
+                />
+              ))}
             </div>
           );
         })}
@@ -132,6 +151,15 @@ export function SpaceLandingPage() {
   const router = useRouter();
 
   const [selectedTagIds, setSelectedTagIds] = useState<TagSelection>({});
+
+  const selectedTagIdsSet = useMemo(() => {
+    // Add all tags to the set
+    const tagIds = new Set<string>();
+    Object.values(selectedTagIds).forEach((tagSet) => {
+      tagSet.forEach((tagId) => tagIds.add(tagId));
+    });
+    return tagIds;
+  }, [selectedTagIds]);
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
     useProfileListingsInSpaceQuery({
@@ -152,9 +180,11 @@ export function SpaceLandingPage() {
                 _and: Object.values(selectedTagIds)
                   .filter((set) => set.size > 0)
                   .map((categoryTagSet) => ({
-                    profile_listing_to_space_tags: {
-                      space_tag_id: { _in: Array.from(categoryTagSet) },
-                    },
+                    _and: Array.from(categoryTagSet).map((tagId) => ({
+                      profile_listing_to_space_tags: {
+                        space_tag_id: { _eq: tagId },
+                      },
+                    })),
                   })),
               }
             : undefined),
@@ -162,10 +192,14 @@ export function SpaceLandingPage() {
       },
     });
 
-  const allProfileListings = profileListingData?.profile_listing ?? [];
-  const shuffledProfileListings = shuffleProfiles(
-    allProfileListings,
-    getDayOfYear(new Date())
+  const allProfileListings = useMemo(
+    () => profileListingData?.profile_listing ?? [],
+    [profileListingData?.profile_listing]
+  );
+
+  const shuffledProfileListings = useMemo(
+    () => shuffleProfiles(allProfileListings, getDayOfYear(new Date())),
+    [allProfileListings]
   );
 
   return (
@@ -173,10 +207,10 @@ export function SpaceLandingPage() {
       <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
       {fetchingProfileListings && profileListingData === undefined ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
           {new Array(8).fill(0).map((_, i) => (
             <div
-              className="h-80 animate-pulse bg-gray-100 rounded-md"
+              className="h-80 animate-pulse rounded-md bg-gray-100"
               key={i}
             ></div>
           ))}
@@ -186,7 +220,7 @@ export function SpaceLandingPage() {
           <Text italic>No profiles found</Text>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
           <DndContext
             collisionDetection={closestCenter}
             measuring={{
@@ -202,10 +236,17 @@ export function SpaceLandingPage() {
               {shuffledProfileListings.map((listing, idx) => {
                 const { first_name, last_name } = listing.profile.user;
 
-                const tagNames =
-                  listing.profile_listing_to_space_tags?.map(
-                    (tag) => tag.space_tag.label
-                  ) ?? undefined;
+                const sortedTags = listing.profile_listing_to_space_tags
+                  .map((tag) => tag.space_tag)
+                  .sort((a, b) => {
+                    const aSelected = selectedTagIdsSet.has(a.id);
+                    const bSelected = selectedTagIdsSet.has(b.id);
+                    if (aSelected && !bSelected) return -1;
+                    if (!aSelected && bSelected) return 1;
+                    return 0;
+                  });
+
+                const tagNames = sortedTags?.map((tag) => tag.label) ?? [];
 
                 return (
                   <ProfileCard

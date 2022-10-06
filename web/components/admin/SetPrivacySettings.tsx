@@ -5,30 +5,8 @@ import toast from "react-hot-toast";
 import { Button, Text } from "../../components/atomic";
 import { useUpdateSpaceMutation } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-
-function CheckBox(props: {
-  label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  const { label, checked, onChange } = props;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.checked);
-  };
-
-  return (
-    <div className="flex items-baseline gap-4">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={handleChange}
-        className="form-checkbox h-4 w-4 shrink-0"
-      />
-      <Text variant="body1">{label}</Text>
-    </div>
-  );
-}
+import { useSaveChangesState } from "../../hooks/useSaveChangesState";
+import { CheckBox } from "../atomic/CheckBox";
 
 type SpaceAttributes = {
   public: boolean;
@@ -42,7 +20,7 @@ export function SetPrivacySettings() {
   const { currentSpace } = useCurrentSpace();
 
   const [attributes, setAttributes] = useState<SpaceAttributes>();
-  const [edited, setEdited] = useState(false);
+  const { mustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
     if (currentSpace) {
@@ -60,8 +38,25 @@ export function SetPrivacySettings() {
 
   return (
     <div className="">
+      {mustSave && (
+        <>
+          <Text variant="body2" style={{ color: "red" }}>
+            You must click {'"Save Changes"'} for your changes to take effect.
+          </Text>
+        </>
+      )}
+      <div className="h-4"></div>
+      <CheckBox
+        label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
+        checked={attributes.public}
+        onChange={(newVal) => {
+          setMustSave(true);
+          setAttributes({ ...attributes, public: newVal });
+        }}
+      />
+      <div className="h-8"></div>
       <Button
-        disabled={!edited}
+        disabled={!mustSave}
         rounded
         onClick={() => {
           if (!currentSpace) {
@@ -75,9 +70,16 @@ export function SetPrivacySettings() {
             },
             space_id: currentSpace.id,
           })
-            .then(() => {
-              setEdited(false);
-              toast.success("Saved settings");
+            .then((res) => {
+              if (res.error) {
+                throw new Error(res.error.message);
+              } else {
+                setMustSave(false);
+                toast.success("Saved settings");
+              }
+            })
+            .catch((err) => {
+              toast.error(err.message);
             })
             .finally(() => {
               setLoading(false);
@@ -87,23 +89,6 @@ export function SetPrivacySettings() {
       >
         Save changes
       </Button>
-      {edited && (
-        <>
-          <div className="h-2"></div>
-          <Text variant="body2" style={{ color: "red" }}>
-            You must click {'"Save Changes"'} for your changes to take effect.
-          </Text>
-        </>
-      )}
-      <div className="h-8"></div>
-      <CheckBox
-        label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
-        checked={attributes.public}
-        onChange={(newVal) => {
-          setEdited(true);
-          setAttributes({ ...attributes, public: newVal });
-        }}
-      />
     </div>
   );
 }

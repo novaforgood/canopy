@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import toast from "react-hot-toast";
+
 import {
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
@@ -67,17 +69,26 @@ export function EditResponse(props: EditResponseProps) {
                 },
               },
             ],
-          });
-
-          refetchListingResponse();
-          setIsOpen(false);
+          })
+            .then((res) => {
+              if (res.error) {
+                throw new Error(res.error.message);
+              } else {
+                toast.success("Saved response");
+                refetchListingResponse();
+                setIsOpen(false);
+              }
+            })
+            .catch((e) => {
+              toast.error(e.message);
+            });
         }}
         secondaryActionText="Cancel"
         onSecondaryAction={() => {
           setIsOpen(false);
         }}
       >
-        <div className="p-8 py-16 w-96 flex flex-col">
+        <div className="flex w-96 flex-col p-8 py-16">
           <Text variant="heading4">{question.title}</Text>
           <div className="h-4"></div>
           <SimpleRichTextInput

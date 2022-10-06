@@ -109,18 +109,22 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
         const oldIndex = ids.indexOf(active.id as string);
         const newIndex = ids.indexOf(over.id as string);
 
-        const newList = arrayMove(data[key], oldIndex, newIndex);
+        const newList = arrayMove<NewListingQuestion | NewTagCategory>(
+          data[key],
+          oldIndex,
+          newIndex
+        );
         onChange({ ...data, [key]: newList });
       }
     };
 
   return (
-    <div className="border border-black rounded-lg w-full flex flex-col pb-12">
-      <div className="h-20 bg-gray-100 rounded-t-lg"></div>
-      <div className="px-12 -mt-4">
+    <div className="flex w-full flex-col rounded-lg border border-black pb-12">
+      <div className="h-20 rounded-t-lg bg-gray-100"></div>
+      <div className="-mt-4 px-12">
         <div className="flex items-center gap-12">
-          <div className="rounded-full h-32 w-32 shrink-0 bg-gray-400"></div>
-          <div className="flex flex-col mt-4">
+          <div className="h-32 w-32 shrink-0 rounded-full bg-gray-400"></div>
+          <div className="mt-4 flex flex-col">
             <Text variant="heading4">Member Name</Text>
             <div className="h-1"></div>
             <Text variant="body1">
@@ -130,7 +134,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
         </div>
         <div className="h-16"></div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <div className="pt-4">
               <Text variant="heading4" bold className="-mb-4">
@@ -222,7 +226,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
             </AddSectionButton>
           </div>
           <div className="flex flex-col">
-            <div className="bg-gray-50 rounded-md p-4 ">
+            <div className="rounded-md bg-gray-50 p-4 ">
               <Text variant="heading4" bold>
                 Tags
               </Text>
@@ -286,6 +290,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                         title: "New Tag Category",
                         deleted: false,
                         space_id: currentSpace.id,
+                        rigid_select: false,
                       },
                     ],
                     listingQuestions: data.listingQuestions,
@@ -298,6 +303,7 @@ export function EditProfileSchema(props: EditProfileSchemaProps) {
                         id: getTempId(),
                         title: "New Tag Category",
                         deleted: false,
+                        rigid_select: true,
                       },
                     ],
                     listingQuestions: data.listingQuestions,

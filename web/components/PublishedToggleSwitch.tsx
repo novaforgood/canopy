@@ -37,7 +37,7 @@ export default function PublishedToggleSwitch(
     <div className="flex gap-4 items-center">
       <Switch
         checked={profileIsPublic}
-        onChange={async (newVal) => {
+        onChange={async (newVal: boolean) => {
           if (!currentProfile) {
             toast.error("No current profile");
             return;

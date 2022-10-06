@@ -47,7 +47,9 @@ function VerifyYourEmail() {
         method: "POST",
         headers: {
           authorization: `Bearer ${await currentUser.getIdToken()}`,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ updateName: true }),
       })
         .then(async () => {
           // wait half a second before redirecting to show verified screen
@@ -84,7 +86,7 @@ function VerifyYourEmail() {
         );
       }}
     >
-      <div className="h-screen flex flex-col items-start justify-center px-16 max-w-2xl">
+      <div className="flex h-screen max-w-2xl flex-col items-start justify-center px-16">
         {verified ? (
           <>
             <Text variant="heading2">Email verified!</Text>
@@ -115,7 +117,7 @@ function VerifyYourEmail() {
                 window.location.reload();
               }}
             >
-              Refresh <BxRefresh className="h-6 w-6 ml-2 -mr-2" />
+              Refresh <BxRefresh className="ml-2 -mr-2 h-6 w-6" />
             </Button>
             <div className="h-2"></div>
             <Button

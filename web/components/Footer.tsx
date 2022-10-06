@@ -6,11 +6,11 @@ import { SidePadding } from "./layout/SidePadding";
 
 export function Footer() {
   return (
-    <SidePadding as="footer" className="bg-green-700">
-      <div className="border-t-2 border-gray-700 pt-8 pb-12 flex gap-8 justify-between text-gray-100 font-sans text-sm">
+    <SidePadding as="footer" className="relative bg-green-700">
+      <div className="flex justify-between gap-8 border-t-2 border-gray-700 pt-8 pb-12 font-sans text-sm text-gray-100">
         <div className="flex gap-4">
           <img
-            src="/assets/canopy_logo_square.svg"
+            src="/assets/canopy_logo_circle.svg"
             alt="logo"
             className="h-10 w-10"
             draggable={false}
@@ -21,11 +21,11 @@ export function Footer() {
           </Text>
         </div>
       </div>
-      <div className="border-t-2 border-gray-700 pt-8 pb-12 flex gap-8 justify-between bg-green-700 text-gray-100 font-sans text-sm">
+      <div className="flex justify-between gap-8 border-t-2 border-gray-700 bg-green-700 pt-8 pb-12 font-sans text-sm text-gray-100">
         <div className="flex gap-8">
           <div>
             <div className="font-bold">Canopy</div>
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="mt-4 flex flex-col gap-2">
               <a target="_blank" className="hover:underline" href="/">
                 Home
               </a>
@@ -35,7 +35,7 @@ export function Footer() {
         <div className="flex gap-4 sm:gap-24">
           <div>
             <div className="font-bold">Legal</div>
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="mt-4 flex flex-col gap-2">
               <a target="_blank" className="hover:underline" href="/terms">
                 Terms of Use
               </a>
@@ -47,7 +47,7 @@ export function Footer() {
           </div>
           <div>
             <div className="font-bold">About the creators</div>
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="mt-4 flex flex-col gap-2">
               <a
                 target="_blank"
                 className="hover:underline"

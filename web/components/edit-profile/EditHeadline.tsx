@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import toast from "react-hot-toast";
+
 import {
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
@@ -41,7 +43,17 @@ export function EditHeadline() {
               profile_id: currentProfile?.id ?? "",
             },
             update_columns: [Profile_Listing_Update_Column.Headline],
-          });
+          })
+            .then((res) => {
+              if (res.error) {
+                throw new Error(res.error.message);
+              } else {
+                toast.success("Saved headline");
+              }
+            })
+            .catch((e) => {
+              toast.error(e.message);
+            });
 
           refetchCurrentProfile();
           setIsOpen(false);
@@ -51,7 +63,7 @@ export function EditHeadline() {
           setIsOpen(false);
         }}
       >
-        <div className="p-8 py-16 w-96 flex flex-col">
+        <div className="flex w-96 flex-col p-8 py-16">
           <Text variant="heading4">Headline</Text>
           <div className="h-4"></div>
           <SimpleTextArea

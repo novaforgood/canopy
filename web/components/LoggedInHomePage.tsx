@@ -29,32 +29,33 @@ export function LoggedInHomePage() {
         </Text>
         <div className="h-8"></div>
         <div className="flex flex-col-reverse md:flex-row items-start gap-8">
-          <div className="grid grid-rows sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start w-full flex-1">
+          <div className="grid grid-rows sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full ">
             {profileData?.profile.map((profile) => {
               return (
-                <button
-                  className="border rounded-md shadow-sm border-gray-400 hover:border-green-500 overflow-hidden transition"
-                  key={profile.id}
-                  onClick={() => {
-                    router.push(`/space/${profile.space.slug}`);
-                  }}
-                >
-                  <SpaceCoverPhoto
-                    className="w-full"
-                    src={profile.space.space_cover_image?.image.url ?? null}
-                    alt=""
-                  />
-                  <div className="flex bg-white p-2 gap-2 items-center">
-                    <BxsGroup className="w-6 h-6 shrink-0" />
-                    <Text
-                      variant="subheading1"
-                      mobileVariant="subheading2"
-                      className="truncate"
-                    >
-                      {profile.space.name}
-                    </Text>
-                  </div>
-                </button>
+                <div key={profile.id} className="">
+                  <button
+                    className="w-full border rounded-md shadow-sm border-gray-400 hover:border-green-500 overflow-hidden transition"
+                    onClick={() => {
+                      router.push(`/space/${profile.space.slug}`);
+                    }}
+                  >
+                    <SpaceCoverPhoto
+                      className="w-full"
+                      src={profile.space.space_cover_image?.image.url ?? null}
+                      alt=""
+                    />
+                    <div className="flex bg-white p-2 gap-2 items-center">
+                      <BxsGroup className="w-6 h-6 shrink-0" />
+                      <Text
+                        variant="subheading1"
+                        mobileVariant="subheading2"
+                        className="truncate"
+                      >
+                        {profile.space.name}
+                      </Text>
+                    </div>
+                  </button>
+                </div>
               );
             })}
           </div>
@@ -69,6 +70,7 @@ export function LoggedInHomePage() {
             Create new directory
           </Button>
         </div>
+        <div className="h-16"></div>
       </SidePadding>
     </>
   );

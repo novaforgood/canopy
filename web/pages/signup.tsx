@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 
 import { useSetState } from "@mantine/hooks";
 import { updateProfile } from "firebase/auth";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 
-import { Button, Text } from "../components/atomic";
+import { Button, Input, Text } from "../components/atomic";
 import { TextInput } from "../components/inputs/TextInput";
 import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
@@ -35,6 +36,12 @@ const SignUpPage: CustomPage = () => {
   const [signingInWithGoogle, setSigningInWithGoogle] = useState(false);
 
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      redirectUsingQueryParam("/");
+    }
+  }, [isLoggedIn, redirectUsingQueryParam]);
 
   const signUp = async () => {
     if (!formData.firstName) {
@@ -74,9 +81,12 @@ const SignUpPage: CustomPage = () => {
               method: "POST",
               headers: {
                 authorization: `Bearer ${tokenResult.token}`,
+                "Content-Type": "application/json",
               },
+              body: JSON.stringify({ updateName: true }),
+            }).then(() => {
+              return redirectUsingQueryParam("/");
             });
-            await redirectUsingQueryParam("/");
           } else {
             console.log(router.query);
             await router.push({ pathname: "/verify", query: router.query });
@@ -90,6 +100,7 @@ const SignUpPage: CustomPage = () => {
           );
         } else {
           toast.error(e.message);
+          handleError(e);
         }
         signOut();
       })
@@ -101,7 +112,12 @@ const SignUpPage: CustomPage = () => {
   return (
     <div className="h-screen">
       {isLoggedIn ? (
-        <div>Redirecting...</div>
+        <TwoThirdsPageLayout>
+          <div className="flex h-screen flex-col items-start justify-center px-16">
+            <Text variant="heading1">Redirecting...</Text>
+            <div className="h-40"></div>
+          </div>
+        </TwoThirdsPageLayout>
       ) : (
         <TwoThirdsPageLayout
           renderLeft={() => {
@@ -114,13 +130,13 @@ const SignUpPage: CustomPage = () => {
             );
           }}
         >
-          <div className="h-full flex flex-col items-start justify-center px-6 sm:px-16 text-green-900">
+          <div className="flex h-full flex-col items-start justify-center px-6 text-green-900 sm:px-16">
             <Text variant="heading3">
               Sign up{router.query.redirect && " to continue"}
             </Text>
             <div className="h-8"></div>
             <button
-              className="border rounded-md w-full sm:w-96 flex items-center justify-center py-2 gap-4 hover:bg-gray-50 transition active:translate-y-px"
+              className="flex w-full items-center justify-center gap-4 rounded-md border py-2 transition hover:bg-gray-50 active:translate-y-px sm:w-96"
               onClick={() => {
                 setSigningInWithGoogle(true);
                 signInWithGoogle()
@@ -131,13 +147,16 @@ const SignUpPage: CustomPage = () => {
 
                     if (isNewUser) {
                       const idToken = await userCred.user.getIdToken();
-                      await fetch(`/api/auth/upsertUserData`, {
+                      fetch(`/api/auth/upsertUserData`, {
                         method: "POST",
                         headers: {
                           authorization: `Bearer ${idToken}`,
+                          "Content-Type": "application/json",
                         },
+                        body: JSON.stringify({ updateName: true }),
+                      }).then(() => {
+                        redirectUsingQueryParam("/");
                       });
-                      await redirectUsingQueryParam("/");
                     } else {
                       // User already has an account
                       toast.error(
@@ -160,14 +179,14 @@ const SignUpPage: CustomPage = () => {
             </button>
 
             <div className="h-8"></div>
-            <div className="w-full sm:w-96 flex items-center gap-4 select-none">
-              <div className="flex-1 h-0.5 bg-gray-50"></div>
+            <div className="flex w-full select-none items-center gap-4 sm:w-96">
+              <div className="h-0.5 flex-1 bg-gray-50"></div>
               <div className="text-gray-300">or</div>
-              <div className="flex-1 h-0.5 bg-gray-50"></div>
+              <div className="h-0.5 flex-1 bg-gray-50"></div>
             </div>
             <div className="h-8"></div>
 
-            <div className="flex flex-col gap-4 w-full sm:w-96">
+            <div className="flex w-full flex-col gap-4 sm:w-96">
               <div className="flex gap-4">
                 <TextInput
                   className="w-full"
@@ -206,18 +225,35 @@ const SignUpPage: CustomPage = () => {
                 }}
                 onKeyUp={async (e) => {
                   if (e.key === "Enter") {
-                    await signUp();
+                    signUp();
                   }
                 }}
               />
             </div>
-
+            <div className="h-6"></div>
+            <div className="w-96">
+              <Text className="text-gray-600" variant="body2">
+                By creating an account, you agree to our{" "}
+                <Link href="/privacy" passHref>
+                  <a className="text-green-900 underline" target="_blank">
+                    Privacy Policy
+                  </a>
+                </Link>{" "}
+                and{" "}
+                <Link href="/terms" passHref>
+                  <a className="text-green-900 underline" target="_blank">
+                    Terms of Use
+                  </a>
+                </Link>
+                .
+              </Text>
+            </div>
             <div className="h-8"></div>
             <Button
               rounded
               loading={loading}
               onClick={async (e) => {
-                await signUp();
+                signUp();
               }}
             >
               Create account

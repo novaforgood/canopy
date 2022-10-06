@@ -1,11 +1,13 @@
 import { ReactNode, useState } from "react";
 
 import classNames from "classnames";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../components/atomic";
 import { PageNotFound } from "../../../components/error-screens/PageNotFound";
 import { SidePadding } from "../../../components/layout/SidePadding";
+import { Metadata } from "../../../components/Metadata";
 import { Navbar } from "../../../components/Navbar";
 import { SpaceLandingPage } from "../../../components/space-homepage/SpaceLandingPage";
 import { SpaceSplashPage } from "../../../components/space-homepage/SpaceSplashPage";
@@ -29,7 +31,7 @@ function IconTip(props: IconTipProps) {
 
   return (
     <div className="flex items-center gap-4">
-      <div className="border border-green-900 rounded-full w-10 h-10 p-2 shrink-0">
+      <div className="h-10 w-10 shrink-0 rounded-full border border-green-900 p-2">
         {icon}
       </div>
       <Text variant="body2">{tip}</Text>
@@ -49,9 +51,9 @@ function CollapsibleTipsBar() {
 
   return (
     <div className={styles}>
-      <div className="bg-lime-100 border-b border-gray-600 text-green-800 w-full py-8 relative">
+      <div className="relative w-full border-b border-gray-600 bg-lime-100 py-8 text-green-800">
         <SidePadding className="">
-          <div className="grid grid-rows sm:grid-cols-3 gap-4 sm:gap-12">
+          <div className="grid-rows grid gap-4 sm:grid-cols-3 sm:gap-12">
             <IconTip
               icon={<BxGroup />}
               tip="Browse the community directory below"
@@ -73,7 +75,7 @@ function CollapsibleTipsBar() {
             LocalStorage.set(LocalStorageKey.SpaceHomepageBannerClosed, true);
           }}
         >
-          <BxX className="h-8 w-8 m-2 hover:text-green-700" />
+          <BxX className="m-2 h-8 w-8 hover:text-green-700" />
         </button>
       </div>
     </div>
@@ -92,7 +94,7 @@ const SpaceHomepage: CustomPage = () => {
       <div className="bg-olive-100">
         <Navbar />
       </div>
-      <SidePadding className="bg-olive-100 flex flex-col items-center border-b border-gray-600">
+      <SidePadding className="flex flex-col items-center border-b border-gray-600 bg-olive-100">
         <div className="sm:h-16"></div>
         <SpaceSplashPage />
         <div className="h-8 sm:hidden"></div>

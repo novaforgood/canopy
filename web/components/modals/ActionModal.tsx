@@ -7,13 +7,14 @@ export interface ActionModalProps {
   children?: ReactNode;
   isOpen: boolean;
 
-  actionText: string;
+  actionText: string | ReactNode;
   actionDisabled?: boolean;
   onAction: () => Promise<void> | void;
   secondaryActionText?: string;
   onSecondaryAction?: () => Promise<void> | void;
 
   onClose?: () => void;
+  closeWhenClickedOutside?: boolean;
 }
 
 export function ActionModal({
@@ -25,14 +26,18 @@ export function ActionModal({
   onAction = () => {},
   secondaryActionText,
   onSecondaryAction = () => {},
+  closeWhenClickedOutside = false,
 }: ActionModalProps) {
   const [loadingAction, setLoadingAction] = useState(false);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white rounded-md">
+    <Modal
+      isOpen={isOpen}
+      onClose={closeWhenClickedOutside ? onClose : () => {}}
+    >
+      <div className="rounded-md bg-white">
         <div className="flex justify-end p-4 pb-0">
-          <button onClick={onClose} className="w-6 h-6">
+          <button onClick={onClose} className="h-6 w-6">
             <BxX className="hover:text-gray-700" />
           </button>
         </div>
@@ -48,7 +53,7 @@ export function ActionModal({
               setLoadingAction(false);
             }}
           >
-            {actionText}{" "}
+            {actionText}
           </Button>
           <Button variant="secondary" rounded onClick={onSecondaryAction}>
             {secondaryActionText}

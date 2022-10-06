@@ -8,6 +8,7 @@ import {
   useUpsertSpaceProfileSchemaMutation,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { resolveId } from "../../lib/tempId";
 import { Button, Text } from "../atomic";
 import {
@@ -23,7 +24,7 @@ export function EditProfileFormat() {
     tagCategories: [],
   });
 
-  const [edited, setEdited] = useState(false);
+  const { mustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
     if (
@@ -40,9 +41,11 @@ export function EditProfileFormat() {
           space_tags: { data: category.space_tags },
         })) ?? [],
     });
+    setMustSave(false);
   }, [
     currentSpace?.space_listing_questions,
     currentSpace?.space_tag_categories,
+    setMustSave,
   ]);
 
   const [loading, setLoading] = useState(false);
@@ -67,10 +70,12 @@ export function EditProfileFormat() {
                 listing_order: index,
               })),
               on_conflict: {
-                constraint: Space_Tag_Constraint.SpaceTagPkey,
+                constraint:
+                  Space_Tag_Constraint.SpaceTagLabelSpaceTagCategoryIdKey,
                 update_columns: [
                   Space_Tag_Update_Column.Label,
-                  Space_Tag_Update_Column.Deleted,
+                  Space_Tag_Update_Column.Status,
+                  Space_Tag_Update_Column.ListingOrder,
                 ],
               },
             }
@@ -81,7 +86,6 @@ export function EditProfileFormat() {
         if (result.error) {
           toast.error(result.error.message);
         } else {
-          setEdited(false);
           toast.success("Saved");
           refetchCurrentSpace();
         }
@@ -101,19 +105,11 @@ export function EditProfileFormat() {
 
   return (
     <div className="w-full">
-      <Button
-        disabled={!edited}
-        rounded
-        onClick={saveChanges}
-        loading={loading}
-      >
-        Save changes
-      </Button>
-      {edited && (
+      {mustSave && (
         <>
-          <div className="h-2"></div>
           <Text variant="body2" style={{ color: "red" }}>
-            You must click {'"Save Changes"'} for your changes to take effect.
+            You must click {'"Save Changes"'} down below for your changes to
+            take effect.
           </Text>
         </>
       )}
@@ -122,10 +118,19 @@ export function EditProfileFormat() {
       <EditProfileSchema
         data={data}
         onChange={(newData) => {
-          setEdited(true);
+          setMustSave(true);
           setData(newData);
         }}
       />
+      <div className="h-8"></div>
+      <Button
+        disabled={!mustSave}
+        rounded
+        onClick={saveChanges}
+        loading={loading}
+      >
+        Save changes
+      </Button>
       {/* <CatchUnsavedChangesModal unsavedChangesExist={edited} /> */}
     </div>
   );

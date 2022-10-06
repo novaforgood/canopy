@@ -1,31 +1,21 @@
-import { useEffect, useMemo } from "react";
-
+import Link from "next/link";
 import { useRouter } from "next/router";
-import toast from "react-hot-toast";
 
-import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
-import { MembersList } from "../../../../components/admin/MembersList";
 import { Button, Text } from "../../../../components/atomic";
-import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { EditProfileListing } from "../../../../components/EditProfileListing";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
-import { RoundedCard } from "../../../../components/RoundedCard";
-import { BxsReport } from "../../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
+import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { useUserData } from "../../../../hooks/useUserData";
 
 export default function AccountProfilePage() {
   const router = useRouter();
 
   const { userData } = useUserData();
-  const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
-  if (!currentSpace) {
-    return <div>404 - Space not found</div>;
-  }
+  const spaceSlug = useQueryParam("slug", "string");
 
   if (!currentProfile) {
     return <div>Ur not in this space lol</div>;
@@ -38,7 +28,9 @@ export default function AccountProfilePage() {
       <Navbar />
       <SidePadding className="min-h-screen">
         <div className="h-16"></div>
-        <Breadcrumbs />
+        {/* <Breadcrumbs /> */}
+        <Link href={`/space/${spaceSlug}`}>{"< Back to home"}</Link>
+
         <div className="h-16"></div>
 
         <Text variant="heading2">Edit your profile</Text>
@@ -54,11 +46,7 @@ export default function AccountProfilePage() {
             <Button
               rounded
               onClick={() => {
-                if (!currentSpace) {
-                  toast.error("currentSpace not defined");
-                  return;
-                }
-                router.push(`/space/${currentSpace.slug}/create-profile`);
+                router.push(`/space/${spaceSlug}/create-profile`);
               }}
             >
               Create a profile

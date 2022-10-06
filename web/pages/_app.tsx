@@ -1,17 +1,23 @@
-import { Suspense, useCallback, useEffect } from "react";
+import { ReactNode, Suspense, useCallback, useEffect, useMemo } from "react";
 
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
-import { RecoilRoot, useRecoilState } from "recoil";
+import { RecoilRoot, useRecoilState, useSetRecoilState } from "recoil";
 import { useClient } from "urql";
 
 import { Footer } from "../components/Footer";
-import { useSpaceBySlugQuery } from "../generated/graphql";
+import { Metadata } from "../components/Metadata";
+import { CatchUnsavedChanges } from "../components/singletons/CatchUnsavedChanges";
+import {
+  useAllChatRoomsSubscription,
+  useSpaceBySlugQuery,
+} from "../generated/graphql";
+import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
-import { sessionAtom } from "../lib/recoil";
+import { notificationsCountAtom, sessionAtom } from "../lib/recoil";
 import { AuthProvider } from "../providers/AuthProvider";
 import { UrqlProvider } from "../providers/UrqlProvider";
 import { CustomPage } from "../types";
@@ -19,12 +25,54 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
+import Head from "next/head";
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
 };
 
+function useNumberOfNotifications() {
+  const { currentProfile } = useCurrentProfile();
+  const [{ data, fetching }] = useAllChatRoomsSubscription({
+    variables: { profile_id: currentProfile?.id ?? "" },
+    pause: !currentProfile,
+  });
+
+  const numUnreadMessages = useMemo(
+    () =>
+      data?.chat_room.reduce((acc, room) => {
+        const myProfileEntry = room.profile_to_chat_rooms.find(
+          (entry) => entry.profile.id === currentProfile?.id
+        );
+        if (!myProfileEntry) return acc;
+        const latestMessage = room.chat_messages[0];
+        if (!latestMessage) return acc;
+
+        const shouldNotHighlight =
+          // Latest message was sent by me
+          latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+          // Latest message sent by the other guy was read
+          (myProfileEntry.latest_read_chat_message_id &&
+            latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
+
+        if (shouldNotHighlight) {
+          return acc;
+        } else {
+          return acc + 1;
+        }
+      }, 0),
+    [data, currentProfile?.id]
+  );
+
+  const setNotificationsCount = useSetRecoilState(notificationsCountAtom);
+  useEffect(() => {
+    setNotificationsCount(numUnreadMessages ?? 0);
+  }, [numUnreadMessages, setNotificationsCount]);
+}
+
 function App({ Component, pageProps }: CustomAppProps) {
+  useNumberOfNotifications();
+
   const { refreshSession } = useRefreshSession();
 
   ///// Force update JWT if it will expire in 3 minutes /////
@@ -76,7 +124,6 @@ function App({ Component, pageProps }: CustomAppProps) {
   }, [spaceSlug, executeQuery, previousSlug]);
   const spaceId = spaceData?.space[0]?.id;
 
-  const client = useClient();
   useEffect(() => {
     const lastVisitedSpaceId = LocalStorage.get(
       LocalStorageKey.LastVisitedSpaceId
@@ -92,10 +139,13 @@ function App({ Component, pageProps }: CustomAppProps) {
     }
   }, [spaceId, setSession, refreshSession]);
 
+  const getLayout = Component.getLayout || ((page: ReactNode) => page);
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      <CatchUnsavedChanges />
       <Toaster />
-      <Component {...pageProps} />
+      <Metadata />
+      {getLayout(<Component {...pageProps} />)}
       {Component.showFooter !== false && <Footer />}
     </Suspense>
   );

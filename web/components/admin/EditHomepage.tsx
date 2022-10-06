@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import AvatarEditor from "react-avatar-editor";
 import toast from "react-hot-toast";
@@ -9,6 +9,7 @@ import {
 } from "../../generated/graphql";
 import { BxsCloudUpload } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { uploadImage } from "../../lib/image";
 import { Button, Text } from "../atomic";
 import { ImageUploader } from "../ImageUploader";
@@ -31,83 +32,93 @@ export function EditHomepage() {
 
   const editor = useRef<AvatarEditor | null>(null);
 
-  const [edited, setEdited] = useState(false);
+  const { mustSave, setMustSave } = useSaveChangesState();
+
   const [editedCoverPhoto, setEditedCoverPhoto] = useState(false);
   const [loading, setLoading] = useState(false);
   const [_, updateSpace] = useUpdateSpaceMutation();
   const [__, upsertCoverImage] = useUpsertSpaceCoverImageMutation();
 
+  const saveHomepage = useCallback(async () => {
+    if (!currentSpace) {
+      toast.error("No space");
+      return;
+    }
+    setLoading(true);
+
+    const imageData =
+      editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
+
+    if (imageData && editedCoverPhoto) {
+      const res = await uploadImage(imageData).catch((err) => {
+        toast.error(err.message);
+        return null;
+      });
+      if (!res) {
+        setLoading(false);
+        toast.error("Image failed to upload");
+        return;
+      }
+
+      const image = res.data.image;
+
+      const res2 = await upsertCoverImage({
+        image_id: image.id,
+        space_id: currentSpace.id,
+      }).catch((err) => {
+        toast.error(err.message);
+        return null;
+      });
+      if (!res2) {
+        setLoading(false);
+        toast.error("Upsert cover image failed");
+        return;
+      }
+    }
+
+    updateSpace({
+      variables: {
+        name: spaceName,
+        description_html: spaceDescriptionHtml,
+      },
+      space_id: currentSpace.id,
+    })
+      .then((res) => {
+        if (res.error) {
+          throw new Error(res.error.message);
+        }
+        setMustSave(false);
+        toast.success("Saved settings");
+      })
+      .catch((e) => {
+        toast.error(e.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [
+    currentSpace,
+    editedCoverPhoto,
+    setMustSave,
+    spaceDescriptionHtml,
+    spaceName,
+    updateSpace,
+    upsertCoverImage,
+  ]);
+
   return (
     <div className="flex flex-col items-start">
-      <Button
-        disabled={!edited && !editedCoverPhoto}
-        rounded
-        onClick={async () => {
-          if (!currentSpace) {
-            toast.error("No space");
-            return;
-          }
-          setLoading(true);
-
-          const imageData =
-            editor.current?.getImageScaledToCanvas().toDataURL() ?? null;
-
-          if (imageData && editedCoverPhoto) {
-            const res = await uploadImage(imageData).catch((err) => {
-              toast.error(err.message);
-              return null;
-            });
-            if (!res) {
-              setLoading(false);
-              toast.error("Image failed to upload");
-              return;
-            }
-
-            const image = res.data.image;
-
-            const res2 = await upsertCoverImage({
-              image_id: image.id,
-              space_id: currentSpace.id,
-            }).catch((err) => {
-              toast.error(err.message);
-              return null;
-            });
-            if (!res2) {
-              setLoading(false);
-              toast.error("Upsert cover image failed");
-              return;
-            }
-          }
-
-          updateSpace({
-            variables: {
-              name: spaceName,
-              description_html: spaceDescriptionHtml,
-            },
-            space_id: currentSpace.id,
-          })
-            .then(() => {
-              setEdited(false);
-              toast.success("Saved settings");
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        }}
-        loading={loading}
-      >
-        Save changes
-      </Button>
-      {edited && (
+      {mustSave && (
         <>
           <div className="h-2"></div>
           <Text variant="body2" style={{ color: "red" }}>
-            You must click {'"Save Changes"'} for your changes to take effect.
+            You must click {'"Save Changes"'} down below for your changes to
+            take effect.
           </Text>
         </>
       )}
 
-      <div className="h-16"></div>
+      <div className="h-8"></div>
       <Text variant="subheading1" bold>
         Space name
       </Text>
@@ -116,7 +127,7 @@ export function EditHomepage() {
         <TextInput
           value={spaceName}
           onValueChange={(newValue) => {
-            setEdited(true);
+            setMustSave(true);
             setSpaceName(newValue);
           }}
         ></TextInput>
@@ -133,7 +144,7 @@ export function EditHomepage() {
           initContent={currentSpace?.description_html ?? undefined}
           characterLimit={300}
           onUpdate={({ editor }) => {
-            setEdited(true);
+            setMustSave(true);
             setSpaceDescriptionHtml(editor.getHTML());
           }}
         />
@@ -161,12 +172,22 @@ export function EditHomepage() {
         width={600}
         showZoom
         renderUploadIcon={() => (
-          <BxsCloudUpload className="text-gray-500 h-32 w-32 -mb-2" />
+          <BxsCloudUpload className="-mb-2 h-32 w-32 text-gray-500" />
         )}
         getRef={(ref) => {
           editor.current = ref;
         }}
       />
+
+      <div className="h-16"></div>
+      <Button
+        disabled={!mustSave && !editedCoverPhoto}
+        rounded
+        onClick={saveHomepage}
+        loading={loading}
+      >
+        Save changes
+      </Button>
     </div>
   );
 }

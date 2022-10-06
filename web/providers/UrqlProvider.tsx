@@ -17,5 +17,9 @@ export function UrqlProvider({ children }: UrqlProviderProps) {
     [session?.jwt]
   );
 
+  if (!client) {
+    return null;
+  }
+
   return <Provider value={client}>{children}</Provider>;
 }

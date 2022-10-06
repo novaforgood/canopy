@@ -1,6 +1,7 @@
 import { useDisclosure } from "@mantine/hooks";
 
 import { Profile_Role_Enum, useProfileImageQuery } from "../generated/graphql";
+import { BxMessageDetail } from "../generated/icons/regular";
 import { BxsPencil } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
@@ -8,6 +9,7 @@ import { useUserData } from "../hooks/useUserData";
 
 import { Button, Text } from "./atomic";
 import { EditHeadline } from "./edit-profile/EditHeadline";
+import { EditName } from "./edit-profile/EditName";
 import { EditProfileImageModal } from "./edit-profile/EditProfileImageModal";
 import { EditProfileTags } from "./edit-profile/EditProfileTags";
 import { EditResponse } from "./edit-profile/EditResponse";
@@ -16,7 +18,6 @@ import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
 import { EditButton } from "./EditButton";
 import { ProfileImage } from "./ProfileImage";
 import PublishedToggleSwitch from "./PublishedToggleSwitch";
-import { HoverTooltip } from "./tooltips";
 
 function EditProfileImage() {
   const { currentProfile } = useCurrentProfile();
@@ -32,12 +33,12 @@ function EditProfileImage() {
 
   return (
     <>
-      <div className="h-24 w-24 sm:h-40 sm:w-40 shrink-0 rounded-full relative">
+      <div className="relative h-24 w-24 shrink-0 rounded-full sm:h-40 sm:w-40">
         <ProfileImage className="h-full w-full" src={profileImageUrl} />
         <button
           onClick={handlers.open}
-          className="absolute top-0 left-0 h-full w-full rounded-full bg-black/50 text-white/80 
-          opacity-0 hover:opacity-100 transition flex items-center p-2 text-center"
+          className="absolute top-0 left-0 flex h-full w-full items-center rounded-full 
+          bg-black/50 p-2 text-center text-white/80 opacity-0 transition hover:opacity-100"
         >
           <Text>Change Profile Image</Text>
         </button>
@@ -75,48 +76,52 @@ export function EditProfileListing(props: EditProfileListingProps) {
         />
       )}
       <div className="h-4"></div>
-      <div className="bg-white max-w-3xl border border-black rounded-lg w-full flex flex-col pb-12">
-        <div className="h-20 bg-gray-100 rounded-t-lg"></div>
-        <div className="px-4 sm:px-12 -mt-4">
-          <div className="flex items-center gap-6 sm:gap-12">
-            <EditProfileImage />
-            <div className="flex flex-col mt-4">
-              <Text variant="heading4">
-                {first_name} {last_name}
-              </Text>
-              <div className="h-1"></div>
-              <EditHeadline />
+      <div className="flex w-full max-w-3xl flex-col rounded-lg border border-black bg-white pb-12">
+        <div className="h-20 rounded-t-lg bg-gray-100"></div>
+        <div className="-mt-4 px-4 sm:px-12">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6 sm:gap-12">
+              <EditProfileImage />
+              <div className="mt-4 flex flex-col">
+                <div className="flex">
+                  <Text variant="heading4">
+                    {first_name} {last_name}
+                  </Text>
+                  <EditName />
+                </div>
+                <div className="h-1"></div>
+                <EditHeadline />
+              </div>
             </div>
+            <Button rounded className="flex items-center" disabled={true}>
+              <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
+              Message
+            </Button>
           </div>
           <div className="h-16"></div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col items-start gap-12 pt-4">
               {currentSpace.space_listing_questions
                 .filter((item) => item.deleted === false)
                 .map((question) => {
                   return <EditResponse key={question.id} question={question} />;
                 })}
-              <div>
-                <Text variant="subheading1">{"Let's talk!"}</Text>
-                <div className="h-4"></div>
-
-                <Button disabled rounded>
-                  Contact {first_name}
-                </Button>
-              </div>
             </div>
             <div>
               {currentSpace.space_tag_categories.length > 0 && (
                 <>
-                  <div className="bg-gray-50 p-4 rounded-md flex flex-col items-start gap-12">
+                  <div className="flex flex-col items-start gap-12 rounded-md bg-gray-50 p-4">
                     {currentSpace.space_tag_categories
                       .filter((item) => item.deleted === false)
                       .map((category) => {
                         return (
                           <EditProfileTags
                             key={category.id}
-                            tagCategory={category}
+                            tagCategoryId={category.id}
+                            profileListingId={
+                              currentProfile.profile_listing?.id ?? ""
+                            }
                           />
                         );
                       })}
@@ -125,7 +130,7 @@ export function EditProfileListing(props: EditProfileListingProps) {
                 </>
               )}
 
-              <div className="bg-gray-50 p-4 rounded-md flex flex-col items-start">
+              <div className="flex flex-col items-start rounded-md bg-gray-50 p-4">
                 <Text variant="subheading1">
                   Contact
                   <EditButton

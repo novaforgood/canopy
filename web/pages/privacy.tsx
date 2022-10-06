@@ -14,5 +14,6 @@ const PrivacyPage: CustomPage = () => {
 };
 
 PrivacyPage.showFooter = false;
+PrivacyPage.requiredAuthorizations = [];
 
 export default PrivacyPage;

@@ -7,7 +7,7 @@ import { sessionAtom } from "../lib/recoil";
 
 export function useUserData() {
   const session = useRecoilValue(sessionAtom);
-  const [{ data, fetching }] = useUserQuery({
+  const [{ data, fetching }, refetchUserData] = useUserQuery({
     variables: { id: session?.userId ?? "" },
   });
 
@@ -15,7 +15,8 @@ export function useUserData() {
     () => ({
       userData: data?.user_by_pk,
       fetchingUserData: fetching,
+      refetchUserData,
     }),
-    [data?.user_by_pk, fetching]
+    [data?.user_by_pk, fetching, refetchUserData]
   );
 }

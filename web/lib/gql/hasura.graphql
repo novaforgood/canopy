@@ -9,6 +9,17 @@ query User($id: String!) {
   }
 }
 
+mutation UpdateUser($id: String!, $first_name: String!, $last_name: String!) {
+  update_user_by_pk(
+    pk_columns: { id: $id }
+    _set: { first_name: $first_name, last_name: $last_name }
+  ) {
+    id
+    first_name
+    last_name
+  }
+}
+
 query AllProfilesOfUser($user_id: String!) {
   profile(where: { user_id: { _eq: $user_id } }) {
     id
@@ -28,10 +39,15 @@ query AllProfilesOfUser($user_id: String!) {
         }
       }
       profile_listing_to_space_tags(
-        where: { space_tag: { deleted: { _eq: false } } }
+        where: { space_tag: { status: { _neq: Deleted } } }
       ) {
         id
         space_tag_id
+        space_tag {
+          id
+          space_tag_category_id
+          label
+        }
       }
     }
 
@@ -89,11 +105,12 @@ query SpaceBySlug($slug: String!) {
       deleted
       space_id
       listing_order
+      rigid_select
       space_tags(order_by: { listing_order: asc }) {
         id
         label
-        deleted
         listing_order
+        status
       }
     }
     space_cover_image {
@@ -200,10 +217,14 @@ query SpaceTagCategories($space_id: uuid!) {
     id
     title
     deleted
-    space_tags {
+    space_id
+    listing_order
+    rigid_select
+    space_tags(order_by: { listing_order: asc }) {
       id
       label
-      deleted
+      listing_order
+      status
     }
   }
 }
@@ -212,7 +233,7 @@ query ProfileListingToSpaceTag($profile_id: uuid!) {
   profile_listing_to_space_tag(
     where: {
       profile_listing: { profile_id: { _eq: $profile_id } }
-      space_tag: { deleted: { _eq: false } }
+      space_tag: { status: { _neq: Deleted } }
     }
   ) {
     id
@@ -222,7 +243,7 @@ query ProfileListingToSpaceTag($profile_id: uuid!) {
       id
       label
       space_tag_category_id
-      deleted
+      status
     }
   }
 }
@@ -231,12 +252,13 @@ query SpaceTags($space_tag_category_id: uuid!) {
   space_tag(
     where: {
       space_tag_category_id: { _eq: $space_tag_category_id }
-      deleted: { _eq: false }
+      status: { _neq: Deleted }
     }
   ) {
     id
     label
     space_tag_category {
+      id
       space_id
       title
     }
@@ -256,7 +278,7 @@ query ProfileListingsInSpace($where: profile_listing_bool_exp) {
       }
     }
     profile_listing_to_space_tags(
-      where: { space_tag: { deleted: { _eq: false } } }
+      where: { space_tag: { status: { _neq: Deleted } } }
     ) {
       id
       space_tag_id
@@ -309,7 +331,7 @@ query ProfileById($profile_id: uuid!) {
         }
       }
       profile_listing_to_space_tags(
-        where: { space_tag: { deleted: { _eq: false } } }
+        where: { space_tag: { status: { _neq: Deleted } } }
       ) {
         id
         space_tag_id
@@ -329,6 +351,13 @@ query ProfileById($profile_id: uuid!) {
       id
       profile_role
     }
+  }
+  profile_to_chat_room(
+    where: {
+      chat_room: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
+    }
+  ) {
+    chat_room_id
   }
 }
 
@@ -364,6 +393,17 @@ query ProfileListing($profile_listing_id: uuid!) {
       space_listing_question {
         id
         title
+      }
+    }
+    profile_listing_to_space_tags(
+      where: { space_tag: { status: { _neq: Deleted } } }
+    ) {
+      id
+      space_tag_id
+      space_tag {
+        id
+        space_tag_category_id
+        label
       }
     }
     profile {
@@ -432,7 +472,7 @@ mutation UpsertSpaceProfileSchema(
       space_tags {
         id
         label
-        deleted
+        status
         space_tag_category_id
       }
     }
@@ -603,5 +643,44 @@ query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
     aggregate {
       count
     }
+  }
+}
+
+query TagCounts($space_tag_category_id: uuid!) {
+  space_tag_category_by_pk(id: $space_tag_category_id) {
+    id
+    space_tags {
+      id
+      profile_listing_to_space_tags_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+}
+
+query TagCategoryRigidSelect($tag_category_id: uuid!) {
+  space_tag_category_by_pk(id: $tag_category_id) {
+    id
+    rigid_select
+    title
+  }
+}
+
+mutation UpdateSpaceTagCategory(
+  $space_tag_category_id: uuid!
+  $variables: space_tag_category_set_input!
+) {
+  update_space_tag_category_by_pk(
+    pk_columns: { id: $space_tag_category_id }
+    _set: $variables
+  ) {
+    id
+    listing_order
+    space_id
+    title
+    deleted
+    rigid_select
   }
 }

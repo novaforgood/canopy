@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: profile_listing_response
+  schema: public
 object_relationships:
   - name: profile_listing
     using:
@@ -19,6 +19,9 @@ insert_permissions:
                     user_id:
                       _eq: X-Hasura-User-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -27,14 +30,10 @@ insert_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: MemberWhoCanList
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
       columns:
         - profile_listing_id
         - response_html
         - space_listing_question_id
-      backend_only: false
 select_permissions:
   - role: public
     permission:
@@ -90,6 +89,9 @@ update_permissions:
                     user_id:
                       _eq: X-Hasura-User-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -98,13 +100,11 @@ update_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: MemberWhoCanList
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened
       check: null
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         _or:
           - _and:
@@ -113,6 +113,9 @@ delete_permissions:
                     user_id:
                       _eq: X-Hasura-User-Id
               - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
                   _where:
                     _and:
                       - user_id:
@@ -121,6 +124,3 @@ delete_permissions:
                           _eq: X-Hasura-Space-Id
                       - profile_role:
                           _eq: MemberWhoCanList
-                  _table:
-                    schema: public
-                    name: profile_to_profile_role_flattened

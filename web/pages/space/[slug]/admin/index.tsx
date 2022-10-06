@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
 
 import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
+import { EditProfileTags } from "../../../../components/admin/edit-profile-tags/EditProfileTags";
 import { EditHomepage } from "../../../../components/admin/EditHomepage";
 import { EditProfileFormat } from "../../../../components/admin/EditProfileFormat";
 import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
@@ -19,11 +21,13 @@ import { BxLink, BxRightArrowAlt } from "../../../../generated/icons/regular";
 import { BxsCog, BxsReport } from "../../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
+import { useSaveChangesState } from "../../../../hooks/useSaveChangesState";
 
 enum ManageSpaceTabs {
   Members = "Members",
   PrivacySettings = "Privacy Settings",
   EditProfileFormat = "Edit Profile Format",
+  EditProfileTags = "Edit Tags",
   EditHomepage = "Edit Homepage",
 }
 
@@ -31,6 +35,7 @@ const MAP_TAB_TO_COMPONENT = {
   [ManageSpaceTabs.Members]: MembersList,
   [ManageSpaceTabs.PrivacySettings]: SetPrivacySettings,
   [ManageSpaceTabs.EditProfileFormat]: EditProfileFormat,
+  [ManageSpaceTabs.EditProfileTags]: EditProfileTags,
   [ManageSpaceTabs.EditHomepage]: EditHomepage,
 };
 
@@ -38,6 +43,7 @@ const MAP_TAB_TO_TITLE = {
   [ManageSpaceTabs.Members]: "Members",
   [ManageSpaceTabs.PrivacySettings]: "Privacy Settings",
   [ManageSpaceTabs.EditProfileFormat]: "Edit Profile Format",
+  [ManageSpaceTabs.EditProfileTags]: "Edit Profile Tags",
   [ManageSpaceTabs.EditHomepage]: "Edit Homepage",
 };
 
@@ -48,18 +54,24 @@ function ManageSpace() {
     ManageSpaceTabs.Members
   );
 
-  const Component = MAP_TAB_TO_COMPONENT[selectedTab];
+  const Component = useMemo(
+    () => MAP_TAB_TO_COMPONENT[selectedTab],
+    [selectedTab]
+  );
+
+  const { validateChangesSaved } = useSaveChangesState();
+
   return (
-    <RoundedCard className="w-full overflow-x-auto">
+    <RoundedCard className="flex min-h-screen w-full flex-col overflow-x-auto">
       <div className="flex items-center gap-2">
         <BxsCog className="h-7 w-7" />
         <Text variant="heading4">Manage Space</Text>
       </div>
-      <div className="h-6 sm:h-12"></div>
-      <div className="flex flex-col sm:flex-row items-start w-full">
+      <div className="h-6 shrink-0 sm:h-12"></div>
+      <div className="flex w-full flex-1 flex-col items-start sm:flex-row">
         <Responsive mode="desktop-only">
           <div className="flex flex-col items-start whitespace-nowrap">
-            <div className="flex flex-col items-end gap-3 w-full">
+            <div className="flex w-full flex-col items-end gap-3">
               {ALL_TABS.map((tab) => {
                 const styles = classNames({
                   "flex items-center": true,
@@ -68,7 +80,11 @@ function ManageSpace() {
                 return (
                   <button
                     key={tab}
-                    onClick={() => setSelectedTab(tab)}
+                    onClick={() => {
+                      validateChangesSaved().then((leave) => {
+                        if (leave) setSelectedTab(tab);
+                      });
+                    }}
                     className={styles}
                   >
                     <Text variant="body1">{MAP_TAB_TO_TITLE[tab]}</Text>
@@ -84,7 +100,7 @@ function ManageSpace() {
           </div>
         </Responsive>
         <Responsive mode="desktop-only" className="self-stretch">
-          <div className="self-stretch w-0.25 h-full bg-gray-300 shrink-0 mx-8"></div>
+          <div className="mx-8 h-full w-0.25 shrink-0 self-stretch bg-gray-300"></div>
         </Responsive>
         <Responsive mode="mobile-only" className="w-full">
           <Select
@@ -103,7 +119,7 @@ function ManageSpace() {
           <div className="h-8"></div>
         </Responsive>
 
-        <div className="min-h-screen sm:w-full">
+        <div className="flex-1 overflow-y-auto sm:w-full">
           <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-8"></div>
           <Component />
@@ -132,8 +148,8 @@ export default function AdminPage() {
       <Navbar />
       <SidePadding className="min-h-screen">
         <div className="h-16"></div>
-        <Breadcrumbs />
-        <div className="h-16"></div>
+        {/* <Breadcrumbs />
+        <div className="h-16"></div> */}
         <Text variant="heading2">Admin dashboard</Text>
         <div className="h-8"></div>
         <RoundedCard className="w-full">
