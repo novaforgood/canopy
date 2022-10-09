@@ -3,18 +3,36 @@ import { useCallback, useMemo } from "react";
 import { useInsertProfileViewEventMutation } from "../../generated/graphql";
 import { LocalStorage, LocalStorageKey } from "../../lib/localStorage";
 
+/**
+ * Backend only accepts one instance of [viewerProfileId, viewedProfileId] per 15 minutes
+ *
+ * Since localstorage is cleared on logout, we only need to track viewedProfileId (viewerProfileId is consistent in a session)
+ */
+
 // Amount of time to wait before sending a repeat event
-const PAGE_VIEW_COOLDOWN = 1000 * 60 * 0.3;
+// (Sending before 15 mins will result in rejection anyways, so we avoid spamming the backend)
+const PAGE_VIEW_COOLDOWN = 1000 * 60 * 15; // 15 minutes (backend only accepts 1 identical event per 15 minutes)
+
+// This only happens if the localstorage is somehow cleared--backend check will say event sent is too soon
+// Cooldown can be under 15 minutes so we will retry in 5 minutes
+const PAGE_VIEW_TOO_SOON_COOLDOWN = 1000 * 60 * 5;
+
+// If an unexpected error occurs, we will retry in 2 minutes
+const PAGE_VIEW_ERROR_COOLDOWN = 1000 * 60 * 2; // 2 minutes (rate limit)
 
 function shouldTrackView(viewedProfileId: string) {
-  const lastViewed = (LocalStorage.get(LocalStorageKey.ProfileLastViewed) ||
-    {}) as Record<string, number>;
+  const nextTrackTimes = (LocalStorage.get(
+    LocalStorageKey.ProfileLastViewedCooldown
+  ) || {}) as Record<string, number>;
 
   if (
-    lastViewed[viewedProfileId] &&
-    Date.now() - lastViewed[viewedProfileId] < PAGE_VIEW_COOLDOWN
+    nextTrackTimes[viewedProfileId] &&
+    Date.now() < nextTrackTimes[viewedProfileId]
   ) {
-    console.log(Date.now() - lastViewed[viewedProfileId]);
+    // console.log(
+    //   nextTrackTimes[viewedProfileId] - Date.now(),
+    //   "ms until next tracking event"
+    // );
     // Don't track if we've already tracked a view PAGE_VIEW_COOLDOWN ago
     return false;
   }
@@ -22,13 +40,15 @@ function shouldTrackView(viewedProfileId: string) {
   return true;
 }
 
-function afterTrackViewAttempt(viewedProfileId: string) {
-  const lastViewed = (LocalStorage.get(LocalStorageKey.ProfileLastViewed) ||
-    {}) as Record<string, number>;
+function markTrackingAttempt(viewedProfileId: string, cooldown: number) {
+  const nextTrackTimes = (LocalStorage.get(
+    LocalStorageKey.ProfileLastViewedCooldown
+  ) || {}) as Record<string, number>;
 
-  lastViewed[viewedProfileId] = Date.now();
-  LocalStorage.set(LocalStorageKey.ProfileLastViewed, lastViewed);
+  nextTrackTimes[viewedProfileId] = Date.now() + cooldown;
+  LocalStorage.set(LocalStorageKey.ProfileLastViewedCooldown, nextTrackTimes);
 }
+
 export function useProfileViewTracker() {
   const [_, insertProfileViewEvent] = useInsertProfileViewEventMutation();
 
@@ -40,8 +60,17 @@ export function useProfileViewTracker() {
       insertProfileViewEvent({
         viewed_profile_id: viewedProfileId,
         viewer_profile_id: viewerProfileId,
+      }).then((res) => {
+        if (res.error) {
+          if (res.error.message.includes("15 minutes")) {
+            markTrackingAttempt(viewedProfileId, PAGE_VIEW_TOO_SOON_COOLDOWN);
+          } else {
+            markTrackingAttempt(viewedProfileId, PAGE_VIEW_ERROR_COOLDOWN);
+          }
+        } else {
+          markTrackingAttempt(viewedProfileId, PAGE_VIEW_COOLDOWN);
+        }
       });
-      afterTrackViewAttempt(viewedProfileId);
     },
     [insertProfileViewEvent]
   );

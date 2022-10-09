@@ -45,11 +45,13 @@ const ProfilePage: CustomPage = () => {
     if (!profileId) {
       return;
     }
-    if (!currentProfile) {
+    if (!currentProfile?.id) {
       return;
     }
+
+    // This should only run once per page load.
     attemptTrackView(profileId, currentProfile.id);
-  }, [attemptTrackView, currentProfile, profileId]);
+  }, [attemptTrackView, currentProfile?.id, profileId]);
 
   const [open, handlers] = useDisclosure(false);
   const [loginModalOpen, loginModalHandlers] = useDisclosure(false);

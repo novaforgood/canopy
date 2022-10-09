@@ -5,8 +5,8 @@ export enum LocalStorageKey {
   // Form data during space creation
   CreateSpace = "CreateSpace",
 
-  // [profileId] => last viewed
-  ProfileLastViewed = "ProfileLastViewed",
+  // [profileId] => Time after which we can send another tracking event [number]
+  ProfileLastViewedCooldown = "ProfileLastViewedCooldown",
 
   LastVisitedSpaceId = "LastVisitedSpaceId",
   SpaceHomepageBannerClosed = "SpaceHomepageBannerClosed",
