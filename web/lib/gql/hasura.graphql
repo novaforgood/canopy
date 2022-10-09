@@ -357,6 +357,7 @@ query ProfileById($profile_id: uuid!) {
       chat_room: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
     }
   ) {
+    id
     chat_room_id
   }
 }
