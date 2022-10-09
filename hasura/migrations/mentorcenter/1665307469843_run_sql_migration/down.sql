@@ -1,0 +1,7 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE TRIGGER before_insert_event_profile_view_trigger
+--    BEFORE INSERT
+--    ON event_profile_view
+--    FOR EACH ROW
+--    EXECUTE PROCEDURE run_before_insert_event_profile_view();
