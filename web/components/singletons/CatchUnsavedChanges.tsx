@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
 
-import { mustSaveAtom } from "../../lib/recoil";
+import { mustSaveAtom } from "../../lib/jotai";
 import { Text } from "../atomic";
 import { ActionModal } from "../modals/ActionModal";
 
 export function CatchUnsavedChanges() {
-  const [mustSave, setMustSave] = useRecoilState(mustSaveAtom);
+  const [mustSave, setMustSave] = useAtom(mustSaveAtom);
 
   const router = useRouter();
 

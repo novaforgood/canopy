@@ -1,15 +1,15 @@
 import { useCallback } from "react";
 
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 
 import { Button, Text } from "../components/atomic";
 import { loadSession } from "../lib";
+import { sessionAtom } from "../lib/jotai";
 import { LocalStorage } from "../lib/localStorage";
-import { sessionAtom } from "../lib/recoil";
 import { CustomPage } from "../types";
 
 const DebugPage: CustomPage = () => {
-  const [session, setSession] = useRecoilState(sessionAtom);
+  const [session, setSession] = useAtom(sessionAtom);
 
   const reloadSession = useCallback(async () => {
     const session = await loadSession({

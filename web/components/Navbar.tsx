@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { Transition } from "@headlessui/react";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
 
 import {
   Profile_Role_Enum,
@@ -22,8 +22,8 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
+import { notificationsCountAtom } from "../lib/jotai";
 import { LocalStorage } from "../lib/localStorage";
-import { notificationsCountAtom } from "../lib/recoil";
 
 import { Button, Text } from "./atomic";
 import { IconButton } from "./buttons/IconButton";
@@ -188,7 +188,7 @@ function DesktopNavbar() {
   const spaceSlug = useQueryParam("slug", "string");
   const isHome = arr[arr.length - 1] === spaceSlug;
 
-  const notificationsCount = useRecoilValue(notificationsCountAtom);
+  const [notificationsCount] = useAtom(notificationsCountAtom);
 
   return (
     <SidePadding>

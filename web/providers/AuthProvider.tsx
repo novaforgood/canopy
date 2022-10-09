@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
 
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser, onAuthStateChanged } from "../lib/firebase";
-import { sessionAtom } from "../lib/recoil";
+import { sessionAtom } from "../lib/jotai";
 import {
   AuthenticationStatus,
   RequiredAuthorization,
@@ -22,7 +22,7 @@ export function AuthProvider({
 }: AuthProviderProps) {
   const router = useRouter();
   const isLoggedIn = useIsLoggedIn();
-  const [session, setSession] = useRecoilState(sessionAtom);
+  const [session, setSession] = useAtom(sessionAtom);
 
   const { refreshSession } = useRefreshSession();
 
