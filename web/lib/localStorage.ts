@@ -1,7 +1,13 @@
+import { z } from "zod";
 type JSONType = Record<string, unknown> | string | boolean | number;
 
 export enum LocalStorageKey {
+  // Form data during space creation
   CreateSpace = "CreateSpace",
+
+  // [profileId] => Time after which we can send another tracking event [number]
+  ProfileLastViewedCooldown = "ProfileLastViewedCooldown",
+
   LastVisitedSpaceId = "LastVisitedSpaceId",
   SpaceHomepageBannerClosed = "SpaceHomepageBannerClosed",
 }

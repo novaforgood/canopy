@@ -1,12 +1,10 @@
 import { devtoolsExchange } from "@urql/devtools";
 import { cacheExchange } from "@urql/exchange-graphcache";
 import { createClient as createWSClient } from "graphql-ws";
-import { nanoid } from "nanoid";
 import {
   createClient,
   dedupExchange,
   fetchExchange,
-  stringifyVariables,
   subscriptionExchange,
 } from "urql";
 
@@ -67,13 +65,19 @@ export function getUrqlClient(jwt: string) {
           profile_aggregate_fields: () => null,
           connection_request_aggregate: () => null,
           connection_request_aggregate_fields: () => null,
+          chat_message_admin_view_aggregate: () => null,
+          chat_message_admin_view_aggregate_fields: () => null,
+          event_profile_view_aggregate: () => null,
+          event_profile_view_aggregate_fields: () => null,
         },
 
         resolvers: {
           query_root: { chat_message: chatMessageResolver },
         },
         updates: {
-          Mutation: { insert_chat_message_one: insertChatMessageUpdater },
+          Mutation: {
+            insert_chat_message_one: insertChatMessageUpdater,
+          },
           Subscription: { chat_message_stream: chatMessageStreamUpdater },
         },
         optimistic: {

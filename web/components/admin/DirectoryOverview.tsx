@@ -11,21 +11,24 @@ import { Button, Select, Text } from "../atomic";
 import { Responsive } from "../layout/Responsive";
 
 enum Directory_Overview_Date_Range_Enum {
+  PastDay = "day",
   PastWeek = "week",
   PastMonth = "month",
   PastYear = "year",
 }
 
 const MAP_DATE_RANGE_TO_TEXT = {
+  [Directory_Overview_Date_Range_Enum.PastDay]: "day",
   [Directory_Overview_Date_Range_Enum.PastWeek]: "week",
   [Directory_Overview_Date_Range_Enum.PastMonth]: "month",
   [Directory_Overview_Date_Range_Enum.PastYear]: "year",
 };
 
 const MAP_DATE_RANGE_TO_VIEW_DURATION = {
-  [Directory_Overview_Date_Range_Enum.PastWeek]: "Weekly View",
-  [Directory_Overview_Date_Range_Enum.PastMonth]: "Monthly View",
-  [Directory_Overview_Date_Range_Enum.PastYear]: "Yearly View",
+  [Directory_Overview_Date_Range_Enum.PastDay]: "Past day",
+  [Directory_Overview_Date_Range_Enum.PastWeek]: "Past week",
+  [Directory_Overview_Date_Range_Enum.PastMonth]: "Past month",
+  [Directory_Overview_Date_Range_Enum.PastYear]: "Past year",
 };
 
 const DATE_RANGE_DROPDOWN_OPTIONS = Object.values(
@@ -37,6 +40,8 @@ const DATE_RANGE_DROPDOWN_OPTIONS = Object.values(
 const dateToday = new Date();
 const computeAfterDate = (dateRange: Directory_Overview_Date_Range_Enum) => {
   switch (dateRange) {
+    case Directory_Overview_Date_Range_Enum.PastDay:
+      return addDays(dateToday, -1);
     case Directory_Overview_Date_Range_Enum.PastWeek:
       return addDays(dateToday, -7);
     case Directory_Overview_Date_Range_Enum.PastMonth:
@@ -49,13 +54,10 @@ const computeAfterDate = (dateRange: Directory_Overview_Date_Range_Enum) => {
 };
 
 // boxes that display each Directory activity stat
-function DirectoryOverviewInfoBox(props: {
-  amount: number | string;
-  label: string;
-}) {
+function DirectoryOverviewInfoBox(props: { amount?: number; label: string }) {
   return (
     <div className="flex grow flex-col justify-start rounded-lg bg-gray-100 p-4">
-      <Text variant="heading3">{props.amount}</Text>
+      <Text variant="heading3">{props.amount ? props.amount : 0}</Text>
       <Text variant="body2">{props.label}</Text>
     </div>
   );
@@ -141,26 +143,24 @@ export function DirectoryOverview() {
       <div className="grid grid-cols-2 gap-4 overflow-x-auto sm:grid-cols-5">
         <DirectoryOverviewInfoBox
           label="general members"
-          amount={adminDashData?.general_member_count.aggregate?.count ?? "--"}
+          amount={adminDashData?.general_member_count.aggregate?.count}
         />
         <DirectoryOverviewInfoBox
           label="listed profiles"
-          amount={adminDashData?.listed_profile_count.aggregate?.count ?? "--"}
+          amount={adminDashData?.listed_profile_count.aggregate?.count}
         />
         <DirectoryOverviewInfoBox
           label="new members"
-          amount={adminDashData?.new_member_count.aggregate?.count ?? "--"}
-        />
-        {/* <DirectoryOverviewInfoBox
-          label="requests sent"
-          amount={adminDashData?.requests_sent_count.aggregate?.count ?? "--"}
+          amount={adminDashData?.new_member_count.aggregate?.count}
         />
         <DirectoryOverviewInfoBox
-          label="confirmed meetings"
-          amount={
-            adminDashData?.confirmed_meeting_count.aggregate?.count ?? "--"
-          }
-        /> */}
+          label="total profile views"
+          amount={adminDashData?.profile_views_count.aggregate?.count}
+        />
+        <DirectoryOverviewInfoBox
+          label="total messages sent"
+          amount={adminDashData?.chat_messages_count.aggregate?.count}
+        />
       </div>
     </>
   );

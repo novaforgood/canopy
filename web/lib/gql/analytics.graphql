@@ -1,0 +1,16 @@
+mutation InsertProfileViewEvent(
+  $viewed_profile_id: uuid!
+  $viewer_profile_id: uuid!
+) {
+  insert_event_profile_view_one(
+    object: {
+      viewed_profile_id: $viewed_profile_id
+      viewer_profile_id: $viewer_profile_id
+    }
+  ) {
+    id
+    created_at
+    viewed_profile_id
+    viewer_profile_id
+  }
+}

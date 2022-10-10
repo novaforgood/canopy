@@ -1,8 +1,8 @@
 import { ReactNode, Suspense, useCallback, useEffect, useMemo } from "react";
 
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
-import { RecoilRoot, useRecoilState, useSetRecoilState } from "recoil";
 import { useClient } from "urql";
 
 import { Footer } from "../components/Footer";
@@ -16,8 +16,8 @@ import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
+import { notificationsCountAtom, sessionAtom } from "../lib/jotai";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
-import { notificationsCountAtom, sessionAtom } from "../lib/recoil";
 import { AuthProvider } from "../providers/AuthProvider";
 import { UrqlProvider } from "../providers/UrqlProvider";
 import { CustomPage } from "../types";
@@ -25,7 +25,6 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import Head from "next/head";
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
@@ -64,7 +63,7 @@ function useNumberOfNotifications() {
     [data, currentProfile?.id]
   );
 
-  const setNotificationsCount = useSetRecoilState(notificationsCountAtom);
+  const [_, setNotificationsCount] = useAtom(notificationsCountAtom);
   useEffect(() => {
     setNotificationsCount(numUnreadMessages ?? 0);
   }, [numUnreadMessages, setNotificationsCount]);
@@ -107,7 +106,7 @@ function App({ Component, pageProps }: CustomAppProps) {
   }, [refreshSessionIfNeeded]);
 
   ///// Force update JWT if user changed space /////
-  const [session, setSession] = useRecoilState(sessionAtom);
+  const [session, setSession] = useAtom(sessionAtom);
   const router = useRouter();
   const spaceSlug = router.query.slug as string;
   const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
@@ -153,13 +152,11 @@ function App({ Component, pageProps }: CustomAppProps) {
 
 function AppWrapper({ Component, ...pageProps }: CustomAppProps) {
   return (
-    <RecoilRoot>
-      <AuthProvider requiredAuthorizations={Component.requiredAuthorizations}>
-        <UrqlProvider>
-          <App {...pageProps} Component={Component} />
-        </UrqlProvider>
-      </AuthProvider>
-    </RecoilRoot>
+    <AuthProvider requiredAuthorizations={Component.requiredAuthorizations}>
+      <UrqlProvider>
+        <App {...pageProps} Component={Component} />
+      </UrqlProvider>
+    </AuthProvider>
   );
 }
 
