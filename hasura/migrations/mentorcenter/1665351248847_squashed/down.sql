@@ -1,0 +1,76 @@
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE VIEW chat_message_admin_view AS
+--   SELECT id, sender_profile_id, created_at
+--     FROM chat_message;
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE OR REPLACE FUNCTION public.run_before_insert_event_profile_view()
+--  RETURNS trigger
+--  LANGUAGE plpgsql
+-- AS $function$
+--     BEGIN
+--         IF EXISTS (
+--             SELECT FROM event_profile_view
+--             WHERE viewed_profile_id = NEW.viewed_profile_id
+--                 AND viewer_profile_id = NEW.viewer_profile_id
+--                 AND (now() - interval '15 minutes') < created_at
+--         ) THEN
+--             RAISE EXCEPTION USING ERRCODE = '22000', MESSAGE = 'Cannot insert duplicate event within 15 minutes';
+--         END IF;
+--
+--         RETURN NEW;
+--     END;
+-- $function$;
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE OR REPLACE FUNCTION public.run_before_insert_event_profile_view()
+--  RETURNS trigger
+--  LANGUAGE plpgsql
+-- AS $function$
+--     BEGIN
+--         IF EXISTS (
+--             SELECT FROM event_profile_view
+--             WHERE viewed_profile_id = NEW.viewed_profile_id
+--                 AND viewer_profile_id = NEW.viewer_profile_id
+--                 AND (now() - interval '15 minutes') < created_at
+--         ) THEN
+--             RAISE EXCEPTION 'Cannot insert duplicate event within 15 minutes';
+--         END IF;
+--
+--         RETURN NEW;
+--     END;
+-- $function$;
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE TRIGGER before_insert_event_profile_view_trigger
+--    BEFORE INSERT
+--    ON event_profile_view
+--    FOR EACH ROW
+--    EXECUTE PROCEDURE run_before_insert_event_profile_view();
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- CREATE FUNCTION run_before_insert_event_profile_view()
+--    RETURNS TRIGGER
+--    LANGUAGE PLPGSQL
+-- AS $$
+--     BEGIN
+--         IF EXISTS (
+--             SELECT FROM events
+--             WHERE viewed_profile_id = NEW.viewed_profile_id
+--                 AND viewer_profile_id = NEW.viewer_profile_id
+--                 AND (now() - interval '15 minutes') < created_at
+--         ) THEN
+--             RAISE EXCEPTION 'Cannot insert duplicate event within 15 minutes';
+--         END IF;
+--
+--         RETURN NEW;
+--     END;
+-- $$;
+
+DROP TABLE "public"."event_profile_view";

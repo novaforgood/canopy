@@ -1,2 +1,0 @@
-CREATE TABLE "public"."event_profile_view" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "viewed_profile_id" uuid NOT NULL, "viewer_profile_id" uuid NOT NULL, "created_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") , FOREIGN KEY ("viewed_profile_id") REFERENCES "public"."profile"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("viewer_profile_id") REFERENCES "public"."profile"("id") ON UPDATE restrict ON DELETE restrict);
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
