@@ -1,0 +1,39 @@
+table:
+  name: chat_message_admin_view
+  schema: public
+object_relationships:
+  - name: sender_profile
+    using:
+      manual_configuration:
+        column_mapping:
+          sender_profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profile
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - sender_profile_id
+        - created_at
+      filter:
+        _or:
+          - _and:
+              - sender_profile:
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+      allow_aggregations: true

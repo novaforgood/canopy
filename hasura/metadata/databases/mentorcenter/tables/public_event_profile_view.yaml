@@ -32,3 +32,20 @@ select_permissions:
           - viewer_profile:
               user_id:
                 _eq: X-Hasura-User-Id
+          - _and:
+              - viewed_profile:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+      allow_aggregations: true
