@@ -24,7 +24,7 @@ export function CopyText({
       </button>
       <div
         className={classNames({
-          "text-body2 sm:w-96": true,
+          "max-h-80 overflow-y-auto text-body2 sm:w-96": true,
           "break-all": breakAll,
           truncate: !breakAll,
         })}

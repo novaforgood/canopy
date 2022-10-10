@@ -292,7 +292,7 @@ export function MembersList() {
         }}
         actionText="Done"
       >
-        <div className="rounded-md bg-white px-4 py-16 sm:px-12">
+        <div className="h-full rounded-md bg-white px-4 py-16 sm:px-12">
           <div className="flex flex-col items-center">
             <Text variant="heading4">Export emails</Text>
             <div className="h-8"></div>
