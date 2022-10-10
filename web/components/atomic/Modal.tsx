@@ -59,7 +59,7 @@ export const Modal = ({
           leaveTo="opacity-0 scale-95"
         >
           <div className="fixed inset-0 flex max-h-full items-center justify-center p-4">
-            <Dialog.Panel className="h-full overflow-y-auto">
+            <Dialog.Panel className="max-h-full overflow-y-auto">
               {children}
             </Dialog.Panel>
           </div>

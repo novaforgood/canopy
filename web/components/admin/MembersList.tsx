@@ -300,7 +300,7 @@ export function MembersList() {
               Copy this list of emails and paste it into your email client.
             </Text>
             <div className="h-4"></div>
-            <CopyText breakAll text={exportedEmailList?.repeat(20) ?? ""} />
+            <CopyText breakAll text={exportedEmailList ?? ""} />
           </div>
         </div>
       </ActionModal>
