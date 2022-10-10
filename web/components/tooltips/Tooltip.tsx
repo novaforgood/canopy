@@ -29,7 +29,6 @@ export function Tooltip(props: TooltipProps) {
       content={content}
       placement={placement}
       delay={delayMs}
-      animateFill={true}
       inertia={true}
     >
       {children}
