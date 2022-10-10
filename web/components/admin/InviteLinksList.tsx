@@ -16,7 +16,7 @@ import { getTimeRelativeToNow } from "../../lib";
 import { Button, Select, Text } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
 
-import { CopyLink } from "./CopyLink";
+import { CopyText } from "./CopyText";
 import {
   INVITE_LINK_OPTIONS,
   MAP_INVITE_LINK_TYPE_TO_OPTION_LABEL,
@@ -57,9 +57,9 @@ export function InviteLinksList() {
           return (
             <div
               key={inviteLink.id}
-              className="border p-4 w-full flex gap-2 sm:gap-8 flex-col sm:flex-row"
+              className="flex w-full flex-col gap-2 border p-4 sm:flex-row sm:gap-8"
             >
-              <CopyLink link={link} />
+              <CopyText text={link} />
               <Text className="text-gray-600">
                 {!isExpired && "Expires: "}
                 <Text bold>
@@ -111,7 +111,7 @@ export function InviteLinksList() {
         })}
       </div>
       <div className="h-8"></div>
-      <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4">
         <Select
           placeholder="Select link type"
           className="w-64"

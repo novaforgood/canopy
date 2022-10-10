@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { promise } from "zod";
 
-import { mustSaveAtom } from "../lib/recoil";
+import { mustSaveAtom } from "../lib/jotai";
 
 export function useSaveChangesState() {
-  const [mustSave, setMustSave] = useRecoilState(mustSaveAtom);
+  const [mustSave, setMustSave] = useAtom(mustSaveAtom);
 
   // Set mustSaveChanges to false on mount
   useEffect(() => {

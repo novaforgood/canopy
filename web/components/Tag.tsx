@@ -41,8 +41,6 @@ export function Tag(props: TagProps) {
   const textElementRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (textElementRef.current) {
-      console.log(textElementRef.current.scrollWidth);
-      console.log(textElementRef.current.clientWidth);
       setIsOverflow(
         textElementRef.current.scrollWidth > textElementRef.current.clientWidth
       );

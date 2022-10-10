@@ -53,7 +53,6 @@ export function SelectAutocomplete<T extends string>(
     <Combobox
       value={item}
       onChange={(newItem) => {
-        console.log(newItem);
         if (newItem) {
           if (newItem.value === EXTRA_OPTION_VALUE) {
             onExtraOptionSelect(query);
@@ -67,7 +66,7 @@ export function SelectAutocomplete<T extends string>(
     >
       <div className="relative w-full">
         <Combobox.Input<"input", OptionType<T> | null>
-          className="relative w-full px-2 py-1 text-left border transition rounded cursor-pointer focus:outline-none focus:ring-inactive focus:border-black flex justify-between items-center"
+          className="focus:ring-inactive relative flex w-full cursor-pointer items-center justify-between rounded border px-2 py-1 text-left transition focus:border-black focus:outline-none"
           displayValue={(item) => item?.label ?? ""}
           onChange={(event) => setQuery(event.target.value)}
           value={query}
@@ -75,7 +74,7 @@ export function SelectAutocomplete<T extends string>(
           placeholder={placeholder}
         />
         <Combobox.Button
-          className="absolute top-0 left-0 w-full h-full flex justify-end items-center pr-2"
+          className="absolute top-0 left-0 flex h-full w-full items-center justify-end pr-2"
           onClick={() => {
             inputRef.current?.select();
           }}
@@ -89,7 +88,7 @@ export function SelectAutocomplete<T extends string>(
           leaveTo="opacity-0"
           afterLeave={() => setQuery("")}
         >
-          <Combobox.Options className="z-10 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filteredOptions.length === 0 &&
             !renderExtraOption &&
             query !== "" ? (
@@ -104,7 +103,7 @@ export function SelectAutocomplete<T extends string>(
                     className={({ active }) =>
                       `${
                         active && "bg-gray-100"
-                      } cursor-pointer select-none relative px-2 py-1`
+                      } relative cursor-pointer select-none px-2 py-1`
                     }
                     value={option}
                   >
@@ -131,7 +130,7 @@ export function SelectAutocomplete<T extends string>(
                     className={({ active }) =>
                       `${
                         active && "bg-gray-100"
-                      } cursor-pointer select-none relative px-2 py-1`
+                      } relative cursor-pointer select-none px-2 py-1`
                     }
                   >
                     {(props) => {

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 import { faker } from "@faker-js/faker";
 import { useDisclosure } from "@mantine/hooks";
@@ -23,24 +23,39 @@ import {
   BxMessageDetail,
   BxUser,
 } from "../../../../generated/icons/regular";
+import { useProfileViewTracker } from "../../../../hooks/analytics/useProfileViewTracker";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { CustomPage } from "../../../../types";
 
-const SpaceHomepage: CustomPage = () => {
+const ProfilePage: CustomPage = () => {
   const router = useRouter();
+  const { attemptTrackView } = useProfileViewTracker();
 
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const spaceSlug = useQueryParam("slug", "string");
+  const profileId = useQueryParam("profileId", "string");
+
   const { currentProfile } = useCurrentProfile();
   const isLoggedIn = useIsLoggedIn();
+
+  useEffect(() => {
+    if (!profileId) {
+      return;
+    }
+    if (!currentProfile?.id) {
+      return;
+    }
+
+    // This should only run once per page load.
+    attemptTrackView(profileId, currentProfile.id);
+  }, [attemptTrackView, currentProfile?.id, profileId]);
 
   const [open, handlers] = useDisclosure(false);
   const [loginModalOpen, loginModalHandlers] = useDisclosure(false);
 
-  const profileId = useQueryParam("profileId", "string");
   const [
     { data: profileData, fetching: fetchingProfileData },
     refetchProfileById,
@@ -262,6 +277,6 @@ const SpaceHomepage: CustomPage = () => {
   );
 };
 
-SpaceHomepage.requiredAuthorizations = [];
+ProfilePage.requiredAuthorizations = [];
 
-export default SpaceHomepage;
+export default ProfilePage;
