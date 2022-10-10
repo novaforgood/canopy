@@ -206,6 +206,16 @@ query ProfilesBySpaceId($space_id: uuid!) {
       id
       profile_role
     }
+    profile_listing {
+      id
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+    }
     space_id
     user_id
     created_at
@@ -367,8 +377,8 @@ mutation UpdateProfileRole($profile_role: profile_role_enum!, $row_id: uuid!) {
     pk_columns: { id: $row_id }
     _set: { profile_role: $profile_role }
   ) {
-    profile_role
     id
+    profile_role
     profile_id
   }
 }
@@ -626,25 +636,44 @@ query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
       count
     }
   }
-
-  requests_sent_count: connection_request_aggregate(
-    where: { receiver_profile: { space_id: { _eq: $space_id } } }
-  ) {
-    aggregate {
-      count
-    }
-  }
-
-  confirmed_meeting_count: connection_request_aggregate(
+  chat_messages_count: chat_message_admin_view_aggregate(
     where: {
-      status: { _eq: MetWith }
-      receiver_profile: { space_id: { _eq: $space_id } }
+      sender_profile: { space_id: { _eq: $space_id } }
+      created_at: { _gte: $after }
     }
   ) {
     aggregate {
       count
     }
   }
+  profile_views_count: event_profile_view_aggregate(
+    where: {
+      viewed_profile: { space_id: { _eq: $space_id } }
+      created_at: { _gte: $after }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  # requests_sent_count: connection_request_aggregate(
+  #   where: { receiver_profile: { space_id: { _eq: $space_id } } }
+  # ) {
+  #   aggregate {
+  #     count
+  #   }
+  # }
+
+  # confirmed_meeting_count: connection_request_aggregate(
+  #   where: {
+  #     status: { _eq: MetWith }
+  #     receiver_profile: { space_id: { _eq: $space_id } }
+  #   }
+  # ) {
+  #   aggregate {
+  #     count
+  #   }
+  # }
 }
 
 query TagCounts($space_tag_category_id: uuid!) {

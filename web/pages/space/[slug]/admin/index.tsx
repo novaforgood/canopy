@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
 
 import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
 import { EditProfileTags } from "../../../../components/admin/edit-profile-tags/EditProfileTags";
@@ -119,7 +118,7 @@ function ManageSpace() {
           <div className="h-8"></div>
         </Responsive>
 
-        <div className="flex-1 overflow-y-auto sm:w-full">
+        <div className="h-full flex-1 overflow-y-auto sm:w-full">
           <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-8"></div>
           <Component />
