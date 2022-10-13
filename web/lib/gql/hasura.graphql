@@ -208,6 +208,7 @@ query ProfilesBySpaceId($space_id: uuid!) {
     }
     profile_listing {
       id
+      public
       profile_listing_image {
         id
         image {

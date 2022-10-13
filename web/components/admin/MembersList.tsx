@@ -42,6 +42,12 @@ interface Member {
   profile: ProfilesBySpaceIdQuery["profile"][number];
 }
 
+type RoleFilter =
+  | Profile_Role_Enum
+  | "All"
+  | "PrivateProfile"
+  | "PublicProfile";
+
 const options = {
   // isCaseSensitive: false,
   // includeScore: false,
@@ -79,13 +85,25 @@ export function MembersList() {
   );
 
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<
-    Profile_Role_Enum | "All" | null
-  >("All");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter | null>("All");
   const filteredMembers = useMemo(() => {
     let result = members;
-    if (roleFilter !== "All") {
-      result = result.filter((member) => member.role === roleFilter);
+    switch (roleFilter) {
+      case "All":
+        break;
+      case "PrivateProfile":
+        result = result.filter(
+          (member) => !member.profile.profile_listing?.public
+        );
+        break;
+      case "PublicProfile":
+        result = result.filter(
+          (member) => member.profile.profile_listing?.public
+        );
+        break;
+      default:
+        result = result.filter((member) => member.role === roleFilter);
+        break;
     }
 
     return result.filter((member) => {
@@ -214,6 +232,14 @@ export function MembersList() {
               {
                 label: "All members",
                 value: "All",
+              },
+              {
+                label: "Profile is private",
+                value: "PrivateProfile",
+              },
+              {
+                label: "Profile is public",
+                value: "PublicProfile",
               },
               ...ROLE_SELECT_OPTIONS,
             ]}
