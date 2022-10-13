@@ -16,6 +16,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { getDayOfYear } from "date-fns";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 
 import {
@@ -24,7 +25,10 @@ import {
 } from "../../generated/graphql";
 import { BxFilter } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { usePrevious } from "../../hooks/usePrevious";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import { useUserData } from "../../hooks/useUserData";
+import { selectedTagIdsAtom, TagSelection } from "../../lib/jotai";
 import { isTagOfficial } from "../../lib/tags";
 import { Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
@@ -33,7 +37,6 @@ import { Tag } from "../Tag";
 
 import { shuffleProfiles } from "./ShuffleProfiles";
 
-type TagSelection = Record<string, Set<string>>;
 interface FilterBarProps {
   selectedTagIds: TagSelection;
   onChange: (newTagIds: TagSelection) => void;
@@ -150,11 +153,12 @@ export function SpaceLandingPage() {
 
   const router = useRouter();
 
-  const [selectedTagIds, setSelectedTagIds] = useState<TagSelection>({});
+  const [selectedTagIds, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
 
   const selectedTagIdsSet = useMemo(() => {
     // Add all tags to the set
     const tagIds = new Set<string>();
+
     Object.values(selectedTagIds).forEach((tagSet) => {
       tagSet.forEach((tagId) => tagIds.add(tagId));
     });

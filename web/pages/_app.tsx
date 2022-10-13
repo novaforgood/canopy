@@ -16,7 +16,11 @@ import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-import { notificationsCountAtom, sessionAtom } from "../lib/jotai";
+import {
+  notificationsCountAtom,
+  selectedTagIdsAtom,
+  sessionAtom,
+} from "../lib/jotai";
 import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 import { AuthProvider } from "../providers/AuthProvider";
 import { UrqlProvider } from "../providers/UrqlProvider";
@@ -25,6 +29,7 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
+import { useQueryParam } from "../hooks/useQueryParam";
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
@@ -107,11 +112,11 @@ function App({ Component, pageProps }: CustomAppProps) {
 
   ///// Force update JWT if user changed space /////
   const [session, setSession] = useAtom(sessionAtom);
-  const router = useRouter();
-  const spaceSlug = router.query.slug as string;
+  const spaceSlug = useQueryParam("slug", "string");
+
   const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
     pause: true,
-    variables: { slug: spaceSlug },
+    variables: { slug: spaceSlug ?? "" },
   });
   const previousSlug = usePrevious(spaceSlug);
   useEffect(() => {
@@ -137,6 +142,15 @@ function App({ Component, pageProps }: CustomAppProps) {
       }
     }
   }, [spaceId, setSession, refreshSession]);
+
+  // On space slug change
+  const [_, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
+  const onSpaceSlugChange = useCallback(() => {
+    setSelectedTagIds({});
+  }, [setSelectedTagIds]);
+  useEffect(() => {
+    onSpaceSlugChange();
+  }, [spaceSlug, onSpaceSlugChange]);
 
   const getLayout = Component.getLayout || ((page: ReactNode) => page);
   return (
