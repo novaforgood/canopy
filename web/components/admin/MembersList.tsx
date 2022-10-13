@@ -42,6 +42,12 @@ interface Member {
   profile: ProfilesBySpaceIdQuery["profile"][number];
 }
 
+type RoleFilter =
+  | Profile_Role_Enum
+  | "All"
+  | "PrivateProfile"
+  | "PublicProfile";
+
 const options = {
   // isCaseSensitive: false,
   // includeScore: false,
@@ -79,13 +85,31 @@ export function MembersList() {
   );
 
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<
-    Profile_Role_Enum | "All" | null
-  >("All");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter | null>("All");
   const filteredMembers = useMemo(() => {
     let result = members;
-    if (roleFilter !== "All") {
-      result = result.filter((member) => member.role === roleFilter);
+    switch (roleFilter) {
+      case "All":
+        break;
+      case "PrivateProfile":
+        result = result.filter(
+          (member) => member.role === Profile_Role_Enum.MemberWhoCanList
+        );
+        result = result.filter(
+          (member) => !member.profile.profile_listing?.public
+        );
+        break;
+      case "PublicProfile":
+        result = result.filter(
+          (member) => member.role === Profile_Role_Enum.MemberWhoCanList
+        );
+        result = result.filter(
+          (member) => member.profile.profile_listing?.public
+        );
+        break;
+      default:
+        result = result.filter((member) => member.role === roleFilter);
+        break;
     }
 
     return result.filter((member) => {
@@ -205,7 +229,7 @@ export function MembersList() {
             </div>
           )}
         />
-        <div className="w-48">
+        <div className="w-80">
           <SelectAutocomplete
             placeholder="Filter by role"
             value={roleFilter}
@@ -215,7 +239,26 @@ export function MembersList() {
                 label: "All members",
                 value: "All",
               },
-              ...ROLE_SELECT_OPTIONS,
+              {
+                label: "View-only members",
+                value: Profile_Role_Enum.Member,
+              },
+              {
+                label: "Full members",
+                value: Profile_Role_Enum.MemberWhoCanList,
+              },
+              {
+                label: "Full members (private profile)",
+                value: "PrivateProfile",
+              },
+              {
+                label: "Full members (public profile)",
+                value: "PublicProfile",
+              },
+              {
+                label: "Admin",
+                value: Profile_Role_Enum.Admin,
+              },
             ]}
           />
         </div>
