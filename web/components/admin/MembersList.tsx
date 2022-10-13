@@ -93,10 +93,16 @@ export function MembersList() {
         break;
       case "PrivateProfile":
         result = result.filter(
+          (member) => member.role === Profile_Role_Enum.MemberWhoCanList
+        );
+        result = result.filter(
           (member) => !member.profile.profile_listing?.public
         );
         break;
       case "PublicProfile":
+        result = result.filter(
+          (member) => member.role === Profile_Role_Enum.MemberWhoCanList
+        );
         result = result.filter(
           (member) => member.profile.profile_listing?.public
         );
@@ -223,7 +229,7 @@ export function MembersList() {
             </div>
           )}
         />
-        <div className="w-48">
+        <div className="w-80">
           <SelectAutocomplete
             placeholder="Filter by role"
             value={roleFilter}
@@ -234,14 +240,25 @@ export function MembersList() {
                 value: "All",
               },
               {
-                label: "Profile is private",
+                label: "View-only members",
+                value: Profile_Role_Enum.Member,
+              },
+              {
+                label: "Full members",
+                value: Profile_Role_Enum.MemberWhoCanList,
+              },
+              {
+                label: "Full members (private profile)",
                 value: "PrivateProfile",
               },
               {
-                label: "Profile is public",
+                label: "Full members (public profile)",
                 value: "PublicProfile",
               },
-              ...ROLE_SELECT_OPTIONS,
+              {
+                label: "Admin",
+                value: Profile_Role_Enum.Admin,
+              },
             ]}
           />
         </div>
