@@ -149,7 +149,7 @@ export function EditProfileTags(props: EditProfileTagsProps) {
               placeholder={
                 tagCategory.rigid_select
                   ? "Select tag…"
-                  : "Select tag or type to suggest…"
+                  : "Select tag, or type to suggest…"
               }
               options={tagCategory.space_tags
                 .filter((item) => showTagOnProfile(item, tagCategory))

@@ -54,50 +54,57 @@ export const Select = <T extends string | Date>({
           onSelect(selectedValue);
         }}
       >
-        <div className="relative bg-white">
-          <Listbox.Button
-            className="relative w-full px-2 py-1 text-left border border-inactive rounded cursor-pointer
-            focus:outline-none focus:ring-2 focus:ring-inactive focus:border-inactive flex justify-between items-center"
-          >
-            <span className={placeholderStyles}>
-              {value ? valueToLabel(value) : placeholder}
-            </span>
-            <BxCaretDown className="h-5 w-5" />
-          </Listbox.Button>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <Listbox.Options
-              className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white z-10
-              rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+        {({ open }) => (
+          <div className="relative bg-white">
+            <Listbox.Button
+              className={classNames({
+                "relative flex w-full cursor-pointer items-center justify-between":
+                  true,
+                "rounded border px-4 py-2 text-left outline-none ring-0": true,
+                "border-black": open,
+                "border-gray-400": !open,
+              })}
             >
-              {options.map((option, i) => (
-                <Listbox.Option
-                  key={i}
-                  className={({ active }) =>
-                    `${
-                      active && "bg-gray-100"
-                    } cursor-pointer select-none relative px-2 py-1`
-                  }
-                  value={option.value}
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`${
-                        selected ? "font-medium" : "font-normal"
-                      } block truncate`}
-                    >
-                      {option.label}
-                    </span>
-                  )}
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
-          </Transition>
-        </div>
+              <span className={placeholderStyles}>
+                {value ? valueToLabel(value) : placeholder}
+              </span>
+              <BxCaretDown className="h-5 w-5" />
+            </Listbox.Button>
+            <Transition
+              as={Fragment}
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Listbox.Options
+                className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white
+              py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+              >
+                {options.map((option, i) => (
+                  <Listbox.Option
+                    key={i}
+                    className={({ active }) =>
+                      `${
+                        active && "bg-gray-100"
+                      } relative cursor-pointer select-none px-2 py-1`
+                    }
+                    value={option.value}
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`${
+                          selected ? "font-medium" : "font-normal"
+                        } block truncate`}
+                      >
+                        {option.label}
+                      </span>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Transition>
+          </div>
+        )}
       </Listbox>
     </div>
   );

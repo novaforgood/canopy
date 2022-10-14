@@ -1,21 +1,9 @@
-import {
-  createFactory,
-  Fragment,
-  ImgHTMLAttributes,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useMemo } from "react";
 
 import { closestCenter, DndContext, MeasuringStrategy } from "@dnd-kit/core";
-import {
-  rectSortingStrategy,
-  rectSwappingStrategy,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { getDayOfYear } from "date-fns";
+import Fuse from "fuse.js";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 
@@ -23,11 +11,8 @@ import {
   Profile_Role_Enum,
   useProfileListingsInSpaceQuery,
 } from "../../generated/graphql";
-import { BxFilter, BxSearch } from "../../generated/icons/regular";
+import { BxSearch } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { usePrevious } from "../../hooks/usePrevious";
-import { useQueryParam } from "../../hooks/useQueryParam";
-import { useUserData } from "../../hooks/useUserData";
 import {
   searchQueryAtom,
   selectedTagIdsAtom,
@@ -42,16 +27,33 @@ import { Tag } from "../Tag";
 
 import { shuffleProfiles } from "./ShuffleProfiles";
 
-interface FilterBarProps {
-  selectedTagIds: TagSelection;
-  onChange: (newTagIds: TagSelection) => void;
-  // selectedTagIds: Set<string>;
-  // onChange: (newTagIds: Set<string>) => void;
-}
-function FilterBar(props: FilterBarProps) {
-  const { selectedTagIds, onChange } = props;
+const FUSE_OPTIONS = {
+  // isCaseSensitive: false,
+  // includeScore: false,
+  // shouldSort: true,
+  // includeMatches: false,
+  // findAllMatches: false,
+  // minMatchCharLength: 1,
+  // location: 0,
+  // threshold: 0.6,
+  // distance: 100,
+  // useExtendedSearch: false,
+  // ignoreLocation: false,
+  // ignoreFieldNorm: false,
+  // fieldNormWeight: 1,
+  keys: [
+    "profile.user.first_name",
+    "profile.user.last_name",
+    "headline",
+    "profile_listing_to_space_tags.space_tag.label",
+  ],
+};
 
+function FilterBar() {
   const { currentSpace } = useCurrentSpace();
+
+  const [selectedTagIds, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
 
   const tagCategories = useMemo(
     () =>
@@ -84,14 +86,19 @@ function FilterBar(props: FilterBarProps) {
     [selectedTagIds]
   );
 
-  if (tagCategories.length === 0) {
-    return <div className="h-12" />;
-  }
-
   return (
     <div>
       <div className="flex w-full flex-wrap items-center gap-2 sm:gap-4">
-        <Text>Filter by:</Text>
+        <div className="w-64">
+          <TextInput
+            renderPrefix={() => (
+              <BxSearch className="mr-1 h-5 w-5 text-gray-900" />
+            )}
+            placeholder="Search members..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         {tagCategories.map((category) => {
           return (
             <div className="w-64" key={category.id}>
@@ -109,7 +116,8 @@ function FilterBar(props: FilterBarProps) {
                   }))}
                 value={null}
                 onSelect={(newTagId) => {
-                  if (newTagId) onChange(tagAdded(category.id, newTagId));
+                  if (newTagId)
+                    setSelectedTagIds(tagAdded(category.id, newTagId));
                   // onChange(
                   //   new Set([...Array.from(selectedTagIds), newTagId])
                   // );
@@ -134,14 +142,7 @@ function FilterBar(props: FilterBarProps) {
                   text={tag.label}
                   key={tag.id}
                   onDeleteClick={() => {
-                    onChange(tagRemoved(category.id, tag.id));
-                    // onChange(
-                    //   new Set(
-                    //     Array.from(selectedTagIds).filter(
-                    //       (id) => id !== tag.id
-                    //     )
-                    //   )
-                    // );
+                    setSelectedTagIds(tagRemoved(category.id, tag.id));
                   }}
                 />
               ))}
@@ -158,8 +159,8 @@ export function SpaceLandingPage() {
 
   const router = useRouter();
 
-  const [selectedTagIds, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
-  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+  const [selectedTagIds] = useAtom(selectedTagIdsAtom);
+  const [searchQuery] = useAtom(searchQueryAtom);
 
   const selectedTagIdsSet = useMemo(() => {
     // Add all tags to the set
@@ -207,20 +208,19 @@ export function SpaceLandingPage() {
     [profileListingData?.profile_listing]
   );
 
-  const shuffledProfileListings = useMemo(
-    () => shuffleProfiles(allProfileListings, getDayOfYear(new Date())),
-    [allProfileListings]
-  );
+  const filteredProfileListings = useMemo(() => {
+    if (searchQuery === "")
+      return shuffleProfiles(allProfileListings, getDayOfYear(new Date()));
+
+    const searchQueryLower = searchQuery.toLowerCase();
+    const fuse = new Fuse(allProfileListings, FUSE_OPTIONS);
+
+    return fuse.search(searchQueryLower).map((result) => result.item);
+  }, [allProfileListings, searchQuery]);
 
   return (
     <div>
-      <TextInput
-        renderPrefix={() => <BxSearch className="mr-1 h-5 w-5 text-gray-700" />}
-        placeholder="Search"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
+      <FilterBar />
       <div className="h-8"></div>
       {fetchingProfileListings && profileListingData === undefined ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
@@ -233,7 +233,7 @@ export function SpaceLandingPage() {
         </div>
       ) : allProfileListings.length === 0 ? (
         <div>
-          <Text italic>No profiles found</Text>
+          <Text italic>No results found</Text>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
@@ -246,10 +246,10 @@ export function SpaceLandingPage() {
             }}
           >
             <SortableContext
-              items={shuffledProfileListings}
+              items={filteredProfileListings}
               strategy={rectSortingStrategy}
             >
-              {shuffledProfileListings.map((listing, idx) => {
+              {filteredProfileListings.map((listing, idx) => {
                 const { first_name, last_name } = listing.profile.user;
 
                 const sortedTags = listing.profile_listing_to_space_tags

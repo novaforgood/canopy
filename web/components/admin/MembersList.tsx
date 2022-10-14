@@ -144,7 +144,6 @@ export function MembersList() {
         accessorFn: (row) => row.role,
         cell: (info) => (
           <SelectAutocomplete
-            className="w-48"
             options={ROLE_SELECT_OPTIONS}
             value={info.getValue() as Profile_Role_Enum}
             onSelect={async (newRole) => {
