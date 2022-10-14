@@ -1,4 +1,10 @@
-import { cloneElement, ReactElement, ReactNode, useId } from "react";
+import {
+  cloneElement,
+  forwardRef,
+  ReactElement,
+  ReactNode,
+  useId,
+} from "react";
 
 import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
@@ -9,58 +15,79 @@ import { Text } from "../atomic/Text";
 type TextInputProps = InputProps & {
   label?: string;
   renderPrefix?: () => JSX.Element;
+  renderSuffix?: () => JSX.Element;
   characterLimit?: number;
 };
 
-export function TextInput(props: TextInputProps) {
-  const {
-    label,
-    renderPrefix,
-    characterLimit,
-    onValueChange,
-    onChange,
-    ...rest
-  } = props;
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+  (props, ref) => {
+    const {
+      label,
+      renderPrefix,
+      renderSuffix,
+      characterLimit,
+      onValueChange,
+      onChange,
+      ...rest
+    } = props;
 
-  const { ref, width, height } = useElementSize();
-  const uuid = useId();
+    const uuid = useId();
 
-  const overCharacterLimit = (value: string) =>
-    characterLimit && value.length > characterLimit;
+    const containerStyles = classNames({
+      "border border-gray-400 bg-white focus-within:border-black rounded-md py-2 px-4 transition":
+        true,
+      "flex items-center": true,
+    });
 
-  return (
-    <div className="flex flex-col w-full">
-      {label && (
-        <label htmlFor={uuid} className="block text-sm font-bold mb-1">
-          {label}
-        </label>
-      )}
-      <div className="relative">
-        {renderPrefix && (
-          <div className="absolute inset-y-0 left-0 pl-3 text-gray-700 flex items-center pointer-events-none">
-            {cloneElement(renderPrefix(), { ref: ref })}
-          </div>
+    const inputStyles = classNames({
+      "w-full outline-none": true,
+    });
+
+    const overCharacterLimit = (value: string) =>
+      characterLimit && value.length > characterLimit;
+
+    const prefix = renderPrefix?.();
+    const suffix = renderSuffix?.();
+
+    return (
+      <div className="flex w-full flex-col">
+        {label && (
+          <label htmlFor={uuid} className="mb-1 block text-sm font-bold">
+            {label}
+          </label>
         )}
-
-        <Input
-          {...rest}
-          className="w-full"
-          id={uuid}
-          onValueChange={(newVal) => {
-            onValueChange?.(newVal.substring(0, characterLimit));
+        <div
+          className={containerStyles}
+          onClick={() => {
+            if (typeof ref !== "function") {
+              if (ref?.current) {
+                ref.current.focus();
+              }
+            }
           }}
-          onChange={(e) => {
-            e.target.value = e.target.value.substring(0, characterLimit);
-            onChange?.(e);
-          }}
-          style={{ paddingLeft: renderPrefix ? width + 16 : undefined }}
-        />
+        >
+          {prefix}
+          <input
+            {...rest}
+            className={inputStyles}
+            id={uuid}
+            onChange={(e) => {
+              const newVal = e.target.value.substring(0, characterLimit);
+              e.target.value = newVal;
+              onChange?.(e);
+              onValueChange?.(newVal);
+            }}
+          />
+          {suffix}
+        </div>
+        {characterLimit && (
+          <Text italic className="mt-1 self-end text-gray-600">
+            {`${rest.value?.toString().length}/${characterLimit} characters`}
+          </Text>
+        )}
       </div>
-      {characterLimit && (
-        <Text italic className="text-gray-600 self-end mt-1">
-          {`${rest.value?.toString().length}/${characterLimit} characters`}
-        </Text>
-      )}
-    </div>
-  );
-}
+    );
+  }
+);
+
+TextInput.displayName = "TextInput";

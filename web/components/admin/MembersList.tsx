@@ -10,7 +10,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import classNames from "classnames";
-import Fuse from "fuse.js";
 import toast from "react-hot-toast";
 
 import {
@@ -117,7 +116,6 @@ export function MembersList() {
         `${member.name} ${member.email} ${member.role}`.toLowerCase();
       return memberString.includes(search.toLowerCase());
     });
-    // return fuse.search(search);
   }, [members, roleFilter, search]);
 
   const [exportedEmailList, setExportedEmailList] = useState<string | null>(
@@ -146,7 +144,6 @@ export function MembersList() {
         accessorFn: (row) => row.role,
         cell: (info) => (
           <SelectAutocomplete
-            className="w-48"
             options={ROLE_SELECT_OPTIONS}
             value={info.getValue() as Profile_Role_Enum}
             onSelect={async (newRole) => {
@@ -224,9 +221,7 @@ export function MembersList() {
           placeholder="Filter members..."
           className="w-full"
           renderPrefix={() => (
-            <div>
-              <BxSearch className="h-5 w-5" />
-            </div>
+            <BxSearch className="mr-1 h-5 w-5 text-gray-700" />
           )}
         />
         <div className="w-80">

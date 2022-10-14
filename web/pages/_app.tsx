@@ -14,10 +14,12 @@ import {
 } from "../generated/graphql";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { usePrevious } from "../hooks/usePrevious";
+import { useQueryParam } from "../hooks/useQueryParam";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
 import {
   notificationsCountAtom,
+  searchQueryAtom,
   selectedTagIdsAtom,
   sessionAtom,
 } from "../lib/jotai";
@@ -29,7 +31,6 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import { useQueryParam } from "../hooks/useQueryParam";
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
@@ -145,9 +146,11 @@ function App({ Component, pageProps }: CustomAppProps) {
 
   // On space slug change
   const [_, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
+  const [__, setSearchQuery] = useAtom(searchQueryAtom);
   const onSpaceSlugChange = useCallback(() => {
     setSelectedTagIds({});
-  }, [setSelectedTagIds]);
+    setSearchQuery("");
+  }, [setSearchQuery, setSelectedTagIds]);
   useEffect(() => {
     onSpaceSlugChange();
   }, [spaceSlug, onSpaceSlugChange]);
