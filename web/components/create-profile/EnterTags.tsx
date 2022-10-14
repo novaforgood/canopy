@@ -135,7 +135,7 @@ export function EnterTags(props: EnterTagsProps) {
                     placeholder={
                       category.rigid_select
                         ? "Select tag…"
-                        : "Select tag or type to suggest…"
+                        : "Select tag, or type to suggest…"
                     }
                     options={category.space_tags
                       .map((tag) => ({

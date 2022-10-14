@@ -25,14 +25,14 @@ export const MAP_SOCIAL_TYPE_TO_PROPERTIES: Record<
     icon: <BxlTwitter />,
     label: "Twitter",
     placeholder: "Twitter username",
-    renderPrefix: () => <div>@</div>,
+    renderPrefix: () => <div className="mr-1">@</div>,
     getLink: (value) => `https://twitter.com/${value}`,
   },
   [SocialEnum.Instagram]: {
     icon: <BxlInstagram />,
     label: "Instagram",
     placeholder: "Instagram username",
-    renderPrefix: () => <div>@</div>,
+    renderPrefix: () => <div className="mr-1">@</div>,
     getLink: (value) => `https://instagram.com/${value}`,
   },
   [SocialEnum.LinkedIn]: {
