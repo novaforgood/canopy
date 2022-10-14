@@ -12,4 +12,6 @@ export const mustSaveAtom = atom<boolean>(false);
 export type TagSelection = Record<string, Set<string>>;
 export const selectedTagIdsAtom = atom<TagSelection>({});
 
+export const searchQueryAtom = atom<string>("");
+
 export const notificationsCountAtom = atom<number>(0);

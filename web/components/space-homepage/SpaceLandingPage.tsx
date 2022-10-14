@@ -23,15 +23,20 @@ import {
   Profile_Role_Enum,
   useProfileListingsInSpaceQuery,
 } from "../../generated/graphql";
-import { BxFilter } from "../../generated/icons/regular";
+import { BxFilter, BxSearch } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePrevious } from "../../hooks/usePrevious";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { useUserData } from "../../hooks/useUserData";
-import { selectedTagIdsAtom, TagSelection } from "../../lib/jotai";
+import {
+  searchQueryAtom,
+  selectedTagIdsAtom,
+  TagSelection,
+} from "../../lib/jotai";
 import { isTagOfficial } from "../../lib/tags";
 import { Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { TextInput } from "../inputs/TextInput";
 import { ProfileCard } from "../ProfileCard";
 import { Tag } from "../Tag";
 
@@ -154,6 +159,7 @@ export function SpaceLandingPage() {
   const router = useRouter();
 
   const [selectedTagIds, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
 
   const selectedTagIdsSet = useMemo(() => {
     // Add all tags to the set
@@ -208,6 +214,12 @@ export function SpaceLandingPage() {
 
   return (
     <div>
+      <TextInput
+        renderPrefix={() => <BxSearch className="mr-1 h-5 w-5 text-gray-700" />}
+        placeholder="Search"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
       <FilterBar selectedTagIds={selectedTagIds} onChange={setSelectedTagIds} />
       <div className="h-8"></div>
       {fetchingProfileListings && profileListingData === undefined ? (
