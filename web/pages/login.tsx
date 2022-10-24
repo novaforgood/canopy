@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 
 import { useSetState } from "@mantine/hooks";
+import { getAdditionalUserInfo } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -49,9 +50,7 @@ const LoginPage: CustomPage = () => {
     setSigningInWithGoogle(true);
     signInWithGoogle()
       .then(async (userCred) => {
-        const isNewUser =
-          userCred.user.metadata.creationTime ===
-          userCred.user.metadata.lastSignInTime;
+        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
 
         if (isNewUser) {
           // User has never signed in before

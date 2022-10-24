@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useSetState } from "@mantine/hooks";
-import { updateProfile } from "firebase/auth";
+import { getAdditionalUserInfo, updateProfile } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
@@ -60,8 +60,8 @@ const SignUpPage: CustomPage = () => {
     // send email verification
     return createUserWithEmailAndPassword(email, password)
       .then(async (userCred) => {
-        const { creationTime, lastSignInTime } = userCred.user.metadata;
-        const isNewUser = creationTime === lastSignInTime;
+        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
+
         if (!isNewUser) {
           // If not a new user, sign them out and tell them to log in
           toast.error(
