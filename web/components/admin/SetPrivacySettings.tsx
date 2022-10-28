@@ -1,38 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../../components/atomic";
-import { useUpdateSpaceMutation } from "../../generated/graphql";
+import {
+  useUpdateSpaceAttributesMutation,
+  useUpdateSpaceMutation,
+} from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import {
+  PrivacySettings,
+  usePrivacySettings,
+} from "../../hooks/usePrivacySettings";
 import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { CheckBox } from "../atomic/CheckBox";
-
-type SpaceAttributes = {
-  public: boolean;
-};
-
-const DEFAULT_SPACE_ATTRIBUTES: SpaceAttributes = {
-  public: false,
-};
 
 export function SetPrivacySettings() {
   const { currentSpace } = useCurrentSpace();
 
-  const [attributes, setAttributes] = useState<SpaceAttributes>();
+  const privacySettings = usePrivacySettings();
+
+  const [settings, setSettings] = useState<PrivacySettings>();
   const { mustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
-    if (currentSpace) {
-      const attrs = { ...DEFAULT_SPACE_ATTRIBUTES, ...currentSpace.attributes };
-      setAttributes(attrs);
+    if (privacySettings) {
+      setSettings(privacySettings);
     }
-  }, [currentSpace]);
+  }, [privacySettings]);
 
   const [loading, setLoading] = useState(false);
-  const [_, updateSpace] = useUpdateSpaceMutation();
+  const [_, updateSpaceAttributes] = useUpdateSpaceAttributesMutation();
 
-  if (!attributes) {
+  if (!settings) {
     return null;
   }
 
@@ -48,10 +48,23 @@ export function SetPrivacySettings() {
       <div className="h-4"></div>
       <CheckBox
         label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
-        checked={attributes.public}
+        checked={settings.public}
         onChange={(newVal) => {
           setMustSave(true);
-          setAttributes({ ...attributes, public: newVal });
+          setSettings({ ...settings, public: newVal });
+        }}
+      />
+      <div className="h-4"></div>
+
+      <CheckBox
+        label={`Only allow members with published profiles to view other profiles. (Admins will still be able to view all published profiles)`}
+        checked={settings.allowOnlyPublicMembersToViewProfiles}
+        onChange={(newVal) => {
+          setMustSave(true);
+          setSettings({
+            ...settings,
+            allowOnlyPublicMembersToViewProfiles: newVal,
+          });
         }}
       />
       <div className="h-8"></div>
@@ -64,10 +77,8 @@ export function SetPrivacySettings() {
             return;
           }
           setLoading(true);
-          updateSpace({
-            variables: {
-              attributes: attributes,
-            },
+          updateSpaceAttributes({
+            changes: settings,
             space_id: currentSpace.id,
           })
             .then((res) => {
