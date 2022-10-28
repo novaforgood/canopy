@@ -11,7 +11,9 @@ export type PrivacySettings = Pick<
   "public" | "allowOnlyPublicMembersToViewProfiles"
 >;
 
-export function usePrivacySettings(): PrivacySettings | undefined {
+export function usePrivacySettings(): {
+  privacySettings: PrivacySettings | undefined;
+} {
   const { currentSpace } = useCurrentSpace();
 
   const settings: PrivacySettings | undefined = useMemo(() => {
@@ -25,5 +27,10 @@ export function usePrivacySettings(): PrivacySettings | undefined {
     };
   }, [currentSpace]);
 
-  return settings;
+  return useMemo(
+    () => ({
+      privacySettings: settings,
+    }),
+    [settings]
+  );
 }

@@ -18,7 +18,7 @@ import { CheckBox } from "../atomic/CheckBox";
 export function SetPrivacySettings() {
   const { currentSpace } = useCurrentSpace();
 
-  const privacySettings = usePrivacySettings();
+  const { privacySettings } = usePrivacySettings();
 
   const [settings, setSettings] = useState<PrivacySettings>();
   const { mustSave, setMustSave } = useSaveChangesState();
