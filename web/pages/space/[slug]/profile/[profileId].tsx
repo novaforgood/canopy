@@ -81,6 +81,8 @@ const ProfilePage: CustomPage = () => {
     listing?.profile_listing_to_space_tags.map((item) => item.space_tag_id)
   );
 
+  router;
+
   return (
     <div>
       <div className="bg-gray-100">
@@ -88,7 +90,14 @@ const ProfilePage: CustomPage = () => {
       </div>
       <SidePadding className="bg-gray-100">
         <div className="h-16"></div>
-        <Link href={`/space/${spaceSlug}`}>{"< Members"}</Link>
+        <button
+          className="hover:underline"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <Text>{"< Back"}</Text>
+        </button>
         <div className="h-8"></div>
 
         <div className="flex w-full flex-col rounded-lg border border-black bg-white pb-12">
