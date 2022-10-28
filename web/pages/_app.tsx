@@ -18,6 +18,7 @@ import { useQueryParam } from "../hooks/useQueryParam";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
 import {
+  adminBypassAtom,
   notificationsCountAtom,
   searchQueryAtom,
   selectedTagIdsAtom,
@@ -145,12 +146,14 @@ function App({ Component, pageProps }: CustomAppProps) {
   }, [spaceId, setSession, refreshSession]);
 
   // On space slug change
-  const [_, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
-  const [__, setSearchQuery] = useAtom(searchQueryAtom);
+  const [, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
+  const [, setSearchQuery] = useAtom(searchQueryAtom);
+  const [, setAdminBypass] = useAtom(adminBypassAtom);
   const onSpaceSlugChange = useCallback(() => {
     setSelectedTagIds({});
     setSearchQuery("");
-  }, [setSearchQuery, setSelectedTagIds]);
+    setAdminBypass(false);
+  }, [setAdminBypass, setSearchQuery, setSelectedTagIds]);
   useEffect(() => {
     onSpaceSlugChange();
   }, [spaceSlug, onSpaceSlugChange]);

@@ -85,17 +85,62 @@ select_permissions:
         - public
       filter:
         _or:
+          - profile:
+              user_id:
+                _eq: X-Hasura-User-Id
           - _and:
               - public:
                   _eq: true
               - profile:
-                  space:
-                    profiles:
-                      user_id:
-                        _eq: X-Hasura-User-Id
-          - profile:
-              user_id:
-                _eq: X-Hasura-User-Id
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _or:
+                  - _and:
+                      - _exists:
+                          _table:
+                            name: profile_to_profile_role_flattened
+                            schema: public
+                          _where:
+                            _and:
+                              - user_id:
+                                  _eq: X-Hasura-User-Id
+                              - space_id:
+                                  _eq: X-Hasura-Space-Id
+                              - profile_role:
+                                  _eq: Member
+                      - _or:
+                          - _exists:
+                              _table:
+                                name: profile_listing
+                                schema: public
+                              _where:
+                                _and:
+                                  - profile:
+                                      user_id:
+                                        _eq: X-Hasura-User-Id
+                                  - profile:
+                                      space_id:
+                                        _eq: X-Hasura-Space-Id
+                                  - public:
+                                      _eq: true
+                          - _not:
+                              profile:
+                                space:
+                                  attributes:
+                                    _contains:
+                                      allowOnlyPublicMembersToViewProfiles: true
+                  - _exists:
+                      _table:
+                        name: profile_to_profile_role_flattened
+                        schema: public
+                      _where:
+                        _and:
+                          - user_id:
+                              _eq: X-Hasura-User-Id
+                          - space_id:
+                              _eq: X-Hasura-Space-Id
+                          - profile_role:
+                              _eq: Admin
 update_permissions:
   - role: user
     permission:

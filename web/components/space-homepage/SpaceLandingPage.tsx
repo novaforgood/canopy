@@ -1,10 +1,11 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { closestCenter, DndContext, MeasuringStrategy } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { getDayOfYear } from "date-fns";
 import Fuse from "fuse.js";
 import { useAtom } from "jotai";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import {
@@ -12,14 +13,18 @@ import {
   useProfileListingsInSpaceQuery,
 } from "../../generated/graphql";
 import { BxSearch } from "../../generated/icons/regular";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { usePrivacySettings } from "../../hooks/usePrivacySettings";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import {
+  adminBypassAtom,
   searchQueryAtom,
   selectedTagIdsAtom,
   TagSelection,
 } from "../../lib/jotai";
 import { isTagOfficial } from "../../lib/tags";
-import { Text } from "../atomic";
+import { Button, Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { TextInput } from "../inputs/TextInput";
 import { ProfileCard } from "../ProfileCard";
@@ -156,6 +161,12 @@ function FilterBar() {
 
 export function SpaceLandingPage() {
   const { currentSpace } = useCurrentSpace();
+  const { privacySettings } = usePrivacySettings();
+  const { currentProfileHasRole, currentProfile } = useCurrentProfile();
+
+  const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
+
+  const spaceSlug = useQueryParam("slug", "string");
 
   const router = useRouter();
 
@@ -218,6 +229,8 @@ export function SpaceLandingPage() {
     return fuse.search(searchQueryLower).map((result) => result.item);
   }, [allProfileListings, searchQuery]);
 
+  const [adminBypass, setAdminBypass] = useAtom(adminBypassAtom);
+
   return (
     <div>
       <FilterBar />
@@ -231,6 +244,33 @@ export function SpaceLandingPage() {
             ></div>
           ))}
         </div>
+      ) : privacySettings?.allowOnlyPublicMembersToViewProfiles &&
+        !currentProfile?.profile_listing?.public &&
+        !adminBypass ? (
+        <>
+          <div className="flex flex-col items-center rounded-md bg-lime-300 p-6 text-center">
+            <Text italic>
+              Publish your profile so you can see other profiles!
+            </Text>
+            <div className="h-4"></div>
+            <Link href={`/space/${spaceSlug}/account/profile`} passHref>
+              <Button rounded>Go to My Profile</Button>
+            </Link>
+          </div>
+
+          {isAdmin && (
+            <div className="mt-12 flex flex-col items-center">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setAdminBypass(true);
+                }}
+              >
+                Admin only: View profiles anyways
+              </Button>
+            </div>
+          )}
+        </>
       ) : allProfileListings.length === 0 ? (
         <div>
           <Text italic>No results found</Text>

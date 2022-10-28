@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { format } from "date-fns";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
@@ -262,7 +263,12 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             <BxChevronLeft className="h-10 w-10" />
           </button>
         )}
-        <ProfileImage src={image?.url} className="mr-3 h-10 w-10" />
+        <Link href={`/space/${spaceSlug}/profile/${otherProfile?.id}`} passHref>
+          <ProfileImage
+            src={image?.url}
+            className="mr-3 h-10 w-10 cursor-pointer"
+          />
+        </Link>
 
         <div>
           <Text loading={!first_name} loadingWidthClassName="w-4">
