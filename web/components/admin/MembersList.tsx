@@ -201,7 +201,7 @@ export function MembersList() {
           disabled={filteredMembers.length === 0}
           onClick={() => {
             setExportedEmailList(
-              filteredMembers.map((member) => member.email).join(",")
+              filteredMembers.map((member) => member.email).join(";")
             );
             setExportedEmailListModalOpen(true);
           }}

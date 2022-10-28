@@ -511,6 +511,29 @@ mutation UpdateSpace($space_id: uuid!, $variables: space_set_input!) {
   }
 }
 
+mutation UpdateSpaceAttributes($space_id: uuid!, $changes: jsonb) {
+  update_space_by_pk(
+    pk_columns: { id: $space_id }
+    _append: { attributes: $changes }
+  ) {
+    attributes
+    created_at
+    description_html
+    id
+    name
+    owner_id
+    slug
+    space_cover_image {
+      id
+      image {
+        id
+        url
+        uploader_user_id
+      }
+    }
+  }
+}
+
 mutation UpsertSpaceCoverImage($image_id: uuid!, $space_id: uuid!) {
   insert_space_cover_image_one(
     object: { image_id: $image_id, space_id: $space_id }
