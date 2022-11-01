@@ -29,11 +29,12 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - attributes
+        - created_at
         - email
         - first_name
         - id
         - last_name
-        - created_at
       filter:
         _or:
           - id:
@@ -47,6 +48,7 @@ update_permissions:
   - role: user
     permission:
       columns:
+        - attributes
         - first_name
         - last_name
       filter:

@@ -1,0 +1,22 @@
+table:
+  name: past_day_unread_messages_count
+  schema: public
+object_relationships:
+  - name: receiver_profile
+    using:
+      manual_configuration:
+        column_mapping:
+          receiver_profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profile
+          schema: public
+  - name: sender_profile
+    using:
+      manual_configuration:
+        column_mapping:
+          sender_profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profile
+          schema: public
