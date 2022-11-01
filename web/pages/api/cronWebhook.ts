@@ -23,7 +23,6 @@ enum CronJobType {
 }
 
 const middlewareSchema = z.object({
-  type: z.literal(WebhookType.CronJob),
   payload: z.object({
     cronJobType: z.literal(CronJobType.SendChatMessageNotification),
   }),
@@ -33,16 +32,7 @@ export default applyMiddleware({
   authenticated: false,
   validationSchema: middlewareSchema,
 }).post(async (req, res) => {
-  switch (req.body.type) {
-    case WebhookType.CronJob: {
-      const cronClientKey = req.headers["x-canopy-cron-client-key"];
-      if (cronClientKey !== CRON_CLIENT_KEY) {
-        throw makeApiFail("Invalid cron client key");
-      }
-
-      await handleCronJob(req.body.payload.cronJobType);
-    }
-  }
+  await handleCronJob(req.body.payload.cronJobType);
 
   const response = makeApiSuccess({ detail: "Success" });
   res.status(response.code).json(response);
