@@ -31,6 +31,7 @@ NEXT_PUBLIC_GRAPHQL_WS_ENDPOINT=
 FIREBASE_SERVICE_ACCOUNT=
 GRAPHQL_ADMIN_SECRET=
 SENDGRID_API_KEY=
+CRON_CLIENT_KEY=
 HOST_URL=
 
 AWS_ENV_ACCESS_KEY_ID=
@@ -55,6 +56,9 @@ Create a `.env` file in the `/hasura` folder with the following variables:
 
 ```
 HASURA_GRAPHQL_JWT_SECRET=
+
+CANOPY_CRON_WEBHOOK_URL=
+CANOPY_CRON_CLIENT_KEY=
 ```
 
 Run all commands from inside the `/hasura` folder:
