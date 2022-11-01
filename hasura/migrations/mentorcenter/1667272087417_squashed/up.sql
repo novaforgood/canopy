@@ -7,3 +7,6 @@ CREATE OR REPLACE VIEW past_day_unread_messages_count AS (
     AND chat_message.id > COALESCE(ptcr.latest_read_chat_message_id, 0)
     GROUP BY ptcr.profile_id, chat_message.sender_profile_id
 );
+
+alter table "public"."user" add column "attributes" jsonb
+ not null default jsonb_build_object();

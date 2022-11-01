@@ -1,1 +1,0 @@
-DROP VIEW past_day_unread_messages_count;
