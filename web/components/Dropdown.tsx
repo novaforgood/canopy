@@ -10,12 +10,14 @@ import {
 } from "../generated/graphql";
 import {
   BxCaretDown,
+  BxCog,
   BxLogIn,
   BxLogOut,
   BxTransfer,
 } from "../generated/icons/regular";
 import {
   BxsAddToQueue,
+  BxsCog,
   BxsUser,
   BxsUserAccount,
   BxsWrench,
@@ -120,6 +122,28 @@ export function Dropdown() {
                         </Menu.Item>
                       </>
                     )}
+
+                    <Menu.Item>
+                      {({ active }) => {
+                        const styles = classNames({
+                          "group flex w-full items-center rounded-md px-2 py-3 text-sm":
+                            true,
+                          "bg-white": !active,
+                          "bg-gray-50": active,
+                        });
+                        return (
+                          <button
+                            className={styles}
+                            onClick={() => {
+                              router.push("/settings");
+                            }}
+                          >
+                            <BxsCog className="mr-2 h-5 w-5" />
+                            <Text variant="body2">User settings</Text>
+                          </button>
+                        );
+                      }}
+                    </Menu.Item>
 
                     <Menu.Item>
                       {({ active }) => {

@@ -90,6 +90,17 @@ query GetChatRoomWithProfiles($profile_id_1: uuid!, $profile_id_2: uuid!) {
 mutation InsertChatRoomOne($data: chat_room_insert_input!) {
   insert_chat_room_one(object: $data) {
     id
+    profile_to_chat_rooms {
+      id
+      profile {
+        id
+        space {
+          id
+          name
+          slug
+        }
+      }
+    }
   }
 }
 
@@ -100,5 +111,36 @@ mutation InsertConnectionRequest($data: connection_request_insert_input!) {
     receiver_profile_id
     created_at
     status
+  }
+}
+
+query GetUnreadMessagesCounts {
+  profile(
+    where: { unread_messages_counts: { unread_messages_count: { _gt: 0 } } }
+  ) {
+    id
+    unread_messages_counts {
+      unread_messages_count
+      sender_profile {
+        id
+        user {
+          id
+          first_name
+          last_name
+          email
+        }
+        profile_listing {
+          id
+          headline
+          profile_listing_image {
+            id
+            image {
+              id
+              url
+            }
+          }
+        }
+      }
+    }
   }
 }

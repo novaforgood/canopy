@@ -18348,6 +18348,66 @@
             "description": "update data of the table: \"user\"",
             "args": [
               {
+                "name": "_append",
+                "description": "append existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_append_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_delete_at_path",
+                "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_delete_at_path_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_delete_elem",
+                "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_delete_elem_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_delete_key",
+                "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_delete_key_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_prepend",
+                "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_prepend_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "_set",
                 "description": "sets the columns of the filtered rows to the given values",
                 "type": {
@@ -18388,6 +18448,66 @@
             "name": "update_user_by_pk",
             "description": "update single row of the table: \"user\"",
             "args": [
+              {
+                "name": "_append",
+                "description": "append existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_append_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_delete_at_path",
+                "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_delete_at_path_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_delete_elem",
+                "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_delete_elem_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_delete_key",
+                "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_delete_key_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "_prepend",
+                "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "user_prepend_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
               {
                 "name": "_set",
                 "description": "sets the columns of the filtered rows to the given values",
@@ -18662,6 +18782,1418 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count",
+        "description": "columns and relationships of \"past_day_unread_messages_count\"",
+        "fields": [
+          {
+            "name": "receiver_profile",
+            "description": "An object relationship",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "profile",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile",
+            "description": "An object relationship",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "profile",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "bigint",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_aggregate",
+        "description": "aggregated selection of \"past_day_unread_messages_count\"",
+        "fields": [
+          {
+            "name": "aggregate",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_aggregate_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "nodes",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "past_day_unread_messages_count",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_aggregate_fields",
+        "description": "aggregate fields of \"past_day_unread_messages_count\"",
+        "fields": [
+          {
+            "name": "avg",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_avg_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "count",
+            "description": null,
+            "args": [
+              {
+                "name": "columns",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "past_day_unread_messages_count_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "distinct",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "max",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_max_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "min",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_min_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stddev",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_stddev_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stddev_pop",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_stddev_pop_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stddev_samp",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_stddev_samp_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sum",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_sum_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "var_pop",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_var_pop_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "var_samp",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_var_samp_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variance",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "past_day_unread_messages_count_variance_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_aggregate_order_by",
+        "description": "order by aggregate values of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "avg",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_avg_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "max",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_max_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "min",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_min_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stddev",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_stddev_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stddev_pop",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_stddev_pop_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stddev_samp",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_stddev_samp_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sum",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_sum_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "var_pop",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_var_pop_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "var_samp",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_var_samp_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "variance",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_variance_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_arr_rel_insert_input",
+        "description": "input type for inserting array relation for remote table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "data",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "past_day_unread_messages_count_insert_input",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_avg_fields",
+        "description": "aggregate avg on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_avg_order_by",
+        "description": "order by avg() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_bool_exp",
+        "description": "Boolean expression to filter rows from the table \"past_day_unread_messages_count\". All fields are combined with a logical 'AND'.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "_and",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_not",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_or",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "receiver_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "bigint_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_insert_input",
+        "description": "input type for inserting data into table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "receiver_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_obj_rel_insert_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_obj_rel_insert_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "bigint",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_max_fields",
+        "description": "aggregate max on columns",
+        "fields": [
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "bigint",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_max_order_by",
+        "description": "order by max() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_min_fields",
+        "description": "aggregate min on columns",
+        "fields": [
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "bigint",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_min_order_by",
+        "description": "order by min() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_order_by",
+        "description": "Ordering options when selecting data from \"past_day_unread_messages_count\".",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "receiver_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "past_day_unread_messages_count_select_column",
+        "description": "select columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "receiver_profile_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_stddev_fields",
+        "description": "aggregate stddev on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_stddev_order_by",
+        "description": "order by stddev() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_stddev_pop_fields",
+        "description": "aggregate stddev_pop on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_stddev_pop_order_by",
+        "description": "order by stddev_pop() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_stddev_samp_fields",
+        "description": "aggregate stddev_samp on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_stddev_samp_order_by",
+        "description": "order by stddev_samp() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_stream_cursor_input",
+        "description": "Streaming cursor of the table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "initial_value",
+            "description": "Stream column input with initial value",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "past_day_unread_messages_count_stream_cursor_value_input",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ordering",
+            "description": "cursor ordering",
+            "type": {
+              "kind": "ENUM",
+              "name": "cursor_ordering",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_stream_cursor_value_input",
+        "description": "Initial value of the column from where the streaming should start",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "receiver_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sender_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "bigint",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_sum_fields",
+        "description": "aggregate sum on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "bigint",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_sum_order_by",
+        "description": "order by sum() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_var_pop_fields",
+        "description": "aggregate var_pop on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_var_pop_order_by",
+        "description": "order by var_pop() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_var_samp_fields",
+        "description": "aggregate var_samp on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_var_samp_order_by",
+        "description": "order by var_samp() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "past_day_unread_messages_count_variance_fields",
+        "description": "aggregate variance on columns",
+        "fields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "past_day_unread_messages_count_variance_order_by",
+        "description": "order by variance() on columns of table \"past_day_unread_messages_count\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "unread_messages_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
         "possibleTypes": null
       },
       {
@@ -19328,6 +20860,200 @@
             "deprecationReason": null
           },
           {
+            "name": "unread_messages_counts",
+            "description": "An array relationship",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "past_day_unread_messages_count_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "past_day_unread_messages_count_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "past_day_unread_messages_count",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_counts_aggregate",
+            "description": "An aggregate relationship",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "past_day_unread_messages_count_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "past_day_unread_messages_count_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "past_day_unread_messages_count_aggregate",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "user",
             "description": "An object relationship",
             "args": [],
@@ -19745,6 +21471,18 @@
             "deprecationReason": null
           },
           {
+            "name": "unread_messages_counts",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "user",
             "description": null,
             "type": {
@@ -19892,6 +21630,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_counts",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_arr_rel_insert_input",
               "ofType": null
             },
             "defaultValue": null,
@@ -27922,6 +29672,18 @@
             "type": {
               "kind": "ENUM",
               "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unread_messages_counts_aggregate",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "past_day_unread_messages_count_aggregate_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -36325,6 +38087,200 @@
               "kind": "OBJECT",
               "name": "image",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "past_day_unread_messages_count",
+            "description": "fetch data from the table: \"past_day_unread_messages_count\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "past_day_unread_messages_count_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "past_day_unread_messages_count_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "past_day_unread_messages_count",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "past_day_unread_messages_count_aggregate",
+            "description": "fetch aggregated fields from the table: \"past_day_unread_messages_count\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "past_day_unread_messages_count_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "past_day_unread_messages_count_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "past_day_unread_messages_count_aggregate",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -56506,6 +58462,273 @@
             "deprecationReason": null
           },
           {
+            "name": "past_day_unread_messages_count",
+            "description": "fetch data from the table: \"past_day_unread_messages_count\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "past_day_unread_messages_count_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "past_day_unread_messages_count_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "past_day_unread_messages_count",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "past_day_unread_messages_count_aggregate",
+            "description": "fetch aggregated fields from the table: \"past_day_unread_messages_count\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "past_day_unread_messages_count_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "past_day_unread_messages_count_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "past_day_unread_messages_count_aggregate",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "past_day_unread_messages_count_stream",
+            "description": "fetch data from the table in a streaming manner : \"past_day_unread_messages_count\"",
+            "args": [
+              {
+                "name": "batch_size",
+                "description": "maximum number of rows returned in a single batch",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "cursor",
+                "description": "cursor to stream the results returned by the query",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "past_day_unread_messages_count_stream_cursor_input",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "past_day_unread_messages_count_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "past_day_unread_messages_count",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "profile",
             "description": "fetch data from the table: \"profile\"",
             "args": [
@@ -63132,6 +65355,35 @@
         "description": "columns and relationships of \"user\"",
         "fields": [
           {
+            "name": "attributes",
+            "description": null,
+            "args": [
+              {
+                "name": "path",
+                "description": "JSON select path",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "jsonb",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "created_at",
             "description": null,
             "args": [],
@@ -63552,6 +65804,29 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "user_append_input",
+        "description": "append existing jsonb value of filtered columns with new jsonb value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "user_bool_exp",
         "description": "Boolean expression to filter rows from the table \"user\". All fields are combined with a logical 'AND'.",
         "fields": null,
@@ -63603,6 +65878,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "jsonb_comparison_exp",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -63716,10 +66003,99 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "user_delete_at_path_input",
+        "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "user_delete_elem_input",
+        "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "user_delete_key_input",
+        "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "user_insert_input",
         "description": "input type for inserting data into table \"user\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "created_at",
             "description": null,
@@ -64135,6 +66511,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "created_at",
             "description": null,
             "type": {
@@ -64251,6 +66639,29 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "user_prepend_input",
+        "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "ENUM",
         "name": "user_select_column",
         "description": "select columns of table \"user\"",
@@ -64258,6 +66669,12 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
+          {
+            "name": "attributes",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "created_at",
             "description": "column name",
@@ -64303,6 +66720,18 @@
         "description": "input type for updating data in table \"user\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "created_at",
             "description": null,
@@ -64426,6 +66855,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "attributes",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "created_at",
             "description": null,
             "type": {
@@ -64511,6 +66952,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "attributes",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "created_at",
             "description": "column name",
             "isDeprecated": false,
@@ -64555,6 +67002,66 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "_append",
+            "description": "append existing jsonb value of filtered columns with new jsonb value",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "user_append_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_delete_at_path",
+            "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "user_delete_at_path_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_delete_elem",
+            "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "user_delete_elem_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_delete_key",
+            "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "user_delete_key_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_prepend",
+            "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "user_prepend_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "_set",
             "description": "sets the columns of the filtered rows to the given values",

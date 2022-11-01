@@ -31,5 +31,10 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: "${HASURA_GRAPHQL_JWT_SECRET}"
       ## Unauthorized role
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "public"
+
+      ## CRON Webhook URL
+      CANOPY_CRON_WEBHOOK_URL: "${CANOPY_CRON_WEBHOOK_URL}"
+      ## CRON Client Key
+      CANOPY_CRON_CLIENT_KEY: "${CANOPY_CRON_CLIENT_KEY}"
 volumes:
   db_data:
