@@ -48,9 +48,22 @@ export function AuthProvider({
     const currentUser = getCurrentUser();
     if (!isLoggedIn) {
       const prefix = router.asPath.split("?")[0];
-      if (prefix !== "/login") {
-        router.replace(`/login?redirect=${router.asPath}`);
-        return null;
+
+      const prefixArray = prefix.split("/");
+
+      const redirectToSignup =
+        (prefixArray[1] === "space" && prefixArray[3] === "join") ||
+        prefixArray[1] === "create";
+      if (redirectToSignup) {
+        if (prefix !== "/signup") {
+          router.replace(`/signup?redirect=${prefix}`);
+          return null;
+        }
+      } else {
+        if (prefix !== "/login") {
+          router.replace(`/login?redirect=${router.asPath}`);
+          return null;
+        }
       }
     } else if (currentUser && currentUser.emailVerified === false) {
       const prefix = router.asPath.split("?")[0];
