@@ -48,8 +48,8 @@ export function AuthProvider({
     const currentUser = getCurrentUser();
     if (!isLoggedIn) {
       const prefix = router.asPath.split("?")[0];
-      if (prefix !== "/signup") {
-        router.replace(`/signup?redirect=${router.asPath}`);
+      if (prefix !== "/login") {
+        router.replace(`/login?redirect=${router.asPath}`);
         return null;
       }
     } else if (currentUser && currentUser.emailVerified === false) {
