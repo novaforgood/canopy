@@ -32,6 +32,11 @@ export default applyMiddleware({
   authenticated: false,
   validationSchema: middlewareSchema,
 }).post(async (req, res) => {
+  const cronClientKey = req.headers["x-canopy-cron-client-key"];
+  if (cronClientKey !== CRON_CLIENT_KEY) {
+    throw makeApiFail("Invalid cron client key");
+  }
+
   await handleCronJob(req.body.payload.cronJobType);
 
   const response = makeApiSuccess({ detail: "Success" });
