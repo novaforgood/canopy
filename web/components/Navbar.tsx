@@ -153,10 +153,18 @@ function MobileNavbar() {
                     navigate("/");
                   }}
                 >
-                  Switch Community Spaces
+                  Change directory
                 </button>
               </>
             )}
+
+            <button
+              onClick={() => {
+                navigate("/settings");
+              }}
+            >
+              User settings
+            </button>
 
             <button
               onClick={() => {

@@ -6,7 +6,9 @@ const SERVER_PROCESS_ENV = {
   AWS_ENV_REGION: process.env.AWS_ENV_REGION,
   AWS_ENV_S3_BUCKET: process.env.AWS_ENV_S3_BUCKET,
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+  DISABLE_EMAILS: process.env.DISABLE_EMAILS,
   HOST_URL: process.env.HOST_URL ?? process.env.VERCEL_URL,
+  CRON_CLIENT_KEY: process.env.CRON_CLIENT_KEY,
 } as const;
 
 type ServerEnvVarKey = keyof typeof SERVER_PROCESS_ENV;
