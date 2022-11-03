@@ -16,7 +16,7 @@ import {
   makeApiFail,
   makeApiSuccess,
 } from "../../../server/response";
-import { sendgridMail } from "../../../server/sendgrid";
+import { sendEmail, TemplateId } from "../../../server/sendgrid";
 
 const connectEmailSchema = z.object({
   type: z.literal(EmailType.Connect),
@@ -43,62 +43,20 @@ export default applyMiddleware({
         timezone,
       } = req.body.payload;
 
-      const [
-        { data: senderData, error: senderError },
-        { data: receiverData, error: receiverError },
-      ] = await Promise.all([
-        executeGetProfileQuery({ profile_id: senderProfileId }),
-        executeGetProfileQuery({ profile_id: receiverProfileId }),
-      ]);
-      if (
-        senderError ||
-        receiverError ||
-        !senderData?.profile_by_pk ||
-        !receiverData?.profile_by_pk
-      ) {
-        throw makeApiFail(
-          senderError?.message ??
-            receiverError?.message ??
-            "Sender or receiver not found"
-        );
-      }
+      await sendEmail({
+        receiverProfileId: receiverProfileId,
+        senderProfileId: senderProfileId,
+        templateId: TemplateId.ConnectionRequest,
+        dynamicTemplateData: ({ space }) => ({
+          introMessage,
+          availability,
+          timezone,
+          spaceName: space.name,
+        }),
+      }).catch((err: Error) => {
+        throw makeApiError(err.message);
+      });
 
-      const sender = senderData.profile_by_pk.user;
-      const receiver = receiverData.profile_by_pk.user;
-
-      if (sender.email === receiver.email) {
-        throw makeApiFail("Cannot connect to yourself");
-      }
-
-      const spaceName = receiverData.profile_by_pk.space.name;
-
-      await sendgridMail
-        .send({
-          from: {
-            email: "connect@joincanopy.org",
-            name: "Canopy",
-          },
-          cc: [sender.email],
-          to: receiver.email,
-          templateId: "d-be75ba26790f45d68be187f7b110b616",
-          dynamicTemplateData: {
-            sender: {
-              firstName: sender.first_name,
-              lastName: sender.last_name,
-            },
-            receiver: {
-              firstName: receiver.first_name,
-              lastName: receiver.last_name,
-            },
-            introMessage,
-            availability,
-            timezone,
-            spaceName,
-          },
-        })
-        .catch((err) => {
-          throw makeApiError(err.message);
-        });
       const { error } = await executeInsertConnectionRequestMutation({
         data: {
           sender_profile_id: senderProfileId,

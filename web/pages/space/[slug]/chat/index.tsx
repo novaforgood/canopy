@@ -30,12 +30,13 @@ const ChatHomePage: CustomPage = () => {
 
   useEffect(() => {
     if (fetching) return;
-    if (data?.chat_room.length === 0) {
+    if (!data) return;
+    if (data.chat_room.length === 0) {
       router.push(`/space/${spaceSlug}/chat/new`);
     } else {
-      router.push(`/space/${spaceSlug}/chat/${data?.chat_room[0].id}`);
+      router.push(`/space/${spaceSlug}/chat/${data.chat_room[0].id}`);
     }
-  }, [data?.chat_room, fetching, router, spaceSlug]);
+  }, [data, fetching, router, spaceSlug]);
 
   return (
     <div className="overflow-hidden rounded-md">

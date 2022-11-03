@@ -1,1 +1,9 @@
-[]
+- name: send_chat_message_notification
+  webhook: "{{CANOPY_CRON_WEBHOOK_URL}}"
+  schedule: 0 19 * * *
+  include_in_metadata: true
+  payload:
+    cronJobType: SendChatMessageNotification
+  headers:
+    - name: x-canopy-cron-client-key
+      value_from_env: CANOPY_CRON_CLIENT_KEY

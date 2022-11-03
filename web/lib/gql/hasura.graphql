@@ -6,6 +6,7 @@ query User($id: String!) {
     email
     first_name
     last_name
+    attributes
   }
 }
 
@@ -516,21 +517,18 @@ mutation UpdateSpaceAttributes($space_id: uuid!, $changes: jsonb) {
     pk_columns: { id: $space_id }
     _append: { attributes: $changes }
   ) {
-    attributes
-    created_at
-    description_html
     id
-    name
-    owner_id
-    slug
-    space_cover_image {
-      id
-      image {
-        id
-        url
-        uploader_user_id
-      }
-    }
+    attributes
+  }
+}
+
+mutation UpdateUserAttributes($user_id: String!, $changes: jsonb) {
+  update_user_by_pk(
+    pk_columns: { id: $user_id }
+    _append: { attributes: $changes }
+  ) {
+    id
+    attributes
   }
 }
 

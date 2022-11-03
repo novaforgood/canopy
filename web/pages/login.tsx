@@ -213,7 +213,7 @@ const LoginPage: CustomPage = () => {
               Login
             </Button>
             <div className="h-8"></div>
-            <Text>
+            <Text medium>
               Need an account?{" "}
               <a
                 className="underline"
