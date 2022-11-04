@@ -9,6 +9,7 @@ import {
 } from "../../generated/graphql";
 import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
 import { Select } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { ProfileImage } from "../ProfileImage";
@@ -19,9 +20,12 @@ interface MemberRowProps {
 }
 export function MemberRow(props: MemberRowProps) {
   const { profileId } = props;
+
+  const isLoggedIn = useIsLoggedIn();
+
   const [{ data }] = useProfileByIdQuery({
     requestPolicy: "cache-first",
-    variables: { profile_id: profileId },
+    variables: { profile_id: profileId, is_logged_in: isLoggedIn },
   });
 
   const { currentSpace } = useCurrentSpace();
@@ -41,14 +45,14 @@ export function MemberRow(props: MemberRowProps) {
     <Fragment>
       <div className="flex items-center">
         <ProfileImage
-          className="h-10 w-10 mr-2"
+          className="mr-2 h-10 w-10"
           src={
             profile.profile_listing?.profile_listing_image?.image.url ?? null
           }
         />
         {first_name} {last_name}{" "}
         {currentSpace?.owner_id === profile.user.id && (
-          <BxsCrown className="h-4 w-4 ml-2 text-gray-600" />
+          <BxsCrown className="ml-2 h-4 w-4 text-gray-600" />
         )}
       </div>
       <input value={email} readOnly className="truncate" />

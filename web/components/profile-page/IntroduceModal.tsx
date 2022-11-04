@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { EmailType } from "../../common/types";
 import { useProfileByIdQuery } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
 import { getTimezoneSelectOptions } from "../../lib/timezone";
@@ -38,8 +39,10 @@ export function IntroduceModal(props: IntroduceModalProps) {
     }
   }, [isOpen]);
 
+  const isLoggedIn = useIsLoggedIn();
+
   const [{ data: profileData }] = useProfileByIdQuery({
-    variables: { profile_id: profileId ?? "" },
+    variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
   });
 
   if (!profileData?.profile_by_pk) {
