@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { Button, Select, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
+import { PageNotFound } from "../../../../components/error-screens/PageNotFound";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/Navbar";
@@ -60,17 +61,17 @@ const ProfilePage: CustomPage = () => {
     { data: profileData, fetching: fetchingProfileData },
     refetchProfileById,
   ] = useProfileByIdQuery({
-    variables: { profile_id: profileId ?? "" },
+    variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
   });
 
   const isMyProfile = profileId === currentProfile?.id;
 
   if (!currentSpace && !fetchingCurrentSpace) {
-    return <div>404 - Space not found</div>;
+    return <PageNotFound />;
   }
 
   if (!profileData?.profile_by_pk?.profile_listing && !fetchingProfileData) {
-    return <div>404 - Profile listing not found</div>;
+    return <PageNotFound />;
   }
 
   const listing = profileData?.profile_by_pk?.profile_listing;
@@ -134,7 +135,7 @@ const ProfilePage: CustomPage = () => {
                   onClick={() => {
                     if (isLoggedIn) {
                       const chatRoomId =
-                        profileData?.profile_to_chat_room[0]?.chat_room_id;
+                        profileData?.profile_to_chat_room?.[0]?.chat_room_id;
                       if (chatRoomId) {
                         router.push(`/space/${spaceSlug}/chat/${chatRoomId}`);
                       } else {
