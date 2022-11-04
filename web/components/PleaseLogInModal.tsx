@@ -24,8 +24,8 @@ export function PleaseLogInModal(props: PleaseLogInModalProps) {
       onSecondaryAction={onClose}
       onClose={onClose}
     >
-      <div className="w-80 p-8">
-        <Text>Please log in so we can introduce you.</Text>
+      <div className="w-80 p-8 text-center">
+        <Text>Please log in to send a message.</Text>
       </div>
     </ActionModal>
   );

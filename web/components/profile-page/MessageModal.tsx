@@ -7,6 +7,7 @@ import { EmailType } from "../../common/types";
 import { useProfileByIdQuery } from "../../generated/graphql";
 import { BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
@@ -27,6 +28,7 @@ export interface MessageModalProps {
 export function MessageModal(props: MessageModalProps) {
   const { isOpen, onClose, profileId, onMessageSent } = props;
 
+  const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
   const { userData } = useUserData();
   const { currentProfile } = useCurrentProfile();
@@ -40,7 +42,7 @@ export function MessageModal(props: MessageModalProps) {
   }, [isOpen]);
 
   const [{ data: profileData }] = useProfileByIdQuery({
-    variables: { profile_id: profileId ?? "" },
+    variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
   });
 
   const [createdChatRoomId, setCreatedChatRoomId] = useState<string | null>(

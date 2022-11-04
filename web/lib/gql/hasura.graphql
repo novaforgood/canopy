@@ -311,7 +311,7 @@ query ProfileListingsInSpace($where: profile_listing_bool_exp) {
   }
 }
 
-query ProfileById($profile_id: uuid!) {
+query ProfileById($profile_id: uuid!, $is_logged_in: Boolean!) {
   profile_by_pk(id: $profile_id) {
     id
     created_at
@@ -368,7 +368,7 @@ query ProfileById($profile_id: uuid!) {
     where: {
       chat_room: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
     }
-  ) {
+  ) @include(if: $is_logged_in) {
     id
     chat_room_id
   }

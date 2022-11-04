@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 
 import { useProfileByIdQuery } from "../generated/graphql";
 import { BxsHome } from "../generated/icons/solid";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 
 import { Text } from "./atomic";
 
@@ -23,11 +24,13 @@ const convertBreadcrumb = (string: string) => {
 
 export function Breadcrumbs() {
   const router = useRouter();
+  const isLoggedIn = useIsLoggedIn();
+
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
 
   const profileId = router.query.profileId as string;
   const [{ data: profileData }] = useProfileByIdQuery({
-    variables: { profile_id: profileId ?? "" },
+    variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
   });
 
   useEffect(() => {
@@ -76,7 +79,7 @@ export function Breadcrumbs() {
               {item.href ? (
                 <a href={item.href}>{item.title}</a>
               ) : (
-                <div className="text-gray-600 cursor-default">{item.title}</div>
+                <div className="cursor-default text-gray-600">{item.title}</div>
               )}
             </div>
             <Text>/</Text>
