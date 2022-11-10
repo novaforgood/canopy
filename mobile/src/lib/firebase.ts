@@ -15,6 +15,8 @@ import {
   User,
   ErrorFn,
   CompleteFn,
+  signInWithCredential as firebaseSignInWithCredential,
+  AuthCredential,
 } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -29,6 +31,8 @@ const firebaseConfig = {
   projectId: Constants.manifest?.extra?.["FIREBASE_PROJECT_ID"],
   appId: Constants.manifest?.extra?.["FIREBASE_APP_ID"],
 };
+
+console.log(firebaseConfig);
 
 // Initialize Firebase
 if (getApps().length === 0) {
@@ -51,6 +55,10 @@ export const onAuthStateChanged = (
 const googleOauthProvider = new GoogleAuthProvider();
 export const signInWithGoogle = () =>
   signInWithPopup(auth, googleOauthProvider);
+
+// Sign in with credential
+export const signInWithCredential = (credential: AuthCredential) =>
+  firebaseSignInWithCredential(auth, credential);
 
 // Sign out
 export const signOut = () => firebaseSignOut(auth);

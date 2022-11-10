@@ -7,6 +7,7 @@ const extrasWhitelist = [
   "FIREBASE_PROJECT_ID",
   "FIREBASE_APP_ID",
   "GRAPHQL_ENDPOINT",
+  "FIREBASE_WEB_CLIENT_ID",
 ];
 
 function filterEnvVariables(env) {
@@ -19,5 +20,9 @@ function filterEnvVariables(env) {
 }
 
 export default {
-  extra: filterEnvVariables(process.env),
+  expo: {
+    name: "Canopy",
+    slug: "joincanopy",
+    extra: filterEnvVariables(process.env),
+  },
 };

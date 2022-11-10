@@ -1,29 +1,47 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "../components/atomic/Box";
 import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { TextInput } from "../components/atomic/TextInput";
 import {
+  signInWithCredential,
   signInWithEmailAndPassword,
   signInWithGoogle,
   signOut,
 } from "../lib/firebase";
 import type { RootStackParams } from "../types/navigation";
 import Constants from "expo-constants";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import { getAdditionalUserInfo, GoogleAuthProvider } from "firebase/auth";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export function SignInScreen({
   navigation,
 }: StackScreenProps<RootStackParams, "SignIn">) {
   const [signingIn, setSigningIn] = useState(false);
+
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    clientId: Constants.manifest?.extra?.["FIREBASE_WEB_CLIENT_ID"] ?? "",
+  });
+
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
     setSigningIn(true);
-    signInWithGoogle()
+    await promptAsync()
+      .then(async (response) => {
+        if (response.type === "success") {
+          const idToken = response.params.id_token;
+          return GoogleAuthProvider.credential(idToken);
+        } else {
+          throw new Error("Google sign in failed");
+        }
+      })
+      .then(signInWithCredential)
       .then(async (userCred) => {
-        const isNewUser =
-          userCred.user.metadata.creationTime ===
-          userCred.user.metadata.lastSignInTime;
+        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
 
         if (isNewUser) {
           // User has never signed in before
@@ -48,6 +66,7 @@ export function SignInScreen({
         // handleError(e);
         console.log(e.message);
       })
+
       .finally(() => {
         setSigningIn(false);
       });
@@ -96,22 +115,39 @@ export function SignInScreen({
   const [password, setPassword] = useState("");
 
   return (
-    <Box>
+    <Box padding={4}>
       <Box>
-        <Text variant="heading1">Sign in</Text>
-        <TextInput value={email} onChangeText={setEmail} />
+        <Text variant="heading3">Sign in to Canopy</Text>
+
+        <Button
+          onPress={() => {
+            console.log("Pressed");
+            googleSignIn();
+          }}
+        >
+          Sign in with Google
+        </Button>
         <TextInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          mt={12}
+        />
+        <TextInput
+          label="Password"
+          mt={4}
           value={password}
           onChangeText={setPassword}
           secureTextEntry={true}
         />
         <Button
+          mt={16}
           onPress={() => {
             console.log("Pressed");
             signInManually(email, password);
           }}
         >
-          Test
+          Sign in
         </Button>
       </Box>
     </Box>
