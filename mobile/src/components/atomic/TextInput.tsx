@@ -39,7 +39,7 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
           variant="body1"
           borderColor={"green900"}
           borderWidth={1}
-          borderRadius={8}
+          borderRadius="md"
         />
       </Box>
     );

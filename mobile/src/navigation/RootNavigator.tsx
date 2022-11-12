@@ -4,17 +4,17 @@ import React, { useCallback, useEffect } from "react";
 import DirectoryScreen from "../screens/Directory";
 import HomeScreen from "../screens/Home";
 
-import { RecoilRoot, useRecoilState } from "recoil";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
 
-import { currentSpaceSlugAtom, sessionAtom } from "../lib/recoil";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { usePrevious } from "../hooks/usePrevious";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
 import { RootStackParams } from "../types/navigation";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { SignInScreen } from "../screens/SignInScreen";
+import { useAtom } from "jotai";
+import { currentSpaceSlugAtom, sessionAtom } from "../lib/jotai";
 
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -53,8 +53,8 @@ export function RootNavigator() {
   }, [refreshSessionIfNeeded]);
 
   ///// Force update JWT if user changed space /////
-  const [session, setSession] = useRecoilState(sessionAtom);
-  const [spaceSlug, setSpaceSlug] = useRecoilState(currentSpaceSlugAtom);
+  const [session, setSession] = useAtom(sessionAtom);
+  const [spaceSlug, setSpaceSlug] = useAtom(currentSpaceSlugAtom);
 
   const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
     pause: true,
@@ -106,7 +106,7 @@ export function RootNavigator() {
       <RootStack.Screen
         name="Directory"
         component={DirectoryScreen}
-        options={({ route }) => ({ title: route.params.spaceSlug })}
+        options={({ route }) => ({ title: spaceSlug })}
       />
     </RootStack.Navigator>
   );

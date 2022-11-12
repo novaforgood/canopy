@@ -109,3 +109,37 @@ query AllProfilesOfUser($user_id: String!) {
     }
   }
 }
+
+query ProfileListingsInSpace($where: profile_listing_bool_exp) {
+  profile_listing(where: $where) {
+    id
+    public
+    headline
+    profile_listing_image {
+      id
+      image {
+        id
+        url
+      }
+    }
+    profile_listing_to_space_tags(
+      where: { space_tag: { status: { _neq: Deleted } } }
+    ) {
+      id
+      space_tag_id
+      space_tag {
+        id
+        label
+      }
+    }
+    profile {
+      id
+      user {
+        id
+        last_name
+        first_name
+        email
+      }
+    }
+  }
+}

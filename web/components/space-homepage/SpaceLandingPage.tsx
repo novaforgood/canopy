@@ -30,8 +30,6 @@ import { TextInput } from "../inputs/TextInput";
 import { ProfileCard } from "../ProfileCard";
 import { Tag } from "../Tag";
 
-import { shuffleProfiles } from "./ShuffleProfiles";
-
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
   // includeScore: false,
@@ -327,4 +325,29 @@ export function SpaceLandingPage() {
       )}
     </div>
   );
+}
+
+// code for shuffling based on seed taken from
+// https://stackoverflow.com/a/53758827
+
+function shuffleProfiles<T>(array: T[], seed: number) {
+  let m = array.length;
+  let t;
+  let i;
+
+  while (m) {
+    i = Math.floor(random(seed) * m--);
+
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+    ++seed;
+  }
+
+  return array;
+}
+
+function random(seed: number) {
+  const x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
 }

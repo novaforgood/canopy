@@ -38,46 +38,55 @@ const MAP_WEIGHT_TO_NAME: Record<FontWeight, string> = {
 
 export type TextVariant =
   | "heading1"
+  | "heading1Italic"
   | "heading1Medium"
   | "heading1MediumItalic"
   | "heading1Bold"
   | "heading1BoldItalic"
   | "heading2"
+  | "heading2Italic"
   | "heading2Medium"
   | "heading2MediumItalic"
   | "heading2Bold"
   | "heading2BoldItalic"
   | "heading3"
+  | "heading3Italic"
   | "heading3Medium"
   | "heading3MediumItalic"
   | "heading3Bold"
   | "heading3BoldItalic"
   | "heading4"
+  | "heading4Italic"
   | "heading4Medium"
   | "heading4MediumItalic"
   | "heading4Bold"
   | "heading4BoldItalic"
   | "subheading1"
+  | "subheading1Italic"
   | "subheading1Medium"
   | "subheading1MediumItalic"
   | "subheading1Bold"
   | "subheading1BoldItalic"
   | "subheading2"
+  | "subheading2Italic"
   | "subheading2Medium"
   | "subheading2MediumItalic"
   | "subheading2Bold"
   | "subheading2BoldItalic"
   | "body1"
+  | "body1Italic"
   | "body1Medium"
   | "body1MediumItalic"
   | "body1Bold"
   | "body1BoldItalic"
   | "body2"
+  | "body2Italic"
   | "body2Medium"
   | "body2MediumItalic"
   | "body2Bold"
   | "body2BoldItalic"
   | "body3"
+  | "body3Italic"
   | "body3Medium"
   | "body3MediumItalic"
   | "body3Bold"
@@ -230,6 +239,14 @@ const theme = createTheme({
       fontFamily: "Rubik_400Regular",
     },
     ...textVariants,
+  },
+  borderRadii: {
+    none: 0,
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
+    full: 9999,
   },
   buttonVariants: {
     ...buttonVariants,

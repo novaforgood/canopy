@@ -4,7 +4,7 @@ interface DirectoryRouteParams {
   //  stuff
 }
 
-function DirectoryScreen({ route }) {
+function DirectoryScreen() {
   return <DirectoryNavigator />;
 }
 

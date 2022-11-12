@@ -13,7 +13,6 @@ import React, { useCallback, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RootNavigator } from "./navigation/RootNavigator";
 import theme from "./theme";
-import { RecoilRoot, useRecoilState } from "recoil";
 import { AuthProvider } from "./providers/AuthProvider";
 import { UrqlProvider } from "./providers/UrqlProvider";
 
@@ -31,17 +30,15 @@ function App() {
     return <Text>Loading...</Text>;
   }
   return (
-    <RecoilRoot>
-      <AuthProvider>
-        <UrqlProvider>
-          <ThemeProvider theme={theme}>
-            <NavigationContainer>
-              <RootNavigator />
-            </NavigationContainer>
-          </ThemeProvider>
-        </UrqlProvider>
-      </AuthProvider>
-    </RecoilRoot>
+    <AuthProvider>
+      <UrqlProvider>
+        <ThemeProvider theme={theme}>
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </ThemeProvider>
+      </UrqlProvider>
+    </AuthProvider>
   );
 }
 

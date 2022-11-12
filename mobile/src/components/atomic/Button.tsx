@@ -26,7 +26,7 @@ export const Button = forwardRef<typeof ButtonBase, ButtonProps>(
         borderColor={"green900"}
         backgroundColor={"green900"}
         borderWidth={1}
-        borderRadius={8}
+        borderRadius="md"
       >
         <Text variant="body1" color="white">
           {props.children}
