@@ -18,6 +18,7 @@ import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { searchQueryAtom } from "../../../lib/jotai";
 import { ProfileCard } from "./ProfileCard";
+import { NavigationProp } from "../../../types/navigation";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -42,6 +43,7 @@ const FUSE_OPTIONS = {
 };
 
 function Profiles() {
+  const navigation = useNavigation<NavigationProp>();
   const { currentSpace } = useCurrentSpace();
   const { currentProfileHasRole, currentProfile } = useCurrentProfile();
 
@@ -100,6 +102,11 @@ function Profiles() {
                   // router.push(
                   //   `${router.asPath}/profile/${listing.profile.id}`
                   // );
+                  navigation.navigate("ProfilePage", {
+                    profileId: listing.profile.id,
+                    firstName: first_name ?? "",
+                    lastName: last_name ?? "",
+                  });
                 }}
                 name={`${first_name} ${last_name}`}
                 imageUrl={listing.profile_listing_image?.image.url}

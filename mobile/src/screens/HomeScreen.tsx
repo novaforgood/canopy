@@ -4,7 +4,7 @@ import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
-import type { RootStackParams } from "../types/navigation";
+import type { RootStackParamList } from "../types/navigation";
 import {
   View,
   Image,
@@ -19,9 +19,9 @@ import { BxsGroup } from "../generated/icons/solid";
 import { useAtom } from "jotai";
 import { currentSpaceAtom } from "../lib/jotai";
 
-function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
-  const spaces = [{ spaceSlug: "test-space-1", spaceName: "Test Space 1" }];
-
+export function HomeScreen({
+  navigation,
+}: StackScreenProps<RootStackParamList, "Home">) {
   const { userData } = useUserData();
   const [{ data: profileData }] = useAllProfilesOfUserQuery({
     variables: { user_id: userData?.id ?? "" },
@@ -67,7 +67,7 @@ function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
                       alignItems="center"
                       backgroundColor="white"
                     >
-                      <BxsGroup height={20} width={20} />
+                      <BxsGroup height={20} width={20} color="black" />
                       <Text variant="subheading2" ml={2}>
                         {profile.space.name}
                       </Text>
@@ -82,5 +82,3 @@ function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
     </SafeAreaView>
   );
 }
-
-export default HomeScreen;

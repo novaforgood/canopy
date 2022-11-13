@@ -40,8 +40,6 @@ export function ProfileImage(props: ProfileImageProps) {
     ...rest
   } = props;
 
-  console.log(src);
-
   //   const styles = classNames({
   //     "bg-gray-100 shrink-0 select-none": true,
   //     "border border-green-500": border,
@@ -72,6 +70,7 @@ export function ProfileImage(props: ProfileImageProps) {
       alignItems="center"
       justifyContent="center"
       style={{ aspectRatio: 1 }}
+      borderRadius={rounded ? "full" : undefined}
       {...rest}
     >
       <UserSvg width="66%" height="66%" color="gray50" />

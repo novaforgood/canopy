@@ -20,6 +20,7 @@ export const Button = forwardRef<typeof ButtonBase, ButtonProps>(
         {...props}
         flexDirection="row"
         justifyContent="center"
+        alignItems="center"
         ref={ref}
         px={4}
         py={4}

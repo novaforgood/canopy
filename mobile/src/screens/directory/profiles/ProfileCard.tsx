@@ -2,7 +2,7 @@ import { Pressable, TouchableOpacity } from "react-native";
 import { Box } from "../../../components/atomic/Box";
 import { Text } from "../../../components/atomic/Text";
 import { ProfileImage } from "../../../components/ProfileImage";
-import { Tag } from "./Tag";
+import { Tag } from "../../../components/Tag";
 
 interface ProfileCardProps {
   imageUrl?: string;
@@ -68,7 +68,7 @@ export function ProfileCard(props: ProfileCardProps) {
           <Box flexDirection="row" flexWrap="wrap" overflow="hidden" mb={4}>
             {processedTags.length > 0 ? (
               processedTags.map((tag, index) => (
-                <Box mt={1} ml={1}>
+                <Box mt={1} ml={1} key={index}>
                   <Tag key={index} text={tag} variant="outline" />
                 </Box>
               ))

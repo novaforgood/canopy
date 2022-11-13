@@ -1,6 +1,6 @@
-import { Box } from "../../../components/atomic/Box";
-import { Text } from "../../../components/atomic/Text";
-import { BxX } from "../../../generated/icons/regular";
+import { Box } from "./atomic/Box";
+import { Text } from "./atomic/Text";
+import { BxX } from "../generated/icons/regular";
 
 export interface TagProps {
   text: string;

@@ -10,7 +10,7 @@ import {
   signInWithGoogle,
   signOut,
 } from "../lib/firebase";
-import type { RootStackParams } from "../types/navigation";
+import type { RootStackParamList } from "../types/navigation";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
@@ -20,7 +20,7 @@ WebBrowser.maybeCompleteAuthSession();
 
 export function SignInScreen({
   navigation,
-}: StackScreenProps<RootStackParams, "SignIn">) {
+}: StackScreenProps<RootStackParamList, "SignIn">) {
   const [signingIn, setSigningIn] = useState(false);
 
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({

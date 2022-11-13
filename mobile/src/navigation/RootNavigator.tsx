@@ -1,8 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import React, { useCallback, useEffect } from "react";
-import DirectoryScreen from "../screens/Directory";
-import HomeScreen from "../screens/Home";
+import { HomeScreen } from "../screens/HomeScreen";
 
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
@@ -10,13 +9,15 @@ import { getCurrentUser } from "../lib/firebase";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { usePrevious } from "../hooks/usePrevious";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
-import { RootStackParams } from "../types/navigation";
+import { RootStackParamList } from "../types/navigation";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { SignInScreen } from "../screens/SignInScreen";
 import { useAtom } from "jotai";
 import { currentSpaceAtom, sessionAtom } from "../lib/jotai";
+import DirectoryNavigator from "./DirectoryNavigator";
+import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 
-const RootStack = createNativeStackNavigator<RootStackParams>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
   const { refreshSession } = useRefreshSession();
@@ -91,7 +92,6 @@ export function RootNavigator() {
 
   const isLoggedIn = useIsLoggedIn();
 
-  console.log("isLoggedIn", isLoggedIn);
   return (
     <RootStack.Navigator>
       {!isLoggedIn && (
@@ -106,8 +106,13 @@ export function RootNavigator() {
       <RootStack.Screen name="Home" component={HomeScreen} />
       <RootStack.Screen
         name="Directory"
-        component={DirectoryScreen}
+        component={DirectoryNavigator}
         options={({ route }) => ({ title: spaceRaw?.name })}
+      />
+      <RootStack.Screen
+        name="ProfilePage"
+        component={ProfilePageScreen}
+        options={({ route }) => ({ title: route.params.firstName })}
       />
     </RootStack.Navigator>
   );

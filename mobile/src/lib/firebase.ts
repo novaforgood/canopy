@@ -32,8 +32,6 @@ const firebaseConfig = {
   appId: Constants.manifest?.extra?.["FIREBASE_APP_ID"],
 };
 
-console.log(firebaseConfig);
-
 // Initialize Firebase
 if (getApps().length === 0) {
   initializeApp(firebaseConfig);

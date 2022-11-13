@@ -17,7 +17,7 @@ const template = (variables, { tpl }) => {
   };
   const ${variables.componentName} = ({ color, ...rest }: Props) => {
     const theme = useTheme();
-    const realColor = theme.colors[color ?? "black"];  
+    const realColor = color ? theme.colors[color ? ] : "currentcolor";  
     return <Icon color={realColor} {...rest} />;
   };
 

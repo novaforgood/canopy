@@ -143,3 +143,66 @@ query ProfileListingsInSpace($where: profile_listing_bool_exp) {
     }
   }
 }
+
+query ProfileById($profile_id: uuid!, $is_logged_in: Boolean!) {
+  profile_by_pk(id: $profile_id) {
+    id
+    created_at
+    profile_listing {
+      id
+      public
+      headline
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+      profile_listing_socials {
+        id
+        link
+        type
+      }
+      profile_listing_responses(
+        order_by: { space_listing_question: { listing_order: asc } }
+        where: { space_listing_question: { deleted: { _eq: false } } }
+      ) {
+        id
+        response_html
+        space_listing_question {
+          id
+          title
+        }
+      }
+      profile_listing_to_space_tags(
+        where: { space_tag: { status: { _neq: Deleted } } }
+      ) {
+        id
+        space_tag_id
+        space_tag {
+          id
+          label
+        }
+      }
+    }
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+    profile_roles {
+      id
+      profile_role
+    }
+  }
+  profile_to_chat_room(
+    where: {
+      chat_room: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
+    }
+  ) @include(if: $is_logged_in) {
+    id
+    chat_room_id
+  }
+}

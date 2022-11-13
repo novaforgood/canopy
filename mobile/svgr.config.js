@@ -3,7 +3,6 @@ module.exports = {
   prettier: true,
   template: require("./svgr-template"),
   svgProps: {
-    fill: "currentColor",
     viewBox: "0 0 24 24",
     width: "100%",
     height: "100%",
