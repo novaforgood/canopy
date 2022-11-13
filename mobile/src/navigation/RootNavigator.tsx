@@ -14,7 +14,7 @@ import { RootStackParams } from "../types/navigation";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { SignInScreen } from "../screens/SignInScreen";
 import { useAtom } from "jotai";
-import { currentSpaceSlugAtom, sessionAtom } from "../lib/jotai";
+import { currentSpaceAtom, sessionAtom } from "../lib/jotai";
 
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -54,7 +54,8 @@ export function RootNavigator() {
 
   ///// Force update JWT if user changed space /////
   const [session, setSession] = useAtom(sessionAtom);
-  const [spaceSlug, setSpaceSlug] = useAtom(currentSpaceSlugAtom);
+  const [spaceRaw, _] = useAtom(currentSpaceAtom);
+  const spaceSlug = spaceRaw?.slug;
 
   const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
     pause: true,
@@ -106,7 +107,7 @@ export function RootNavigator() {
       <RootStack.Screen
         name="Directory"
         component={DirectoryScreen}
-        options={({ route }) => ({ title: spaceSlug })}
+        options={({ route }) => ({ title: spaceRaw?.name })}
       />
     </RootStack.Navigator>
   );

@@ -6,5 +6,11 @@ type Session = {
 } | null; // null means user is logged out
 
 export const sessionAtom = atom<Session | undefined>(undefined);
-export const currentSpaceSlugAtom = atom<string | undefined>(undefined);
+
+type Space = {
+  slug: string;
+  name: string;
+};
+export const currentSpaceAtom = atom<Space | undefined>(undefined);
+
 export const searchQueryAtom = atom<string>("");

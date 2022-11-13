@@ -5,13 +5,14 @@ import {
   Profile_Role_Enum,
   useAllProfilesOfUserQuery,
 } from "../generated/graphql";
-import { currentSpaceSlugAtom } from "../lib/jotai";
+import { currentSpaceAtom } from "../lib/jotai";
 
 import { useUserData } from "./useUserData";
 
 export function useCurrentProfile() {
   const { userData } = useUserData();
-  const [slug] = useAtom(currentSpaceSlugAtom);
+  const [space] = useAtom(currentSpaceAtom);
+  const slug = space?.slug;
 
   const [
     { data: allProfilesData, fetching: fetchingCurrentProfile },

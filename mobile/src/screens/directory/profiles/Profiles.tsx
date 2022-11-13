@@ -6,25 +6,18 @@ import {
 import { getDayOfYear } from "date-fns";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
 import Fuse from "fuse.js";
 
-import { Box } from "../../components/atomic/Box";
-import { Text } from "../../components/atomic/Text";
-import { ProfileImage } from "../../components/ProfileImage";
+import { Box } from "../../../components/atomic/Box";
 import {
   Profile_Role_Enum,
   useProfileListingsInSpaceQuery,
-} from "../../generated/graphql";
-import { BxX } from "../../generated/icons/regular";
-import { useCurrentProfile } from "../../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { searchQueryAtom } from "../../lib/jotai";
+} from "../../../generated/graphql";
+import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { searchQueryAtom } from "../../../lib/jotai";
+import { ProfileCard } from "./ProfileCard";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -123,109 +116,6 @@ function Profiles() {
 }
 
 export default Profiles;
-
-interface ProfileCardProps {
-  imageUrl?: string;
-  name: string;
-  subtitle?: string | null;
-  descriptionTitle: string;
-  tags?: string[];
-  onPress?: () => void;
-  id: string;
-}
-
-export function ProfileCard(props: ProfileCardProps) {
-  const {
-    name,
-    subtitle,
-    descriptionTitle,
-    imageUrl,
-    tags = [],
-    onPress = () => {},
-    id,
-  } = props;
-
-  const numTags = 3;
-  const remainingTags = tags.length - numTags;
-  const processedTags = tags.slice(0, numTags);
-  if (remainingTags > 0) {
-    processedTags.push(`+${remainingTags} more…`);
-  }
-
-  return (
-    <Pressable onPress={onPress}>
-      <Box
-        mb={4}
-        flexDirection="column"
-        alignItems="flex-start"
-        borderRadius="md"
-        borderWidth={1}
-        borderColor="gray400"
-        backgroundColor="white"
-      >
-        <Box pb={4} width="100%">
-          <ProfileImage
-            width={"100%"}
-            rounded={false}
-            border={false}
-            src={imageUrl}
-            alt={name}
-          />
-        </Box>
-        <Box flexDirection="column" alignItems="flex-start" px={4} width="100%">
-          <Text variant="heading4" color="gray900">
-            {name}
-          </Text>
-          {subtitle && (
-            <Text mt={1} color="gray900" variant="body2">
-              {subtitle}
-            </Text>
-          )}
-          <Text mt={4} variant="body2Medium">
-            {descriptionTitle}
-          </Text>
-          <Box height={1.5}></Box>
-          <Box flexDirection="row" flexWrap="wrap" overflow="hidden" mb={4}>
-            {processedTags.length > 0 ? (
-              processedTags.map((tag, index) => (
-                <Box mt={1} ml={1}>
-                  <Tag key={index} text={tag} variant="outline" />
-                </Box>
-              ))
-            ) : (
-              <Text color="gray500" variant="body1Italic">
-                none
-              </Text>
-            )}
-          </Box>
-        </Box>
-      </Box>
-    </Pressable>
-  );
-}
-
-export interface TagProps {
-  text: string;
-  onDeleteClick?: () => void;
-  renderRightIcon?: () => React.ReactNode;
-  variant?: "primary" | "outline";
-}
-export function Tag(props: TagProps) {
-  const { text, renderRightIcon, onDeleteClick, variant = "primary" } = props;
-
-  return (
-    <Box backgroundColor="lime200" borderRadius="full" px={3} py={1}>
-      <Text variant="body1Medium" color="olive700">
-        {text}
-      </Text>
-      {renderRightIcon
-        ? renderRightIcon()
-        : onDeleteClick && (
-            <BxX height={12} width={12} color="black" onPress={onDeleteClick} />
-          )}
-    </Box>
-  );
-}
 
 // code for shuffling based on seed taken from
 // https://stackoverflow.com/a/53758827

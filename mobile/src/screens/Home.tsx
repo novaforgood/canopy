@@ -17,7 +17,7 @@ import { BxCog } from "../generated/icons/regular";
 import { SpaceCoverPhoto } from "../components/SpaceCoverPhoto";
 import { BxsGroup } from "../generated/icons/solid";
 import { useAtom } from "jotai";
-import { currentSpaceSlugAtom } from "../lib/jotai";
+import { currentSpaceAtom } from "../lib/jotai";
 
 function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
   const spaces = [{ spaceSlug: "test-space-1", spaceName: "Test Space 1" }];
@@ -27,7 +27,7 @@ function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
     variables: { user_id: userData?.id ?? "" },
   });
 
-  const [spaceSlug, setSpaceSlug] = useAtom(currentSpaceSlugAtom);
+  const [_, setCurrentSpace] = useAtom(currentSpaceAtom);
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
@@ -51,7 +51,10 @@ function HomeScreen({ navigation }: StackScreenProps<RootStackParams, "Home">) {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("Directory");
-                    setSpaceSlug(profile.space.slug);
+                    setCurrentSpace({
+                      name: profile.space.name,
+                      slug: profile.space.slug,
+                    });
                   }}
                 >
                   <Box>

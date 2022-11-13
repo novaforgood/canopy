@@ -53,7 +53,8 @@ export function ProfileImage(props: ProfileImageProps) {
   return src ? (
     <Box
       backgroundColor="gray100"
-      borderRadius="full"
+      borderRadius={rounded ? "full" : undefined}
+      overflow="hidden"
       style={{ aspectRatio: 1 }}
       {...rest}
     >
@@ -66,6 +67,7 @@ export function ProfileImage(props: ProfileImageProps) {
     </Box>
   ) : (
     <Box
+      overflow="hidden"
       backgroundColor="olive200"
       alignItems="center"
       justifyContent="center"

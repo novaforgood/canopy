@@ -2,10 +2,12 @@ import { useAtom } from "jotai";
 import { useMemo } from "react";
 
 import { useSpaceBySlugQuery } from "../generated/graphql";
-import { currentSpaceSlugAtom } from "../lib/jotai";
+import { currentSpaceAtom } from "../lib/jotai";
 
 export function useCurrentSpace() {
-  const [slug] = useAtom(currentSpaceSlugAtom);
+  const [spaceRaw] = useAtom(currentSpaceAtom);
+  const slug = spaceRaw?.slug;
+
   const [{ data: spaceData, fetching }, refetchCurrentSpace] =
     useSpaceBySlugQuery({
       pause: !slug,
@@ -15,7 +17,13 @@ export function useCurrentSpace() {
 
   return useMemo(
     () => ({
-      currentSpace: space,
+      currentSpace: spaceRaw
+        ? {
+            name: spaceRaw.name,
+            slug: spaceRaw.slug,
+            ...space,
+          }
+        : undefined,
       fetchingCurrentSpace: fetching,
       refetchCurrentSpace,
     }),
