@@ -1,13 +1,36 @@
 import { cacheExchange } from "@urql/exchange-graphcache";
-import { createClient, dedupExchange, fetchExchange } from "urql";
+import {
+  createClient,
+  dedupExchange,
+  fetchExchange,
+  subscriptionExchange,
+} from "urql";
 
 import schema from "../generated/graphql";
+import { createClient as createWSClient } from "graphql-ws";
 
 import Constants from "expo-constants";
-import { getGraphqlEndpoint } from "./apiUrl";
+import { getGraphqlEndpoint, getGraphqlWsEndpoint } from "./apiUrl";
+import {
+  chatMessageResolver,
+  insertChatMessageUpdater,
+  chatMessageStreamUpdater,
+  optimisticInsertChatMessageResolver,
+  optimisticUpdateProfileToChatRoomResolver,
+} from "./urql-chat-resolvers";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
+
+  const wsClient = createWSClient({
+    url: getGraphqlWsEndpoint(),
+    connectionParams: {
+      headers: {
+        authorization: `Bearer ${jwt}`,
+      },
+    },
+  });
+
   return createClient({
     url: getGraphqlEndpoint(),
     requestPolicy: "cache-and-network",
@@ -32,20 +55,38 @@ export function getUrqlClient(jwt: string) {
           profile_aggregate_fields: () => null,
           connection_request_aggregate: () => null,
           connection_request_aggregate_fields: () => null,
+          chat_message_admin_view_aggregate: () => null,
+          chat_message_admin_view_aggregate_fields: () => null,
+          event_profile_view_aggregate: () => null,
+          event_profile_view_aggregate_fields: () => null,
+        },
+
+        resolvers: {
+          query_root: { chat_message: chatMessageResolver },
+        },
+        updates: {
+          Mutation: {
+            insert_chat_message_one: insertChatMessageUpdater,
+          },
+          Subscription: { chat_message_stream: chatMessageStreamUpdater },
+        },
+        optimistic: {
+          insert_chat_message_one: optimisticInsertChatMessageResolver,
+          update_profile_to_chat_room_by_pk:
+            optimisticUpdateProfileToChatRoomResolver,
         },
       }),
-      // retryExchange({
-      //   maxNumberAttempts: 2,
-      //   retryIf: (error) => {
-      //     for (const err of error.graphQLErrors) {
-      //       if (err.extensions.code === "invalid-jwt") {
-      //         return true;
-      //       }
-      //     }
-      //     return false;
-      //   },
-      // }),
       fetchExchange,
+      subscriptionExchange({
+        forwardSubscription: (operation) => ({
+          subscribe: (sink) => {
+            const dispose = wsClient.subscribe(operation, sink);
+            return {
+              unsubscribe: dispose,
+            };
+          },
+        }),
+      }),
     ],
   });
 }

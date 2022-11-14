@@ -22,7 +22,6 @@ type TextInputProps = TextInputBaseProps &
 export const TextInput = forwardRef<TextInputProps, TextInputProps>(
   (props, ref) => {
     const { containerProps, textInputProps, otherProps } = extractProps(props);
-
     const { label } = otherProps;
     return (
       <Box {...containerProps}>
@@ -31,16 +30,17 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
             {label}
           </Text>
         )}
-        <TextInputBase
-          {...textInputProps}
-          ref={ref}
-          px={4}
-          py={4}
-          variant="body1"
+        <Box
           borderColor={"green900"}
           borderWidth={1}
           borderRadius="md"
-        />
+          px={4}
+          py={2}
+          pt={1}
+          backgroundColor="white"
+        >
+          <TextInputBase {...textInputProps} ref={ref} variant="body1" />
+        </Box>
       </Box>
     );
   }
@@ -89,5 +89,5 @@ function extractProps(originalProps: TextInputProps) {
     bottom,
     alignSelf,
   };
-  return { textInputProps, otherProps, containerProps };
+  return { textInputProps, otherProps, containerProps } as const;
 }

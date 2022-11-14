@@ -7,6 +7,7 @@ const extrasWhitelist = [
   "FIREBASE_PROJECT_ID",
   "FIREBASE_APP_ID",
   "GRAPHQL_ENDPOINT",
+  "GRAPHQL_WS_ENDPOINT",
   "FIREBASE_WEB_CLIENT_ID",
 ];
 

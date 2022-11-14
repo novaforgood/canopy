@@ -11,6 +11,19 @@ export type RootStackParamList = {
     firstName: string;
     lastName: string;
   };
+  ChatRoom: {
+    chatRoomId: string;
+    chatRoomName: string;
+  };
 };
 
-export type NavigationProp = StackNavigationProp<RootStackParamList>;
+export type SpaceStackParamList = {
+  ProfilesList: undefined;
+  ChatMessages: undefined;
+  Account: undefined;
+};
+
+export type NavigationProp = CompositeNavigationProp<
+  StackNavigationProp<RootStackParamList>,
+  BottomTabNavigationProp<SpaceStackParamList>
+>;

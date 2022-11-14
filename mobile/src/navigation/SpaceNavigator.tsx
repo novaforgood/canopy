@@ -2,31 +2,37 @@ import {
   BottomTabBarProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
-import Messages from "../screens/directory/Messages";
-import Profiles from "../screens/directory/profiles/Profiles";
+import { Messages } from "../screens/directory/Messages";
+import { ProfilesList } from "../screens/directory/profiles/ProfilesList";
 import Account from "../screens/directory/Account";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 import { Text } from "../components/atomic/Text";
-import { BxGroup, BxMessage, BxUser } from "../generated/icons/regular";
+import {
+  BxGroup,
+  BxMessageAltDetail,
+  BxUser,
+} from "../generated/icons/regular";
 import { SvgProps } from "react-native-svg";
 import { Box } from "../components/atomic/Box";
+import { Navbar } from "../components/Navbar";
+import { SpaceStackParamList } from "./types";
 
-const TabNav = createBottomTabNavigator();
+const TabNav = createBottomTabNavigator<SpaceStackParamList>();
 
 const BOTTOM_TABS: Record<
-  string,
-  { icon: (props: SvgProps & { color: string }) => JSX.Element }
+  keyof SpaceStackParamList,
+  { icon: (props: SvgProps & { color: string }) => JSX.Element; title: string }
 > = {
-  "View Profiles": { icon: BxGroup },
-  "My Chats": { icon: BxMessage },
-  Account: { icon: BxUser },
+  ProfilesList: { icon: BxGroup, title: "View Profiles" },
+  ChatMessages: { icon: BxMessageAltDetail, title: "Messages" },
+  Account: { icon: BxUser, title: "Account" },
 };
 
-function DirectoryNavigator() {
+export function SpaceNavigator() {
   return (
     <TabNav.Navigator tabBar={MyTabBar} screenOptions={{ headerShown: false }}>
-      <TabNav.Screen name="View Profiles" component={Profiles} />
-      <TabNav.Screen name="My Chats" component={Messages} />
+      <TabNav.Screen name="ProfilesList" component={ProfilesList} />
+      <TabNav.Screen name="ChatMessages" component={Messages} />
       <TabNav.Screen name="Account" component={Account} />
     </TabNav.Navigator>
   );
@@ -38,7 +44,7 @@ function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       <SafeAreaView style={{ flexDirection: "row" }}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
-          const label = route.name;
+          const label = route.name as keyof SpaceStackParamList;
           const isFocused = state.index === index;
 
           const onPress = () => {
@@ -66,6 +72,7 @@ function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           };
 
           const Icon = BOTTOM_TABS[label].icon;
+          const title = BOTTOM_TABS[label].title;
           return (
             <TouchableOpacity
               key={index}
@@ -84,7 +91,7 @@ function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                   width={24}
                 />
                 <Text color={isFocused ? "black" : "gray500"} mt={1}>
-                  {label}
+                  {title}
                 </Text>
               </Box>
             </TouchableOpacity>
@@ -94,5 +101,3 @@ function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     </Box>
   );
 }
-
-export default DirectoryNavigator;

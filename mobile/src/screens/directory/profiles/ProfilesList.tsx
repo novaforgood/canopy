@@ -18,7 +18,7 @@ import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { searchQueryAtom } from "../../../lib/jotai";
 import { ProfileCard } from "./ProfileCard";
-import { NavigationProp } from "../../../types/navigation";
+import { NavigationProp } from "../../../navigation/types";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -42,7 +42,7 @@ const FUSE_OPTIONS = {
   ],
 };
 
-function Profiles() {
+export function ProfilesList() {
   const navigation = useNavigation<NavigationProp>();
   const { currentSpace } = useCurrentSpace();
   const { currentProfileHasRole, currentProfile } = useCurrentProfile();
@@ -121,8 +121,6 @@ function Profiles() {
     </SafeAreaView>
   );
 }
-
-export default Profiles;
 
 // code for shuffling based on seed taken from
 // https://stackoverflow.com/a/53758827

@@ -9,13 +9,14 @@ import { getCurrentUser } from "../lib/firebase";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { usePrevious } from "../hooks/usePrevious";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
-import { RootStackParamList } from "../types/navigation";
+import { RootStackParamList } from "./types";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { SignInScreen } from "../screens/SignInScreen";
 import { useAtom } from "jotai";
 import { currentSpaceAtom, sessionAtom } from "../lib/jotai";
-import DirectoryNavigator from "./DirectoryNavigator";
+import { SpaceNavigator } from "./SpaceNavigator";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
+import { ChatRoomScreen } from "../screens/ChatRoom";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -34,6 +35,7 @@ export function RootNavigator() {
       const expireThreshold = 180000;
 
       if (expiresIn < expireThreshold) {
+        console.log(expiresIn);
         console.log("Force updating JWT since it expires in 3 minutes...");
         const lastVisitedSpaceId = await SecureStore.get(
           SecureStoreKey.LastVisitedSpaceId
@@ -106,13 +108,26 @@ export function RootNavigator() {
       <RootStack.Screen name="Home" component={HomeScreen} />
       <RootStack.Screen
         name="Directory"
-        component={DirectoryNavigator}
+        component={SpaceNavigator}
         options={({ route }) => ({ title: spaceRaw?.name })}
       />
       <RootStack.Screen
         name="ProfilePage"
         component={ProfilePageScreen}
-        options={({ route }) => ({ title: route.params.firstName })}
+        options={({ route }) => ({
+          // title: `${route.params.firstName} ${route.params.lastName}`,
+          title: "",
+          headerBackTitle: "Back",
+        })}
+      />
+      <RootStack.Screen
+        name="ChatRoom"
+        component={ChatRoomScreen}
+        options={({ route }) => ({
+          // title: route.params.chatRoomName,
+          title: "",
+          headerBackTitle: "Back",
+        })}
       />
     </RootStack.Navigator>
   );

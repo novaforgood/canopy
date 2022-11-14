@@ -10,6 +10,7 @@ export function useRefreshSession() {
   const refreshSession = useCallback(
     async (props: (LoadSessionProps & { hardRefresh?: boolean }) | void) => {
       const session = await loadSession(props);
+
       setSession(session);
     },
     [setSession]

@@ -3,7 +3,7 @@ module.exports = {
   generates: {
     "./generated/graphql.tsx": {
       schema: "graphql.schema.json",
-      documents: ["./lib/gql/**/*.graphql"],
+      documents: ["../shared/graphql/**/*.graphql"],
       plugins: [
         "typescript",
         "typescript-operations",
@@ -24,7 +24,7 @@ module.exports = {
     },
     "./server/generated/serverGraphql.tsx": {
       schema: "graphql-admin.schema.json",
-      documents: ["./server/**/*.graphql"],
+      documents: ["../shared/graphql/**/*.graphql"],
       plugins: [
         "typescript",
         "typescript-operations",

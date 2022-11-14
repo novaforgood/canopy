@@ -4,7 +4,7 @@ import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
-import type { RootStackParamList } from "../types/navigation";
+import type { RootStackParamList } from "../navigation/types";
 import {
   View,
   Image,
@@ -28,6 +28,7 @@ export function HomeScreen({
   });
 
   const [_, setCurrentSpace] = useAtom(currentSpaceAtom);
+
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>

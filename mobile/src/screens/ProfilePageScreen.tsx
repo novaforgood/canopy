@@ -4,7 +4,7 @@ import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { useProfileByIdQuery } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
-import type { RootStackParamList } from "../types/navigation";
+import type { RootStackParamList } from "../navigation/types";
 import { ScrollView, SafeAreaView } from "react-native";
 import { BxEdit, BxMessageDetail } from "../generated/icons/regular";
 import { ProfileImage } from "../components/ProfileImage";
@@ -131,7 +131,9 @@ export function ProfilePageScreen({
                           {tags.length > 0 ? (
                             tags.map((tag) => {
                               return (
-                                <Tag key={tag.id} text={tag.label ?? ""} />
+                                <Box mb={1} mr={1} key={tag.id}>
+                                  <Tag text={tag.label ?? ""} />
+                                </Box>
                               );
                             })
                           ) : (

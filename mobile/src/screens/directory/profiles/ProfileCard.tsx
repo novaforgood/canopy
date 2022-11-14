@@ -64,12 +64,17 @@ export function ProfileCard(props: ProfileCardProps) {
           <Text mt={4} variant="body2Medium">
             {descriptionTitle}
           </Text>
-          <Box height={1.5}></Box>
-          <Box flexDirection="row" flexWrap="wrap" overflow="hidden" mb={4}>
+          <Box
+            mt={1.5}
+            flexDirection="row"
+            flexWrap="wrap"
+            overflow="hidden"
+            mb={4}
+          >
             {processedTags.length > 0 ? (
               processedTags.map((tag, index) => (
-                <Box mt={1} ml={1} key={index}>
-                  <Tag key={index} text={tag} variant="outline" />
+                <Box mb={1} mr={1} key={index}>
+                  <Tag text={tag} variant="outline" />
                 </Box>
               ))
             ) : (

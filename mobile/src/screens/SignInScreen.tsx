@@ -10,7 +10,7 @@ import {
   signInWithGoogle,
   signOut,
 } from "../lib/firebase";
-import type { RootStackParamList } from "../types/navigation";
+import type { RootStackParamList } from "../navigation/types";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
