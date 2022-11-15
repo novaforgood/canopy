@@ -13,7 +13,7 @@ import { RootStackParamList } from "./types";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { SignInScreen } from "../screens/SignInScreen";
 import { useAtom } from "jotai";
-import { currentSpaceAtom, sessionAtom } from "../lib/jotai";
+import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
 import { SpaceNavigator } from "./SpaceNavigator";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { ChatRoomScreen } from "../screens/ChatRoom";
@@ -108,14 +108,11 @@ export function RootNavigator() {
 
   const theme = useTheme<Theme>();
 
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
   return (
     <>
       <RootStack.Navigator
         screenOptions={{
-          // headerStyle: {
-          //   backgroundColor: theme.colors.olive100,
-          // },
           headerBackground: () => (
             <Box
               backgroundColor="olive100"
@@ -136,7 +133,12 @@ export function RootNavigator() {
                   setShowDrawer(true);
                 }}
               >
-                <BxMenu height={28} width={28} color="black" />
+                <BxMenu
+                  height={28}
+                  width={28}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  color="black"
+                />
               </TouchableOpacity>
             </>
           ),
@@ -147,6 +149,7 @@ export function RootNavigator() {
             name="SignIn"
             options={{
               title: "Sign in",
+              headerRight: undefined,
             }}
             component={SignInScreen}
           />
@@ -187,15 +190,5 @@ export function RootNavigator() {
         )}
       </RootStack.Navigator>
     </>
-  );
-}
-
-function Drawer({ children }: { children: React.ReactNode }) {
-  return (
-    <Animated.View entering={SlideInRight} exiting={SlideOutRight}>
-      <Box position="absolute" backgroundColor="white" width={40} height="100%">
-        {children}
-      </Box>
-    </Animated.View>
   );
 }

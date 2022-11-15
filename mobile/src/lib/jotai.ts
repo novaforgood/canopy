@@ -14,3 +14,5 @@ type Space = {
 export const currentSpaceAtom = atom<Space | undefined>(undefined);
 
 export const searchQueryAtom = atom<string>("");
+
+export const showNavDrawerAtom = atom<boolean>(false);

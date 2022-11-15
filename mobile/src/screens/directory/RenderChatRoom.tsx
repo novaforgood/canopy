@@ -1,16 +1,8 @@
 import { Link, useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { useHeaderHeight } from "@react-navigation/elements";
 
-import {
-  Button,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { Button, Keyboard, ScrollView, TouchableOpacity } from "react-native";
 import { Box } from "../../components/atomic/Box";
 import { Text } from "../../components/atomic/Text";
 import { TextInput } from "../../components/atomic/TextInput";
@@ -32,6 +24,7 @@ import { PromiseQueue } from "../../lib/PromiseQueue";
 import { NavigationProp } from "../../navigation/types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { CustomKeyboardAvoidingView } from "../../components/CustomKeyboardAvoidingView";
 
 type ChatMessage = MessagesQuery["chat_message"][number];
 type ChatRoom = ChatRoomSubscription["chat_room_by_pk"];
@@ -233,17 +226,13 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
     prevLastMessageIdByOther,
   ]);
 
-  const headerHeight = useHeaderHeight();
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   if (fetchingMessages) {
     return <LoadingSpinner />;
   }
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={headerHeight}
-    >
+    <CustomKeyboardAvoidingView>
       <Box
         flexDirection="column"
         overflow="hidden"
@@ -488,6 +477,6 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
           </TouchableOpacity>
         </Box>
       </Box>
-    </KeyboardAvoidingView>
+    </CustomKeyboardAvoidingView>
   );
 }

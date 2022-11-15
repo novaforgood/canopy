@@ -16,6 +16,17 @@ import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { getAdditionalUserInfo, GoogleAuthProvider } from "firebase/auth";
 import { HOST_URL } from "../lib/url";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Linking,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { BxlGoogle } from "../generated/icons/logos";
+import { CustomKeyboardAvoidingView } from "../components/CustomKeyboardAvoidingView";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -109,41 +120,90 @@ export function SignInScreen({
   const [password, setPassword] = useState("");
 
   return (
-    <Box padding={4}>
-      <Box>
-        <Text variant="heading3">Sign in to Canopy</Text>
-
-        <Button
-          onPress={() => {
-            console.log("Pressed");
-            googleSignIn();
-          }}
-        >
-          Sign in with Google
-        </Button>
-        <TextInput
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          mt={12}
-        />
-        <TextInput
-          label="Password"
-          mt={4}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
-        <Button
-          mt={16}
-          onPress={() => {
-            console.log("Pressed");
-            signInManually(email, password);
-          }}
-        >
-          Sign in
-        </Button>
-      </Box>
-    </Box>
+    <SafeAreaView style={{ overflow: "hidden" }}>
+      <CustomKeyboardAvoidingView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Box
+            padding={4}
+            height="100%"
+            flexDirection="column"
+            justifyContent="flex-end"
+          >
+            <Box mt={16}>
+              <Text variant="heading3">Sign in to Canopy</Text>
+            </Box>
+            <Box mt={8} />
+            <TouchableOpacity onPress={googleSignIn}>
+              <Box
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="center"
+                py={2}
+                borderRadius="md"
+                borderWidth={1}
+                borderColor="black"
+              >
+                <BxlGoogle color="black" height={24} width={24} />
+                <Text variant="body1" ml={2}>
+                  Sign in with Google
+                </Text>
+              </Box>
+            </TouchableOpacity>
+            <Box
+              my={8}
+              flexDirection="row"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Box height={1} backgroundColor="gray600" flex={1}></Box>
+              <Text variant="body1" mx={4} color="gray600">
+                or
+              </Text>
+              <Box height={1} backgroundColor="gray600" flex={1}></Box>
+            </Box>
+            <TextInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              onBlur={() => Keyboard.dismiss()}
+            />
+            <TextInput
+              label="Password"
+              mt={4}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={true}
+              onBlur={() => Keyboard.dismiss()}
+            />
+            <Button
+              mt={8}
+              onPress={() => {
+                console.log("Pressed");
+                signInManually(email, password);
+              }}
+            >
+              Sign in
+            </Button>
+            <Box mt={2}>
+              <Text variant="body1" color="gray800" mt={4}>
+                Don't have an account?{" "}
+                <Text
+                  variant="body1Medium"
+                  color="green700"
+                  textDecorationLine="underline"
+                  onPress={() => {
+                    Linking.openURL(`${HOST_URL}/signup`);
+                  }}
+                >
+                  Sign up
+                </Text>
+              </Text>
+            </Box>
+            <Box flex={1} />
+          </Box>
+        </TouchableWithoutFeedback>
+      </CustomKeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

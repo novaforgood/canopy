@@ -35,7 +35,7 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
           borderColor={"green900"}
           borderWidth={1}
           borderRadius="md"
-          backgroundColor="white"
+          backgroundColor="gray50"
         >
           <TextInputBase
             {...textInputProps}
