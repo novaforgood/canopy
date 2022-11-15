@@ -205,27 +205,6 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const { first_name, last_name } = otherProfile?.user ?? {};
   const image = otherProfile?.profile_listing?.profile_listing_image?.image;
 
-  // const markLatestMessageAsRead = useCallback(async () => {
-  //   if (!myProfileEntry) return;
-  //   const latestMessageByOther = messagesList.find(
-  //     (m) => m.sender_profile_id !== myProfileEntry.profile.id
-  //   );
-  //   if (latestMessageByOther) {
-  //     promiseQueue.enqueue(markMessageAsRead(latestMessageByOther));
-  //   }
-  // }, [markMessageAsRead, messagesList, myProfileEntry]);
-
-  // // Mark latest chat message as read when window focuses
-  // useEffect(() => {
-  //   const onFocus = () => {
-  //     markLatestMessageAsRead();
-  //   };
-  //   window.addEventListener("focus", onFocus);
-  //   return () => {
-  //     window.removeEventListener("focus", onFocus);
-  //   };
-  // }, [markLatestMessageAsRead]);
-
   const lastMessageIdByOther: number = useMemo(() => {
     return (
       messagesList.find(
@@ -304,167 +283,159 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             backgroundColor: "white",
             display: "flex",
             flexDirection: "column-reverse",
+            paddingHorizontal: 16,
           }}
         >
-          <Box
-            flexDirection="column-reverse"
-            flex={1}
-            px={4}
-            backgroundColor="white"
-          >
-            {currentProfile &&
-              messagesList.map((message, idx) => {
-                // Note: Messages are ordered by created_at DESC
-                const prevMessage = messagesList[idx + 1] ?? null;
-                const nextMessage = messagesList[idx - 1] ?? null;
+          {currentProfile &&
+            messagesList.map((message, idx) => {
+              // Note: Messages are ordered by created_at DESC
+              const prevMessage = messagesList[idx + 1] ?? null;
+              const nextMessage = messagesList[idx - 1] ?? null;
 
-                const breakBefore = shouldBreak(prevMessage, message);
-                const breakAfter = shouldBreak(message, nextMessage);
+              const breakBefore = shouldBreak(prevMessage, message);
+              const breakAfter = shouldBreak(message, nextMessage);
 
-                const nextMessageIsFromDifferentSender =
-                  nextMessage?.sender_profile_id !== message.sender_profile_id;
+              const nextMessageIsFromDifferentSender =
+                nextMessage?.sender_profile_id !== message.sender_profile_id;
 
-                let messageJsxElement = null;
-                if (message.sender_profile_id === currentProfile.id) {
-                  // Sent by me. Render chat bubble with my profile image on the right.
-                  const isPending = typeof message.id === "string";
+              let messageJsxElement = null;
+              if (message.sender_profile_id === currentProfile.id) {
+                // Sent by me. Render chat bubble with my profile image on the right.
+                const isPending = typeof message.id === "string";
 
-                  // Find next message sent by me
-                  let nextMessageSentByMe = null;
-                  for (let j = idx - 1; j >= 0; j--) {
-                    const msg = messagesList[j];
-                    if (msg.sender_profile_id === currentProfile.id) {
-                      nextMessageSentByMe = msg;
-                      break;
-                    }
+                // Find next message sent by me
+                let nextMessageSentByMe = null;
+                for (let j = idx - 1; j >= 0; j--) {
+                  const msg = messagesList[j];
+                  if (msg.sender_profile_id === currentProfile.id) {
+                    nextMessageSentByMe = msg;
+                    break;
                   }
-                  const isLastDelivered =
-                    !isPending &&
-                    (nextMessage === null ||
-                      nextMessageSentByMe === null ||
-                      typeof nextMessageSentByMe.id === "string");
-
-                  messageJsxElement = (
-                    <Box flexDirection="row" justifyContent="flex-end">
-                      <Box flex={1}></Box>
-
-                      <Box
-                        mb={breakAfter ? 4 : 1}
-                        flexDirection="column"
-                        alignItems="flex-end"
-                      >
-                        <Box
-                          ml={12}
-                          borderTopLeftRadius="lg"
-                          borderBottomLeftRadius="lg"
-                          px={4}
-                          py={1.5}
-                          backgroundColor={isPending ? "lime300" : "lime400"}
-                          borderTopRightRadius={breakBefore ? "lg" : undefined}
-                          borderBottomRightRadius={
-                            breakAfter ? "lg" : undefined
-                          }
-                        >
-                          <Text variant="body1">{message.text}</Text>
-                        </Box>
-
-                        {isLastDelivered && (
-                          <Text variant="body3" color="gray700" mt={1}>
-                            Delivered
-                          </Text>
-                        )}
-                      </Box>
-                    </Box>
-                  );
-                } else {
-                  // Sent by other. Render chat bubble with their profile image on the left.
-                  const isLastMessage =
-                    breakAfter || nextMessageIsFromDifferentSender;
-
-                  messageJsxElement = (
-                    <Box flexDirection="row" alignItems="flex-end">
-                      <Box
-                        flexDirection="row"
-                        alignItems="flex-end"
-                        mb={isLastMessage ? 4 : 1}
-                      >
-                        {isLastMessage ? (
-                          <Box position="relative" width={40} flexShrink={0}>
-                            <Box
-                              position="absolute"
-                              bottom={0}
-                              height={40}
-                              width={40}
-                              flexShrink={0}
-                            >
-                              <ProfileImage
-                                src={image?.url}
-                                height={40}
-                                width={40}
-                              />
-                            </Box>
-                          </Box>
-                        ) : (
-                          <Box width={40} flexShrink={0}></Box>
-                        )}
-                        <Box
-                          mr={12}
-                          ml={2}
-                          borderTopRightRadius="lg"
-                          borderBottomRightRadius="lg"
-                          backgroundColor="gray100"
-                          px={4}
-                          py={1.5}
-                          borderTopLeftRadius={breakBefore ? "lg" : undefined}
-                          borderBottomLeftRadius={breakAfter ? "lg" : undefined}
-                        >
-                          <Text variant="body1">{message.text}</Text>
-                        </Box>
-                      </Box>
-                      <Box flex={1}></Box>
-                    </Box>
-                  );
                 }
+                const isLastDelivered =
+                  !isPending &&
+                  (nextMessage === null ||
+                    nextMessageSentByMe === null ||
+                    typeof nextMessageSentByMe.id === "string");
 
-                return (
-                  <Box key={message.id}>
-                    {breakBefore && (
+                messageJsxElement = (
+                  <Box flexDirection="row" justifyContent="flex-end">
+                    <Box flex={1}></Box>
+
+                    <Box
+                      mb={breakAfter ? 4 : 1}
+                      flexDirection="column"
+                      alignItems="flex-end"
+                    >
                       <Box
-                        mt={4}
-                        mb={2}
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="center"
-                        width={"100%"}
+                        ml={12}
+                        borderTopLeftRadius="lg"
+                        borderBottomLeftRadius="lg"
+                        px={4}
+                        py={1.5}
+                        backgroundColor={isPending ? "lime300" : "lime400"}
+                        borderTopRightRadius={breakBefore ? "lg" : undefined}
+                        borderBottomRightRadius={breakAfter ? "lg" : undefined}
                       >
-                        <Text color="gray700" variant="body3">
-                          {formatDateConcisely(new Date(message.created_at))}
-                        </Text>
+                        <Text variant="body1">{message.text}</Text>
                       </Box>
-                    )}
-                    {messageJsxElement}
+
+                      {isLastDelivered && (
+                        <Text variant="body3" color="gray700" mt={1}>
+                          Delivered
+                        </Text>
+                      )}
+                    </Box>
                   </Box>
                 );
-              })}
-            {currentProfile && !noMoreMessages && (
-              <Box
-                my={4}
-                flexDirection="row"
-                justifyContent="center"
-                width="100%"
+              } else {
+                // Sent by other. Render chat bubble with their profile image on the left.
+                const isLastMessage =
+                  breakAfter || nextMessageIsFromDifferentSender;
+
+                messageJsxElement = (
+                  <Box flexDirection="row" alignItems="flex-end">
+                    <Box
+                      flexDirection="row"
+                      alignItems="flex-end"
+                      mb={isLastMessage ? 4 : 1}
+                    >
+                      {isLastMessage ? (
+                        <Box position="relative" width={40} flexShrink={0}>
+                          <Box
+                            position="absolute"
+                            bottom={0}
+                            height={40}
+                            width={40}
+                            flexShrink={0}
+                          >
+                            <ProfileImage
+                              src={image?.url}
+                              height={40}
+                              width={40}
+                            />
+                          </Box>
+                        </Box>
+                      ) : (
+                        <Box width={40} flexShrink={0}></Box>
+                      )}
+                      <Box
+                        mr={12}
+                        ml={2}
+                        borderTopRightRadius="lg"
+                        borderBottomRightRadius="lg"
+                        backgroundColor="gray100"
+                        px={4}
+                        py={1.5}
+                        borderTopLeftRadius={breakBefore ? "lg" : undefined}
+                        borderBottomLeftRadius={breakAfter ? "lg" : undefined}
+                      >
+                        <Text variant="body1">{message.text}</Text>
+                      </Box>
+                    </Box>
+                    <Box flex={1}></Box>
+                  </Box>
+                );
+              }
+
+              return (
+                <Box key={message.id}>
+                  {breakBefore && (
+                    <Box
+                      mt={4}
+                      mb={2}
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="center"
+                      width={"100%"}
+                    >
+                      <Text color="gray700" variant="body3">
+                        {formatDateConcisely(new Date(message.created_at))}
+                      </Text>
+                    </Box>
+                  )}
+                  {messageJsxElement}
+                </Box>
+              );
+            })}
+          {currentProfile && !noMoreMessages && (
+            <Box
+              my={4}
+              flexDirection="row"
+              justifyContent="center"
+              width="100%"
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  fetchMore();
+                }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    fetchMore();
-                  }}
-                >
-                  <Text color="gray700" variant="body3">
-                    Load more...
-                  </Text>
-                </TouchableOpacity>
-              </Box>
-            )}
-          </Box>
+                <Text color="gray700" variant="body3">
+                  Load more...
+                </Text>
+              </TouchableOpacity>
+            </Box>
+          )}
         </ScrollView>
         <Box
           height={1}

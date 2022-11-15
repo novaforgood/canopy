@@ -5,7 +5,10 @@ import { StackNavigationProp } from "@react-navigation/stack";
 export type RootStackParamList = {
   SignIn: undefined;
   Home: undefined;
-  Directory: undefined;
+  SpaceHome: {
+    spaceSlug: string;
+    spaceName: string;
+  };
   ProfilePage: {
     profileId: string;
     firstName: string;

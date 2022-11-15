@@ -34,12 +34,16 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
           borderColor={"green900"}
           borderWidth={1}
           borderRadius="md"
-          px={4}
-          py={2}
-          pt={1}
           backgroundColor="white"
         >
-          <TextInputBase {...textInputProps} ref={ref} variant="body1" />
+          <TextInputBase
+            {...textInputProps}
+            ref={ref}
+            variant="body1"
+            px={4}
+            pt={3}
+            pb={3}
+          />
         </Box>
       </Box>
     );

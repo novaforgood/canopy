@@ -107,7 +107,7 @@ export function RootNavigator() {
       )}
       <RootStack.Screen name="Home" component={HomeScreen} />
       <RootStack.Screen
-        name="Directory"
+        name="SpaceHome"
         component={SpaceNavigator}
         options={({ route }) => ({ title: spaceRaw?.name })}
       />

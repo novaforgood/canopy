@@ -10,7 +10,6 @@ import schema from "../generated/graphql";
 import { createClient as createWSClient } from "graphql-ws";
 
 import Constants from "expo-constants";
-import { getGraphqlEndpoint, getGraphqlWsEndpoint } from "./apiUrl";
 import {
   chatMessageResolver,
   insertChatMessageUpdater,
@@ -18,12 +17,13 @@ import {
   optimisticInsertChatMessageResolver,
   optimisticUpdateProfileToChatRoomResolver,
 } from "./urql-chat-resolvers";
+import { GRAPHQL_ENDPOINT, GRAPHQL_WS_ENDPOINT } from "./url";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
 
   const wsClient = createWSClient({
-    url: getGraphqlWsEndpoint(),
+    url: GRAPHQL_WS_ENDPOINT,
     connectionParams: {
       headers: {
         authorization: `Bearer ${jwt}`,
@@ -32,7 +32,7 @@ export function getUrqlClient(jwt: string) {
   });
 
   return createClient({
-    url: getGraphqlEndpoint(),
+    url: GRAPHQL_ENDPOINT,
     requestPolicy: "cache-and-network",
     maskTypename: true,
     fetchOptions: () => {

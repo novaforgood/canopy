@@ -1,4 +1,5 @@
 import { getCurrentUser } from "./firebase";
+import { HOST_URL } from "./url";
 
 export interface LoadSessionProps {
   spaceId?: string;
@@ -14,7 +15,7 @@ export async function loadSession(props: LoadSessionProps | void) {
       if (!claims || props?.forceUpdateJwt) {
         // New user has logged in but doesn't have JWT claims
 
-        await fetch(`/api/auth/updateJwt`, {
+        await fetch(`${HOST_URL}/api/auth/updateJwt`, {
           method: "POST",
           headers: {
             authorization: `Bearer ${tokenResult.token}`,
@@ -26,6 +27,7 @@ export async function loadSession(props: LoadSessionProps | void) {
       }
     }
   } catch (e) {
+    console.error(e);
     return null;
   }
   if (!user) {

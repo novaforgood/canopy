@@ -56,13 +56,20 @@ export function Messages() {
 
   const { currentProfile } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
-  const [{ data, fetching }] = useAllChatRoomsSubscription({
+  const [{ data, fetching, error }] = useAllChatRoomsSubscription({
     variables: { profile_id: currentProfile?.id ?? "" },
   });
 
   // const chatRoomId = useQueryParam("chatRoomId", "string");
 
   const chatRooms = data?.chat_room ?? [];
+
+  if (fetching) {
+    return <Text>Loading...</Text>;
+  }
+  if (error) {
+    return <Text>Error: {JSON.stringify(error)}</Text>;
+  }
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>

@@ -4,8 +4,8 @@ import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { useProfileByIdQuery } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
-import type { RootStackParamList } from "../navigation/types";
-import { ScrollView, SafeAreaView } from "react-native";
+import { NavigationProp, RootStackParamList } from "../navigation/types";
+import { ScrollView, SafeAreaView, Linking } from "react-native";
 import { BxEdit, BxMessageDetail } from "../generated/icons/regular";
 import { ProfileImage } from "../components/ProfileImage";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
@@ -14,12 +14,16 @@ import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { HtmlDisplay } from "../components/HtmlDisplay";
 import { Tag } from "../components/Tag";
 import { ProfileSocialsDisplay } from "../components/profile-socials/ProfileSocialsDisplay";
+import { HOST_URL } from "../lib/url";
+import Constants from "expo-constants";
+import { useNavigation } from "@react-navigation/native";
 
 export function ProfilePageScreen({
-  navigation,
   route,
 }: StackScreenProps<RootStackParamList, "ProfilePage">) {
   const { profileId } = route.params;
+
+  const navigation = useNavigation<NavigationProp>();
 
   const { userData } = useUserData();
 
@@ -83,6 +87,9 @@ export function ProfilePageScreen({
                 <Button
                   onPress={() => {
                     console.log("Go to my edit profile page");
+
+                    const url = `${HOST_URL}/space/${currentSpace?.slug}/account/profile`;
+                    Linking.openURL(url);
                   }}
                 >
                   Edit profile
@@ -93,7 +100,16 @@ export function ProfilePageScreen({
                   alignItems="center"
                   borderRadius="full"
                   onPress={() => {
-                    console.log("Nav to chat room");
+                    const chatRoomId =
+                      profileData?.profile_to_chat_room?.[0].chat_room_id;
+                    if (!chatRoomId) {
+                      return;
+                    } else {
+                      navigation.navigate("ChatRoom", {
+                        chatRoomId,
+                        chatRoomName: `${first_name} ${last_name}`,
+                      });
+                    }
                   }}
                   disabled={isMyProfile}
                 >

@@ -15,7 +15,11 @@ import {
 import { SvgProps } from "react-native-svg";
 import { Box } from "../components/atomic/Box";
 import { Navbar } from "../components/Navbar";
-import { SpaceStackParamList } from "./types";
+import { RootStackParamList, SpaceStackParamList } from "./types";
+import { StackScreenProps } from "@react-navigation/stack";
+import { useEffect } from "react";
+import { useAtom } from "jotai";
+import { currentSpaceAtom } from "../lib/jotai";
 
 const TabNav = createBottomTabNavigator<SpaceStackParamList>();
 
@@ -28,7 +32,20 @@ const BOTTOM_TABS: Record<
   Account: { icon: BxUser, title: "Account" },
 };
 
-export function SpaceNavigator() {
+export function SpaceNavigator({
+  route,
+}: StackScreenProps<RootStackParamList, "SpaceHome">) {
+  const [_, setCurrentSpace] = useAtom(currentSpaceAtom);
+
+  useEffect(() => {
+    if (route.params) {
+      setCurrentSpace({
+        slug: route.params.spaceSlug,
+        name: route.params.spaceName,
+      });
+    }
+  }, [route.params]);
+
   return (
     <TabNav.Navigator tabBar={MyTabBar} screenOptions={{ headerShown: false }}>
       <TabNav.Screen name="ProfilesList" component={ProfilesList} />
