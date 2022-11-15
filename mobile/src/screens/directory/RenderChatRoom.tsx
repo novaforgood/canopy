@@ -1,6 +1,6 @@
 import { Link, useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
 
 import {
@@ -31,6 +31,7 @@ import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "../../lib/constants";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { NavigationProp } from "../../navigation/types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 type ChatMessage = MessagesQuery["chat_message"][number];
 type ChatRoom = ChatRoomSubscription["chat_room_by_pk"];
@@ -233,12 +234,15 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   ]);
 
   const headerHeight = useHeaderHeight();
-  const insets = useSafeAreaInsets();
+  const scrollViewRef = useRef<ScrollView | null>(null);
 
+  if (fetchingMessages) {
+    return <LoadingSpinner />;
+  }
   return (
     <KeyboardAvoidingView
-      behavior="height"
-      keyboardVerticalOffset={headerHeight + insets.bottom}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={headerHeight}
     >
       <Box
         flexDirection="column"
@@ -249,7 +253,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
         <Box
           flexDirection="row"
           alignItems="center"
-          backgroundColor="olive50"
+          backgroundColor="olive100"
           p={4}
         >
           <TouchableOpacity
@@ -278,164 +282,172 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
         </Box>
 
         <ScrollView
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            display: "flex",
-            flexDirection: "column-reverse",
-            paddingHorizontal: 16,
-          }}
+          ref={scrollViewRef}
+          style={{ transform: [{ scaleX: -1 }] }}
+          // onContentSizeChange={() => {
+          //   setTimeout(() => {
+          //     scrollViewRef.current?.scrollToEnd({ animated: false });
+          //   }, 50);
+          // }}
         >
-          {currentProfile &&
-            messagesList.map((message, idx) => {
-              // Note: Messages are ordered by created_at DESC
-              const prevMessage = messagesList[idx + 1] ?? null;
-              const nextMessage = messagesList[idx - 1] ?? null;
+          <Box
+            px={4}
+            flexDirection="column-reverse"
+            style={{ transform: [{ scaleX: -1 }] }}
+          >
+            {currentProfile &&
+              messagesList.map((message, idx) => {
+                // Note: Messages are ordered by created_at DESC
+                const prevMessage = messagesList[idx + 1] ?? null;
+                const nextMessage = messagesList[idx - 1] ?? null;
 
-              const breakBefore = shouldBreak(prevMessage, message);
-              const breakAfter = shouldBreak(message, nextMessage);
+                const breakBefore = shouldBreak(prevMessage, message);
+                const breakAfter = shouldBreak(message, nextMessage);
 
-              const nextMessageIsFromDifferentSender =
-                nextMessage?.sender_profile_id !== message.sender_profile_id;
+                const nextMessageIsFromDifferentSender =
+                  nextMessage?.sender_profile_id !== message.sender_profile_id;
 
-              let messageJsxElement = null;
-              if (message.sender_profile_id === currentProfile.id) {
-                // Sent by me. Render chat bubble with my profile image on the right.
-                const isPending = typeof message.id === "string";
+                let messageJsxElement = null;
+                if (message.sender_profile_id === currentProfile.id) {
+                  // Sent by me. Render chat bubble with my profile image on the right.
+                  const isPending = typeof message.id === "string";
 
-                // Find next message sent by me
-                let nextMessageSentByMe = null;
-                for (let j = idx - 1; j >= 0; j--) {
-                  const msg = messagesList[j];
-                  if (msg.sender_profile_id === currentProfile.id) {
-                    nextMessageSentByMe = msg;
-                    break;
+                  // Find next message sent by me
+                  let nextMessageSentByMe = null;
+                  for (let j = idx - 1; j >= 0; j--) {
+                    const msg = messagesList[j];
+                    if (msg.sender_profile_id === currentProfile.id) {
+                      nextMessageSentByMe = msg;
+                      break;
+                    }
                   }
-                }
-                const isLastDelivered =
-                  !isPending &&
-                  (nextMessage === null ||
-                    nextMessageSentByMe === null ||
-                    typeof nextMessageSentByMe.id === "string");
+                  const isLastDelivered =
+                    !isPending &&
+                    (nextMessage === null ||
+                      nextMessageSentByMe === null ||
+                      typeof nextMessageSentByMe.id === "string");
 
-                messageJsxElement = (
-                  <Box flexDirection="row" justifyContent="flex-end">
-                    <Box flex={1}></Box>
+                  messageJsxElement = (
+                    <Box flexDirection="row" justifyContent="flex-end">
+                      <Box flex={1}></Box>
 
-                    <Box
-                      mb={breakAfter ? 4 : 1}
-                      flexDirection="column"
-                      alignItems="flex-end"
-                    >
                       <Box
-                        ml={12}
-                        borderTopLeftRadius="lg"
-                        borderBottomLeftRadius="lg"
-                        px={4}
-                        py={1.5}
-                        backgroundColor={isPending ? "lime300" : "lime400"}
-                        borderTopRightRadius={breakBefore ? "lg" : undefined}
-                        borderBottomRightRadius={breakAfter ? "lg" : undefined}
+                        mb={breakAfter ? 4 : 1}
+                        flexDirection="column"
+                        alignItems="flex-end"
                       >
-                        <Text variant="body1">{message.text}</Text>
+                        <Box
+                          ml={12}
+                          borderTopLeftRadius="lg"
+                          borderBottomLeftRadius="lg"
+                          px={4}
+                          py={1.5}
+                          backgroundColor={isPending ? "lime300" : "lime400"}
+                          borderTopRightRadius={breakBefore ? "lg" : undefined}
+                          borderBottomRightRadius={
+                            breakAfter ? "lg" : undefined
+                          }
+                        >
+                          <Text variant="body1">{message.text}</Text>
+                        </Box>
+
+                        {isLastDelivered && (
+                          <Text variant="body3" color="gray700" mt={1}>
+                            Delivered
+                          </Text>
+                        )}
                       </Box>
-
-                      {isLastDelivered && (
-                        <Text variant="body3" color="gray700" mt={1}>
-                          Delivered
-                        </Text>
-                      )}
                     </Box>
-                  </Box>
-                );
-              } else {
-                // Sent by other. Render chat bubble with their profile image on the left.
-                const isLastMessage =
-                  breakAfter || nextMessageIsFromDifferentSender;
+                  );
+                } else {
+                  // Sent by other. Render chat bubble with their profile image on the left.
+                  const isLastMessage =
+                    breakAfter || nextMessageIsFromDifferentSender;
 
-                messageJsxElement = (
-                  <Box flexDirection="row" alignItems="flex-end">
-                    <Box
-                      flexDirection="row"
-                      alignItems="flex-end"
-                      mb={isLastMessage ? 4 : 1}
-                    >
-                      {isLastMessage ? (
-                        <Box position="relative" width={40} flexShrink={0}>
-                          <Box
-                            position="absolute"
-                            bottom={0}
-                            height={40}
-                            width={40}
-                            flexShrink={0}
-                          >
-                            <ProfileImage
-                              src={image?.url}
+                  messageJsxElement = (
+                    <Box flexDirection="row" alignItems="flex-end">
+                      <Box
+                        flexDirection="row"
+                        alignItems="flex-end"
+                        mb={isLastMessage ? 4 : 1}
+                      >
+                        {isLastMessage ? (
+                          <Box position="relative" width={40} flexShrink={0}>
+                            <Box
+                              position="absolute"
+                              bottom={0}
                               height={40}
                               width={40}
-                            />
+                              flexShrink={0}
+                            >
+                              <ProfileImage
+                                src={image?.url}
+                                height={40}
+                                width={40}
+                              />
+                            </Box>
                           </Box>
+                        ) : (
+                          <Box width={40} flexShrink={0}></Box>
+                        )}
+                        <Box
+                          mr={12}
+                          ml={2}
+                          borderTopRightRadius="lg"
+                          borderBottomRightRadius="lg"
+                          backgroundColor="gray100"
+                          px={4}
+                          py={1.5}
+                          borderTopLeftRadius={breakBefore ? "lg" : undefined}
+                          borderBottomLeftRadius={breakAfter ? "lg" : undefined}
+                        >
+                          <Text variant="body1">{message.text}</Text>
                         </Box>
-                      ) : (
-                        <Box width={40} flexShrink={0}></Box>
-                      )}
-                      <Box
-                        mr={12}
-                        ml={2}
-                        borderTopRightRadius="lg"
-                        borderBottomRightRadius="lg"
-                        backgroundColor="gray100"
-                        px={4}
-                        py={1.5}
-                        borderTopLeftRadius={breakBefore ? "lg" : undefined}
-                        borderBottomLeftRadius={breakAfter ? "lg" : undefined}
-                      >
-                        <Text variant="body1">{message.text}</Text>
                       </Box>
+                      <Box flex={1}></Box>
                     </Box>
-                    <Box flex={1}></Box>
+                  );
+                }
+
+                return (
+                  <Box key={message.id}>
+                    {breakBefore && (
+                      <Box
+                        mt={4}
+                        mb={2}
+                        flexDirection="row"
+                        alignItems="center"
+                        justifyContent="center"
+                        width={"100%"}
+                      >
+                        <Text color="gray700" variant="body3">
+                          {formatDateConcisely(new Date(message.created_at))}
+                        </Text>
+                      </Box>
+                    )}
+                    {messageJsxElement}
                   </Box>
                 );
-              }
-
-              return (
-                <Box key={message.id}>
-                  {breakBefore && (
-                    <Box
-                      mt={4}
-                      mb={2}
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="center"
-                      width={"100%"}
-                    >
-                      <Text color="gray700" variant="body3">
-                        {formatDateConcisely(new Date(message.created_at))}
-                      </Text>
-                    </Box>
-                  )}
-                  {messageJsxElement}
-                </Box>
-              );
-            })}
-          {currentProfile && !noMoreMessages && (
-            <Box
-              my={4}
-              flexDirection="row"
-              justifyContent="center"
-              width="100%"
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  fetchMore();
-                }}
+              })}
+            {currentProfile && !noMoreMessages && (
+              <Box
+                my={4}
+                flexDirection="row"
+                justifyContent="center"
+                width="100%"
               >
-                <Text color="gray700" variant="body3">
-                  Load more...
-                </Text>
-              </TouchableOpacity>
-            </Box>
-          )}
+                <TouchableOpacity
+                  onPress={() => {
+                    fetchMore();
+                  }}
+                >
+                  <Text color="gray700" variant="body3">
+                    Load more...
+                  </Text>
+                </TouchableOpacity>
+              </Box>
+            )}
+          </Box>
         </ScrollView>
         <Box
           height={1}

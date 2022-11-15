@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { createText, BorderProps } from "@shopify/restyle";
+import { createText, BorderProps, useTheme } from "@shopify/restyle";
 import {
   TextInput as RNTextInput,
   TextInputProps as RNTextInputProps,
@@ -21,6 +21,7 @@ type TextInputProps = TextInputBaseProps &
 
 export const TextInput = forwardRef<TextInputProps, TextInputProps>(
   (props, ref) => {
+    const theme = useTheme<Theme>();
     const { containerProps, textInputProps, otherProps } = extractProps(props);
     const { label } = otherProps;
     return (
@@ -43,6 +44,7 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
             px={4}
             pt={3}
             pb={3}
+            placeholderTextColor={theme.colors.gray400}
           />
         </Box>
       </Box>
@@ -52,6 +54,10 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
 
 function extractProps(originalProps: TextInputProps) {
   const { label, ...rest } = originalProps;
+
+  const otherProps = {
+    label,
+  } as const;
 
   const {
     width,
@@ -72,10 +78,6 @@ function extractProps(originalProps: TextInputProps) {
     ...textInputProps
   } = rest;
 
-  const otherProps = {
-    label,
-  };
-
   const containerProps = {
     width,
     height,
@@ -92,6 +94,7 @@ function extractProps(originalProps: TextInputProps) {
     top,
     bottom,
     alignSelf,
-  };
+  } as const;
+
   return { textInputProps, otherProps, containerProps } as const;
 }

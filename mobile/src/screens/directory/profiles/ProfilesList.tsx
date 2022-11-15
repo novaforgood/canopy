@@ -19,6 +19,10 @@ import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { searchQueryAtom } from "../../../lib/jotai";
 import { ProfileCard } from "./ProfileCard";
 import { NavigationProp } from "../../../navigation/types";
+import { TextInput } from "../../../components/atomic/TextInput";
+import { HtmlDisplay } from "../../../components/HtmlDisplay";
+import { Text } from "../../../components/atomic/Text";
+import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -49,7 +53,7 @@ export function ProfilesList() {
 
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
 
-  const [searchQuery] = useAtom(searchQueryAtom);
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
     useProfileListingsInSpaceQuery({
@@ -85,7 +89,26 @@ export function ProfilesList() {
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
+        <Box flexDirection="column">
+          <SpaceCoverPhoto
+            src={currentSpace?.space_cover_image?.image.url}
+          ></SpaceCoverPhoto>
+          <Box py={6} px={4} backgroundColor="olive200">
+            <Text mb={2} variant="heading3">
+              {currentSpace?.name}
+            </Text>
+            <HtmlDisplay html={currentSpace?.description_html ?? ""} />
+          </Box>
+        </Box>
         <Box p={4}>
+          <Box mt={4}></Box>
+          <TextInput
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search members..."
+            width="100%"
+          />
+          <Box mt={4}></Box>
           {filteredProfileListings.map((listing, idx) => {
             const { first_name, last_name } = listing.profile.user;
 

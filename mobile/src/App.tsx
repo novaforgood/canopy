@@ -10,7 +10,7 @@ import {
   Rubik_500Medium_Italic,
 } from "@expo-google-fonts/rubik";
 import React, { useCallback, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 import { RootNavigator } from "./navigation/RootNavigator";
 import theme from "./theme";
 import { AuthProvider } from "./providers/AuthProvider";
@@ -34,6 +34,7 @@ function App() {
       <UrqlProvider>
         <ThemeProvider theme={theme}>
           <NavigationContainer>
+            <StatusBar barStyle="dark-content" />
             <RootNavigator />
           </NavigationContainer>
         </ThemeProvider>

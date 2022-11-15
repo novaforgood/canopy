@@ -9,7 +9,6 @@ import {
 import schema from "../generated/graphql";
 import { createClient as createWSClient } from "graphql-ws";
 
-import Constants from "expo-constants";
 import {
   chatMessageResolver,
   insertChatMessageUpdater,
@@ -21,7 +20,6 @@ import { GRAPHQL_ENDPOINT, GRAPHQL_WS_ENDPOINT } from "./url";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);
-
   const wsClient = createWSClient({
     url: GRAPHQL_WS_ENDPOINT,
     connectionParams: {

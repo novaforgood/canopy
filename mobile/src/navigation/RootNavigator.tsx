@@ -17,6 +17,9 @@ import { currentSpaceAtom, sessionAtom } from "../lib/jotai";
 import { SpaceNavigator } from "./SpaceNavigator";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { ChatRoomScreen } from "../screens/ChatRoom";
+import { Box } from "../components/atomic/Box";
+import { useTheme } from "@shopify/restyle";
+import { Theme } from "../theme";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -37,12 +40,15 @@ export function RootNavigator() {
       if (expiresIn < expireThreshold) {
         console.log(expiresIn);
         console.log("Force updating JWT since it expires in 3 minutes...");
-        const lastVisitedSpaceId = await SecureStore.get(
+        const lastVisitedSpaceId = SecureStore.get(
           SecureStoreKey.LastVisitedSpaceId
-        )?.toString();
+        );
         refreshSession({
           forceUpdateJwt: true,
-          spaceId: lastVisitedSpaceId ?? undefined,
+          spaceId:
+            typeof lastVisitedSpaceId === "string"
+              ? lastVisitedSpaceId
+              : undefined,
         });
       }
     }
@@ -85,6 +91,7 @@ export function RootNavigator() {
         if (spaceId) {
           console.log("Refreshing JWT due to spaceId change...");
           refreshSession({ forceUpdateJwt: true, spaceId: spaceId });
+
           SecureStore.set(SecureStoreKey.LastVisitedSpaceId, spaceId);
         }
       }
@@ -94,9 +101,29 @@ export function RootNavigator() {
 
   const isLoggedIn = useIsLoggedIn();
 
+  const theme = useTheme<Theme>();
   return (
-    <RootStack.Navigator>
-      {!isLoggedIn && (
+    <RootStack.Navigator
+      screenOptions={{
+        // headerStyle: {
+        //   backgroundColor: theme.colors.olive100,
+        // },
+        headerBackground: () => (
+          <Box
+            backgroundColor="olive100"
+            height="100%"
+            width="100%"
+            shadowColor="black"
+            shadowRadius={10}
+            shadowOffset={{ width: 0, height: 5 }}
+            shadowOpacity={0.2}
+            elevation={5}
+          />
+        ),
+        headerTintColor: theme.colors.green800,
+      }}
+    >
+      {!isLoggedIn ? (
         <RootStack.Screen
           name="SignIn"
           options={{
@@ -104,31 +131,41 @@ export function RootNavigator() {
           }}
           component={SignInScreen}
         />
+      ) : (
+        <>
+          <RootStack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ title: "Canopy Home" }}
+          />
+          <RootStack.Screen
+            name="SpaceHome"
+            component={SpaceNavigator}
+            options={({ route }) => ({
+              title: spaceRaw?.name,
+              headerBackTitle: "Back",
+            })}
+          />
+          <RootStack.Screen
+            name="ProfilePage"
+            component={ProfilePageScreen}
+            options={({ route }) => ({
+              // title: `${route.params.firstName} ${route.params.lastName}`,
+              title: "",
+              headerBackTitle: "Back",
+            })}
+          />
+          <RootStack.Screen
+            name="ChatRoom"
+            component={ChatRoomScreen}
+            options={({ route }) => ({
+              // title: route.params.chatRoomName,
+              title: "",
+              headerBackTitle: "Back",
+            })}
+          />
+        </>
       )}
-      <RootStack.Screen name="Home" component={HomeScreen} />
-      <RootStack.Screen
-        name="SpaceHome"
-        component={SpaceNavigator}
-        options={({ route }) => ({ title: spaceRaw?.name })}
-      />
-      <RootStack.Screen
-        name="ProfilePage"
-        component={ProfilePageScreen}
-        options={({ route }) => ({
-          // title: `${route.params.firstName} ${route.params.lastName}`,
-          title: "",
-          headerBackTitle: "Back",
-        })}
-      />
-      <RootStack.Screen
-        name="ChatRoom"
-        component={ChatRoomScreen}
-        options={({ route }) => ({
-          // title: route.params.chatRoomName,
-          title: "",
-          headerBackTitle: "Back",
-        })}
-      />
     </RootStack.Navigator>
   );
 }

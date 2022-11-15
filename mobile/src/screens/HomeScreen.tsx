@@ -19,6 +19,7 @@ import { BxsGroup } from "../generated/icons/solid";
 import { useAtom } from "jotai";
 import { currentSpaceAtom } from "../lib/jotai";
 import { useNavigation } from "@react-navigation/native";
+import { signOut } from "../lib/firebase";
 
 export function HomeScreen({
   navigation,
@@ -32,9 +33,8 @@ export function HomeScreen({
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
         <Box p={4}>
-          <Text variant="heading4">
-            Welcome to Canopy Mobile, {userData?.first_name}!
-          </Text>
+          <Button onPress={signOut}>Sign out</Button>
+          <Text variant="heading4">Welcome to Canopy</Text>
           {profileData?.profile.map((profile) => {
             return (
               <Box mt={4} borderRadius="sm" overflow="hidden" key={profile.id}>

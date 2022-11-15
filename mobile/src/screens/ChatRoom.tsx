@@ -18,6 +18,7 @@ import { HtmlDisplay } from "../components/HtmlDisplay";
 import { Tag } from "../components/Tag";
 import { ProfileSocialsDisplay } from "../components/profile-socials/ProfileSocialsDisplay";
 import { RenderChatRoom } from "./directory/RenderChatRoom";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 export function ChatRoomScreen({
   navigation,
@@ -25,12 +26,15 @@ export function ChatRoomScreen({
 }: StackScreenProps<RootStackParamList, "ChatRoom">) {
   const chatRoomId = route.params.chatRoomId;
 
-  const [{ data: chatRoomData }] = useChatRoomSubscription({
+  const [{ data: chatRoomData, fetching }] = useChatRoomSubscription({
     variables: { chat_room_id: chatRoomId },
   });
 
   const chatRoom = chatRoomData?.chat_room_by_pk;
 
+  if (fetching) {
+    return <LoadingSpinner />;
+  }
   return (
     <SafeAreaView>
       {chatRoom && chatRoomId === chatRoom.id ? (

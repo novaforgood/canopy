@@ -15,6 +15,7 @@ import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { getAdditionalUserInfo, GoogleAuthProvider } from "firebase/auth";
+import { HOST_URL } from "../lib/url";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -52,7 +53,7 @@ export function SignInScreen({
           // router.push({ pathname: "/verify", query: router.query });
         } else {
           const idToken = await userCred.user.getIdToken();
-          await fetch(`/api/auth/upsertUserData`, {
+          await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
             method: "POST",
             headers: {
               authorization: `Bearer ${idToken}`,
@@ -86,14 +87,7 @@ export function SignInScreen({
           console.log(tokenResult);
           const { manifest } = Constants;
 
-          const api =
-            typeof manifest?.packagerOpts === `object` &&
-            manifest.packagerOpts.dev
-              ? manifest?.debuggerHost?.split(`:`).shift()?.concat(`:3000`)
-              : `api.example.com`;
-
-          console.log(`http://${api}/api/auth/upsertUserData`);
-          await fetch(`http://${api}/api/auth/upsertUserData`, {
+          await fetch(`http://${HOST_URL}/api/auth/upsertUserData`, {
             method: "POST",
             headers: {
               authorization: `Bearer ${tokenResult.token}`,

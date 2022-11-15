@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 import { Box } from "../../components/atomic/Box";
 import { Text } from "../../components/atomic/Text";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { ProfileImage } from "../../components/ProfileImage";
 import { useAllChatRoomsSubscription } from "../../generated/graphql";
 import { BxChevronRight } from "../../generated/icons/regular";
@@ -65,7 +66,7 @@ export function Messages() {
   const chatRooms = data?.chat_room ?? [];
 
   if (fetching) {
-    return <Text>Loading...</Text>;
+    return <LoadingSpinner />;
   }
   if (error) {
     return <Text>Error: {JSON.stringify(error)}</Text>;
@@ -112,7 +113,6 @@ export function Messages() {
                 // href={`/space/${currentSpace?.slug}/chat/${room.id}`}
               >
                 <Box
-                  backgroundColor="white"
                   flexDirection="row"
                   alignItems="center"
                   borderRadius="md"

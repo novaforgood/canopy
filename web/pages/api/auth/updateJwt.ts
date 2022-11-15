@@ -12,6 +12,8 @@ export default applyMiddleware({
     spaceId: z.string().optional(),
   }),
 }).post(async (req, res) => {
+  console.log(req.body.spaceId);
+  console.log("Ligma");
   await auth
     .setCustomUserClaims(req.token.uid, {
       "https://hasura.io/jwt/claims": {
