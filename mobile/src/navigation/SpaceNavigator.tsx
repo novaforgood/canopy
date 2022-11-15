@@ -2,9 +2,9 @@ import {
   BottomTabBarProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
-import { Messages } from "../screens/directory/Messages";
+import { MessagesScreen } from "../screens/directory/MessagesScreen";
 import { ProfilesList } from "../screens/directory/profiles/ProfilesList";
-import Account from "../screens/directory/Account";
+import { AccountScreen } from "../screens/directory/AccountScreen";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 import { Text } from "../components/atomic/Text";
 import {
@@ -49,8 +49,8 @@ export function SpaceNavigator({
   return (
     <TabNav.Navigator tabBar={MyTabBar} screenOptions={{ headerShown: false }}>
       <TabNav.Screen name="ProfilesList" component={ProfilesList} />
-      <TabNav.Screen name="ChatMessages" component={Messages} />
-      <TabNav.Screen name="Account" component={Account} />
+      <TabNav.Screen name="ChatMessages" component={MessagesScreen} />
+      <TabNav.Screen name="Account" component={AccountScreen} />
     </TabNav.Navigator>
   );
 }

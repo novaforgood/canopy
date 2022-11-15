@@ -50,7 +50,7 @@ function useTimeFormatter() {
   );
 }
 
-export function Messages() {
+export function MessagesScreen() {
   const navigation = useNavigation<NavigationProp>();
 
   const { formatTimeSuperConcise } = useTimeFormatter();

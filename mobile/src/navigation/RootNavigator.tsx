@@ -20,6 +20,8 @@ import { ChatRoomScreen } from "../screens/ChatRoom";
 import { Box } from "../components/atomic/Box";
 import { useTheme } from "@shopify/restyle";
 import { Theme } from "../theme";
+import { TouchableOpacity } from "react-native";
+import { BxMenu } from "../generated/icons/regular";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -121,6 +123,11 @@ export function RootNavigator() {
           />
         ),
         headerTintColor: theme.colors.green800,
+        headerRight: () => (
+          <TouchableOpacity>
+            <BxMenu height={28} width={28} color="black" />
+          </TouchableOpacity>
+        ),
       }}
     >
       {!isLoggedIn ? (
