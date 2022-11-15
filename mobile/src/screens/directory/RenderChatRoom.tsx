@@ -283,7 +283,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
         <ScrollView
           ref={scrollViewRef}
-          style={{ transform: [{ scaleX: -1 }] }}
+          style={{ transform: [{ scaleY: -1 }] }}
           // onContentSizeChange={() => {
           //   setTimeout(() => {
           //     scrollViewRef.current?.scrollToEnd({ animated: false });
@@ -293,7 +293,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
           <Box
             px={4}
             flexDirection="column-reverse"
-            style={{ transform: [{ scaleX: -1 }] }}
+            style={{ transform: [{ scaleY: -1 }] }}
           >
             {currentProfile &&
               messagesList.map((message, idx) => {
@@ -348,7 +348,9 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                             breakAfter ? "lg" : undefined
                           }
                         >
-                          <Text variant="body1">{message.text}</Text>
+                          <Text variant="body1" selectable={true}>
+                            {message.text}
+                          </Text>
                         </Box>
 
                         {isLastDelivered && (
@@ -395,13 +397,15 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                           ml={2}
                           borderTopRightRadius="lg"
                           borderBottomRightRadius="lg"
-                          backgroundColor="gray100"
+                          backgroundColor="gray200"
                           px={4}
                           py={1.5}
                           borderTopLeftRadius={breakBefore ? "lg" : undefined}
                           borderBottomLeftRadius={breakAfter ? "lg" : undefined}
                         >
-                          <Text variant="body1">{message.text}</Text>
+                          <Text variant="body1" selectable={true}>
+                            {message.text}
+                          </Text>
                         </Box>
                       </Box>
                       <Box flex={1}></Box>

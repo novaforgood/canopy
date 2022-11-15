@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { HomeScreen } from "../screens/HomeScreen";
 
 import { useRefreshSession } from "../hooks/useRefreshSession";
@@ -22,6 +22,9 @@ import { useTheme } from "@shopify/restyle";
 import { Theme } from "../theme";
 import { TouchableOpacity } from "react-native";
 import { BxMenu } from "../generated/icons/regular";
+import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
+import { Text } from "../components/atomic/Text";
+import { FullWindowOverlay } from "react-native-screens";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -104,75 +107,95 @@ export function RootNavigator() {
   const isLoggedIn = useIsLoggedIn();
 
   const theme = useTheme<Theme>();
+
+  const [showDrawer, setShowDrawer] = useState(false);
   return (
-    <RootStack.Navigator
-      screenOptions={{
-        // headerStyle: {
-        //   backgroundColor: theme.colors.olive100,
-        // },
-        headerBackground: () => (
-          <Box
-            backgroundColor="olive100"
-            height="100%"
-            width="100%"
-            shadowColor="black"
-            shadowRadius={10}
-            shadowOffset={{ width: 0, height: 5 }}
-            shadowOpacity={0.2}
-            elevation={5}
-          />
-        ),
-        headerTintColor: theme.colors.green800,
-        headerRight: () => (
-          <TouchableOpacity>
-            <BxMenu height={28} width={28} color="black" />
-          </TouchableOpacity>
-        ),
-      }}
-    >
-      {!isLoggedIn ? (
-        <RootStack.Screen
-          name="SignIn"
-          options={{
-            title: "Sign in",
-          }}
-          component={SignInScreen}
-        />
-      ) : (
-        <>
+    <>
+      <RootStack.Navigator
+        screenOptions={{
+          // headerStyle: {
+          //   backgroundColor: theme.colors.olive100,
+          // },
+          headerBackground: () => (
+            <Box
+              backgroundColor="olive100"
+              height="100%"
+              width="100%"
+              shadowColor="black"
+              shadowRadius={10}
+              shadowOffset={{ width: 0, height: 5 }}
+              shadowOpacity={0.2}
+              elevation={5}
+            />
+          ),
+          headerTintColor: theme.colors.green800,
+          headerRight: () => (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowDrawer(true);
+                }}
+              >
+                <BxMenu height={28} width={28} color="black" />
+              </TouchableOpacity>
+            </>
+          ),
+        }}
+      >
+        {!isLoggedIn ? (
           <RootStack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ title: "Canopy Home" }}
+            name="SignIn"
+            options={{
+              title: "Sign in",
+            }}
+            component={SignInScreen}
           />
-          <RootStack.Screen
-            name="SpaceHome"
-            component={SpaceNavigator}
-            options={({ route }) => ({
-              title: spaceRaw?.name,
-              headerBackTitle: "Back",
-            })}
-          />
-          <RootStack.Screen
-            name="ProfilePage"
-            component={ProfilePageScreen}
-            options={({ route }) => ({
-              // title: `${route.params.firstName} ${route.params.lastName}`,
-              title: "",
-              headerBackTitle: "Back",
-            })}
-          />
-          <RootStack.Screen
-            name="ChatRoom"
-            component={ChatRoomScreen}
-            options={({ route }) => ({
-              // title: route.params.chatRoomName,
-              title: "",
-              headerBackTitle: "Back",
-            })}
-          />
-        </>
-      )}
-    </RootStack.Navigator>
+        ) : (
+          <>
+            <RootStack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ title: "Canopy Home" }}
+            />
+            <RootStack.Screen
+              name="SpaceHome"
+              component={SpaceNavigator}
+              options={({ route }) => ({
+                title: spaceRaw?.name,
+                headerBackTitle: "Back",
+              })}
+            />
+            <RootStack.Screen
+              name="ProfilePage"
+              component={ProfilePageScreen}
+              options={({ route }) => ({
+                // title: `${route.params.firstName} ${route.params.lastName}`,
+                title: "",
+                headerBackTitle: "Back",
+              })}
+            />
+            <RootStack.Screen
+              name="ChatRoom"
+              component={ChatRoomScreen}
+              options={({ route }) => ({
+                // title: route.params.chatRoomName,
+                title: "",
+                headerBackTitle: "Back",
+              })}
+            />
+          </>
+        )}
+      </RootStack.Navigator>
+    </>
+  );
+}
+
+function Drawer({ children }: { children: React.ReactNode }) {
+  return (
+    <Animated.View entering={SlideInRight} exiting={SlideOutRight}>
+      <Box position="absolute" backgroundColor="white" width={40} height="100%">
+        {children}
+      </Box>
+    </Animated.View>
   );
 }
