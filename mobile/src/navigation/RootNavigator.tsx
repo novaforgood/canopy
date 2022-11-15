@@ -43,7 +43,6 @@ export function RootNavigator() {
       const expireThreshold = 180000;
 
       if (expiresIn < expireThreshold) {
-        console.log(expiresIn);
         console.log("Force updating JWT since it expires in 3 minutes...");
         const lastVisitedSpaceId = SecureStore.get(
           SecureStoreKey.LastVisitedSpaceId

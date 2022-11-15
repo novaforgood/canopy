@@ -87,17 +87,14 @@ export function SignInScreen({
   const signInManually = async (email: string, password: string) => {
     // sign in using firebase auth and upsert to our DB
     setSigningIn(true);
-    console.log("trytng");
     signInWithEmailAndPassword(email, password)
       .then(async (userCred) => {
-        console.log("success");
         if (!userCred.user.emailVerified) {
           // router.push({ pathname: "/verify", query: router.query });
           // Linking.openURL(`${HOST_URL}/verify`)
           throw new Error("Please verify your email first!");
         } else {
           const tokenResult = await userCred.user.getIdTokenResult();
-          console.log(tokenResult);
 
           await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
             method: "POST",
@@ -109,8 +106,6 @@ export function SignInScreen({
         }
       })
       .catch((e) => {
-        console.error("GET FUCEKD");
-        console.error(e);
         toast.error(e.message);
         signOut();
       })
@@ -181,7 +176,6 @@ export function SignInScreen({
             <Button
               mt={8}
               onPress={() => {
-                console.log("Pressed");
                 signInManually(email, password);
               }}
             >
