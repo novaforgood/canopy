@@ -39,10 +39,12 @@ export default applyMiddleware({
       });
       if (error) {
         console.log(error.message);
+        console.log("Error in upsertUserData", error.message);
         throw makeApiError(error.message);
       }
     })
     .catch((e) => {
+      console.log("Error in upsertUserData 2", e.message);
       throw makeApiError(e.message);
     });
 

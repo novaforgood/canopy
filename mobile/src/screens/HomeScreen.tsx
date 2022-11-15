@@ -33,8 +33,9 @@ export function HomeScreen({
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
         <Box p={4}>
-          <Button onPress={signOut}>Sign out</Button>
-          <Text variant="heading4">Welcome to Canopy</Text>
+          <Text variant="heading4Medium" mt={4}>
+            Your Canopy Directories
+          </Text>
           {profileData?.profile.map((profile) => {
             return (
               <Box mt={4} borderRadius="sm" overflow="hidden" key={profile.id}>

@@ -27,6 +27,7 @@ import {
 } from "react-native";
 import { BxlGoogle } from "../generated/icons/logos";
 import { CustomKeyboardAvoidingView } from "../components/CustomKeyboardAvoidingView";
+import { toast } from "../components/CustomToast";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -74,9 +75,8 @@ export function SignInScreen({
         }
       })
       .catch((e) => {
-        // toast.error(e.message);
-        // handleError(e);
-        console.log(e.message);
+        toast.error(e.message);
+        signOut();
       })
 
       .finally(() => {
@@ -93,12 +93,13 @@ export function SignInScreen({
         console.log("success");
         if (!userCred.user.emailVerified) {
           // router.push({ pathname: "/verify", query: router.query });
+          // Linking.openURL(`${HOST_URL}/verify`)
+          throw new Error("Please verify your email first!");
         } else {
           const tokenResult = await userCred.user.getIdTokenResult();
           console.log(tokenResult);
-          const { manifest } = Constants;
 
-          await fetch(`http://${HOST_URL}/api/auth/upsertUserData`, {
+          await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
             method: "POST",
             headers: {
               authorization: `Bearer ${tokenResult.token}`,
@@ -108,8 +109,9 @@ export function SignInScreen({
         }
       })
       .catch((e) => {
-        // toast.error(e.code + ": " + e.message);
-        console.log(e.message);
+        console.error("GET FUCEKD");
+        console.error(e);
+        toast.error(e.message);
         signOut();
       })
       .finally(() => {

@@ -27,7 +27,7 @@ export async function loadSession(props: LoadSessionProps | void) {
       }
     }
   } catch (e) {
-    console.error(e);
+    console.error("Error in loadSession", e);
     return null;
   }
   if (!user) {

@@ -3,6 +3,7 @@ import { formatDistanceStrict } from "date-fns";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 import { Box } from "../../components/atomic/Box";
+import { Button } from "../../components/atomic/Button";
 import { Text } from "../../components/atomic/Text";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { ProfileImage } from "../../components/ProfileImage";
@@ -74,7 +75,30 @@ export function MessagesScreen() {
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
-        <Box>
+        <Box minHeight="100%">
+          {chatRooms.length === 0 && (
+            <Box
+              p={4}
+              height="100%"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text variant="body1" textAlign="center" mt={4}>
+                You have no chats yet. View profiles to start chatting with
+                someone.
+              </Text>
+              <Button
+                variant="outline"
+                mt={4}
+                onPress={() => {
+                  navigation.navigate("ProfilesList");
+                }}
+              >
+                View profiles
+              </Button>
+            </Box>
+          )}
           {chatRooms.map((room) => {
             const otherProfileEntry = room.profile_to_chat_rooms.find(
               (p) => p.profile.id !== currentProfile?.id
@@ -121,13 +145,18 @@ export function MessagesScreen() {
                   <ProfileImage src={image?.url} height={48} width={48} />
 
                   <Box ml={3} flexDirection="column">
-                    <Text variant="subheading2" mb={1}>
+                    <Text
+                      variant={
+                        shouldNotHighlight ? "subheading2" : "subheading2Medium"
+                      }
+                      mb={1}
+                    >
                       {first_name} {last_name}
                     </Text>
                     <Box flexDirection="row" alignItems="center" width="100%">
                       <Text
                         color={shouldNotHighlight ? "gray800" : "black"}
-                        variant={shouldNotHighlight ? "body2" : "body2Bold"}
+                        variant={shouldNotHighlight ? "body2" : "body2Medium"}
                         numberOfLines={1}
                       >
                         {latestMessage?.sender_profile_id === currentProfile?.id

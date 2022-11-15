@@ -93,14 +93,14 @@ export function ProfilesList() {
           <SpaceCoverPhoto
             src={currentSpace?.space_cover_image?.image.url}
           ></SpaceCoverPhoto>
-          <Box py={6} px={4} backgroundColor="olive200">
+          <Box py={6} px={4} backgroundColor="olive100">
             <Text mb={2} variant="heading3">
               {currentSpace?.name}
             </Text>
             <HtmlDisplay html={currentSpace?.description_html ?? ""} />
           </Box>
         </Box>
-        <Box p={4}>
+        <Box p={4} backgroundColor="gray50">
           <Box mt={4}></Box>
           <TextInput
             value={searchQuery}
