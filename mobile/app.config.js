@@ -23,8 +23,16 @@ function filterEnvVariables(env) {
 
 export default {
   expo: {
-    name: "Canopy",
+    name: "Join Canopy",
     slug: "joincanopy",
     extra: filterEnvVariables(process.env),
+    icon: "./assets/images/app_icon.png",
+    splash: {
+      image: "./assets/images/splash.png",
+      backgroundColor: "#D8DF7B",
+    },
+    ios: {
+      bundleIdentifier: "com.joincanopy.app",
+    },
   },
 };

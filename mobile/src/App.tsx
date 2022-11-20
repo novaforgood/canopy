@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider } from "@shopify/restyle";
 import { useFonts } from "expo-font";
+import { Asset } from "expo-asset";
 import {
   Rubik_400Regular,
   Rubik_700Bold,
@@ -9,9 +10,18 @@ import {
   Rubik_700Bold_Italic,
   Rubik_500Medium_Italic,
 } from "@expo-google-fonts/rubik";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   GestureResponderEvent,
+  Image,
+  ImageSourcePropType,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
@@ -23,16 +33,32 @@ import theme from "./theme";
 import { AuthProvider } from "./providers/AuthProvider";
 import { UrqlProvider } from "./providers/UrqlProvider";
 import { useAtom } from "jotai";
-import { showNavDrawerAtom } from "./lib/jotai";
-import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
+import { sessionAtom, showNavDrawerAtom } from "./lib/jotai";
+import Animated, {
+  SlideInRight,
+  SlideOutRight,
+  FadeOut,
+  Easing,
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import Constants from "expo-constants";
 import { Box } from "./components/atomic/Box";
 import { Text } from "./components/atomic/Text";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { BxX } from "./generated/icons/regular";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "./components/atomic/Button";
-import { signOut } from "./lib/firebase";
+import { onAuthStateChanged, signOut } from "./lib/firebase";
 import { CustomToast } from "./components/CustomToast";
+import * as SplashScreen from "expo-splash-screen";
+import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
+import { useRefreshSession } from "./hooks/useRefreshSession";
+import splashImage from "../assets/images/splash.png";
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 function App() {
   let [fontsLoaded] = useFonts({
@@ -46,12 +72,40 @@ function App() {
 
   const [showNavDrawer, setShowNavDrawer] = useAtom(showNavDrawerAtom);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  const isLoggedIn = useIsLoggedIn();
+  const [session, setSession] = useAtom(sessionAtom);
+
+  const { refreshSession } = useRefreshSession();
+
+  useEffect(() => {
+    const unsubscribeListener = onAuthStateChanged(async () => {
+      // Whenever auth state changes, we no longer know what the session is.
+      // We must wait for this handler to run to completion, resolving
+      // the session to either authenticated or null.
+      setSession(undefined);
+      refreshSession();
+    });
+
+    return () => {
+      unsubscribeListener();
+    };
+  }, [refreshSession, setSession]);
+
+  const sessionLoaded = session !== undefined;
+  const appIsReady = fontsLoaded && sessionLoaded;
+
   return (
-    <SafeAreaProvider>
-      <AuthProvider>
+    <AnimatedAppLoader
+      isAppReady={appIsReady}
+      imageUri={Image.resolveAssetSource(splashImage).uri}
+    >
+      <SafeAreaProvider>
         <UrqlProvider>
           <ThemeProvider theme={theme}>
             <NavigationContainer>
@@ -62,8 +116,8 @@ function App() {
             <CustomToast />
           </ThemeProvider>
         </UrqlProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+    </AnimatedAppLoader>
   );
 }
 
@@ -179,5 +233,108 @@ function NavDrawer() {
         </Box>
       </Box>
     </Animated.View>
+  );
+}
+
+function AnimatedAppLoader({
+  children,
+  imageUri,
+  isAppReady,
+}: {
+  children: ReactNode;
+  imageUri: string;
+  isAppReady: boolean;
+}) {
+  const [isSplashReady, setSplashReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      await Asset.fromURI(imageUri).downloadAsync();
+      setSplashReady(true);
+    }
+
+    prepare();
+  }, [imageUri]);
+
+  if (!isSplashReady) {
+    return null;
+  }
+
+  return (
+    <AnimatedSplashScreen imageUri={imageUri} isAppReady={isAppReady}>
+      {children}
+    </AnimatedSplashScreen>
+  );
+}
+
+function AnimatedSplashScreen({
+  children,
+  imageUri,
+  isAppReady,
+}: {
+  children: ReactNode;
+  imageUri: string;
+  isAppReady: boolean;
+}) {
+  const animation = useSharedValue(1);
+
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    if (isAppReady) {
+      animation.value = withTiming(0, { duration: 500 });
+    }
+  }, [isAppReady]);
+
+  const onImageLoaded = useCallback(async () => {
+    try {
+      await SplashScreen.hideAsync();
+      // Load stuff
+    } catch (e) {
+      // handle errors
+    } finally {
+      setImageLoaded(true);
+    }
+  }, []);
+
+  const backgroundStyle = useAnimatedStyle(() => {
+    return {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+      backgroundColor: Constants.manifest?.splash?.backgroundColor,
+      opacity: animation.value,
+    };
+  });
+
+  const imageStyle = useAnimatedStyle(() => {
+    return {
+      width: "100%",
+      height: "100%",
+      resizeMode: Constants.manifest?.splash?.resizeMode || "contain",
+      transform: [
+        {
+          scale: 2 - animation.value,
+        },
+      ],
+    };
+  });
+
+  const appReady = isAppReady && imageLoaded;
+
+  return (
+    <View style={{ flex: 1 }}>
+      {appReady && children}
+      <Animated.View pointerEvents="none" style={backgroundStyle}>
+        <Animated.Image
+          style={imageStyle}
+          source={{ uri: imageUri }}
+          onLoadEnd={onImageLoaded}
+          fadeDuration={0}
+        />
+      </Animated.View>
+    </View>
   );
 }
