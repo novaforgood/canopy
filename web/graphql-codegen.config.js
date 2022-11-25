@@ -24,7 +24,7 @@ module.exports = {
     },
     "./server/generated/serverGraphql.tsx": {
       schema: "graphql-admin.schema.json",
-      documents: ["./lib/gql/**/*.graphql"],
+      documents: ["./server/**/*.graphql"],
       plugins: [
         "typescript",
         "typescript-operations",
