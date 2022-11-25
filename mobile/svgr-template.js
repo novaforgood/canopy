@@ -15,10 +15,10 @@ const template = (variables, { tpl }) => {
   type Props = Omit<SvgProps, "color"> & {
     color?: Color;
   };
-  const ${variables.componentName} = ({ color, ...rest }: Props) => {
+  const ${variables.componentName} = ({ color = "black", ...rest }: Props) => {
     const theme = useTheme();
-    const realColor = color ? theme.colors[color ? ] : "currentcolor";  
-    return <Icon color={realColor} {...rest} />;
+    const realColor = theme.colors[color];
+    return <Icon fill={realColor} {...rest} />;
   };
 
   ${variables.exports};

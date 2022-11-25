@@ -288,7 +288,7 @@ function AnimatedSplashScreen({
 
   const onImageLoaded = useCallback(async () => {
     try {
-      await SplashScreen.hideAsync();
+      await SplashScreen.hideAsync().catch(() => {});
       // Load stuff
     } catch (e) {
       // handle errors
@@ -304,7 +304,7 @@ function AnimatedSplashScreen({
       right: 0,
       top: 0,
       bottom: 0,
-      backgroundColor: Constants.manifest?.splash?.backgroundColor,
+      backgroundColor: Constants.expoConfig?.splash?.backgroundColor,
       opacity: animation.value,
     };
   });
@@ -313,7 +313,7 @@ function AnimatedSplashScreen({
     return {
       width: "100%",
       height: "100%",
-      resizeMode: Constants.manifest?.splash?.resizeMode || "contain",
+      resizeMode: Constants.expoConfig?.splash?.resizeMode || "contain",
       transform: [
         {
           scale: 2 - animation.value,

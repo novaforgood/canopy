@@ -1,6 +1,7 @@
 import Constants from "expo-constants";
 
-const DEBUGGER_HOST_IP = Constants.manifest?.debuggerHost?.split(`:`)[0] ?? "";
+const DEBUGGER_HOST_IP =
+  Constants.manifest2?.extra?.expoGo?.debuggerHost?.split(`:`)[0] ?? "";
 
 function replaceLocalhostWithIp(url: string) {
   if (!url || url.length === 0) {
@@ -14,13 +15,13 @@ function replaceLocalhostWithIp(url: string) {
 }
 
 export const HOST_URL = replaceLocalhostWithIp(
-  Constants.manifest?.extra?.HOST_URL
+  Constants.expoConfig?.extra?.HOST_URL
 );
 
 export const GRAPHQL_ENDPOINT = replaceLocalhostWithIp(
-  Constants.manifest?.extra?.GRAPHQL_ENDPOINT
+  Constants.expoConfig?.extra?.GRAPHQL_ENDPOINT
 );
 
 export const GRAPHQL_WS_ENDPOINT = replaceLocalhostWithIp(
-  Constants.manifest?.extra?.GRAPHQL_WS_ENDPOINT
+  Constants.expoConfig?.extra?.GRAPHQL_WS_ENDPOINT
 );

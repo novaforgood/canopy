@@ -26,10 +26,10 @@ import {
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: Constants.manifest?.extra?.["FIREBASE_API_KEY"],
-  authDomain: Constants.manifest?.extra?.["FIREBASE_AUTH_DOMAIN"],
-  projectId: Constants.manifest?.extra?.["FIREBASE_PROJECT_ID"],
-  appId: Constants.manifest?.extra?.["FIREBASE_APP_ID"],
+  apiKey: Constants.expoConfig?.extra?.["FIREBASE_API_KEY"],
+  authDomain: Constants.expoConfig?.extra?.["FIREBASE_AUTH_DOMAIN"],
+  projectId: Constants.expoConfig?.extra?.["FIREBASE_PROJECT_ID"],
+  appId: Constants.expoConfig?.extra?.["FIREBASE_APP_ID"],
 };
 
 // Initialize Firebase

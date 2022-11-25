@@ -1,0 +1,174 @@
+# Queries involving user profile listings
+
+## Profile image
+
+mutation InsertProfileImage($image_id: uuid!, $profile_id: uuid!) {
+  insert_profile_listing_image_one(
+    object: {
+      image_id: $image_id
+      profile_listing: {
+        data: { profile_id: $profile_id }
+        on_conflict: {
+          constraint: profile_listing_profile_id_key
+          update_columns: profile_id
+        }
+      }
+    }
+    on_conflict: {
+      constraint: profile_listing_image_profile_listing_id_key
+      update_columns: image_id
+    }
+  ) {
+    id
+    image_id
+    image {
+      id
+      url
+    }
+    profile_listing {
+      id
+      profile_id
+      public
+    }
+    profile_listing_id
+  }
+}
+
+query ProfileImage($profile_id: uuid!) {
+  profile_listing_image(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
+    id
+    image {
+      id
+      url
+    }
+    profile_listing_id
+  }
+}
+
+## Questions and responses
+
+query ListingResponseByQuestionId(
+  $question_ids: [uuid!]!
+  $profile_listing_id: uuid!
+) {
+  profile_listing_response(
+    where: {
+      space_listing_question: { id: { _in: $question_ids } }
+      profile_listing_id: { _eq: $profile_listing_id }
+    }
+  ) {
+    id
+    profile_listing_id
+    space_listing_question_id
+    response_html
+  }
+}
+
+mutation UpsertListingResponses(
+  $objects: [profile_listing_response_insert_input!]!
+) {
+  insert_profile_listing_response(
+    objects: $objects
+    on_conflict: {
+      constraint: profile_listing_response_space_listing_question_id_profile_list
+      update_columns: [response_html]
+    }
+  ) {
+    returning {
+      id
+      profile_listing_id
+      response_html
+      space_listing_question_id
+      profile_listing {
+        id
+        profile_id
+        public
+      }
+    }
+  }
+}
+
+## Social media links
+
+query ProfileListingSocials($profile_listing_id: uuid!) {
+  profile_listing_social(
+    where: { profile_listing: { id: { _eq: $profile_listing_id } } }
+  ) {
+    id
+    profile_listing_id
+    type
+    link
+  }
+}
+
+mutation UpdateListingSocials(
+  $profile_id: uuid!
+  $profile_listing_social: [profile_listing_social_insert_input!]!
+) {
+  delete_profile_listing_social(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+  insert_profile_listing_social(objects: $profile_listing_social) {
+    affected_rows
+    returning {
+      id
+      profile_listing_id
+      type
+      link
+      profile_listing {
+        id
+        profile_id
+        public
+      }
+    }
+  }
+}
+
+## Tags
+
+mutation SetProfileListingTags(
+  $profile_id: uuid!
+  $inputs: [profile_listing_to_space_tag_insert_input!]!
+) {
+  delete_profile_listing_to_space_tag(
+    where: { profile_listing: { profile_id: { _eq: $profile_id } } }
+  ) {
+    returning {
+      id
+      profile_listing_id
+      space_tag_id
+      space_tag {
+        id
+        label
+        space_tag_category_id
+      }
+      profile_listing {
+        id
+        profile_id
+      }
+    }
+  }
+  insert_profile_listing_to_space_tag(objects: $inputs) {
+    returning {
+      id
+      profile_listing_id
+      space_tag_id
+      space_tag {
+        id
+        label
+        space_tag_category_id
+      }
+      profile_listing {
+        id
+        profile_id
+      }
+    }
+  }
+}

@@ -13,7 +13,7 @@ import {
 import type { RootStackParamList } from "../navigation/types";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
+import { useIdTokenAuthRequest } from "expo-auth-session/providers/google";
 import { getAdditionalUserInfo, GoogleAuthProvider } from "firebase/auth";
 import { HOST_URL } from "../lib/url";
 import {
@@ -28,6 +28,8 @@ import {
 import { BxlGoogle } from "../generated/icons/logos";
 import { CustomKeyboardAvoidingView } from "../components/CustomKeyboardAvoidingView";
 import { toast } from "../components/CustomToast";
+import { AuthSessionResult } from "expo-auth-session";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -36,50 +38,76 @@ export function SignInScreen({
 }: StackScreenProps<RootStackParamList, "SignIn">) {
   const [signingIn, setSigningIn] = useState(false);
 
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: Constants.manifest?.extra?.["FIREBASE_WEB_CLIENT_ID"] ?? "",
+  const [request, response, promptAsync] = useIdTokenAuthRequest({
+    iosClientId: Constants.expoConfig?.extra?.["FIREBASE_IOS_CLIENT_ID"] ?? "",
+    clientId: Constants.expoConfig?.extra?.["FIREBASE_WEB_CLIENT_ID"] ?? "",
   });
+
+  useEffect(() => {
+    const processResponse = async (response: AuthSessionResult) => {
+      if (response.type !== "success") {
+        toast.error("Failed to sign in with Google");
+        return;
+      }
+      if (!response.authentication) {
+        toast.error("No response.authentication");
+        return;
+      }
+
+      const credential = GoogleAuthProvider.credential(
+        response.authentication.idToken
+      );
+
+      signInWithCredential(credential)
+        .then(async (userCred) => {
+          const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
+
+          if (isNewUser) {
+            // User has never signed in before
+            await userCred.user.delete();
+            // toast.error("Account not created yet. Please sign up first!");
+          } else if (!userCred.user.emailVerified) {
+            // User has signed in before but has not verified email
+            // router.push({ pathname: "/verify", query: router.query });
+          } else {
+            const idToken = await userCred.user.getIdToken();
+            await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
+              method: "POST",
+              headers: {
+                authorization: `Bearer ${idToken}`,
+              },
+            });
+            // await redirectUsingQueryParam("/");
+          }
+        })
+        .catch((err) => {
+          toast.error(err.message);
+          signOut();
+        })
+        .finally(() => {
+          setSigningIn(false);
+        });
+    };
+
+    if (response) {
+      processResponse(response);
+    }
+  }, [response]);
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
     setSigningIn(true);
     await promptAsync()
-      .then(async (response) => {
+      .then((response) => {
         if (response.type === "success") {
-          const idToken = response.params.id_token;
-          return GoogleAuthProvider.credential(idToken);
+          console.log("res", response);
         } else {
           throw new Error("Google sign in failed");
-        }
-      })
-      .then(signInWithCredential)
-      .then(async (userCred) => {
-        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
-
-        if (isNewUser) {
-          // User has never signed in before
-          await userCred.user.delete();
-          // toast.error("Account not created yet. Please sign up first!");
-        } else if (!userCred.user.emailVerified) {
-          // User has signed in before but has not verified email
-          // router.push({ pathname: "/verify", query: router.query });
-        } else {
-          const idToken = await userCred.user.getIdToken();
-          await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${idToken}`,
-            },
-          });
-          // await redirectUsingQueryParam("/");
         }
       })
       .catch((e) => {
         toast.error(e.message);
         signOut();
-      })
-
-      .finally(() => {
         setSigningIn(false);
       });
   };
@@ -116,6 +144,23 @@ export function SignInScreen({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  if (signingIn) {
+    return (
+      <SafeAreaView>
+        <Box
+          height="100%"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection="column"
+        >
+          <Box mb={4} height={40}>
+            <LoadingSpinner />
+          </Box>
+          <Text variant="body1">Signing in...</Text>
+        </Box>
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={{ overflow: "hidden" }}>
       <CustomKeyboardAvoidingView>
