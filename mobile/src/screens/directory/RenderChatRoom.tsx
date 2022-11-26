@@ -12,7 +12,7 @@ import {
   useUpdateLatestReadMessageMutation,
   useMessagesStreamSubscription,
   useSendMessageMutation,
-  ChatRoomSubscription,
+  ChatRoomQuery,
   MessagesQuery,
 } from "../../generated/graphql";
 import { BxChevronLeft, BxSend } from "../../generated/icons/regular";
@@ -27,7 +27,7 @@ import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { CustomKeyboardAvoidingView } from "../../components/CustomKeyboardAvoidingView";
 
 type ChatMessage = MessagesQuery["chat_message"][number];
-type ChatRoom = ChatRoomSubscription["chat_room_by_pk"];
+type ChatRoom = ChatRoomQuery["chat_room_by_pk"];
 
 const promiseQueue = new PromiseQueue();
 

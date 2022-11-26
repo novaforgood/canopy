@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
+import { makeListSentence } from "../../common/lib/words";
 import {
   useMessagesQuery,
   useMessagesStreamSubscription,
+  User_Type_Enum,
   useSendMessageMutation,
   useUpdateLatestReadMessageMutation,
 } from "../../generated/graphql";
@@ -58,7 +60,7 @@ function shouldBreak(
 }
 
 export interface RenderChatRoomProps {
-  chatRoom: NonNullable<ChatRoom>;
+  chatRoom: ChatRoom;
 }
 
 export function RenderChatRoom(props: RenderChatRoomProps) {
@@ -76,14 +78,18 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
   const { currentProfile } = useCurrentProfile();
 
-  const otherProfileEntry = chatRoom.profile_to_chat_rooms.find(
-    (p) => currentProfile && p.profile.id !== currentProfile.id
-  );
-  const myProfileEntry = chatRoom.profile_to_chat_rooms.find(
-    (p) => currentProfile && p.profile.id === currentProfile.id
+  const profileIdToProfileEntryMap = useMemo(
+    () =>
+      chatRoom.profile_to_chat_rooms?.reduce((acc, profileToChatRoom) => {
+        acc[profileToChatRoom.profile.id] = profileToChatRoom;
+        return acc;
+      }, {} as Record<string, ChatRoom["profile_to_chat_rooms"][number]>),
+    [chatRoom.profile_to_chat_rooms]
   );
 
-  const otherProfile = otherProfileEntry?.profile;
+  const myProfileEntry = currentProfile
+    ? profileIdToProfileEntryMap[currentProfile.id]
+    : null;
 
   const [idCap, setIdCap] = useState(DEFAULT_ID_CAP);
   const [{ data: messagesData, fetching: fetchingMessages }] = useMessagesQuery(
@@ -196,9 +202,6 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
     promiseQueue.enqueue(promise);
   }, [message, chatRoom.id, currentProfile, sendMessage]);
 
-  const { first_name, last_name } = otherProfile?.user ?? {};
-  const image = otherProfile?.profile_listing?.profile_listing_image?.image;
-
   const markLatestMessageAsRead = useCallback(async () => {
     if (!myProfileEntry) return;
     const latestMessageByOther = messagesList.find(
@@ -250,6 +253,23 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
     prevLastMessageIdByOther,
   ]);
 
+  // Chat topbar
+  const humanNames =
+    chatRoom.profile_to_chat_rooms
+      ?.filter(
+        (ptcr) =>
+          ptcr.profile.user.type === User_Type_Enum.User &&
+          ptcr.profile.id !== currentProfile?.id
+      )
+      .map((p) => `${p.profile.user.first_name} ${p.profile.user.last_name}`) ??
+    [];
+
+  const chatRoomName = humanNames.join(", ");
+
+  const chatImageUrl = "Lel";
+  const chatLink = "Lel";
+  const chatHeadline = "";
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-md">
       <div className="flex h-16 shrink-0 items-center bg-olive-50 px-4 shadow-sm">
@@ -263,24 +283,24 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             <BxChevronLeft className="h-10 w-10" />
           </button>
         )}
-        <Link href={`/space/${spaceSlug}/profile/${otherProfile?.id}`} passHref>
+        <Link href={`/space/${spaceSlug}/profile/${chatLink}`} passHref>
           <ProfileImage
-            src={image?.url}
+            src={chatImageUrl}
             className="mr-3 h-10 w-10 cursor-pointer"
           />
         </Link>
 
         <div>
-          <Text loading={!first_name} loadingWidthClassName="w-4">
-            {first_name} {last_name}
+          <Text loading={!chatRoomName} loadingWidthClassName="w-4">
+            {chatRoomName}
           </Text>
           <div></div>
           <Text
             variant="body2"
             className="text-gray-700"
-            loading={!otherProfile}
+            loading={!chatHeadline}
           >
-            {otherProfile?.profile_listing?.headline}
+            {chatHeadline}
           </Text>
         </div>
       </div>
@@ -363,6 +383,21 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
               const isLastMessage =
                 breakAfter || nextMessageIsFromDifferentSender;
 
+              const senderProfile =
+                profileIdToProfileEntryMap[message.sender_profile_id]
+                  ?.profile ?? null;
+
+              const firstName = senderProfile
+                ? senderProfile.user.first_name
+                : "Canopy";
+              const lastName = senderProfile
+                ? senderProfile?.user.last_name
+                : "Bot";
+              const profileImageUrl = senderProfile
+                ? senderProfile?.profile_listing?.profile_listing_image?.image
+                    .url
+                : "/assets/canopy_logo_circle.svg";
+
               messageJsxElement = (
                 <div className="flex items-end gap-3">
                   <div
@@ -375,12 +410,12 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                     {isLastMessage ? (
                       <div className="relative w-10 shrink-0">
                         <Tooltip
-                          content={`${first_name} ${last_name}`}
+                          content={`${firstName} ${lastName}`}
                           placement="left"
                         >
                           <div className="absolute bottom-0 h-10 w-10 shrink-0">
                             <ProfileImage
-                              src={image?.url}
+                              src={profileImageUrl}
                               className="h-10 w-10"
                             />
                           </div>
@@ -445,7 +480,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
       <div className="flex shrink-0 items-center gap-2 p-4 pl-16">
         <Textarea
-          placeholder={`Type a message to ${first_name}`}
+          placeholder={`Type a message to send...`}
           minRows={1}
           className="w-full"
           value={message}

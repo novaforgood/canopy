@@ -6,14 +6,14 @@ import { Text } from "../../../../components/atomic";
 import { ChatLayout } from "../../../../components/chats/ChatLayout";
 import { RenderChatRoom } from "../../../../components/chats/RenderChatRoom";
 import { ProfileImage } from "../../../../components/ProfileImage";
-import { useChatRoomSubscription } from "../../../../generated/graphql";
+import { useChatRoomQuery } from "../../../../generated/graphql";
 import { CustomPage } from "../../../../types";
 
 const NewChatPage: CustomPage = () => {
   const router = useRouter();
   const chatRoomId = router.query.chatRoomId as string;
 
-  const [{ data: chatRoomData }] = useChatRoomSubscription({
+  const [{ data: chatRoomData }] = useChatRoomQuery({
     variables: { chat_room_id: chatRoomId },
   });
 

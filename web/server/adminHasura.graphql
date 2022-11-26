@@ -33,8 +33,11 @@ mutation UpsertUser(
   }
 }
 
-mutation InsertProfile($data: profile_insert_input!) {
-  insert_profile_one(object: $data) {
+mutation InsertProfile(
+  $data: profile_insert_input!
+  $on_conflict: profile_on_conflict
+) {
+  insert_profile_one(object: $data, on_conflict: $on_conflict) {
     id
     user_id
     space_id
@@ -111,6 +114,34 @@ mutation InsertConnectionRequest($data: connection_request_insert_input!) {
     receiver_profile_id
     created_at
     status
+  }
+}
+
+query GetProfiles($where: profile_bool_exp) {
+  profile(where: $where) {
+    id
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+    space {
+      id
+      name
+      slug
+    }
+    profile_listing {
+      id
+      headline
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+    }
   }
 }
 

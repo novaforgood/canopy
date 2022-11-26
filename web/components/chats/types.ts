@@ -1,4 +1,4 @@
-import { ChatRoomSubscription, MessagesQuery } from "../../generated/graphql";
+import { ChatRoomQuery, MessagesQuery } from "../../generated/graphql";
 
 export type ChatMessage = MessagesQuery["chat_message"][number];
-export type ChatRoom = ChatRoomSubscription["chat_room_by_pk"];
+export type ChatRoom = NonNullable<ChatRoomQuery["chat_room_by_pk"]>;
