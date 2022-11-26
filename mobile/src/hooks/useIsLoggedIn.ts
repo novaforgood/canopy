@@ -1,8 +1,7 @@
-import { useRecoilValue } from "recoil";
-
-import { sessionAtom } from "../lib/recoil";
+import { useAtom } from "jotai";
+import { sessionAtom } from "../lib/jotai";
 
 export function useIsLoggedIn() {
-  const session = useRecoilValue(sessionAtom);
-  return session !== null;
+  const [session] = useAtom(sessionAtom);
+  return !!session;
 }

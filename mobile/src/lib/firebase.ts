@@ -15,6 +15,8 @@ import {
   User,
   ErrorFn,
   CompleteFn,
+  signInWithCredential as firebaseSignInWithCredential,
+  AuthCredential,
 } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -24,10 +26,10 @@ import {
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: Constants.manifest?.extra?.["FIREBASE_API_KEY"],
-  authDomain: Constants.manifest?.extra?.["FIREBASE_AUTH_DOMAIN"],
-  projectId: Constants.manifest?.extra?.["FIREBASE_PROJECT_ID"],
-  appId: Constants.manifest?.extra?.["FIREBASE_APP_ID"],
+  apiKey: Constants.expoConfig?.extra?.["FIREBASE_API_KEY"],
+  authDomain: Constants.expoConfig?.extra?.["FIREBASE_AUTH_DOMAIN"],
+  projectId: Constants.expoConfig?.extra?.["FIREBASE_PROJECT_ID"],
+  appId: Constants.expoConfig?.extra?.["FIREBASE_APP_ID"],
 };
 
 // Initialize Firebase
@@ -51,6 +53,10 @@ export const onAuthStateChanged = (
 const googleOauthProvider = new GoogleAuthProvider();
 export const signInWithGoogle = () =>
   signInWithPopup(auth, googleOauthProvider);
+
+// Sign in with credential
+export const signInWithCredential = (credential: AuthCredential) =>
+  firebaseSignInWithCredential(auth, credential);
 
 // Sign out
 export const signOut = () => firebaseSignOut(auth);

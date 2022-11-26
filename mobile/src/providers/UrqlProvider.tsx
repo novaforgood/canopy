@@ -1,16 +1,16 @@
+import { useAtom } from "jotai";
 import { useMemo } from "react";
 
-import { useRecoilValue } from "recoil";
 import { Provider } from "urql";
+import { sessionAtom } from "../lib/jotai";
 
-import { sessionAtom } from "../lib/recoil";
 import { getUrqlClient } from "../lib/urql";
 
 export interface UrqlProviderProps {
   children: React.ReactNode;
 }
 export function UrqlProvider({ children }: UrqlProviderProps) {
-  const session = useRecoilValue(sessionAtom);
+  const [session] = useAtom(sessionAtom);
 
   const client = useMemo(
     () => getUrqlClient(session?.jwt ?? ""),

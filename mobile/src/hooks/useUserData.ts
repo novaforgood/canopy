@@ -1,12 +1,13 @@
+import { useAtom } from "jotai";
 import { useMemo } from "react";
 
 import { useRecoilValue } from "recoil";
 
 import { useUserQuery } from "../generated/graphql";
-import { sessionAtom } from "../lib/recoil";
+import { sessionAtom } from "../lib/jotai";
 
 export function useUserData() {
-  const session = useRecoilValue(sessionAtom);
+  const [session] = useAtom(sessionAtom);
   const [{ data, fetching }] = useUserQuery({
     variables: { id: session?.userId ?? "" },
   });

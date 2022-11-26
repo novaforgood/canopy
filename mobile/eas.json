@@ -1,0 +1,45 @@
+{
+  "cli": {
+    "version": ">= 0.34.1"
+  },
+  "build": {
+    "production": {
+      "channel": "production",
+      "env": {
+        "APP_NAME": "Canopy",
+        "APP_ID": "com.joincanopy.app",
+        "APP_SCHEME": "joincanopy"
+      }
+    },
+    "staging": {
+      "channel": "staging",
+      "env": {
+        "APP_NAME": "Canopy Staging",
+        "APP_ID": "staging.com.joincanopy.app",
+        "APP_SCHEME": "joincanopystaging"
+      }
+    },
+    "development": {
+      "channel": "default",
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_NAME": "Canopy Dev",
+        "APP_ID": "dev.com.joincanopy.app",
+        "APP_SCHEME": "joincanopydev"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6444551058"
+      }
+    },
+    "staging": {
+      "ios": {
+        "ascAppId": "6444701109"
+      }
+    }
+  }
+}
