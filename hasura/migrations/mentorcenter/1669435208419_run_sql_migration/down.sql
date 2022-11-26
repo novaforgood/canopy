@@ -1,0 +1,5 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- INSERT INTO user_type (value, description) VALUES
+-- ('User', 'Normal user'),
+-- ('Bot', 'Bot user');
