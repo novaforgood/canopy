@@ -15,7 +15,7 @@ export function UserSettings() {
   const router = useRouter();
 
   const [settings, setSettings] = useState<UserAttributes>();
-  const { mustSave, setMustSave } = useSaveChangesState();
+  const { localMustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
     if (userAttributes) {
@@ -49,7 +49,7 @@ export function UserSettings() {
       />
       <div className="h-8"></div>
       <Button
-        disabled={!mustSave}
+        disabled={!localMustSave}
         rounded
         onClick={() => {
           if (!settings) return;

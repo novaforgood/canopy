@@ -17,7 +17,7 @@ export function ProfileSettings() {
 
   const { userData } = useUserData();
   const [settings, setSettings] = useState<ProfileAttributes>();
-  const { mustSave, setMustSave } = useSaveChangesState();
+  const { localMustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
     if (profileAttributes) {
@@ -38,7 +38,7 @@ export function ProfileSettings() {
 
       <div className="h-12"></div>
       <CheckBox
-        label={`Opt in to matching`}
+        label={`Opt in to matching (admins can periodically match you with other members in a group chat)`}
         checked={settings?.enableMatching ?? false}
         onChange={(newVal) => {
           setMustSave(true);
@@ -50,7 +50,7 @@ export function ProfileSettings() {
       />
       <div className="h-8"></div>
       <Button
-        disabled={!mustSave}
+        disabled={!localMustSave}
         rounded
         onClick={() => {
           if (!settings) return;

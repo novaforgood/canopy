@@ -31,6 +31,8 @@ export function CatchUnsavedChanges() {
           // See https://github.com/zeit/next.js/issues/2476#issuecomment-573460710
           // eslint-disable-next-line no-throw-literal
           throw "Abort route change. Please ignore this error.";
+        } else {
+          setMustSave(false);
         }
       }
     };
