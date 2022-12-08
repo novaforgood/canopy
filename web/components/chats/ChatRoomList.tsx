@@ -16,7 +16,7 @@ import { Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
 import { Responsive } from "../layout/Responsive";
 import { SidePadding } from "../layout/SidePadding";
-import { Navbar } from "../Navbar";
+import { Navbar } from "../navbar/Navbar";
 import { ProfileImage } from "../ProfileImage";
 
 function useTimeFormatter() {

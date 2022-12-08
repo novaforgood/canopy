@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Button, Text } from "../../../../components/atomic";
 import { EditProfileListing } from "../../../../components/EditProfileListing";
 import { SidePadding } from "../../../../components/layout/SidePadding";
-import { Navbar } from "../../../../components/Navbar";
+import { Navbar } from "../../../../components/navbar/Navbar";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { useUserData } from "../../../../hooks/useUserData";

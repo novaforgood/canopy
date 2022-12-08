@@ -3,7 +3,12 @@ import { useCallback, useMemo } from "react";
 import {
   Profile_Role_Enum,
   useAllProfilesOfUserQuery,
+  useUpdateProfileAttributesMutation,
 } from "../generated/graphql";
+import {
+  ProfileAttributes,
+  resolveProfileAttributes,
+} from "../lib/profileAttributes";
 
 import { useQueryParam } from "./useQueryParam";
 import { useUserData } from "./useUserData";
@@ -35,18 +40,42 @@ export function useCurrentProfile() {
     [currentProfile]
   );
 
+  const [_, _updateProfileAttributes] = useUpdateProfileAttributesMutation();
+
+  const updateProfileAttributes = useCallback(
+    async (attributes: Partial<ProfileAttributes>) => {
+      if (!currentProfile) {
+        throw new Error("No profile data");
+      }
+      return _updateProfileAttributes({
+        changes: attributes,
+        profile_id: currentProfile.id,
+      });
+    },
+    [_updateProfileAttributes, currentProfile]
+  );
+
+  const profileAttributes = useMemo(
+    () => resolveProfileAttributes(currentProfile?.attributes ?? {}),
+    [currentProfile]
+  );
+
   return useMemo(
     () => ({
       currentProfile,
       currentProfileHasRole,
       fetchingCurrentProfile,
       refetchCurrentProfile,
+      profileAttributes,
+      updateProfileAttributes,
     }),
     [
       currentProfile,
       currentProfileHasRole,
       fetchingCurrentProfile,
+      profileAttributes,
       refetchCurrentProfile,
+      updateProfileAttributes,
     ]
   );
 }

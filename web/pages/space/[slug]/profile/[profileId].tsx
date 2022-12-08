@@ -12,7 +12,7 @@ import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/
 import { PageNotFound } from "../../../../components/error-screens/PageNotFound";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
 import { SidePadding } from "../../../../components/layout/SidePadding";
-import { Navbar } from "../../../../components/Navbar";
+import { Navbar } from "../../../../components/navbar/Navbar";
 import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
 import { IntroduceModal } from "../../../../components/profile-page/IntroduceModal";
 import { MessageModal } from "../../../../components/profile-page/MessageModal";

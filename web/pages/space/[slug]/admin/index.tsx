@@ -14,7 +14,7 @@ import { Button, Select, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { Responsive } from "../../../../components/layout/Responsive";
 import { SidePadding } from "../../../../components/layout/SidePadding";
-import { Navbar } from "../../../../components/Navbar";
+import { Navbar } from "../../../../components/navbar/Navbar";
 import { RoundedCard } from "../../../../components/RoundedCard";
 import { BxLink, BxRightArrowAlt } from "../../../../generated/icons/regular";
 import { BxsCog, BxsReport } from "../../../../generated/icons/solid";

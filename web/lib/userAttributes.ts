@@ -1,6 +1,13 @@
 export type UserAttributes = {
   disableEmailNotifications: boolean;
 };
-export const DEFAULT_USER_ATTRIBUTES: UserAttributes = {
+const DEFAULT_USER_ATTRIBUTES: UserAttributes = {
   disableEmailNotifications: false,
 };
+
+export function resolveUserAttributes(attrs: Partial<UserAttributes>) {
+  return {
+    ...DEFAULT_USER_ATTRIBUTES,
+    ...attrs,
+  };
+}
