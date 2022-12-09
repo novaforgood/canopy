@@ -1,0 +1,2 @@
+CREATE TABLE "public"."chat_intro" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "created_at" timestamptz NOT NULL DEFAULT now(), "group_size" integer NOT NULL, "num_groups_created" integer NOT NULL, "space_id" uuid NOT NULL, "creator_profile_id" uuid NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("creator_profile_id") REFERENCES "public"."profile"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("space_id") REFERENCES "public"."space"("id") ON UPDATE restrict ON DELETE restrict);
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

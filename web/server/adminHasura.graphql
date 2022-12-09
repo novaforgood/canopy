@@ -131,6 +131,11 @@ query GetProfiles($where: profile_bool_exp) {
       name
       slug
     }
+    flattened_profile_roles {
+      id
+      profile_id
+      profile_role
+    }
     profile_listing {
       id
       headline
@@ -173,5 +178,16 @@ query GetUnreadMessagesCounts {
         }
       }
     }
+  }
+}
+
+mutation InsertChatIntro($data: chat_intro_insert_input!) {
+  insert_chat_intro_one(object: $data) {
+    id
+    created_at
+    creator_profile_id
+    group_size
+    num_groups_created
+    space_id
   }
 }

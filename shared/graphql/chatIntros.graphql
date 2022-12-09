@@ -10,3 +10,39 @@ query AggregateProfiles($attributes_filter: jsonb, $space_id: uuid!) {
     }
   }
 }
+
+query ChatIntros($space_id: uuid!) {
+  chat_intro(where: { space_id: { _eq: $space_id } }) {
+    id
+    created_at
+    creator_profile_id
+    group_size
+    num_groups_created
+    space_id
+    creator_profile {
+      id
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+      user {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+}
+
+query ChatIntroData($space_id: uuid!) {
+  chat_intro_data(where: { chat_intro: { space_id: { _eq: $space_id } } }) {
+    chat_intro_id
+    num_rooms_with_replies
+  }
+}
