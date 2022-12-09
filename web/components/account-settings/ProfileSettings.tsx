@@ -39,12 +39,12 @@ export function ProfileSettings() {
       <div className="h-12"></div>
       <CheckBox
         label={`Opt in to matching (admins can periodically match you with other members in a group chat)`}
-        checked={settings?.enableMatching ?? false}
+        checked={settings?.enableChatIntros ?? false}
         onChange={(newVal) => {
           setMustSave(true);
           setSettings((prev) => ({
             ...prev,
-            enableMatching: newVal,
+            enableChatIntros: newVal,
           }));
         }}
       />

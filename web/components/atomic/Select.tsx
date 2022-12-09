@@ -14,7 +14,7 @@ interface SelectProps<T> {
   className?: string;
   placeholder?: string;
 }
-export const Select = <T extends string | Date>({
+export const Select = <T extends string | Date | number>({
   options,
   value,
   onSelect = () => {},
@@ -48,10 +48,11 @@ export const Select = <T extends string | Date>({
       <Listbox
         value={value}
         onChange={(selectedValue) => {
-          if (!selectedValue) {
+          if (selectedValue === value) {
             onSelect(null);
+          } else {
+            onSelect(selectedValue);
           }
-          onSelect(selectedValue);
         }}
       >
         {({ open }) => (

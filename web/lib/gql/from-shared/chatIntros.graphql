@@ -1,0 +1,12 @@
+query AggregateProfiles($attributes_filter: jsonb, $space_id: uuid!) {
+  profile_aggregate(
+    where: {
+      attributes: { _contains: $attributes_filter }
+      space_id: { _eq: $space_id }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

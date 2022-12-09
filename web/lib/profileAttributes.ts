@@ -1,8 +1,8 @@
 export type ProfileAttributes = {
-  enableMatching: boolean;
+  enableChatIntros: boolean;
 };
 const DEFAULT_PROFILE_ATTRIBUTES: ProfileAttributes = {
-  enableMatching: false,
+  enableChatIntros: false,
 };
 
 export function resolveProfileAttributes(attrs: Partial<ProfileAttributes>) {

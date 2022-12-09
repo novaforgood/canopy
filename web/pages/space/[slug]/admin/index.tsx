@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
+import { ChatIntroductions } from "../../../../components/admin/ChatIntroductions";
 import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
 import { EditProfileTags } from "../../../../components/admin/edit-profile-tags/EditProfileTags";
 import { EditHomepage } from "../../../../components/admin/EditHomepage";
@@ -16,7 +17,11 @@ import { Responsive } from "../../../../components/layout/Responsive";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
 import { RoundedCard } from "../../../../components/RoundedCard";
-import { BxLink, BxRightArrowAlt } from "../../../../generated/icons/regular";
+import {
+  BxLink,
+  BxRightArrowAlt,
+  BxTransfer,
+} from "../../../../generated/icons/regular";
 import { BxsCog, BxsReport } from "../../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
@@ -161,6 +166,14 @@ export default function AdminPage() {
             <Text variant="heading4">Invite Members</Text>
           </div>
           <InviteLinksList />
+        </RoundedCard>
+        <div className="h-10"></div>
+        <RoundedCard className="w-full">
+          <div className="flex items-center gap-2">
+            <BxTransfer className="h-7 w-7" />
+            <Text variant="heading4">Chat Introductions</Text>
+          </div>
+          <ChatIntroductions />
         </RoundedCard>
         <div className="h-10"></div>
         <ManageSpace />
