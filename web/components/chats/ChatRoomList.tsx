@@ -1,23 +1,48 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import classNames from "classnames";
-import { format, formatDistanceStrict } from "date-fns";
+import { formatDistanceStrict } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useAllChatRoomsSubscription } from "../../generated/graphql";
+import {
+  AllChatRoomsSubscription,
+  useAllChatRoomsSubscription,
+  User_Type_Enum,
+} from "../../generated/graphql";
 import { BxMessageAdd } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useQueryParam } from "../../hooks/useQueryParam";
-import { getTimeRelativeToNow } from "../../lib";
 import { Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
-import { Responsive } from "../layout/Responsive";
-import { SidePadding } from "../layout/SidePadding";
-import { Navbar } from "../navbar/Navbar";
 import { ProfileImage } from "../ProfileImage";
+
+import { ChatRoomImage } from "./ChatRoomImage";
+
+type ProfileToChatRoom = NonNullable<
+  AllChatRoomsSubscription["chat_room"][number]
+>["profile_to_chat_rooms"][number];
+
+export function getOtherHumanChatParticipants(
+  ptcrs: ProfileToChatRoom[],
+  currentProfileId: string
+) {
+  return ptcrs
+    .filter(
+      (ptcr) =>
+        ptcr.profile.user.type === User_Type_Enum.User &&
+        ptcr.profile.id !== currentProfileId
+    )
+    .map((ptcr) => ({
+      fullName: `${ptcr.profile.user.first_name} ${ptcr.profile.user.last_name}`,
+      firstName: ptcr.profile.user.first_name,
+      lastName: ptcr.profile.user.last_name,
+      headline: ptcr.profile.profile_listing?.headline,
+      profileImage: ptcr.profile.profile_listing?.profile_listing_image?.image,
+      profileId: ptcr.profile.id,
+    }));
+}
 
 function useTimeFormatter() {
   const [timeNow, setTimeNow] = useState(new Date());
@@ -69,6 +94,7 @@ export function ChatRoomList() {
   });
 
   const chatRoomId = useQueryParam("chatRoomId", "string");
+  const spaceSlug = useQueryParam("slug", "string");
 
   const chatRooms = data?.chat_room ?? [];
 
@@ -109,6 +135,13 @@ export function ChatRoomList() {
             return null;
           }
 
+          const otherHumans = getOtherHumanChatParticipants(
+            room.profile_to_chat_rooms,
+            currentProfile?.id ?? ""
+          );
+
+          const chatTitle = otherHumans.map((h) => h.fullName).join(", ");
+
           const { first_name, last_name } = otherProfileEntry.profile.user;
           const image =
             otherProfileEntry.profile.profile_listing?.profile_listing_image
@@ -139,12 +172,16 @@ export function ChatRoomList() {
                 })}
               >
                 <div className="flex w-full items-center gap-4">
-                  <ProfileImage src={image?.url} className="h-10 w-10" />
+                  <ChatRoomImage
+                    className="h-11 w-11"
+                    profiles={otherHumans.map((p) => ({
+                      imageUrl: p.profileImage?.url,
+                      profileUrl: `/space/${spaceSlug}/profile/${p.profileId}`,
+                    }))}
+                  />
 
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <Text>
-                      {first_name} {last_name}
-                    </Text>
+                    <Text>{chatTitle}</Text>
                     <div className="flex w-full items-center">
                       <Text
                         className={classNames({

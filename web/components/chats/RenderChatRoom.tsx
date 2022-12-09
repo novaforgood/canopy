@@ -8,6 +8,10 @@ import toast from "react-hot-toast";
 
 import { makeListSentence } from "../../common/lib/words";
 import {
+  ChatRoomQuery,
+  Chat_Message,
+  Chat_Room,
+  useChatRoomQuery,
   useMessagesQuery,
   useMessagesStreamSubscription,
   User_Type_Enum,
@@ -25,14 +29,41 @@ import { IconButton } from "../buttons/IconButton";
 import { ProfileImage } from "../ProfileImage";
 import { Tooltip } from "../tooltips";
 
+import { ChatProfileImage } from "./ChatProfileImage";
+import { ChatRoomImage } from "./ChatRoomImage";
 import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "./constants";
-import { ChatMessage, ChatRoom } from "./types";
+
+// Query specific types
+type ProfileToChatRoom = NonNullable<
+  ChatRoomQuery["chat_room_by_pk"]
+>["profile_to_chat_rooms"][number];
+type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
 
 const promiseQueue = new PromiseQueue();
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 const ONE_DAY = 1000 * 60 * 60 * 24;
+
+export function getOtherHumanChatParticipants(
+  ptcrs: ProfileToChatRoom[],
+  currentProfileId: string
+) {
+  return ptcrs
+    .filter(
+      (ptcr) =>
+        ptcr.profile.user.type === User_Type_Enum.User &&
+        ptcr.profile.id !== currentProfileId
+    )
+    .map((ptcr) => ({
+      fullName: `${ptcr.profile.user.first_name} ${ptcr.profile.user.last_name}`,
+      firstName: ptcr.profile.user.first_name,
+      lastName: ptcr.profile.user.last_name,
+      headline: ptcr.profile.profile_listing?.headline,
+      profileImage: ptcr.profile.profile_listing?.profile_listing_image?.image,
+      profileId: ptcr.profile.id,
+    }));
+}
 
 function formatDateConcisely(date: Date): string {
   const timeAgo = Math.abs(date.getTime() - Date.now());
@@ -59,13 +90,7 @@ function shouldBreak(
   return diff > FIVE_MINUTES;
 }
 
-export interface RenderChatRoomProps {
-  chatRoom: ChatRoom;
-}
-
-export function RenderChatRoom(props: RenderChatRoomProps) {
-  const { chatRoom } = props;
-
+export function RenderChatRoom() {
   const router = useRouter();
   const renderDesktopMode = useMediaQuery({
     showIfBiggerThan: "md",
@@ -74,17 +99,25 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const chatRoomId = useQueryParam("chatRoomId", "string");
   const baseRoute = `/space/${spaceSlug}/chat`;
 
+  const [{ data: chatRoomData }] = useChatRoomQuery({
+    pause: !chatRoomId,
+    variables: { chat_room_id: chatRoomId ?? "" },
+  });
+
+  const chatRoom = chatRoomData?.chat_room_by_pk;
+
   const [currentTime] = useState(new Date());
 
   const { currentProfile } = useCurrentProfile();
 
   const profileIdToProfileEntryMap = useMemo(
     () =>
-      chatRoom.profile_to_chat_rooms?.reduce((acc, profileToChatRoom) => {
+      chatRoom?.profile_to_chat_rooms?.reduce((acc, profileToChatRoom) => {
         acc[profileToChatRoom.profile.id] = profileToChatRoom;
         return acc;
-      }, {} as Record<string, ChatRoom["profile_to_chat_rooms"][number]>),
-    [chatRoom.profile_to_chat_rooms]
+      }, {} as Record<string, NonNullable<ChatRoomQuery["chat_room_by_pk"]>["profile_to_chat_rooms"][number]>) ??
+      {},
+    [chatRoom?.profile_to_chat_rooms]
   );
 
   const myProfileEntry = currentProfile
@@ -94,8 +127,9 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const [idCap, setIdCap] = useState(DEFAULT_ID_CAP);
   const [{ data: messagesData, fetching: fetchingMessages }] = useMessagesQuery(
     {
+      pause: !chatRoom,
       variables: {
-        chat_room_id: chatRoom.id,
+        chat_room_id: chatRoom?.id ?? "",
         limit: MESSAGES_PER_FETCH,
         id_cap: idCap,
       },
@@ -117,7 +151,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
       if (!message) {
         return;
       }
-      if (message.chat_room_id !== chatRoom.id) {
+      if (message.chat_room_id !== chatRoom?.id) {
         return;
       }
       if (message.id <= myProfileEntry.latest_read_chat_message_id) {
@@ -133,17 +167,18 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
         latest_read_chat_message_id: message.id,
       });
     },
-    [chatRoom.id, markAsRead, myProfileEntry]
+    [chatRoom?.id, markAsRead, myProfileEntry]
   );
 
   useMessagesStreamSubscription<void>({
+    pause: !chatRoom,
     variables: {
-      chat_room_id: chatRoom.id,
+      chat_room_id: chatRoom?.id ?? "",
       after: currentTime.toISOString(),
     },
   });
 
-  const firstMessageId = chatRoom.first_chat_message[0].id;
+  const firstMessageId = chatRoom?.first_chat_message[0].id;
 
   const minId = useMemo(() => {
     if (!messagesData) {
@@ -173,7 +208,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
       return;
     }
 
-    if (!chatRoom.id) {
+    if (!chatRoom?.id) {
       toast.error("No chat room id");
       return;
     }
@@ -200,7 +235,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
       .finally(() => {});
 
     promiseQueue.enqueue(promise);
-  }, [message, chatRoom.id, currentProfile, sendMessage]);
+  }, [message, chatRoom?.id, currentProfile, sendMessage]);
 
   const markLatestMessageAsRead = useCallback(async () => {
     if (!myProfileEntry) return;
@@ -254,21 +289,29 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   ]);
 
   // Chat topbar
-  const humanNames =
-    chatRoom.profile_to_chat_rooms
-      ?.filter(
-        (ptcr) =>
-          ptcr.profile.user.type === User_Type_Enum.User &&
-          ptcr.profile.id !== currentProfile?.id
-      )
-      .map((p) => `${p.profile.user.first_name} ${p.profile.user.last_name}`) ??
-    [];
+  const otherHumans = getOtherHumanChatParticipants(
+    chatRoom?.profile_to_chat_rooms ?? [],
+    currentProfile?.id ?? ""
+  );
+  const humanNames = otherHumans.map((p) => p.fullName);
 
   const chatRoomName = humanNames.join(", ");
 
-  const chatImageUrl = "Lel";
-  const chatLink = "Lel";
-  const chatHeadline = "";
+  const chatHeadline =
+    otherHumans.length == 1 ? otherHumans[0].headline : "Group Chat";
+
+  if (!chatRoom)
+    return (
+      <div className="flex h-full flex-col overflow-hidden rounded-md">
+        <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
+          <ProfileImage className="h-10 w-10" />
+
+          <Text loading={true} loadingWidthClassName="w-32">
+            Loading...
+          </Text>
+        </div>
+      </div>
+    );
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-md">
@@ -283,25 +326,32 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             <BxChevronLeft className="h-10 w-10" />
           </button>
         )}
-        <Link href={`/space/${spaceSlug}/profile/${chatLink}`} passHref>
-          <ProfileImage
-            src={chatImageUrl}
-            className="mr-3 h-10 w-10 cursor-pointer"
-          />
-        </Link>
+
+        <ChatRoomImage
+          clickable={true}
+          className="mr-3 h-10 w-10"
+          profiles={otherHumans.map((p) => ({
+            imageUrl: p.profileImage?.url,
+            profileUrl: `/space/${spaceSlug}/profile/${p.profileId}`,
+          }))}
+        />
 
         <div>
           <Text loading={!chatRoomName} loadingWidthClassName="w-4">
             {chatRoomName}
           </Text>
-          <div></div>
-          <Text
-            variant="body2"
-            className="text-gray-700"
-            loading={!chatHeadline}
-          >
-            {chatHeadline}
-          </Text>
+          {chatHeadline && (
+            <>
+              <div></div>
+              <Text
+                variant="body2"
+                className="text-gray-700"
+                loading={!chatHeadline}
+              >
+                {chatHeadline}
+              </Text>
+            </>
+          )}
         </div>
       </div>
 
@@ -387,16 +437,11 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                 profileIdToProfileEntryMap[message.sender_profile_id]
                   ?.profile ?? null;
 
-              const firstName = senderProfile
-                ? senderProfile.user.first_name
-                : "Canopy";
-              const lastName = senderProfile
-                ? senderProfile?.user.last_name
-                : "Bot";
-              const profileImageUrl = senderProfile
-                ? senderProfile?.profile_listing?.profile_listing_image?.image
-                    .url
-                : "/assets/canopy_logo_circle.svg";
+              const firstName = senderProfile.user.first_name;
+              const lastName = senderProfile?.user.last_name;
+              const profileImageUrl =
+                senderProfile?.profile_listing?.profile_listing_image?.image
+                  .url;
 
               messageJsxElement = (
                 <div className="flex items-end gap-3">
@@ -414,8 +459,9 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                           placement="left"
                         >
                           <div className="absolute bottom-0 h-10 w-10 shrink-0">
-                            <ProfileImage
+                            <ChatProfileImage
                               src={profileImageUrl}
+                              userType={senderProfile.user.type}
                               className="h-10 w-10"
                             />
                           </div>

@@ -127,7 +127,7 @@ export default applyMiddleware({
             {
               text: `Hello ${makeListSentence(
                 names
-              )}, you have been matched into a group! Feel free to introduce yourselves. Here is a conversation starter if it helps:\n\n${conversationStarter}`,
+              )},\n\nYou have been matched into a group! Feel free to introduce yourselves. Here is a conversation starter if it helps:\n\n${conversationStarter}`,
               sender_profile_id: canopyBotProfileId,
             },
           ],
