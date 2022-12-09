@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useAtom } from "jotai";
-import { promise } from "zod";
 
 import { mustSaveAtom } from "../lib/jotai";
 
 export function useSaveChangesState() {
-  const [mustSave, setMustSave] = useAtom(mustSaveAtom);
+  const [mustSave, _setMustSave] = useAtom(mustSaveAtom);
+  const [localMustSave, _setLocalMustSave] = useState(false);
+
+  const setMustSave = useCallback(
+    (value: boolean) => {
+      _setMustSave(value);
+      _setLocalMustSave(value);
+    },
+    [_setMustSave, _setLocalMustSave]
+  );
 
   // Set mustSaveChanges to false on mount
   useEffect(() => {
@@ -34,10 +42,11 @@ export function useSaveChangesState() {
 
   return useMemo(
     () => ({
+      localMustSave,
       mustSave,
       setMustSave,
       validateChangesSaved,
     }),
-    [mustSave, setMustSave, validateChangesSaved]
+    [localMustSave, mustSave, setMustSave, validateChangesSaved]
   );
 }

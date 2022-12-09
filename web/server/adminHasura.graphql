@@ -33,8 +33,11 @@ mutation UpsertUser(
   }
 }
 
-mutation InsertProfile($data: profile_insert_input!) {
-  insert_profile_one(object: $data) {
+mutation InsertProfile(
+  $data: profile_insert_input!
+  $on_conflict: profile_on_conflict
+) {
+  insert_profile_one(object: $data, on_conflict: $on_conflict) {
     id
     user_id
     space_id
@@ -114,6 +117,39 @@ mutation InsertConnectionRequest($data: connection_request_insert_input!) {
   }
 }
 
+query GetProfiles($where: profile_bool_exp) {
+  profile(where: $where) {
+    id
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+    space {
+      id
+      name
+      slug
+    }
+    flattened_profile_roles {
+      id
+      profile_id
+      profile_role
+    }
+    profile_listing {
+      id
+      headline
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+    }
+  }
+}
+
 query GetUnreadMessagesCounts {
   profile(
     where: { unread_messages_counts: { unread_messages_count: { _gt: 0 } } }
@@ -142,5 +178,16 @@ query GetUnreadMessagesCounts {
         }
       }
     }
+  }
+}
+
+mutation InsertChatIntro($data: chat_intro_insert_input!) {
+  insert_chat_intro_one(object: $data) {
+    id
+    created_at
+    creator_profile_id
+    group_size
+    num_groups_created
+    space_id
   }
 }

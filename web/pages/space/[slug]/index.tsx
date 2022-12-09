@@ -8,7 +8,7 @@ import { Button, Text } from "../../../components/atomic";
 import { PageNotFound } from "../../../components/error-screens/PageNotFound";
 import { SidePadding } from "../../../components/layout/SidePadding";
 import { Metadata } from "../../../components/Metadata";
-import { Navbar } from "../../../components/Navbar";
+import { Navbar } from "../../../components/navbar/Navbar";
 import { SpaceLandingPage } from "../../../components/space-homepage/SpaceLandingPage";
 import { SpaceSplashPage } from "../../../components/space-homepage/SpaceSplashPage";
 import {

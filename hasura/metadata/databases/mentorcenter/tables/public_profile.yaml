@@ -60,6 +60,7 @@ insert_permissions:
               - user_id:
                   _eq: X-Hasura-User-Id
       columns:
+        - attributes
         - created_at
         - space_id
         - user_id
@@ -80,6 +81,7 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - attributes
         - created_at
         - id
         - space_id
@@ -91,3 +93,14 @@ select_permissions:
                 user_id:
                   _eq: X-Hasura-User-Id
       allow_aggregations: true
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - attributes
+      filter:
+        _or:
+          - user:
+              id:
+                _eq: X-Hasura-User-Id
+      check: null

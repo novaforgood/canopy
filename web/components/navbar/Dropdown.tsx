@@ -4,34 +4,22 @@ import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
-import {
-  Profile_Role_Enum,
-  useAllProfilesOfUserQuery,
-} from "../generated/graphql";
+import { useAllProfilesOfUserQuery } from "../../generated/graphql";
 import {
   BxCaretDown,
-  BxCog,
   BxLogIn,
   BxLogOut,
   BxTransfer,
-} from "../generated/icons/regular";
-import {
-  BxsAddToQueue,
-  BxsCog,
-  BxsUser,
-  BxsUserAccount,
-  BxsWrench,
-} from "../generated/icons/solid";
-import { useCurrentProfile } from "../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../hooks/useCurrentSpace";
-import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
-import { useQueryParam } from "../hooks/useQueryParam";
-import { useUserData } from "../hooks/useUserData";
-import { signOut } from "../lib/firebase";
-import { LocalStorage } from "../lib/localStorage";
-
-import { Text } from "./atomic";
-import { ProfileImage } from "./ProfileImage";
+} from "../../generated/icons/regular";
+import { BxsCog, BxsUser } from "../../generated/icons/solid";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
+import { useQueryParam } from "../../hooks/useQueryParam";
+import { useUserData } from "../../hooks/useUserData";
+import { signOut } from "../../lib/firebase";
+import { LocalStorage } from "../../lib/localStorage";
+import { Text } from "../atomic";
+import { ProfileImage } from "../ProfileImage";
 
 export function Dropdown() {
   const { userData } = useUserData();
@@ -135,11 +123,17 @@ export function Dropdown() {
                           <button
                             className={styles}
                             onClick={() => {
-                              router.push("/settings");
+                              if (spaceSlug) {
+                                router.push(
+                                  `/space/${spaceSlug}/account/settings`
+                                );
+                              } else {
+                                router.push("/settings");
+                              }
                             }}
                           >
                             <BxsCog className="mr-2 h-5 w-5" />
-                            <Text variant="body2">User settings</Text>
+                            <Text variant="body2">Account settings</Text>
                           </button>
                         );
                       }}

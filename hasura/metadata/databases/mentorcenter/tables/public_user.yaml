@@ -13,12 +13,13 @@ select_permissions:
   - role: public
     permission:
       columns:
-        - id
         - created_at
-        - first_name
-        - last_name
         - email
+        - first_name
+        - id
         - last_active_at
+        - last_name
+        - type
       filter:
         _or:
           - profiles:
@@ -35,6 +36,7 @@ select_permissions:
         - first_name
         - id
         - last_name
+        - type
       filter:
         _or:
           - id:

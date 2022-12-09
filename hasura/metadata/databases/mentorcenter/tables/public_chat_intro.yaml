@@ -1,0 +1,38 @@
+table:
+  name: chat_intro
+  schema: public
+object_relationships:
+  - name: creator_profile
+    using:
+      foreign_key_constraint_on: creator_profile_id
+  - name: space
+    using:
+      foreign_key_constraint_on: space_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - group_size
+        - num_groups_created
+        - created_at
+        - creator_profile_id
+        - id
+        - space_id
+      filter:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+      allow_aggregations: true

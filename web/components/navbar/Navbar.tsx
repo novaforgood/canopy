@@ -8,32 +8,32 @@ import { useRouter } from "next/router";
 import {
   Profile_Role_Enum,
   useAllChatRoomsSubscription,
-} from "../generated/graphql";
+} from "../../generated/graphql";
 import {
   BxMenu,
   BxMessage,
   BxMessageDetail,
   BxX,
-} from "../generated/icons/regular";
-import { BxsCog, BxsHome, BxsWrench } from "../generated/icons/solid";
-import { useCurrentProfile } from "../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../hooks/useCurrentSpace";
-import { useMediaQuery } from "../hooks/useMediaQuery";
-import { useQueryParam } from "../hooks/useQueryParam";
-import { useUserData } from "../hooks/useUserData";
-import { signOut } from "../lib/firebase";
-import { notificationsCountAtom } from "../lib/jotai";
-import { LocalStorage } from "../lib/localStorage";
+} from "../../generated/icons/regular";
+import { BxsCog, BxsHome, BxsWrench } from "../../generated/icons/solid";
+import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { useQueryParam } from "../../hooks/useQueryParam";
+import { useUserData } from "../../hooks/useUserData";
+import { signOut } from "../../lib/firebase";
+import { notificationsCountAtom } from "../../lib/jotai";
+import { LocalStorage } from "../../lib/localStorage";
+import { Button, Text } from "../atomic";
+import { IconButton } from "../buttons/IconButton";
+import { Responsive } from "../layout/Responsive";
+import { SidePadding } from "../layout/SidePadding";
+import { LoadingPlaceholderRect } from "../LoadingPlaceholderRect";
+import { ProfileImage } from "../ProfileImage";
+import { SpaceDropdown } from "../SpaceDropdown";
+import { FadeTransition } from "../transitions/FadeTransition";
 
-import { Button, Text } from "./atomic";
-import { IconButton } from "./buttons/IconButton";
 import { Dropdown } from "./Dropdown";
-import { Responsive } from "./layout/Responsive";
-import { SidePadding } from "./layout/SidePadding";
-import { LoadingPlaceholderRect } from "./LoadingPlaceholderRect";
-import { ProfileImage } from "./ProfileImage";
-import { SpaceDropdown } from "./SpaceDropdown";
-import { FadeTransition } from "./transitions/FadeTransition";
 
 function MobileNavbar() {
   const router = useRouter();
@@ -160,10 +160,14 @@ function MobileNavbar() {
 
             <button
               onClick={() => {
-                navigate("/settings");
+                if (spaceSlug) {
+                  navigate(`/space/${spaceSlug}/account/settings`);
+                } else {
+                  navigate("/settings");
+                }
               }}
             >
-              User settings
+              Account settings
             </button>
 
             <button

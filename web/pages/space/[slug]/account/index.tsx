@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { Button, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
 import { SidePadding } from "../../../../components/layout/SidePadding";
-import { Navbar } from "../../../../components/Navbar";
+import { Navbar } from "../../../../components/navbar/Navbar";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { RoundedCard } from "../../../../components/RoundedCard";
 import {

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { Button, Text } from "../../../../components/atomic";
 import { ChatLayout } from "../../../../components/chats/ChatLayout";
 import { SidePadding } from "../../../../components/layout/SidePadding";
-import { Navbar } from "../../../../components/Navbar";
+import { Navbar } from "../../../../components/navbar/Navbar";
 import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSplashPage";
 import {
   BxChevronLeft,
