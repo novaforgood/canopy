@@ -56,6 +56,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import splashImage from "../assets/images/splash.png";
+import { useUserData } from "./hooks/useUserData";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -150,7 +151,7 @@ const isTapInsideComponent = (target: any, nestedViewRef: any): boolean => {
 
 function NavDrawer() {
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
-
+  const { userData } = useUserData();
   const drawerRef = useRef(null);
   return (
     <Animated.View
@@ -217,6 +218,9 @@ function NavDrawer() {
                   <BxX height={32} width={32} color="black" />
                 </TouchableOpacity>
               </Box>
+              <Text>
+                {userData?.first_name} {userData?.last_name}
+              </Text>
               <Box px={4} pt={4}>
                 <Button
                   variant="outline"

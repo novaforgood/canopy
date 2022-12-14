@@ -372,6 +372,12 @@ query ProfileById($profile_id: uuid!, $is_logged_in: Boolean!) {
   ) @include(if: $is_logged_in) {
     id
     chat_room_id
+    chat_room {
+      id
+      profile_to_chat_rooms {
+        id
+      }
+    }
   }
 }
 

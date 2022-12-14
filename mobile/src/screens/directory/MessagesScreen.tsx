@@ -58,9 +58,10 @@ export function MessagesScreen() {
 
   const { currentProfile } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
-  const [{ data, fetching, error }] = useAllChatRoomsSubscription({
-    variables: { profile_id: currentProfile?.id ?? "" },
-  });
+  const [{ data, fetching, error }, refetchChatRooms] =
+    useAllChatRoomsSubscription({
+      variables: { profile_id: currentProfile?.id ?? "" },
+    });
 
   // const chatRoomId = useQueryParam("chatRoomId", "string");
 
@@ -70,7 +71,23 @@ export function MessagesScreen() {
     return <LoadingSpinner />;
   }
   if (error) {
-    return <Text>Error: {JSON.stringify(error)}</Text>;
+    return (
+      <Box p={4}>
+        <Text variant="body1" textAlign="center" mt={4}>
+          Could not load messages.
+        </Text>
+        <Button
+          variant="outline"
+          size="sm"
+          mt={4}
+          onPress={() => {
+            refetchChatRooms();
+          }}
+        >
+          Retry
+        </Button>
+      </Box>
+    );
   }
   return (
     <SafeAreaView>
