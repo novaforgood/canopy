@@ -21,6 +21,9 @@ import {
   makeApiFail,
   makeApiSuccess,
 } from "../../../server/response";
+import { sendEmail, TemplateId } from "../../../server/sendgrid";
+
+const HOST_URL = requireServerEnv("HOST_URL");
 
 const CONVERSATION_STARTERS = [
   "If you had to give a TED talk, what topic would it be on?",
@@ -109,7 +112,6 @@ export default applyMiddleware({
   if (profilesError || !profilesData?.profile) {
     throw makeApiError(profilesError?.message ?? "Profiles query error");
   }
-
   const allProfiles = profilesData.profile;
   if (allProfiles.length < groupSize) {
     throw makeApiFail(
@@ -127,6 +129,7 @@ export default applyMiddleware({
         space_id: spaceId,
         creator_profile_id: callerProfile.id,
         num_groups_created: profileGroups.length,
+        num_people_matched: allProfiles.length,
       },
     });
   if (insertChatIntroError) {
@@ -137,21 +140,21 @@ export default applyMiddleware({
     throw makeApiFail("No chat intro ID returned");
   }
 
-  const promises = profileGroups.map((group) => {
+  const promises = profileGroups.map(async (group) => {
     const names = group.map((profile) => `${profile.user.first_name}`);
     const conversationStarter =
       CONVERSATION_STARTERS[
         Math.floor(Math.random() * CONVERSATION_STARTERS.length)
       ];
 
-    return executeInsertChatRoomOneMutation({
+    const { error, data } = await executeInsertChatRoomOneMutation({
       data: {
         chat_messages: {
           data: [
             {
               text: `Hello ${makeListSentence(
                 names
-              )},\n\nYou have been matched into a group! Feel free to introduce yourselves. Here is a conversation starter if it helps:\n\n${conversationStarter}`,
+              )},\n\nYou have been matched into a group! Feel free to introduce yourselves. Here is a conversation starter:\n\n${conversationStarter}`,
               sender_profile_id: canopyBotProfileId,
             },
           ],
@@ -166,6 +169,38 @@ export default applyMiddleware({
           ],
         },
       },
+    });
+
+    if (error) {
+      throw makeApiError(error.message);
+    }
+
+    // Send email to each user in the group
+    return group.map(async (profile) => {
+      const otherMembers = group.filter((p) => p.id !== profile.id);
+      const otherMemberNames = makeListSentence(
+        otherMembers.map((p) => `${p.user.first_name}`)
+      );
+
+      await sendEmail({
+        templateId: TemplateId.ChatIntroNotification,
+        receiverProfileId: profile.id,
+        dynamicTemplateData({ space }) {
+          return {
+            groupMemberNames: otherMemberNames,
+            groupMemberProfiles: otherMembers.map((p) => ({
+              firstName: p.user.first_name ?? "",
+              lastName: p.user.last_name ?? "",
+              email: p.user.email,
+              headline: p.profile_listing?.headline ?? "",
+              profilePicUrl:
+                p.profile_listing?.profile_listing_image?.image.url ?? "",
+            })),
+
+            viewGroupChatUrl: `${HOST_URL}/space/${space.slug}/chat/${data?.insert_chat_room_one?.id}`,
+          };
+        },
+      });
     });
   });
 

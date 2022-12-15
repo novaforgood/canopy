@@ -12,11 +12,12 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - group_size
-        - num_groups_created
         - created_at
         - creator_profile_id
+        - group_size
         - id
+        - num_groups_created
+        - num_people_matched
         - space_id
       filter:
         _or:

@@ -15,6 +15,7 @@ type ButtonVariant = "primary" | "outline";
 
 type ButtonProps = React.ComponentPropsWithRef<typeof ButtonBase> & {
   variant?: ButtonVariant;
+  size?: "sm" | "md";
 };
 
 const VARIANT_STYLES: Record<
@@ -43,7 +44,7 @@ const VARIANT_STYLES: Record<
 
 export const Button = forwardRef<typeof ButtonBase, ButtonProps>(
   (props, ref) => {
-    const { variant = "primary", children, ...rest } = props;
+    const { variant = "primary", size = "md", children, ...rest } = props;
 
     const { buttonProps, textProps } = VARIANT_STYLES[variant];
     return (
@@ -53,8 +54,8 @@ export const Button = forwardRef<typeof ButtonBase, ButtonProps>(
         justifyContent="center"
         alignItems="center"
         ref={ref}
-        px={6}
-        py={3}
+        px={size === "md" ? 6 : 4}
+        py={size === "md" ? 3 : 1}
         borderWidth={1}
         borderRadius="md"
         {...buttonProps}

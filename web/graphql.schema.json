@@ -3074,6 +3074,22 @@
             "deprecationReason": null
           },
           {
+            "name": "num_people_matched",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space",
             "description": "An object relationship",
             "args": [],
@@ -3366,6 +3382,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -3493,6 +3521,18 @@
           },
           {
             "name": "num_groups_created",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Int_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -4369,6 +4409,18 @@
             "deprecationReason": null
           },
           {
+            "name": "num_people_matched",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space_id",
             "description": null,
             "args": [],
@@ -4441,6 +4493,18 @@
           },
           {
             "name": "num_groups_created",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
             "description": null,
             "args": [],
             "type": {
@@ -4548,6 +4612,18 @@
             "deprecationReason": null
           },
           {
+            "name": "num_people_matched",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space",
             "description": null,
             "type": {
@@ -4615,6 +4691,12 @@
             "deprecationReason": null
           },
           {
+            "name": "num_people_matched",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space_id",
             "description": "column name",
             "isDeprecated": false,
@@ -4642,6 +4724,18 @@
           },
           {
             "name": "num_groups_created",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
             "description": null,
             "args": [],
             "type": {
@@ -4686,6 +4780,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -4712,6 +4818,18 @@
           },
           {
             "name": "num_groups_created",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
             "description": null,
             "args": [],
             "type": {
@@ -4834,6 +4952,18 @@
             "deprecationReason": null
           },
           {
+            "name": "num_people_matched",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space_id",
             "description": null,
             "type": {
@@ -4878,6 +5008,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -4904,6 +5046,18 @@
           },
           {
             "name": "num_groups_created",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
             "description": null,
             "args": [],
             "type": {
@@ -4948,6 +5102,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -4974,6 +5140,18 @@
           },
           {
             "name": "num_groups_created",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "num_people_matched",
             "description": null,
             "args": [],
             "type": {

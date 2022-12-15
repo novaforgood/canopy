@@ -16,7 +16,7 @@ import { useAtom } from "jotai";
 import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
 import { SpaceNavigator } from "./SpaceNavigator";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
-import { ChatRoomScreen } from "../screens/ChatRoom";
+import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { Box } from "../components/atomic/Box";
 import { useTheme } from "@shopify/restyle";
 import { Theme } from "../theme";

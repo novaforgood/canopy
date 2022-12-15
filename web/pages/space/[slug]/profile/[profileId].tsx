@@ -134,10 +134,13 @@ const ProfilePage: CustomPage = () => {
                   className="flex items-center"
                   onClick={() => {
                     if (isLoggedIn) {
-                      const chatRoomId =
-                        profileData?.profile_to_chat_room?.[0]?.chat_room_id;
-                      if (chatRoomId) {
-                        router.push(`/space/${spaceSlug}/chat/${chatRoomId}`);
+                      const dmChatRoomId =
+                        profileData?.profile_to_chat_room?.find(
+                          (room) =>
+                            room.chat_room.profile_to_chat_rooms.length === 2
+                        )?.chat_room_id;
+                      if (dmChatRoomId) {
+                        router.push(`/space/${spaceSlug}/chat/${dmChatRoomId}`);
                       } else {
                         handlers.open();
                       }
