@@ -96,6 +96,7 @@ query SpaceBySlug($slug: String!) {
       space_id
       title
       listing_order
+      description
       deleted
     }
     space_tag_categories(
@@ -150,6 +151,7 @@ mutation CreateOwnerProfileInNewSpace(
         id
         space_id
         title
+        description
         deleted
       }
       space_cover_image {
@@ -341,6 +343,7 @@ query ProfileById($profile_id: uuid!, $is_logged_in: Boolean!) {
         space_listing_question {
           id
           title
+          description
         }
       }
       profile_listing_to_space_tags(
@@ -458,7 +461,7 @@ mutation UpsertSpaceProfileSchema(
     objects: $space_listing_questions
     on_conflict: {
       constraint: space_listing_question_pkey
-      update_columns: [char_count, listing_order, title, deleted]
+      update_columns: [char_count, listing_order, title, description, deleted]
     }
   ) {
     returning {
@@ -467,6 +470,7 @@ mutation UpsertSpaceProfileSchema(
       listing_order
       char_count
       title
+      description
       deleted
     }
   }
@@ -745,5 +749,47 @@ mutation UpdateSpaceTagCategory(
     title
     deleted
     rigid_select
+  }
+}
+
+mutation InsertAnnouncement($object: announcements_insert_input!) {
+  insert_announcements_one(object: $object) {
+    author_profile_id
+    created_at
+    deleted
+    id
+    content
+  }
+}
+
+query AnnouncementsBySpaceId($space_id: uuid!) {
+  announcements(
+    order_by: { created_at: desc }
+    where: { space_id: { _eq: $space_id } }
+  ) {
+    author_profile {
+      profile_listing {
+        profile_listing_image {
+          image {
+            url
+            id
+          }
+          id
+        }
+        id
+      }
+      user {
+        first_name
+        last_name
+        id
+      }
+      user_id
+      id
+    }
+    created_at
+    content
+    author_profile_id
+    deleted
+    id
   }
 }

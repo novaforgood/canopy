@@ -10,8 +10,9 @@ import {
   BxLogIn,
   BxLogOut,
   BxTransfer,
+  BxVolumeFull,
 } from "../../generated/icons/regular";
-import { BxsCog, BxsUser } from "../../generated/icons/solid";
+import { BxsCog, BxsMegaphone, BxsUser } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../hooks/useQueryParam";

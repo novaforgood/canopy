@@ -48,6 +48,8 @@ export function EditProfileFormat() {
     setMustSave,
   ]);
 
+  // console.log(currentSpace?.space_listing_questions)
+
   const [loading, setLoading] = useState(false);
   const [_, upsertSpaceProfileSchema] = useUpsertSpaceProfileSchemaMutation();
   const saveChanges = useCallback(async () => {

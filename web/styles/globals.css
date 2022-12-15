@@ -40,6 +40,37 @@
   margin-inline-end: 0px;
 }
 
+.ProseMirror h1 {
+  @apply text-heading4;
+  
+  display: block;
+  margin-block-start: 0.5rem;
+  margin-block-end: 0.5rem;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.ProseMirror h2 {
+  @apply text-subheading2;
+
+  display: block;
+  margin-block-start: 0.5rem;
+  margin-block-end: 0.5rem;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.ProseMirror ul {
+  list-style-type: circle;
+  padding-left: 10px;
+
+  /* display: block; */
+  margin-block-start: 0.5rem;
+  margin-block-end: 0.5rem;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
 /* Swiper */
 
 .swiper-pagination {
