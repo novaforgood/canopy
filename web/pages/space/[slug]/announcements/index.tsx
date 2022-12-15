@@ -71,15 +71,17 @@ const AnnouncementsPage: CustomPage = () => {
 
         <div className="flex w-full flex-col gap-8 md:flex-row-reverse md:items-start">
           {/* Make a new Announcement Post Button */}
-          {currentProfileHasRole(Profile_Role_Enum.Admin) && (
-            <Button
-              variant="primary"
-              className="mr-auto grow-0"
-              onClick={modalHandlers.open}
-            >
-              Make a new Post
-            </Button>
-          )}
+          <div className="min-h-1 w-60 grow-0">
+            {currentProfileHasRole(Profile_Role_Enum.Admin) && (
+              <Button
+                variant="primary"
+                className="grow-0"
+                onClick={modalHandlers.open}
+              >
+                Make a new Post
+              </Button>
+            )}
+          </div>
 
           {/* Announcement List */}
           <div className="grow">
