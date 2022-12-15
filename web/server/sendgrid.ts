@@ -45,48 +45,6 @@ type TemplateInfo = {
   };
 };
 
-// export async function sendAnnouncementEmail<T extends TemplateId>({
-//   templateId,
-//   dynamicTemplateData,
-//   spaceId,
-//   ccSender = false,
-// }: {
-//   spaceId: string;
-//   dynamicTemplateData: TemplateInfo[T];
-//   templateId: T;
-//   ccSender?: boolean;
-// }) {
-//   if (EMAILS_DISABLED) {
-//     return;
-//   }
-
-//   const a = await executeGetUserEmailsBySpaceIdQuery({
-//     _space_id: spaceId,
-//     _user_attr_filter: '{ "disableEmailNotifications": true }',
-//   });
-
-//   return sendgridMail
-//     .sendMultiple({
-//       from: {
-//         email: "connect@joincanopy.org",
-//         name: "Canopy",
-//       },
-//       cc: sender && ccSender ? [sender.email] : undefined,
-//       to: [receiver.email],
-//       templateId: templateId,
-//       dynamicTemplateData: {
-//         sender: sender ? sender : {},
-//         receiver: receiver,
-//         space: space,
-//         disableEmailNotificationsUrl: `${HOST_URL}/settings`,
-//         ...dynamicTemplateData,
-//       },
-//     })
-//     .catch((err) => {
-//       throw makeApiError(err.message);
-//     });
-// }
-
 export async function sendEmail<T extends TemplateId>({
   templateId,
   dynamicTemplateData,

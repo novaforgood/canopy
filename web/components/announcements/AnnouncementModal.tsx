@@ -18,10 +18,10 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
-  // Form Data
-  const [postContentHTML, setPostContentHTML] = useState("");
-  // GraphQL mutation
   const [_, insertMutation] = useInsertAnnouncementMutation();
+
+  // rich text editor content
+  const [postContentHTML, setPostContentHTML] = useState("");
 
   return (
     <ActionModal
@@ -47,8 +47,6 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
             payload: {
               space_id: currentSpace?.id,
               space_name: currentSpace?.name,
-              // super scuffed until we merge this logic into endpoint
-              // rly rly scuffed fuck
               announcement_data: {
                 timeCreated: new_announcement.created_at,
                 contentHTML: new_announcement.content,
