@@ -112,7 +112,6 @@ export default applyMiddleware({
   if (profilesError || !profilesData?.profile) {
     throw makeApiError(profilesError?.message ?? "Profiles query error");
   }
-
   const allProfiles = profilesData.profile;
   if (allProfiles.length < groupSize) {
     throw makeApiFail(
@@ -130,6 +129,7 @@ export default applyMiddleware({
         space_id: spaceId,
         creator_profile_id: callerProfile.id,
         num_groups_created: profileGroups.length,
+        num_people_matched: allProfiles.length,
       },
     });
   if (insertChatIntroError) {

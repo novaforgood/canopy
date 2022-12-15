@@ -3,6 +3,7 @@ query AggregateProfiles($attributes_filter: jsonb, $space_id: uuid!) {
     where: {
       attributes: { _contains: $attributes_filter }
       space_id: { _eq: $space_id }
+      user: { type: { _eq: User } }
     }
   ) {
     aggregate {
@@ -18,6 +19,7 @@ query ChatIntros($space_id: uuid!) {
     creator_profile_id
     group_size
     num_groups_created
+    num_people_matched
     space_id
     creator_profile {
       id

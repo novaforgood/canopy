@@ -72,18 +72,24 @@ export function ChatIntroductions() {
         id: "created_at",
         accessorFn: (row) => row.created_at,
         cell: (info) => new Date(info.getValue() as string).toLocaleString(),
-        header: () => <span>Time sent</span>,
+        header: () => <span>time sent</span>,
       },
       {
         id: "created_by",
         accessorFn: (row) =>
           `${row.creator_profile.user.first_name} ${row.creator_profile.user.last_name}`,
         cell: (info) => info.getValue(),
-        header: () => <span>Created by</span>,
+        header: () => <span>created by</span>,
+      },
+      {
+        id: "num_people_matched",
+        header: () => <span># people matched</span>,
+        accessorFn: (row) => row.num_people_matched,
+        cell: (info) => info.getValue(),
       },
       {
         id: "group_size",
-        header: () => <span>Group size</span>,
+        header: () => <span>group size</span>,
         accessorFn: (row) => row.group_size,
         cell: (info) => info.getValue(),
       },
