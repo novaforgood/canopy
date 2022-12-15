@@ -1,21 +1,9 @@
 import { z } from "zod";
 
 import { EmailType } from "../../../common/types";
-import {
-  executeGetInviteLinkQuery,
-  executeGetProfileQuery,
-  executeInsertConnectionRequestMutation,
-  executeInsertProfileMutation,
-  GetInviteLinkDocument,
-  Profile_Role_Enum,
-  Space_Invite_Link_Type_Enum,
-} from "../../../server/generated/serverGraphql";
+import { executeInsertConnectionRequestMutation } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
-import {
-  makeApiError,
-  makeApiFail,
-  makeApiSuccess,
-} from "../../../server/response";
+import { makeApiError, makeApiSuccess } from "../../../server/response";
 import { sendEmail, TemplateId } from "../../../server/sendgrid";
 
 const connectEmailSchema = z.object({

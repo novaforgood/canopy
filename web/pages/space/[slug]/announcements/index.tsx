@@ -1,0 +1,108 @@
+import { useDisclosure } from "@mantine/hooks";
+import { useRouter } from "next/router";
+import { AnnouncementProps } from "../../../../components/announcements/Announcement";
+import AnnouncementList from "../../../../components/announcements/AnnouncementList";
+import AnnouncementModal from "../../../../components/announcements/AnnouncementModal";
+import { Button, Text } from "../../../../components/atomic";
+import { SidePadding } from "../../../../components/layout/SidePadding";
+import { Navbar } from "../../../../components/navbar/Navbar";
+import {
+  AnnouncementsBySpaceIdQuery,
+  Profile_Role_Enum,
+  useAnnouncementsBySpaceIdQuery,
+} from "../../../../generated/graphql";
+import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
+import { CustomPage } from "../../../../types";
+
+// TODO: add placeholder for if space doesnt exist (or if you aren't logged in)
+
+// Turns query data into a list of more organized objects.
+function mapQueryDataToObjects(
+  queryData: AnnouncementsBySpaceIdQuery | undefined
+) {
+  // filter deleted posts
+  const filtered = queryData?.announcements.filter((entry) => !entry.deleted);
+
+  // map query data to AnnouncementProps
+  return filtered?.map(
+    (entry) =>
+      ({
+        timeCreated: new Date(entry.created_at),
+        author: {
+          first_name: entry.author_profile.user.first_name,
+          last_name: entry.author_profile.user.last_name,
+        },
+        contentHTML: entry.content,
+      } as AnnouncementProps)
+  );
+}
+
+const AnnouncementsPage: CustomPage = () => {
+  const { currentSpace } = useCurrentSpace();
+  const { currentProfileHasRole } = useCurrentProfile();
+
+  // announcements data
+  const [{ data: queryData }, refetchQuery] = useAnnouncementsBySpaceIdQuery({
+    variables: {
+      space_id: currentSpace?.id ?? "",
+    },
+  });
+
+  // "Create Announcement" Modal
+  const [modalOpen, modalHandlers] = useDisclosure(false);
+
+  return (
+    <div className="bg-gray-50">
+      {/* The Navbar */}
+      <Navbar />
+
+      <SidePadding className="min-h-screen">
+        <div className="h-20" />
+
+        {/* Title */}
+        <Text variant="heading3">Community-Wide Announcements</Text>
+        <div className="h-4" />
+        <Text variant="subheading2">
+          All messages from {currentSpace?.name} admins will be posted here.
+        </Text>
+
+        <div className="h-12" />
+
+        <div className="flex w-full flex-col gap-8 md:flex-row-reverse md:items-start">
+          {/* Make a new Announcement Post Button */}
+          {currentProfileHasRole(Profile_Role_Enum.Admin) && (
+            <Button
+              variant="primary"
+              className="mr-auto grow-0"
+              onClick={modalHandlers.open}
+            >
+              Make a new Post
+            </Button>
+          )}
+
+          {/* Announcement List */}
+          <div className="grow">
+            <AnnouncementList
+              announcements={mapQueryDataToObjects(queryData)}
+            />
+          </div>
+        </div>
+
+        <div className="h-20" />
+      </SidePadding>
+
+      {/* Modal for Creating an Announcement */}
+      <AnnouncementModal
+        isOpen={modalOpen}
+        closeCallback={modalHandlers.close}
+        actionCallback={() => {
+          refetchQuery();
+          modalHandlers.close();
+        }}
+      />
+    </div>
+  );
+};
+
+export default AnnouncementsPage;

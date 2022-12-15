@@ -191,3 +191,18 @@ mutation InsertChatIntro($data: chat_intro_insert_input!) {
     space_id
   }
 }
+
+query EmailsBySpaceId($_user_attr_filter: jsonb!, $_space_id: uuid!) {
+  profile(
+    where: {
+      user: { _not: { attributes: { _contains: $_user_attr_filter } } }
+      space: { id: { _eq: $_space_id } }
+    }
+  ) {
+    id
+    user {
+      id
+      email
+    }
+  }
+}

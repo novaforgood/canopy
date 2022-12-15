@@ -93,12 +93,19 @@ export function EnterResponses(props: EnterResponsesProps) {
         {spaceListingQuestions.map((question) => {
           return (
             <div
-              className="flex flex-col items-start mt-4 w-full sm:w-160"
+              className="mt-4 flex w-full flex-col items-start sm:w-160"
               key={question.id}
             >
-              <Text variant="subheading2" className="text-gray-600 font-bold">
+              <Text variant="subheading2" className="font-bold text-gray-600">
                 {question.title}
               </Text>
+
+              {question.description ? (
+                <Text variant="body2" className="mt-1 text-gray-500">
+                  {question.description}
+                </Text>
+              ) : null}
+
               <div className="h-4"></div>
               <div className="w-full">
                 <SimpleRichTextInput
