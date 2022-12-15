@@ -23,6 +23,7 @@ export enum TemplateId {
   ConnectionRequest = "d-be75ba26790f45d68be187f7b110b616",
   FirstChatRoomMessage = "d-a36dca61b0a9433f904787ced5e00686",
   DailyChatMessageNotification = "d-da0723a2ee0242f4a9ef932d146ded61",
+  ChatIntroNotification = "d-32d8eb503662482a825c4b202683fab0",
 }
 
 type TemplateInfo = {
@@ -42,6 +43,11 @@ type TemplateInfo = {
     messagesSenders: string; // e.g. Name1, Name2, and Name2
     senderProfiles: SendgridProfile[];
     viewChatsUrl: string;
+  };
+  [TemplateId.ChatIntroNotification]?: {
+    groupMemberNames: string;
+    groupMemberProfiles: SendgridProfile[];
+    viewGroupChatUrl: string;
   };
 };
 
