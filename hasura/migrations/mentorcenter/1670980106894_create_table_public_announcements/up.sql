@@ -1,1 +1,0 @@
-CREATE TABLE "public"."announcements" ("id" serial NOT NULL, "space_id" uuid NOT NULL, "author_profile_id" uuid NOT NULL, "created_at" timestamptz NOT NULL DEFAULT now(), "deleted" boolean NOT NULL DEFAULT false, "content" text NOT NULL, PRIMARY KEY ("id") );
