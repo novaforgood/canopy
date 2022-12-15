@@ -7,6 +7,7 @@ import { tuple } from "zod";
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
 import { ToggleSwitch } from "../components/atomic/ToggleSwitch";
 import { ImageUploader } from "../components/ImageUploader";
+import { RichTextInput } from "../components/inputs/RichTextInput";
 import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
 import { TextInput } from "../components/inputs/TextInput";
 import { ActionModal } from "../components/modals/ActionModal";
@@ -31,10 +32,10 @@ export function ColorPaletteReference() {
 
         return (
           <div key={i}>
-            <div className="flex flex-col space-y-3 sm:flex-row text-xs sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col space-y-3 text-xs sm:flex-row sm:space-y-0 sm:space-x-4">
               <div className="w-16 shrink-0">
-                <div className="h-10 flex flex-col justify-center">
-                  <div className="text-sm font-semibold text-slate-900 dark:text-slate-200">
+                <div className="flex h-10 flex-col justify-center">
+                  <div className="text-slate-900 dark:text-slate-200 text-sm font-semibold">
                     {title
                       .split("")
                       .flatMap((l, i) => {
@@ -46,19 +47,19 @@ export function ColorPaletteReference() {
                   </div>
                 </div>
               </div>
-              <div className="min-w-0 flex-1 grid grid-cols-5 xl:grid-cols-11 gap-x-4 gap-y-3 2xl:gap-x-2">
+              <div className="grid min-w-0 flex-1 grid-cols-5 gap-x-4 gap-y-3 xl:grid-cols-11 2xl:gap-x-2">
                 {palette.map(({ name, value }, j) => {
                   return (
                     <div key={j} className="space-y-1.5">
                       <div
-                        className="h-10 w-full rounded dark:ring-1 dark:ring-inset dark:ring-white/10 shadow-lg"
+                        className="h-10 w-full rounded shadow-lg dark:ring-1 dark:ring-inset dark:ring-white/10"
                         style={{ backgroundColor: value }}
                       />
-                      <div className="px-0.5 md:flex flex-col 2xl:flex-row md:justify-between 2xl:space-x-0 2xl:block">
-                        <div className="w-6 font-medium text-slate-900 2xl:w-full">
+                      <div className="flex-col px-0.5 md:flex md:justify-between 2xl:block 2xl:flex-row 2xl:space-x-0">
+                        <div className="text-slate-900 w-6 font-medium 2xl:w-full">
                           {name}
                         </div>
-                        <div className="text-slate-500 font-mono lowercase dark:text-slate-400">
+                        <div className="text-slate-500 dark:text-slate-400 font-mono lowercase">
                           {value.replace(/^#[a-f0-9]+/gi, (m: string) =>
                             m.toUpperCase()
                           )}
@@ -101,8 +102,8 @@ function ButtonsReference() {
   return (
     <div className="grid grid-cols-4 gap-8">
       {variants.map((variant) => (
-        <div key={variant} className="font-bold text-lg">
-          <div className="bg-green-50 w-auto">{variant}</div>
+        <div key={variant} className="text-lg font-bold">
+          <div className="w-auto bg-green-50">{variant}</div>
         </div>
       ))}
       {propsets.map(({ title, props }) => {
@@ -110,7 +111,7 @@ function ButtonsReference() {
           <>
             {variants.map((variant) => (
               <div key={`${variant}-${title}`}>
-                <div className="text-gray-900 mb-1">{title}</div>
+                <div className="mb-1 text-gray-900">{title}</div>
                 <Button variant={variant} {...props}>
                   Button
                 </Button>
@@ -210,7 +211,7 @@ function InputReference() {
   return (
     <>
       <ToggleSwitch enabled={bool} onChange={setBool} />
-      <div className="text-lg font-bold mb-2 mt-8">Input</div>
+      <div className="mb-2 mt-8 text-lg font-bold">Input</div>
       <Input placeholder="Type here..." />
       <div className="h-4"></div>
       <TextInput placeholder="Type here..." label="With a label" />
@@ -220,15 +221,26 @@ function InputReference() {
         renderPrefix={() => <div>Prefix</div>}
       />
 
-      <div className="text-lg font-bold mb-2 mt-8">Textarea</div>
+      <div className="mb-2 mt-8 text-lg font-bold">Textarea</div>
       <Textarea placeholder="Type in textarea..." />
 
       <div>
-        <div className="text-lg font-bold mb-2 mt-8">
+        <div className="mb-2 mt-8 text-lg font-bold">
           Simple Rich Text Input
         </div>
         <SimpleRichTextInput
           placeholder="Type in simple rich text input..."
+          characterLimit={200}
+          onUpdate={({ editor }) => {
+            setValue(editor.getHTML());
+          }}
+          editable={editable}
+        />
+        <div className="mb-2 mt-8 text-lg font-bold">
+          <i>Advanced</i> Rich Text Input
+        </div>
+        <RichTextInput
+          placeholder="Type in non-simple rich text input..."
           characterLimit={200}
           onUpdate={({ editor }) => {
             setValue(editor.getHTML());
@@ -276,7 +288,7 @@ function DropzoneReference() {
 function SectionTitle({ title }: { title: string }) {
   return (
     <h1
-      className="pb-4 pt-16 border-b mb-12 text-3xl"
+      className="mb-12 border-b pb-4 pt-16 text-3xl"
       id={title.replace(" ", "-")}
     >
       {title}
@@ -300,16 +312,16 @@ const ComponentsPage: CustomPage = () => {
   }, []);
 
   return (
-    <div className="flex w-full h-screen">
-      <div className="h-full p-4 pr-16 flex-none text-white bg-gray-900">
-        <div className="text-xl font-bold mb-8">Components</div>
+    <div className="flex h-screen w-full">
+      <div className="h-full flex-none bg-gray-900 p-4 pr-16 text-white">
+        <div className="mb-8 text-xl font-bold">Components</div>
         <div className="flex flex-col gap-1">
           {headers.map(({ title, link, element }, i) => {
             return (
-              <div className="flex gap-2 cursor-default" key={i}>
+              <div className="flex cursor-default gap-2" key={i}>
                 →{" "}
                 <div
-                  className="hover:underline cursor-pointer"
+                  className="cursor-pointer hover:underline"
                   onClick={() => {
                     element.scrollIntoView({ behavior: "smooth" });
                   }}
@@ -321,7 +333,7 @@ const ComponentsPage: CustomPage = () => {
           })}
         </div>
       </div>
-      <div className="h-screen flex-1 p-4 overflow-y-auto flex flex-col items-center">
+      <div className="flex h-screen flex-1 flex-col items-center overflow-y-auto p-4">
         <div className="max-w-full xl:max-w-3xl">
           <SectionTitle title="Colors" />
           <ColorPaletteReference />

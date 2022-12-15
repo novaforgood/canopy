@@ -6,7 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
 import { NewListingQuestion, NewTagCategory } from "../../lib/types";
-import { Input, Text } from "../atomic";
+import { Input, Text, Textarea } from "../atomic";
 import { DeleteButton } from "../DeleteButton";
 import { DragHandle } from "../DragHandle";
 import { EditButton } from "../EditButton";
@@ -47,6 +47,7 @@ export function EditQuestion(props: EditQuestionProps) {
   }, [isOpen, question.char_count, question.title]);
 
   const [title, setTitle] = useState(question.title ?? "");
+  const [description, setDescription] = useState(question.description ?? "");
   const [charCount, setCharCount] = useState(question.char_count ?? 0);
 
   const onClose = () => {
@@ -54,6 +55,7 @@ export function EditQuestion(props: EditQuestionProps) {
     onSave({
       ...question,
       title,
+      description: description == "" ? null : description,
       char_count: charCount,
     });
   };
@@ -66,7 +68,7 @@ export function EditQuestion(props: EditQuestionProps) {
         actionText="Done editing"
         onAction={onClose}
       >
-        <div className="p-8 py-16 w-96 flex flex-col">
+        <div className="flex w-96 flex-col p-8 py-16">
           <Text variant="heading4" className="text-center">
             Edit question
           </Text>
@@ -79,6 +81,18 @@ export function EditQuestion(props: EditQuestionProps) {
             className="mb-4"
           />
           <div className="h-4"></div>
+          <label className="block text-sm font-bold">Help Text</label>
+          <Text variant="body2" className="mb-2 text-gray-700">
+            Users will be able to see this help text for guidance when filling
+            out the question.
+          </Text>
+          <Textarea
+            label="Question Help Text"
+            value={description}
+            onValueChange={(val) => setDescription(val)}
+            placeholder="Description"
+            className="mb-4"
+          />
           <TextInput
             label="Character Limit"
             value={charCount?.toString()}
@@ -90,7 +104,7 @@ export function EditQuestion(props: EditQuestionProps) {
         </div>
       </ActionModal>
       <div
-        className="flex flex-col cursor-auto"
+        className="flex cursor-auto flex-col"
         ref={setNodeRef}
         style={style}
         {...attributes}

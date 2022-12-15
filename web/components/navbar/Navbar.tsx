@@ -1,21 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 import { Transition } from "@headlessui/react";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { Profile_Role_Enum } from "../../generated/graphql";
 import {
-  Profile_Role_Enum,
-  useAllChatRoomsSubscription,
-} from "../../generated/graphql";
-import {
+  BxBell,
   BxMenu,
-  BxMessage,
   BxMessageDetail,
   BxX,
 } from "../../generated/icons/regular";
-import { BxsCog, BxsHome, BxsWrench } from "../../generated/icons/solid";
+import { BxsCog, BxsHome } from "../../generated/icons/solid";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
@@ -26,12 +23,9 @@ import { notificationsCountAtom } from "../../lib/jotai";
 import { LocalStorage } from "../../lib/localStorage";
 import { Button, Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
-import { Responsive } from "../layout/Responsive";
 import { SidePadding } from "../layout/SidePadding";
 import { LoadingPlaceholderRect } from "../LoadingPlaceholderRect";
 import { ProfileImage } from "../ProfileImage";
-import { SpaceDropdown } from "../SpaceDropdown";
-import { FadeTransition } from "../transitions/FadeTransition";
 
 import { Dropdown } from "./Dropdown";
 
@@ -110,16 +104,6 @@ function MobileNavbar() {
                 >
                   Browse Community Profiles
                 </Button>
-
-                {/* <Button
-                  className="w-full justify-center"
-                  variant="outline"
-                  onClick={() => {
-                    navigate(`/space/${spaceSlug}/account`);
-                  }}
-                >
-                  Your Account
-                </Button> */}
 
                 {isAdmin && (
                   <Button
@@ -246,19 +230,34 @@ function DesktopNavbar() {
         </div>
         <div className="flex items-center gap-4">
           {spaceSlug && (
-            <Link href={`/space/${spaceSlug}/chat`} passHref>
-              <a className="relative">
-                {notificationsCount > 0 ? (
-                  <div
-                    className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
-                              bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
-                  >
-                    {notificationsCount}
-                  </div>
-                ) : null}
-                <IconButton icon={<BxMessageDetail className="h-6 w-6" />} />
-              </a>
-            </Link>
+            <div className="flex gap-1">
+              <Link href={`/space/${spaceSlug}/chat`} passHref>
+                <a className="relative">
+                  {notificationsCount > 0 ? (
+                    <div
+                      className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
+                  bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
+                    >
+                      {notificationsCount}
+                    </div>
+                  ) : null}
+                  <IconButton icon={<BxMessageDetail className="h-6 w-6" />} />
+                </a>
+              </Link>
+              <Link href={`/space/${spaceSlug}/announcements`} passHref>
+                <a className="relative">
+                  {notificationsCount > 0 && (
+                    <div
+                      className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
+                          bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
+                    >
+                      {notificationsCount}
+                    </div>
+                  )}
+                  <IconButton icon={<BxBell className="h-6 w-6" />} />
+                </a>
+              </Link>
+            </div>
           )}
           <Dropdown />
         </div>

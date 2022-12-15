@@ -3,7 +3,9 @@ import { z } from "zod";
 import {
   executeGetInviteLinkQuery,
   executeInsertProfileMutation,
+  Profile_Constraint,
   Profile_Role_Enum,
+  Profile_Update_Column,
   Space_Invite_Link_Type_Enum,
 } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
@@ -52,6 +54,7 @@ export default applyMiddleware({
       data: {
         user_id: req.token.uid,
         space_id: inviteLink.space_id,
+        attributes: {},
         profile_roles: {
           data: [
             {
@@ -61,6 +64,10 @@ export default applyMiddleware({
             },
           ],
         },
+      },
+      on_conflict: {
+        constraint: Profile_Constraint.ProfilesPkey,
+        update_columns: [Profile_Update_Column.Id],
       },
     });
   if (insertError) {
