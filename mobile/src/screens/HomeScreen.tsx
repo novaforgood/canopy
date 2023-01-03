@@ -36,37 +36,52 @@ export function HomeScreen({
           <Text variant="heading4Medium" mt={4}>
             Your Canopy Directories
           </Text>
-          {profileData?.profile.map((profile) => {
-            return (
-              <Box mt={4} borderRadius="sm" overflow="hidden" key={profile.id}>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("SpaceHome", {
-                      spaceSlug: profile.space.slug,
-                      spaceName: profile.space.name,
-                    });
-                  }}
+          <Box mt={2}>
+            <Text>
+              Below are the communities you are a part of. Tap a community to
+              see inside.
+            </Text>
+          </Box>
+          <Box mt={4} flexWrap="wrap" flexDirection="row">
+            {profileData?.profile.map((profile) => {
+              return (
+                <Box
+                  mt={2}
+                  mr={2}
+                  borderRadius="sm"
+                  overflow="hidden"
+                  width="46%"
+                  key={profile.id}
                 >
-                  <Box>
-                    <SpaceCoverPhoto
-                      src={profile.space.space_cover_image?.image.url}
-                    />
-                    <Box
-                      padding={2}
-                      flexDirection="row"
-                      alignItems="center"
-                      backgroundColor="white"
-                    >
-                      <BxsGroup height={20} width={20} color="black" />
-                      <Text variant="subheading2" ml={2}>
-                        {profile.space.name}
-                      </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("SpaceHome", {
+                        spaceSlug: profile.space.slug,
+                        spaceName: profile.space.name,
+                      });
+                    }}
+                  >
+                    <Box>
+                      <SpaceCoverPhoto
+                        src={profile.space.space_cover_image?.image.url}
+                      />
+                      <Box
+                        padding={2}
+                        flexDirection="row"
+                        alignItems="center"
+                        backgroundColor="white"
+                      >
+                        <BxsGroup height={20} width={20} color="black" />
+                        <Text variant="subheading2" ml={2}>
+                          {profile.space.name}
+                        </Text>
+                      </Box>
                     </Box>
-                  </Box>
-                </TouchableOpacity>
-              </Box>
-            );
-          })}
+                  </TouchableOpacity>
+                </Box>
+              );
+            })}
+          </Box>
         </Box>
       </ScrollView>
     </SafeAreaView>

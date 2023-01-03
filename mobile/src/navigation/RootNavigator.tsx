@@ -120,10 +120,10 @@ export function RootNavigator() {
               shadowColor="black"
               shadowRadius={10}
               shadowOffset={{ width: 0, height: 5 }}
-              shadowOpacity={0.2}
+              shadowOpacity={0.5}
               elevation={5}
-              borderBottomColor="black"
-              borderBottomWidth={1}
+              // borderBottomColor="black"
+              // borderBottomWidth={1}
             />
           ),
           headerTintColor: theme.colors.green800,

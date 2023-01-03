@@ -67,7 +67,7 @@ export function ProfilePageScreen({
         >
           <Box p={4} pt={8}>
             <Box>
-              <Box flexDirection="row" alignItems="center" mb={4}>
+              <Box flexDirection="row" alignItems="center" mb={6}>
                 <ProfileImage
                   src={listing?.profile_listing_image?.image.url}
                   alt={`${first_name} ${last_name}`}
@@ -91,6 +91,8 @@ export function ProfilePageScreen({
                     const url = `${HOST_URL}/space/${currentSpace?.slug}/account/profile`;
                     Linking.openURL(url);
                   }}
+                  variant="outline"
+                  size="sm"
                 >
                   Edit profile
                 </Button>
@@ -112,13 +114,15 @@ export function ProfilePageScreen({
                     }
                   }}
                   disabled={isMyProfile}
+                  variant="outline"
+                  size="sm"
                 >
                   Message
                 </Button>
               )}
             </Box>
 
-            <Box mt={8}>
+            <Box mt={4}>
               <Box flexDirection="column">
                 {listing?.profile_listing_responses.map((response) => {
                   return (

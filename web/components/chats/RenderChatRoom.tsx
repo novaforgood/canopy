@@ -83,6 +83,9 @@ function shouldBreak(
   if (!message1 || !message2) {
     return true;
   }
+  if (message1.sender_profile_id !== message2.sender_profile_id) {
+    return true;
+  }
   const date1 = new Date(message1.created_at);
   const date2 = new Date(message2.created_at);
   const diff = date2.getTime() - date1.getTime();

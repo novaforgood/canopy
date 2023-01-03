@@ -92,7 +92,7 @@ export function MessagesScreen() {
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
-        <Box minHeight="100%">
+        <Box minHeight="100%" mt={2}>
           {chatRooms.length === 0 && (
             <Box
               p={4}
@@ -157,11 +157,12 @@ export function MessagesScreen() {
                   flexDirection="row"
                   alignItems="center"
                   borderRadius="md"
-                  p={4}
+                  px={4}
+                  py={2}
                 >
-                  <ProfileImage src={image?.url} height={48} width={48} />
+                  <ProfileImage src={image?.url} height={60} width={60} />
 
-                  <Box ml={3} flexDirection="column">
+                  <Box ml={3} flexDirection="column" flex={1}>
                     <Text
                       variant={
                         shouldNotHighlight ? "subheading2" : "subheading2Medium"
@@ -193,7 +194,7 @@ export function MessagesScreen() {
                       </Text>
                     </Box>
                   </Box>
-                  <Box flex={1} flexDirection="row" justifyContent="flex-end">
+                  <Box flexDirection="row" justifyContent="flex-end">
                     <BxChevronRight height={28} width={28} color="gray700" />
                   </Box>
                 </Box>

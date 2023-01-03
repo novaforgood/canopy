@@ -53,6 +53,10 @@ function shouldBreak(
   if (!message1 || !message2) {
     return true;
   }
+  if (message1.sender_profile_id !== message2.sender_profile_id) {
+    return true;
+  }
+
   const date1 = new Date(message1.created_at);
   const date2 = new Date(message2.created_at);
   const diff = date2.getTime() - date1.getTime();
@@ -243,7 +247,10 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
           flexDirection="row"
           alignItems="center"
           backgroundColor="olive100"
-          p={4}
+          px={4}
+          py={2}
+          borderBottomColor="gray200"
+          borderBottomWidth={1}
         >
           <TouchableOpacity
             onPress={() => {
@@ -257,11 +264,11 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
               });
             }}
           >
-            <ProfileImage src={image?.url} height={48} width={48} mr={4} />
+            <ProfileImage src={image?.url} height={40} width={40} mr={4} />
           </TouchableOpacity>
 
           <Box>
-            <Text variant="subheading1">
+            <Text variant="subheading2">
               {first_name} {last_name}
             </Text>
             <Text variant="body2" color="gray700">
@@ -363,38 +370,43 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                         mb={isLastMessage ? 4 : 1}
                       >
                         {isLastMessage ? (
-                          <Box position="relative" width={40} flexShrink={0}>
+                          <Box position="relative" width={36} flexShrink={0}>
                             <Box
                               position="absolute"
                               bottom={0}
-                              height={40}
-                              width={40}
+                              height={36}
+                              width={36}
                               flexShrink={0}
                             >
                               <ProfileImage
                                 src={image?.url}
-                                height={40}
-                                width={40}
+                                height={36}
+                                width={36}
                               />
                             </Box>
                           </Box>
                         ) : (
-                          <Box width={40} flexShrink={0}></Box>
+                          <Box width={36} flexShrink={0}></Box>
                         )}
-                        <Box
-                          mr={12}
-                          ml={2}
-                          borderTopRightRadius="lg"
-                          borderBottomRightRadius="lg"
-                          backgroundColor="gray200"
-                          px={4}
-                          py={1.5}
-                          borderTopLeftRadius={breakBefore ? "lg" : undefined}
-                          borderBottomLeftRadius={breakAfter ? "lg" : undefined}
-                        >
-                          <Text variant="body1" selectable={true}>
-                            {message.text}
-                          </Text>
+                        <Box flex={1} flexDirection="row">
+                          <Box
+                            ml={2}
+                            mr={3}
+                            borderTopRightRadius="lg"
+                            borderBottomRightRadius="lg"
+                            backgroundColor="gray200"
+                            px={4}
+                            py={1.5}
+                            borderTopLeftRadius={breakBefore ? "lg" : undefined}
+                            borderBottomLeftRadius={
+                              breakAfter ? "lg" : undefined
+                            }
+                          >
+                            <Text variant="body1" selectable={true}>
+                              {message.text}
+                            </Text>
+                          </Box>
+                          <Box flex={1}></Box>
                         </Box>
                       </Box>
                       <Box flex={1}></Box>
