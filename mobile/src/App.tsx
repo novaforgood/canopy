@@ -218,8 +218,8 @@ function NavDrawer() {
                   <BxX height={32} width={32} color="black" />
                 </TouchableOpacity>
               </Box>
-              <Text>
-                {userData?.first_name} {userData?.last_name}
+              <Text px={4} pt={4}>
+                Logged in as {userData?.first_name} {userData?.last_name}
               </Text>
               <Box px={4} pt={4}>
                 <Button

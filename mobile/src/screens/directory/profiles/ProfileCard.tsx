@@ -36,24 +36,25 @@ export function ProfileCard(props: ProfileCardProps) {
     <TouchableOpacity onPress={onPress} style={{ overflow: "hidden" }}>
       <Box
         mb={4}
-        flexDirection="column"
-        alignItems="flex-start"
+        flexDirection="row"
+        alignItems="center"
         borderRadius="md"
         borderWidth={1}
         borderColor="gray400"
         backgroundColor="white"
+        overflow="hidden"
       >
-        <Box pb={4} width="100%">
-          <ProfileImage
-            width={"100%"}
-            rounded={false}
-            border={false}
-            src={imageUrl}
-            alt={name}
-          />
-        </Box>
-        <Box flexDirection="column" alignItems="flex-start" px={4} width="100%">
-          <Text variant="heading4" color="gray900">
+        <ProfileImage
+          width="40%"
+          rounded={false}
+          borderTopLeftRadius="md"
+          borderBottomLeftRadius="md"
+          border={false}
+          src={imageUrl}
+          alt={name}
+        />
+        <Box flexDirection="column" alignItems="flex-start" px={4}>
+          <Text variant="subheading1" color="gray900">
             {name}
           </Text>
           {subtitle && (
@@ -66,14 +67,14 @@ export function ProfileCard(props: ProfileCardProps) {
           </Text>
           <Box
             mt={1.5}
+            width="100%"
             flexDirection="row"
-            flexWrap="wrap"
+            // flexWrap="wrap"
             overflow="hidden"
-            mb={4}
           >
             {processedTags.length > 0 ? (
               processedTags.map((tag, index) => (
-                <Box mb={1} mr={1} key={index}>
+                <Box mb={1} mr={1} key={index} overflow="hidden">
                   <Tag text={tag} variant="outline" />
                 </Box>
               ))

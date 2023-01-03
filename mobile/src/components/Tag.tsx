@@ -14,7 +14,7 @@ export function Tag(props: TagProps) {
 
   return (
     <Box backgroundColor="lime200" borderRadius="full" px={3} py={1}>
-      <Text variant="body1Medium" color="olive700">
+      <Text variant="body3Medium" color="olive700">
         {text}
       </Text>
       {renderRightIcon
