@@ -752,44 +752,34 @@ mutation UpdateSpaceTagCategory(
   }
 }
 
-mutation InsertAnnouncement($object: announcements_insert_input!) {
-  insert_announcements_one(object: $object) {
-    author_profile_id
-    created_at
-    deleted
-    id
-    content
-  }
-}
-
 query AnnouncementsBySpaceId($space_id: uuid!) {
   announcements(
     order_by: { created_at: desc }
     where: { space_id: { _eq: $space_id } }
   ) {
+    id
     author_profile {
+      id
       profile_listing {
+        id
         profile_listing_image {
-          image {
-            url
-            id
-          }
           id
+          image {
+            id
+            url
+          }
         }
-        id
-      }
-      user {
-        first_name
-        last_name
-        id
       }
       user_id
-      id
+      user {
+        id
+        first_name
+        last_name
+      }
     }
     created_at
     content
     author_profile_id
     deleted
-    id
   }
 }

@@ -246,14 +246,6 @@ function DesktopNavbar() {
               </Link>
               <Link href={`/space/${spaceSlug}/announcements`} passHref>
                 <a className="relative">
-                  {notificationsCount > 0 && (
-                    <div
-                      className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
-                          bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
-                    >
-                      {notificationsCount}
-                    </div>
-                  )}
                   <IconButton icon={<BxBell className="h-6 w-6" />} />
                 </a>
               </Link>

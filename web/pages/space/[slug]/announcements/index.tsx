@@ -32,6 +32,9 @@ function mapQueryDataToObjects(
         author: {
           first_name: entry.author_profile.user.first_name,
           last_name: entry.author_profile.user.last_name,
+          profile_img_url:
+            entry.author_profile.profile_listing?.profile_listing_image?.image
+              .url,
         },
         contentHTML: entry.content,
       } as AnnouncementProps)
@@ -53,7 +56,7 @@ const AnnouncementsPage: CustomPage = () => {
   const [modalOpen, modalHandlers] = useDisclosure(false);
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-olive-50">
       {/* The Navbar */}
       <Navbar />
 
@@ -61,15 +64,17 @@ const AnnouncementsPage: CustomPage = () => {
         <div className="h-20" />
 
         {/* Title */}
-        <Text variant="heading3">Community-Wide Announcements</Text>
+        <Text variant="heading3" className="text-green-900">
+          Community-Wide Announcements
+        </Text>
         <div className="h-4" />
-        <Text variant="subheading2">
+        <Text variant="subheading2" className="text-green-900">
           All messages from {currentSpace?.name} admins will be posted here.
         </Text>
 
         <div className="h-12" />
 
-        <div className="flex w-full flex-col gap-8 md:flex-row-reverse md:items-start">
+        <div className="flex w-full flex-col gap-8 lg:flex-row-reverse lg:items-start">
           {/* Make a new Announcement Post Button */}
           <div className="min-h-1 w-60 grow-0">
             {currentProfileHasRole(Profile_Role_Enum.Admin) && (
