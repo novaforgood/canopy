@@ -1,5 +1,6 @@
 import { useDisclosure } from "@mantine/hooks";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { AnnouncementProps } from "../../../../components/announcements/Announcement";
 import AnnouncementList from "../../../../components/announcements/AnnouncementList";
 import AnnouncementModal from "../../../../components/announcements/AnnouncementModal";
@@ -10,6 +11,7 @@ import {
   AnnouncementsBySpaceIdQuery,
   Profile_Role_Enum,
   useAnnouncementsBySpaceIdQuery,
+  useUpdateLatestReadAnnouncementMutation,
 } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
@@ -43,14 +45,40 @@ function mapQueryDataToObjects(
 
 const AnnouncementsPage: CustomPage = () => {
   const { currentSpace } = useCurrentSpace();
-  const { currentProfileHasRole } = useCurrentProfile();
+  const { currentProfileHasRole, currentProfile, refetchCurrentProfile } =
+    useCurrentProfile();
+  const [_, updateReadAnnouncement] = useUpdateLatestReadAnnouncementMutation();
 
   // announcements data
-  const [{ data: queryData }, refetchQuery] = useAnnouncementsBySpaceIdQuery({
-    variables: {
-      space_id: currentSpace?.id ?? "",
-    },
-  });
+  const [{ data: queryData }, refetchAnnouncements] =
+    useAnnouncementsBySpaceIdQuery({
+      variables: {
+        space_id: currentSpace?.id ?? "",
+      },
+    });
+
+  // update read announcements
+  useEffect(() => {
+    if (currentProfile && queryData?.announcements) {
+      const latestAnnouncementId =
+        queryData.announcements.length > 0
+          ? queryData.announcements[0].id
+          : null;
+
+      // update if last_read_announcement_id is null or less than the latest announcement
+      const shouldUpdate =
+        !currentProfile.last_read_announcement_id ||
+        currentProfile.last_read_announcement_id < latestAnnouncementId;
+
+      if (shouldUpdate) {
+        updateReadAnnouncement({
+          id: currentProfile.id,
+          last_read_announcement_id: latestAnnouncementId,
+        });
+        refetchCurrentProfile();
+      }
+    }
+  }, [currentProfile, queryData]);
 
   // "Create Announcement" Modal
   const [modalOpen, modalHandlers] = useDisclosure(false);
@@ -104,7 +132,7 @@ const AnnouncementsPage: CustomPage = () => {
         isOpen={modalOpen}
         closeCallback={modalHandlers.close}
         actionCallback={() => {
-          refetchQuery();
+          refetchAnnouncements();
           modalHandlers.close();
         }}
       />

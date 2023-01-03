@@ -15,3 +15,4 @@ export const searchQueryAtom = atom<string>("");
 export const adminBypassAtom = atom<boolean>(false);
 
 export const notificationsCountAtom = atom<number>(0);
+export const announcementNotificationsCountAtom = atom<number>(0);

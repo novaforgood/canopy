@@ -21,7 +21,6 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
 
   // rich text editor content
   const [announcementHTML, setAnnouncementHTML] = useState("");
-  const [sendEmail, setSendEmail] = useState(true);
 
   return (
     <ActionModal
@@ -36,7 +35,6 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
           .post("/api/services/sendAnnouncement", {
             authorProfileId: currentProfile?.id,
             announcementContent: announcementHTML,
-            sendEmail,
           })
           .then(() => {
             toast.success("Announcement Posted!");
@@ -63,13 +61,6 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
           }}
         />
 
-        <div className="mt-6 mb-4 flex flex-row justify-between gap-4">
-          <Text variant="subheading2">Send email notification:</Text>
-          <ToggleSwitch
-            enabled={sendEmail}
-            onChange={(val) => setSendEmail(val)}
-          />
-        </div>
         <div className="h-8"></div>
       </div>
     </ActionModal>

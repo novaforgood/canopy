@@ -62,6 +62,7 @@ insert_permissions:
       columns:
         - attributes
         - created_at
+        - last_read_announcement_id
         - space_id
         - user_id
 select_permissions:
@@ -84,6 +85,7 @@ select_permissions:
         - attributes
         - created_at
         - id
+        - last_read_announcement_id
         - space_id
         - user_id
       filter:
@@ -98,6 +100,7 @@ update_permissions:
     permission:
       columns:
         - attributes
+        - last_read_announcement_id
       filter:
         _or:
           - user:

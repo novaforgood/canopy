@@ -213,6 +213,7 @@ query EmailsBySpaceId($_user_attr_filter: jsonb!, $_space_id: uuid!) {
     user {
       id
       email
+      type
     }
   }
 }
