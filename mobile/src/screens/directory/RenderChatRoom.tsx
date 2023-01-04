@@ -271,9 +271,12 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             <Text variant="subheading2">
               {first_name} {last_name}
             </Text>
-            <Text variant="body2" color="gray700">
-              {otherProfile?.profile_listing?.headline}
-            </Text>
+
+            {otherProfile?.profile_listing?.headline && (
+              <Text variant="body2" color="gray700">
+                {otherProfile?.profile_listing?.headline}
+              </Text>
+            )}
           </Box>
         </Box>
 

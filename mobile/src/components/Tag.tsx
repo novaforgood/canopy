@@ -7,14 +7,24 @@ export interface TagProps {
   onDeleteClick?: () => void;
   renderRightIcon?: () => React.ReactNode;
   variant?: "primary" | "outline";
+  size?: "sm" | "md";
 }
 
 export function Tag(props: TagProps) {
-  const { text, renderRightIcon, onDeleteClick, variant = "primary" } = props;
+  const {
+    text,
+    renderRightIcon,
+    onDeleteClick,
+    variant = "primary",
+    size = "md",
+  } = props;
 
   return (
     <Box backgroundColor="lime200" borderRadius="full" px={3} py={1}>
-      <Text variant="body3Medium" color="olive700">
+      <Text
+        variant={size === "md" ? "body2Medium" : "body3Medium"}
+        color="olive700"
+      >
         {text}
       </Text>
       {renderRightIcon

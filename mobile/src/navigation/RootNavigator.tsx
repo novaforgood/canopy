@@ -25,6 +25,7 @@ import { BxMenu } from "../generated/icons/regular";
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
 import { Text } from "../components/atomic/Text";
 import { FullWindowOverlay } from "react-native-screens";
+import { ProfileImage } from "../components/ProfileImage";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -118,12 +119,8 @@ export function RootNavigator() {
               height="100%"
               width="100%"
               shadowColor="black"
-              shadowRadius={10}
-              shadowOffset={{ width: 0, height: 5 }}
-              shadowOpacity={0.5}
-              elevation={5}
-              // borderBottomColor="black"
-              // borderBottomWidth={1}
+              borderBottomColor="olive200"
+              borderBottomWidth={1}
             />
           ),
           headerTintColor: theme.colors.green800,
@@ -166,9 +163,10 @@ export function RootNavigator() {
               component={SpaceNavigator}
               options={({ route }) => ({
                 title: spaceRaw?.name,
-                headerBackTitle: "Back",
+                headerBackVisible: false,
               })}
             />
+
             <RootStack.Screen
               name="ProfilePage"
               component={ProfilePageScreen}
@@ -185,6 +183,15 @@ export function RootNavigator() {
                 // title: route.params.chatRoomName,
                 title: "",
                 headerBackTitle: "Back",
+                headerBackground: () => (
+                  <Box
+                    backgroundColor="olive100"
+                    height="100%"
+                    width="100%"
+                    shadowColor="black"
+                    flexDirection="row"
+                  ></Box>
+                ),
               })}
             />
           </>

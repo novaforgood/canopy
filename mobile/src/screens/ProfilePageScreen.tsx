@@ -59,126 +59,139 @@ export function ProfilePageScreen({
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
-        <Box
-          flexDirection="column"
-          width="100%"
-          backgroundColor="white"
-          pb={12}
-        >
-          <Box p={4} pt={8}>
-            <Box>
-              <Box flexDirection="row" alignItems="center" mb={6}>
-                <ProfileImage
-                  src={listing?.profile_listing_image?.image.url}
-                  alt={`${first_name} ${last_name}`}
-                  height={100}
-                  width={100}
-                />
-                <Box mt={4} ml={6} flexDirection="column">
-                  <Text variant="heading4">
-                    {first_name} {last_name}
-                  </Text>
-                  <Text mt={1} variant="body1">
-                    {listing?.headline}
-                  </Text>
-                </Box>
+        <Box flexDirection="column" width="100%" backgroundColor="white">
+          <Box
+            backgroundColor="lime100"
+            px={4}
+            pt={8}
+            pb={12}
+            borderBottomWidth={1}
+            borderColor="green700"
+          >
+            <Box flexDirection="row" alignItems="center" mb={6}>
+              <ProfileImage
+                src={listing?.profile_listing_image?.image.url}
+                alt={`${first_name} ${last_name}`}
+                height={100}
+                width={100}
+              />
+              <Box mt={4} ml={6} flexDirection="column">
+                <Text variant="heading4">
+                  {first_name} {last_name}
+                </Text>
+                <Text mt={1} variant="body1">
+                  {listing?.headline}
+                </Text>
               </Box>
-              {isMyProfile ? (
-                <Button
-                  onPress={() => {
-                    console.log("Go to my edit profile page");
-
-                    const url = `${HOST_URL}/space/${currentSpace?.slug}/account/profile`;
-                    Linking.openURL(url);
-                  }}
-                  variant="outline"
-                  size="sm"
-                >
-                  Edit profile
-                </Button>
-              ) : (
-                <Button
-                  flexDirection="row"
-                  alignItems="center"
-                  borderRadius="full"
-                  onPress={() => {
-                    const chatRoomId =
-                      profileData?.profile_to_chat_room?.[0].chat_room_id;
-                    if (!chatRoomId) {
-                      return;
-                    } else {
-                      navigation.navigate("ChatRoom", {
-                        chatRoomId,
-                        chatRoomName: `${first_name} ${last_name}`,
-                      });
-                    }
-                  }}
-                  disabled={isMyProfile}
-                  variant="outline"
-                  size="sm"
-                >
-                  Message
-                </Button>
-              )}
             </Box>
+            {isMyProfile ? (
+              <Button
+                onPress={() => {
+                  navigation.navigate("Account");
+                }}
+                variant="outline"
+                size="sm"
+              >
+                Edit profile
+              </Button>
+            ) : (
+              <Button
+                flexDirection="row"
+                alignItems="center"
+                borderRadius="full"
+                onPress={() => {
+                  const chatRoomId =
+                    profileData?.profile_to_chat_room?.[0].chat_room_id;
+                  if (!chatRoomId) {
+                    return;
+                  } else {
+                    navigation.navigate("ChatRoom", {
+                      chatRoomId,
+                      chatRoomName: `${first_name} ${last_name}`,
+                    });
+                  }
+                }}
+                disabled={isMyProfile}
+                variant="outline"
+                size="sm"
+              >
+                Message
+              </Button>
+            )}
+          </Box>
 
-            <Box mt={4}>
-              <Box flexDirection="column">
-                {listing?.profile_listing_responses.map((response) => {
-                  return (
-                    <Box key={response.id} mt={8}>
-                      <Text mb={1} variant="heading4" color="green800">
-                        {response.space_listing_question.title}
-                      </Text>
-                      <HtmlDisplay html={response.response_html} />
-                    </Box>
-                  );
-                })}
-              </Box>
-              <Box>
-                <Box flexDirection="column" borderRadius="md" mt={4}>
-                  {currentSpace?.space_tag_categories?.map((category) => {
-                    const tags = category.space_tags.filter((tag) =>
-                      profileTagIds.has(tag.id)
-                    );
-                    return (
-                      <Box key={category.id} mt={8}>
-                        <Text variant="heading4" color="green800">
-                          {category.title}
-                        </Text>
-
-                        <Box mt={4} flexWrap="wrap" flexDirection="row">
-                          {tags.length > 0 ? (
-                            tags.map((tag) => {
-                              return (
-                                <Box mb={1} mr={1} key={tag.id}>
-                                  <Tag text={tag.label ?? ""} />
-                                </Box>
-                              );
-                            })
-                          ) : (
-                            <Text variant="body1Italic" color="gray700">
-                              No tags
-                            </Text>
-                          )}
-                        </Box>
-                      </Box>
-                    );
-                  })}
+          <Box
+            px={4}
+            pb={8}
+            flexDirection="column"
+            borderBottomWidth={1}
+            borderBottomColor="green700"
+          >
+            {listing?.profile_listing_responses.map((response) => {
+              return (
+                <Box key={response.id} mt={8}>
+                  <Text mb={1} variant="heading4" color="green800">
+                    {response.space_listing_question.title}
+                  </Text>
+                  <HtmlDisplay html={response.response_html} />
                 </Box>
-                <Box mt={8} borderRadius="md">
+              );
+            })}
+          </Box>
+
+          <Box
+            flexDirection="column"
+            px={4}
+            pb={8}
+            borderBottomWidth={1}
+            borderBottomColor="green700"
+            backgroundColor="gray100"
+          >
+            {currentSpace?.space_tag_categories?.map((category) => {
+              const tags = category.space_tags.filter((tag) =>
+                profileTagIds.has(tag.id)
+              );
+              return (
+                <Box key={category.id} mt={8}>
                   <Text variant="heading4" color="green800">
-                    Profiles
+                    {category.title}
                   </Text>
-                  <Text my={4}>{email}</Text>
 
-                  <ProfileSocialsDisplay
-                    profileListingId={listing?.id ?? ""}
-                    email={email}
-                  />
+                  <Box mt={4} flexWrap="wrap" flexDirection="row">
+                    {tags.length > 0 ? (
+                      tags.map((tag) => {
+                        return (
+                          <Box mb={1} mr={1} key={tag.id}>
+                            <Tag text={tag.label ?? ""} />
+                          </Box>
+                        );
+                      })
+                    ) : (
+                      <Text variant="body1Italic" color="gray700">
+                        No tags
+                      </Text>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
-            </Box>
+              );
+            })}
+          </Box>
+          <Box
+            mt={8}
+            pb={16}
+            px={4}
+            borderBottomWidth={1}
+            borderBottomColor="green700"
+          >
+            <Text variant="heading4" color="green800">
+              Profiles
+            </Text>
+            <Text my={4}>{email}</Text>
+
+            <ProfileSocialsDisplay
+              profileListingId={listing?.id ?? ""}
+              email={email}
+            />
           </Box>
         </Box>
       </ScrollView>

@@ -35,14 +35,16 @@ export function ProfileCard(props: ProfileCardProps) {
   return (
     <TouchableOpacity onPress={onPress} style={{ overflow: "hidden" }}>
       <Box
-        mb={4}
+        mb={3}
         flexDirection="row"
         alignItems="center"
         borderRadius="md"
-        borderWidth={1}
-        borderColor="gray400"
         backgroundColor="white"
-        overflow="hidden"
+        shadowColor="black"
+        shadowOffset={{ width: 0, height: 1 }}
+        shadowOpacity={0.1}
+        shadowRadius={1}
+        elevation={1}
       >
         <ProfileImage
           width="40%"
@@ -62,11 +64,9 @@ export function ProfileCard(props: ProfileCardProps) {
               {subtitle}
             </Text>
           )}
-          <Text mt={4} variant="body2Medium">
-            {descriptionTitle}
-          </Text>
+
           <Box
-            mt={1.5}
+            mt={4}
             width="100%"
             flexDirection="row"
             // flexWrap="wrap"
@@ -75,12 +75,12 @@ export function ProfileCard(props: ProfileCardProps) {
             {processedTags.length > 0 ? (
               processedTags.map((tag, index) => (
                 <Box mb={1} mr={1} key={index} overflow="hidden">
-                  <Tag text={tag} variant="outline" />
+                  <Tag text={tag} variant="outline" size="sm" />
                 </Box>
               ))
             ) : (
-              <Text color="gray500" variant="body1Italic">
-                none
+              <Text color="gray500" variant="body3Italic">
+                no tags
               </Text>
             )}
           </Box>

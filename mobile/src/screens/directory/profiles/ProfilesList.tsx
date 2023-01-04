@@ -5,8 +5,14 @@ import {
 } from "@react-navigation/native";
 import { getDayOfYear } from "date-fns";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
-import { SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
+import { useMemo, useRef } from "react";
+import {
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Fuse from "fuse.js";
 
 import { Box } from "../../../components/atomic/Box";
@@ -23,6 +29,8 @@ import { TextInput } from "../../../components/atomic/TextInput";
 import { HtmlDisplay } from "../../../components/HtmlDisplay";
 import { Text } from "../../../components/atomic/Text";
 import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
+
+import { CustomKeyboardAvoidingView } from "../../../components/CustomKeyboardAvoidingView";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -88,59 +96,75 @@ export function ProfilesList() {
 
   return (
     <SafeAreaView>
-      <ScrollView style={{ height: "100%" }}>
-        <Box flexDirection="column">
-          <SpaceCoverPhoto
-            src={currentSpace?.space_cover_image?.image.url}
-          ></SpaceCoverPhoto>
-          <Box py={6} px={4} backgroundColor="olive100">
-            <Text mb={2} variant="heading3">
-              {currentSpace?.name}
-            </Text>
-            <HtmlDisplay html={currentSpace?.description_html ?? ""} />
+      <CustomKeyboardAvoidingView>
+        <ScrollView style={{ height: "100%" }}>
+          <Box
+            flexDirection="column"
+            borderBottomWidth={1}
+            borderColor="green700"
+            borderTopWidth={1}
+          >
+            <SpaceCoverPhoto
+              src={currentSpace?.space_cover_image?.image.url}
+            ></SpaceCoverPhoto>
+            <Box py={6} pb={12} px={4} backgroundColor="olive100">
+              <Text mb={2} variant="heading3">
+                {currentSpace?.name}
+              </Text>
+              <HtmlDisplay html={currentSpace?.description_html ?? ""} />
+            </Box>
           </Box>
-        </Box>
-        <Box p={4} backgroundColor="gray50">
-          <Box mt={4}></Box>
-          <TextInput
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder="Search members..."
-            width="100%"
-          />
-          <Box mt={4}></Box>
-          {filteredProfileListings.map((listing, idx) => {
-            const { first_name, last_name } = listing.profile.user;
-
-            const tagNames =
-              listing.profile_listing_to_space_tags?.map(
-                (tag) => tag.space_tag.label
-              ) ?? [];
-
-            return (
-              <ProfileCard
-                key={listing.id}
-                id={listing.id}
-                onPress={() => {
-                  // router.push(
-                  //   `${router.asPath}/profile/${listing.profile.id}`
-                  // );
-                  navigation.navigate("ProfilePage", {
-                    profileId: listing.profile.id,
-                    firstName: first_name ?? "",
-                    lastName: last_name ?? "",
-                  });
-                }}
-                name={`${first_name} ${last_name}`}
-                imageUrl={listing.profile_listing_image?.image.url}
-                subtitle={listing.headline}
-                descriptionTitle={"Topics"}
-                tags={tagNames}
+          <Box p={4} backgroundColor="gray50" minHeight={800}>
+            <Text mt={4} color="gray800" variant="body1Medium">
+              Search / filter
+            </Text>
+            <View>
+              <TextInput
+                mt={2}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholder="Search members..."
+                width="100%"
               />
-            );
-          })}
-        </Box>
-      </ScrollView>
+            </View>
+            <Text mt={8} color="gray800" variant="body1Medium">
+              Results
+            </Text>
+
+            <Box mt={2}></Box>
+            {filteredProfileListings.map((listing, idx) => {
+              const { first_name, last_name } = listing.profile.user;
+
+              const tagNames =
+                listing.profile_listing_to_space_tags?.map(
+                  (tag) => tag.space_tag.label
+                ) ?? [];
+
+              return (
+                <ProfileCard
+                  key={listing.id}
+                  id={listing.id}
+                  onPress={() => {
+                    // router.push(
+                    //   `${router.asPath}/profile/${listing.profile.id}`
+                    // );
+                    navigation.navigate("ProfilePage", {
+                      profileId: listing.profile.id,
+                      firstName: first_name ?? "",
+                      lastName: last_name ?? "",
+                    });
+                  }}
+                  name={`${first_name} ${last_name}`}
+                  imageUrl={listing.profile_listing_image?.image.url}
+                  subtitle={listing.headline}
+                  descriptionTitle={"Topics"}
+                  tags={tagNames}
+                />
+              );
+            })}
+          </Box>
+        </ScrollView>
+      </CustomKeyboardAvoidingView>
     </SafeAreaView>
   );
 }

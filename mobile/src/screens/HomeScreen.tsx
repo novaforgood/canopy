@@ -50,7 +50,7 @@ export function HomeScreen({
                   mr={2}
                   borderRadius="sm"
                   overflow="hidden"
-                  width="46%"
+                  width="47%"
                   key={profile.id}
                 >
                   <TouchableOpacity
@@ -71,8 +71,8 @@ export function HomeScreen({
                         alignItems="center"
                         backgroundColor="white"
                       >
-                        <BxsGroup height={20} width={20} color="black" />
-                        <Text variant="subheading2" ml={2}>
+                        <BxsGroup height={16} width={16} color="black" />
+                        <Text variant="body1" ml={2}>
                           {profile.space.name}
                         </Text>
                       </Box>

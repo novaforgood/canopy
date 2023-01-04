@@ -9,6 +9,7 @@ import { SafeAreaView, TouchableOpacity, View } from "react-native";
 import { Text } from "../components/atomic/Text";
 import {
   BxGroup,
+  BxHome,
   BxMessageAltDetail,
   BxUser,
 } from "../generated/icons/regular";
@@ -27,8 +28,8 @@ const BOTTOM_TABS: Record<
   keyof SpaceStackParamList,
   { icon: (props: SvgProps & { color: string }) => JSX.Element; title: string }
 > = {
-  ProfilesList: { icon: BxGroup, title: "View Profiles" },
-  ChatMessages: { icon: BxMessageAltDetail, title: "Messages" },
+  ProfilesList: { icon: BxHome, title: "Home" },
+  ChatMessages: { icon: BxMessageAltDetail, title: "Chats" },
   Account: { icon: BxUser, title: "Account" },
 };
 

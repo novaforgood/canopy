@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { ThemeProvider } from "@shopify/restyle";
 import { useFonts } from "expo-font";
 import { Asset } from "expo-asset";
@@ -57,6 +57,7 @@ import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import splashImage from "../assets/images/splash.png";
 import { useUserData } from "./hooks/useUserData";
+import { NavigationProp, RootStackParamList } from "./navigation/types";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -153,6 +154,7 @@ function NavDrawer() {
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
   const { userData } = useUserData();
   const drawerRef = useRef(null);
+  const navigation = useNavigation<NavigationProp>();
   return (
     <Animated.View
       entering={SlideInRight}
@@ -221,6 +223,17 @@ function NavDrawer() {
               <Text px={4} pt={4}>
                 Logged in as {userData?.first_name} {userData?.last_name}
               </Text>
+              <Box px={4} pt={4}>
+                <Button
+                  variant="outline"
+                  onPress={() => {
+                    navigation.navigate("Home");
+                    setShowDrawer(false);
+                  }}
+                >
+                  Change directory
+                </Button>
+              </Box>
               <Box px={4} pt={4}>
                 <Button
                   variant="outline"
