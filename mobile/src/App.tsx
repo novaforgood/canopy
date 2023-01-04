@@ -2,6 +2,8 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { ThemeProvider } from "@shopify/restyle";
 import { useFonts } from "expo-font";
 import { Asset } from "expo-asset";
+import { EventProvider } from "react-native-outside-press";
+
 import {
   Rubik_400Regular,
   Rubik_700Bold,
@@ -58,6 +60,7 @@ import { useRefreshSession } from "./hooks/useRefreshSession";
 import splashImage from "../assets/images/splash.png";
 import { useUserData } from "./hooks/useUserData";
 import { NavigationProp, RootStackParamList } from "./navigation/types";
+import { isTapInsideComponent } from "./lib/ui";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -111,9 +114,11 @@ function App() {
         <UrqlProvider>
           <ThemeProvider theme={theme}>
             <NavigationContainer>
-              <StatusBar barStyle="dark-content" />
-              <RootNavigator />
-              {showNavDrawer && <NavDrawer />}
+              <EventProvider style={{ flex: 1 }}>
+                <StatusBar barStyle="dark-content" />
+                <RootNavigator />
+                {showNavDrawer && <NavDrawer />}
+              </EventProvider>
             </NavigationContainer>
             <CustomToast />
           </ThemeProvider>
@@ -124,31 +129,6 @@ function App() {
 }
 
 export default App;
-
-/**
- * use recursive to check if press inside that component
- * @param target - this is childRef component
- * @param nestedViewRef - all of children element of childRef
- */
-const isTapInsideComponent = (target: any, nestedViewRef: any): boolean => {
-  if (
-    target &&
-    nestedViewRef &&
-    target._nativeTag === nestedViewRef._nativeTag
-  ) {
-    return true;
-  }
-
-  if (nestedViewRef._children && nestedViewRef._children.length > 0) {
-    for (let index = 0; index <= nestedViewRef._children.length - 1; index++) {
-      if (isTapInsideComponent(target, nestedViewRef._children[index])) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
 
 function NavDrawer() {
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);

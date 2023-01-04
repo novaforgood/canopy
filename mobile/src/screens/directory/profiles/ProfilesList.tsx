@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { getDayOfYear } from "date-fns";
 import { useAtom } from "jotai";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   KeyboardAvoidingView,
   SafeAreaView,
@@ -22,7 +22,11 @@ import {
 } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { searchQueryAtom } from "../../../lib/jotai";
+import {
+  filteredProfileIdsAtom,
+  searchQueryAtom,
+  selectedTagIdsAtom,
+} from "../../../lib/jotai";
 import { ProfileCard } from "./ProfileCard";
 import { NavigationProp } from "../../../navigation/types";
 import { TextInput } from "../../../components/atomic/TextInput";
@@ -31,6 +35,9 @@ import { Text } from "../../../components/atomic/Text";
 import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
 
 import { CustomKeyboardAvoidingView } from "../../../components/CustomKeyboardAvoidingView";
+import { SelectAutocomplete } from "../../../components/atomic/SelectAutocomplete";
+import { FilterBar } from "./FilterBar";
+import { getCurrentUser } from "../../../lib/firebase";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -62,6 +69,7 @@ export function ProfilesList() {
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
 
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+  const [selectedTagIds, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
     useProfileListingsInSpaceQuery({
@@ -75,6 +83,16 @@ export function ProfilesList() {
             },
           },
           public: { _eq: true },
+          // filter by tags if tags selected
+          ...(Array.from(selectedTagIds).length > 0
+            ? {
+                _and: Array.from(selectedTagIds).map((tagId) => ({
+                  profile_listing_to_space_tags: {
+                    space_tag_id: { _eq: tagId },
+                  },
+                })),
+              }
+            : undefined),
         },
       },
     });
@@ -94,78 +112,80 @@ export function ProfilesList() {
     return fuse.search(searchQueryLower).map((result) => result.item);
   }, [allProfileListings, searchQuery]);
 
+  const [_, setFilteredProfileIds] = useAtom(filteredProfileIdsAtom);
+  useEffect(() => {
+    setFilteredProfileIds(
+      filteredProfileListings.map((listing) => listing.profile.id)
+    );
+  }, [filteredProfileListings]);
+
   return (
-    <SafeAreaView>
-      <CustomKeyboardAvoidingView>
-        <ScrollView style={{ height: "100%" }}>
-          <Box
-            flexDirection="column"
-            borderBottomWidth={1}
-            borderColor="green700"
-            borderTopWidth={1}
-          >
-            <SpaceCoverPhoto
-              src={currentSpace?.space_cover_image?.image.url}
-            ></SpaceCoverPhoto>
-            <Box py={6} pb={12} px={4} backgroundColor="olive100">
-              <Text mb={2} variant="heading3">
-                {currentSpace?.name}
-              </Text>
-              <HtmlDisplay html={currentSpace?.description_html ?? ""} />
-            </Box>
-          </Box>
-          <Box p={4} backgroundColor="gray50" minHeight={800}>
-            <Text mt={4} color="gray800" variant="body1Medium">
-              Search / filter
+    <CustomKeyboardAvoidingView>
+      <ScrollView style={{ height: "100%" }}>
+        <Box
+          flexDirection="column"
+          borderBottomWidth={1}
+          borderColor="green700"
+          borderTopWidth={1}
+        >
+          <SpaceCoverPhoto
+            src={currentSpace?.space_cover_image?.image.url}
+          ></SpaceCoverPhoto>
+          <Box py={6} pb={12} px={4} backgroundColor="olive100">
+            <Text mb={2} variant="heading3">
+              {currentSpace?.name}
             </Text>
-            <View>
-              <TextInput
-                mt={2}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                placeholder="Search members..."
-                width="100%"
+            <HtmlDisplay html={currentSpace?.description_html ?? ""} />
+          </Box>
+        </Box>
+        <Box p={4} backgroundColor="gray50" minHeight={600}>
+          <Text mt={4} color="gray800" variant="body1Medium">
+            Search / filter
+          </Text>
+
+          <FilterBar />
+
+          <Text mt={8} color="gray800" variant="body1Medium">
+            Results
+          </Text>
+
+          <Box mt={2}></Box>
+          {filteredProfileListings.length === 0 && (
+            <Text mt={4} color="gray500" variant="body1Italic">
+              No results
+            </Text>
+          )}
+          {filteredProfileListings.map((listing, idx) => {
+            const { first_name, last_name } = listing.profile.user;
+
+            const tagNames =
+              listing.profile_listing_to_space_tags?.map(
+                (tag) => tag.space_tag.label
+              ) ?? [];
+
+            return (
+              <ProfileCard
+                key={listing.id}
+                id={listing.id}
+                onPress={() => {
+                  // router.push(
+                  //   `${router.asPath}/profile/${listing.profile.id}`
+                  // );
+                  navigation.navigate("ProfilePage", {
+                    profileId: listing.profile.id,
+                  });
+                }}
+                name={`${first_name} ${last_name}`}
+                imageUrl={listing.profile_listing_image?.image.url}
+                subtitle={listing.headline}
+                descriptionTitle={"Topics"}
+                tags={tagNames}
               />
-            </View>
-            <Text mt={8} color="gray800" variant="body1Medium">
-              Results
-            </Text>
-
-            <Box mt={2}></Box>
-            {filteredProfileListings.map((listing, idx) => {
-              const { first_name, last_name } = listing.profile.user;
-
-              const tagNames =
-                listing.profile_listing_to_space_tags?.map(
-                  (tag) => tag.space_tag.label
-                ) ?? [];
-
-              return (
-                <ProfileCard
-                  key={listing.id}
-                  id={listing.id}
-                  onPress={() => {
-                    // router.push(
-                    //   `${router.asPath}/profile/${listing.profile.id}`
-                    // );
-                    navigation.navigate("ProfilePage", {
-                      profileId: listing.profile.id,
-                      firstName: first_name ?? "",
-                      lastName: last_name ?? "",
-                    });
-                  }}
-                  name={`${first_name} ${last_name}`}
-                  imageUrl={listing.profile_listing_image?.image.url}
-                  subtitle={listing.headline}
-                  descriptionTitle={"Topics"}
-                  tags={tagNames}
-                />
-              );
-            })}
-          </Box>
-        </ScrollView>
-      </CustomKeyboardAvoidingView>
-    </SafeAreaView>
+            );
+          })}
+        </Box>
+      </ScrollView>
+    </CustomKeyboardAvoidingView>
   );
 }
 

@@ -55,12 +55,12 @@ export function ProfileCard(props: ProfileCardProps) {
           src={imageUrl}
           alt={name}
         />
-        <Box flexDirection="column" alignItems="flex-start" px={4}>
+        <Box flexDirection="column" alignItems="flex-start" px={4} flex={1}>
           <Text variant="subheading1" color="gray900">
             {name}
           </Text>
           {subtitle && (
-            <Text mt={1} color="gray900" variant="body2">
+            <Text numberOfLines={2} mt={1} color="gray900" variant="body2">
               {subtitle}
             </Text>
           )}

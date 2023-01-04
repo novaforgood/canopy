@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { createText, BorderProps, useTheme } from "@shopify/restyle";
 import {
   TextInput as RNTextInput,
@@ -14,7 +14,7 @@ const TextInputBase = createText<Theme, RNTextInputProps & BorderProps<Theme>>(
 
 type TextInputBaseProps = React.ComponentPropsWithRef<typeof TextInputBase>;
 
-type TextInputProps = TextInputBaseProps &
+export type TextInputProps = TextInputBaseProps &
   BoxProps & {
     label?: string;
   };
@@ -24,6 +24,8 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
     const theme = useTheme<Theme>();
     const { containerProps, textInputProps, otherProps } = extractProps(props);
     const { label } = otherProps;
+
+    const [focused, setFocused] = useState(false);
     return (
       <Box {...containerProps}>
         {label && (
@@ -32,7 +34,7 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
           </Text>
         )}
         <Box
-          borderColor={"green900"}
+          borderColor={focused ? "black" : "gray500"}
           borderWidth={1}
           borderRadius="md"
           backgroundColor="white"
@@ -45,6 +47,14 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
             pt={3}
             pb={3}
             placeholderTextColor={theme.colors.gray400}
+            onFocus={(e) => {
+              setFocused(true);
+              textInputProps.onFocus?.(e);
+            }}
+            onBlur={(e) => {
+              setFocused(false);
+              textInputProps.onBlur?.(e);
+            }}
           />
         </Box>
       </Box>

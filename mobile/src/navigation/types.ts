@@ -11,8 +11,6 @@ export type RootStackParamList = {
   };
   ProfilePage: {
     profileId: string;
-    firstName: string;
-    lastName: string;
   };
   ChatRoom: {
     chatRoomId: string;

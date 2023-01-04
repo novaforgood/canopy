@@ -22,10 +22,6 @@ import { useTheme } from "@shopify/restyle";
 import { Theme } from "../theme";
 import { TouchableOpacity } from "react-native";
 import { BxMenu } from "../generated/icons/regular";
-import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
-import { Text } from "../components/atomic/Text";
-import { FullWindowOverlay } from "react-native-screens";
-import { ProfileImage } from "../components/ProfileImage";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -174,6 +170,7 @@ export function RootNavigator() {
                 // title: `${route.params.firstName} ${route.params.lastName}`,
                 title: "",
                 headerBackTitle: "Back",
+                animationTypeForReplace: "push",
               })}
             />
             <RootStack.Screen

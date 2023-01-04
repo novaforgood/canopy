@@ -17,6 +17,11 @@ import { ProfileSocialsDisplay } from "../components/profile-socials/ProfileSoci
 import { HOST_URL } from "../lib/url";
 import Constants from "expo-constants";
 import { useNavigation } from "@react-navigation/native";
+import { useAtom } from "jotai";
+import { filteredProfileIdsAtom } from "../lib/jotai";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useProfileViewTracker } from "../hooks/useProfileViewTracker";
+import { useEffect } from "react";
 
 export function ProfilePageScreen({
   route,
@@ -28,6 +33,7 @@ export function ProfilePageScreen({
   const { userData } = useUserData();
 
   const isLoggedIn = useIsLoggedIn();
+
   const [
     { data: profileData, fetching: fetchingProfileData },
     refetchProfileById,
@@ -37,6 +43,26 @@ export function ProfilePageScreen({
 
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
+
+  const { attemptTrackView } = useProfileViewTracker();
+  useEffect(() => {
+    if (!profileId) {
+      return;
+    }
+    if (!currentProfile?.id) {
+      return;
+    }
+
+    // This should only run once per page load.
+    attemptTrackView(profileId, currentProfile.id);
+  }, [attemptTrackView, currentProfile?.id, profileId]);
+
+  const [filteredProfileIds] = useAtom(filteredProfileIdsAtom);
+  const indexOfProfile = filteredProfileIds.indexOf(profileId);
+  const nextDisabled = indexOfProfile === filteredProfileIds.length - 1;
+  const nextProfileId = filteredProfileIds[indexOfProfile + 1];
+  const prevDisabled = indexOfProfile === 0;
+  const prevProfileId = filteredProfileIds[indexOfProfile - 1];
 
   const isMyProfile = profileId === currentProfile?.id;
 
@@ -76,10 +102,10 @@ export function ProfilePageScreen({
                 width={100}
               />
               <Box mt={4} ml={6} flexDirection="column">
-                <Text variant="heading4">
+                <Text variant="heading4" color="lime900">
                   {first_name} {last_name}
                 </Text>
-                <Text mt={1} variant="body1">
+                <Text mt={1} variant="body1" color="lime800">
                   {listing?.headline}
                 </Text>
               </Box>
@@ -118,6 +144,40 @@ export function ProfilePageScreen({
                 Message
               </Button>
             )}
+          </Box>
+
+          <Box
+            flexDirection="row"
+            justifyContent="space-between"
+            px={4}
+            py={4}
+            backgroundColor="green300"
+            borderBottomWidth={1}
+            borderBottomColor="green700"
+          >
+            <TouchableOpacity
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+              onPress={() => {
+                navigation.setParams({ profileId: prevProfileId });
+              }}
+              disabled={prevDisabled}
+            >
+              <Text color={prevDisabled ? "green500" : "green800"}>
+                {"<"} Previous
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+              onPress={() => {
+                navigation.setParams({ profileId: nextProfileId });
+              }}
+              disabled={nextDisabled}
+            >
+              <Text color={nextDisabled ? "green500" : "green800"}>
+                Next {">"}
+              </Text>
+            </TouchableOpacity>
           </Box>
 
           <Box
