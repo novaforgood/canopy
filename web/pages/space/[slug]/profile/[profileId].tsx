@@ -33,7 +33,6 @@ import { CustomPage } from "../../../../types";
 
 const ProfilePage: CustomPage = () => {
   const router = useRouter();
-  const { attemptTrackView } = useProfileViewTracker();
 
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const spaceSlug = useQueryParam("slug", "string");
@@ -42,6 +41,7 @@ const ProfilePage: CustomPage = () => {
   const { currentProfile } = useCurrentProfile();
   const isLoggedIn = useIsLoggedIn();
 
+  const { attemptTrackView } = useProfileViewTracker();
   useEffect(() => {
     if (!profileId) {
       return;

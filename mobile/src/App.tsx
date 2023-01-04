@@ -1,4 +1,4 @@
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider } from "@shopify/restyle";
 import { useFonts } from "expo-font";
 import { Asset } from "expo-asset";
@@ -17,7 +17,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import {
@@ -26,41 +25,30 @@ import {
   ImageSourcePropType,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { RootNavigator } from "./navigation/RootNavigator";
 import theme from "./theme";
-import { AuthProvider } from "./providers/AuthProvider";
 import { UrqlProvider } from "./providers/UrqlProvider";
 import { useAtom } from "jotai";
 import { sessionAtom, showNavDrawerAtom } from "./lib/jotai";
 import Animated, {
-  SlideInRight,
-  SlideOutRight,
-  FadeOut,
-  Easing,
   useSharedValue,
   withTiming,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import Constants from "expo-constants";
-import { Box } from "./components/atomic/Box";
-import { Text } from "./components/atomic/Text";
 import { LoadingSpinner } from "./components/LoadingSpinner";
-import { BxX } from "./generated/icons/regular";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "./components/atomic/Button";
-import { onAuthStateChanged, signOut } from "./lib/firebase";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { onAuthStateChanged } from "./lib/firebase";
 import { CustomToast } from "./components/CustomToast";
 import * as SplashScreen from "expo-splash-screen";
 import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import splashImage from "../assets/images/splash.png";
-import { useUserData } from "./hooks/useUserData";
-import { NavigationProp, RootStackParamList } from "./navigation/types";
-import { isTapInsideComponent } from "./lib/ui";
+import { RootStackParamList } from "./navigation/types";
+import { NavDrawer } from "./components/NavDrawer";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -74,8 +62,6 @@ function App() {
     Rubik_700Bold_Italic,
     Rubik_500Medium_Italic,
   });
-
-  const [showNavDrawer, setShowNavDrawer] = useAtom(showNavDrawerAtom);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -117,7 +103,7 @@ function App() {
               <EventProvider style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" />
                 <RootNavigator />
-                {showNavDrawer && <NavDrawer />}
+                <NavDrawer />
               </EventProvider>
             </NavigationContainer>
             <CustomToast />
@@ -129,109 +115,6 @@ function App() {
 }
 
 export default App;
-
-function NavDrawer() {
-  const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
-  const { userData } = useUserData();
-  const drawerRef = useRef(null);
-  const navigation = useNavigation<NavigationProp>();
-  return (
-    <Animated.View
-      entering={SlideInRight}
-      exiting={SlideOutRight.duration(200)}
-      style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        height: "100%",
-        width: "100%",
-      }}
-    >
-      <Box
-        onStartShouldSetResponder={(evt: GestureResponderEvent) => {
-          evt.persist();
-
-          // if press outside, execute onPressOutside callback
-          if (
-            drawerRef &&
-            !isTapInsideComponent(evt.target, drawerRef.current || drawerRef)
-          ) {
-            setShowDrawer(false);
-          }
-
-          return true;
-        }}
-        style={{
-          height: "100%",
-          width: "100%",
-        }}
-      >
-        <Box
-          width="100%"
-          justifyContent="flex-end"
-          flexDirection="row"
-          height="100%"
-        >
-          <Box
-            ref={drawerRef}
-            backgroundColor="olive100"
-            width={240}
-            height="100%"
-            shadowColor="black"
-            shadowOffset={{ width: 0, height: 0 }}
-            shadowOpacity={0.2}
-            shadowRadius={5}
-            elevation={10}
-          >
-            <SafeAreaView>
-              <Box
-                width="100%"
-                flexDirection="row"
-                justifyContent="flex-end"
-                px={4}
-                pt={1}
-              >
-                <TouchableOpacity
-                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                  onPress={() => {
-                    setShowDrawer(false);
-                  }}
-                >
-                  <BxX height={32} width={32} color="black" />
-                </TouchableOpacity>
-              </Box>
-              <Text px={4} pt={4}>
-                Logged in as {userData?.first_name} {userData?.last_name}
-              </Text>
-              <Box px={4} pt={4}>
-                <Button
-                  variant="outline"
-                  onPress={() => {
-                    navigation.navigate("Home");
-                    setShowDrawer(false);
-                  }}
-                >
-                  Change directory
-                </Button>
-              </Box>
-              <Box px={4} pt={4}>
-                <Button
-                  variant="outline"
-                  onPress={() => {
-                    signOut();
-                    setShowDrawer(false);
-                  }}
-                >
-                  Sign out
-                </Button>
-              </Box>
-            </SafeAreaView>
-          </Box>
-        </Box>
-      </Box>
-    </Animated.View>
-  );
-}
 
 function AnimatedAppLoader({
   children,
