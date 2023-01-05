@@ -48,6 +48,7 @@ export function Modal(props: ComponentProps & Partial<ModalProps>) {
 
 const styles = StyleSheet.create({
   modalView: {
+    width: "100%",
     backgroundColor: "white",
     borderRadius: 10,
     alignItems: "center",

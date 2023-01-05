@@ -105,8 +105,8 @@ export function ProfilePageScreen({
                 showLightbox
                 src={listing?.profile_listing_image?.image.url}
                 alt={`${first_name} ${last_name}`}
-                height={100}
-                width={100}
+                height={120}
+                width={120}
               />
               <Box mt={4} ml={6} flexDirection="column">
                 <Text variant="heading4" color="black">

@@ -20,6 +20,7 @@ function IconLink(props: {
       }}
     >
       <Box
+        mr={2}
         height={40}
         width={40}
         p={1.5}

@@ -113,8 +113,8 @@ export function MessageModal(props: MessageModalProps) {
         // secondaryActionText={createdChatRoomId ? "Close" : "Cancel"}
         // onSecondaryAction={onClose}
       >
-        <Box px={16} pt={8}>
-          <Box flexDirection="column" alignItems="center" width={300}>
+        <Box px={4} pt={8} width="100%">
+          <Box flexDirection="column" alignItems="center">
             <Text variant="heading4">
               {createdChatRoomId
                 ? "Message sent!"
@@ -123,26 +123,23 @@ export function MessageModal(props: MessageModalProps) {
 
             <Box mt={8}></Box>
 
-            <Box flexDirection="column" width={300}>
+            <Box flexDirection="column" width="100%">
               {createdChatRoomId ? (
                 <Text>
                   {profileData.profile_by_pk.user.first_name} will receive a
                   notification of your message request.
                 </Text>
               ) : (
-                <Box flexDirection="column" width="100%">
-                  <Text mb={2} color="gray600">
-                    Message
-                  </Text>
-                  <TextInput
-                    multiline={true}
-                    keyboardType="default"
-                    numberOfLines={4}
-                    value={introMsg}
-                    onChangeText={setIntroMsg}
-                    placeholder="Example: Hi, I’m Billy! I can’t believe that someone else here is interested in dinosaurs. Maybe we could chat about it sometime? :)"
-                  />
-                </Box>
+                <TextInput
+                  width="100%"
+                  label="Message"
+                  keyboardType="default"
+                  multiline={true}
+                  numberOfLines={4}
+                  value={introMsg}
+                  onChangeText={setIntroMsg}
+                  placeholder="Example: Hi, I’m Billy! I can’t believe that someone else here is interested in dinosaurs. Maybe we could chat about it sometime? :)"
+                />
               )}
             </Box>
           </Box>

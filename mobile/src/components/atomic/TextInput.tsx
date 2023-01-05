@@ -41,6 +41,7 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
           borderWidth={1}
           borderRadius="md"
           backgroundColor="white"
+          width="100%"
         >
           <TextInputBase
             {...textInputProps}
@@ -49,6 +50,7 @@ export const TextInput = forwardRef<TextInputProps, TextInputProps>(
             px={4}
             pt={3}
             pb={3}
+            style={{ width: "100%" }}
             placeholderTextColor={theme.colors.gray400}
             onFocus={(e) => {
               setFocused(true);
