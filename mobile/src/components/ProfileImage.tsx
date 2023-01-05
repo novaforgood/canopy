@@ -1,7 +1,12 @@
 import { ImgHTMLAttributes, SVGProps } from "react";
 
-import { Image } from "react-native";
+import { useTheme } from "@shopify/restyle";
+import { Image, TouchableOpacity } from "react-native";
+import Lightbox from "react-native-lightbox";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, SvgProps } from "react-native-svg";
+
+import { BxX } from "../generated/icons/regular";
 
 import { Box, BoxProps } from "./atomic/Box";
 
@@ -50,6 +55,7 @@ export function ProfileImage(props: ProfileImageProps) {
   //     [`${className}`]: true,
   //   });
 
+  const theme = useTheme();
   return src ? (
     <Box
       backgroundColor="gray100"
@@ -58,12 +64,34 @@ export function ProfileImage(props: ProfileImageProps) {
       style={{ aspectRatio: 1 }}
       {...rest}
     >
-      <Image
-        style={{ width: "100%", height: "100%" }}
-        source={{
-          uri: src,
-        }}
-      />
+      <Lightbox
+        renderHeader={(close: () => void) => (
+          <Box mt={8} ml={4}>
+            <TouchableOpacity onPress={close}>
+              <BxX height={28} width={28} color="white" />
+            </TouchableOpacity>
+          </Box>
+        )}
+        renderContent={() => (
+          <Image
+            style={{
+              width: "100%",
+              aspectRatio: 1,
+              borderRadius: rounded ? theme.borderRadii.full : undefined,
+            }}
+            source={{
+              uri: src,
+            }}
+          />
+        )}
+      >
+        <Image
+          style={{ width: "100%", height: "100%" }}
+          source={{
+            uri: src,
+          }}
+        />
+      </Lightbox>
     </Box>
   ) : (
     <Box
