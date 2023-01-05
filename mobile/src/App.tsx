@@ -1,8 +1,10 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { ThemeProvider } from "@shopify/restyle";
-import { useFonts } from "expo-font";
-import { Asset } from "expo-asset";
-import { EventProvider } from "react-native-outside-press";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
   Rubik_400Regular,
@@ -12,13 +14,13 @@ import {
   Rubik_700Bold_Italic,
   Rubik_500Medium_Italic,
 } from "@expo-google-fonts/rubik";
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { ThemeProvider } from "@shopify/restyle";
+import { Asset } from "expo-asset";
+import Constants from "expo-constants";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useAtom } from "jotai";
 import {
   GestureResponderEvent,
   Image,
@@ -28,33 +30,33 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { RootNavigator } from "./navigation/RootNavigator";
-import theme from "./theme";
-import { UrqlProvider } from "./providers/UrqlProvider";
-import { useAtom } from "jotai";
-import { sessionAtom } from "./lib/jotai";
+import { EventProvider } from "react-native-outside-press";
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import Constants from "expo-constants";
-import { LoadingSpinner } from "./components/LoadingSpinner";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { onAuthStateChanged } from "./lib/firebase";
+
+import splashImage from "../assets/images/splash.png";
+
 import { CustomToast } from "./components/CustomToast";
-import * as SplashScreen from "expo-splash-screen";
+import { LoadingSpinner } from "./components/LoadingSpinner";
+import { NavDrawer } from "./components/NavDrawer";
 import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
-import splashImage from "../assets/images/splash.png";
+import { onAuthStateChanged } from "./lib/firebase";
+import { sessionAtom } from "./lib/jotai";
+import { RootNavigator } from "./navigation/RootNavigator";
 import { RootStackParamList } from "./navigation/types";
-import { NavDrawer } from "./components/NavDrawer";
+import { UrqlProvider } from "./providers/UrqlProvider";
+import theme from "./theme";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 function App() {
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     Rubik_400Regular,
     Rubik_700Bold,
     Rubik_500Medium,
@@ -164,7 +166,7 @@ function AnimatedSplashScreen({
     if (isAppReady) {
       animation.value = withTiming(0, { duration: 500 });
     }
-  }, [isAppReady]);
+  }, [animation, isAppReady]);
 
   const onImageLoaded = useCallback(async () => {
     try {

@@ -1,11 +1,14 @@
-import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
+
+import { useAtom } from "jotai";
+
 import { Box } from "../../../components/atomic/Box";
 import { SelectAutocomplete } from "../../../components/atomic/SelectAutocomplete";
 import { TextInput } from "../../../components/atomic/TextInput";
 import { Tag } from "../../../components/Tag";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { selectedTagIdsAtom, searchQueryAtom } from "../../../lib/jotai";
+
 import { isTagOfficial } from "./tags";
 
 export function FilterBar() {

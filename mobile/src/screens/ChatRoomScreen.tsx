@@ -1,13 +1,14 @@
-import type { StackScreenProps } from "@react-navigation/stack";
-
-import { Text } from "../components/atomic/Text";
-import { useChatRoomQuery, useProfileByIdQuery } from "../generated/graphql";
-import { useUserData } from "../hooks/useUserData";
-import type { RootStackParamList } from "../navigation/types";
 import { ScrollView, SafeAreaView, KeyboardAvoidingView } from "react-native";
 
-import { RenderChatRoom } from "./directory/RenderChatRoom";
+import { Text } from "../components/atomic/Text";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { useChatRoomQuery, useProfileByIdQuery } from "../generated/graphql";
+import { useUserData } from "../hooks/useUserData";
+
+import { RenderChatRoom } from "./directory/RenderChatRoom";
+
+import type { RootStackParamList } from "../navigation/types";
+import type { StackScreenProps } from "@react-navigation/stack";
 
 export function ChatRoomScreen({
   navigation,

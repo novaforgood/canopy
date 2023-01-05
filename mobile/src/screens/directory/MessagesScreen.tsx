@@ -1,7 +1,9 @@
+import { useState, useEffect, useCallback, useMemo } from "react";
+
 import { Link, useNavigation } from "@react-navigation/native";
 import { formatDistanceStrict } from "date-fns";
-import { useState, useEffect, useCallback, useMemo } from "react";
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
+
 import { Box } from "../../components/atomic/Box";
 import { Button } from "../../components/atomic/Button";
 import { Text } from "../../components/atomic/Text";

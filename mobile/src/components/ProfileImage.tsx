@@ -1,6 +1,8 @@
 import { ImgHTMLAttributes, SVGProps } from "react";
+
 import { Image } from "react-native";
 import Svg, { Path, SvgProps } from "react-native-svg";
+
 import { Box, BoxProps } from "./atomic/Box";
 
 function UserSvg(props: SvgProps) {

@@ -1,30 +1,17 @@
-import {
-  Fragment,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  GestureResponderEvent,
-  TextInput as RNTextInput,
-  TouchableOpacity,
-} from "react-native";
+import { ReactElement, useEffect, useRef, useState } from "react";
+
 import {
   ScrollView,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import OutsidePressHandler from "react-native-outside-press";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import { BxCaretDown } from "../../generated/icons/regular";
 
 import { Box } from "./Box";
 import { Text } from "./Text";
-import { TextInput, TextInputProps } from "./TextInput";
+import { TextInput } from "./TextInput";
 
 type OptionType<T> = { label: string; value: T };
 
@@ -70,6 +57,7 @@ export function SelectAutocomplete<T extends string>(
 
   const [focused, setFocused] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputRef = useRef<any>(null);
 
   useEffect(() => {

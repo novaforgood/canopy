@@ -1,5 +1,4 @@
 import { createTheme } from "@shopify/restyle";
-import { Platform } from "react-native";
 
 type BaseTextVariant =
   | "heading1"
@@ -70,6 +69,7 @@ function makeTextVariants() {
       };
     });
     return acc;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, {} as Record<string, any>) as Record<TextVariant, any>;
 }
 

@@ -1,5 +1,6 @@
-import { useAtom } from "jotai";
 import { useMemo } from "react";
+
+import { useAtom } from "jotai";
 
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { currentSpaceAtom } from "../lib/jotai";
@@ -27,6 +28,6 @@ export function useCurrentSpace() {
       fetchingCurrentSpace: fetching,
       refetchCurrentSpace,
     }),
-    [fetching, refetchCurrentSpace, space]
+    [fetching, refetchCurrentSpace, space, spaceRaw]
   );
 }

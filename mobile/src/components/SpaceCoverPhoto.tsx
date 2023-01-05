@@ -1,8 +1,10 @@
 import { ImgHTMLAttributes, useState } from "react";
 
+import { Image, View } from "react-native";
+
 import { BxImage } from "../generated/icons/regular";
 import { BxsImage } from "../generated/icons/solid";
-import { Image, View } from "react-native";
+
 import { Box, BoxProps } from "./atomic/Box";
 
 type SpaceCoverPhotoProps = BoxProps & {

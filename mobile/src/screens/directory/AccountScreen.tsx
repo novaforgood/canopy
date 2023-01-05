@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Linking, SafeAreaView, ScrollView, View } from "react-native";
+
 import { Box } from "../../components/atomic/Box";
 import { Button } from "../../components/atomic/Button";
 import { Text } from "../../components/atomic/Text";

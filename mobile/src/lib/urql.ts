@@ -1,4 +1,5 @@
 import { cacheExchange } from "@urql/exchange-graphcache";
+import { createClient as createWSClient } from "graphql-ws";
 import {
   createClient,
   dedupExchange,
@@ -7,8 +8,8 @@ import {
 } from "urql";
 
 import schema from "../generated/graphql";
-import { createClient as createWSClient } from "graphql-ws";
 
+import { GRAPHQL_ENDPOINT, GRAPHQL_WS_ENDPOINT } from "./url";
 import {
   chatMessageResolver,
   insertChatMessageUpdater,
@@ -16,7 +17,6 @@ import {
   optimisticInsertChatMessageResolver,
   optimisticUpdateProfileToChatRoomResolver,
 } from "./urql-chat-resolvers";
-import { GRAPHQL_ENDPOINT, GRAPHQL_WS_ENDPOINT } from "./url";
 
 export function getUrqlClient(jwt: string) {
   console.log("getUrqlClient. Jwt length:", jwt.length);

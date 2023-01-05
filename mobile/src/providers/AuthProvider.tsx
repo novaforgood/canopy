@@ -1,5 +1,6 @@
-import { useAtom } from "jotai";
 import { useEffect } from "react";
+
+import { useAtom } from "jotai";
 
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRefreshSession } from "../hooks/useRefreshSession";

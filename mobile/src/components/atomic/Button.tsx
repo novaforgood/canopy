@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react";
+
 import {
   createBox,
   ColorProps,
@@ -6,7 +7,9 @@ import {
   BorderProps,
 } from "@shopify/restyle";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+
 import { Theme } from "../../theme";
+
 import { Text, TextProps } from "./Text";
 
 const ButtonBase = createBox<Theme, TouchableOpacityProps>(TouchableOpacity);

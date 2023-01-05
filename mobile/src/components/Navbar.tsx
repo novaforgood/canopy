@@ -1,6 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
+
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+
 import { Box } from "./atomic/Box";
 import { Text } from "./atomic/Text";
 

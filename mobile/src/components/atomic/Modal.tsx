@@ -3,8 +3,9 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import RNModal from "react-native-modal";
 
-import type { ModalProps } from "react-native-modal";
 import { BxX } from "../../generated/icons/regular";
+
+import type { ModalProps } from "react-native-modal";
 
 interface ComponentProps {
   onCloseButtonPress?: () => void;

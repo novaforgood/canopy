@@ -1,10 +1,5 @@
-import type { StackScreenProps } from "@react-navigation/stack";
-import { Box } from "../components/atomic/Box";
-import { Button } from "../components/atomic/Button";
-import { Text } from "../components/atomic/Text";
-import { useAllProfilesOfUserQuery } from "../generated/graphql";
-import { useUserData } from "../hooks/useUserData";
-import { NavigationProp, RootStackParamList } from "../navigation/types";
+import { useNavigation } from "@react-navigation/native";
+import { useAtom } from "jotai";
 import {
   View,
   Image,
@@ -13,13 +8,20 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import { BxCog } from "../generated/icons/regular";
+
+import { Box } from "../components/atomic/Box";
+import { Button } from "../components/atomic/Button";
+import { Text } from "../components/atomic/Text";
 import { SpaceCoverPhoto } from "../components/SpaceCoverPhoto";
+import { useAllProfilesOfUserQuery } from "../generated/graphql";
+import { BxCog } from "../generated/icons/regular";
 import { BxsGroup } from "../generated/icons/solid";
-import { useAtom } from "jotai";
-import { currentSpaceAtom } from "../lib/jotai";
-import { useNavigation } from "@react-navigation/native";
+import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
+import { currentSpaceAtom } from "../lib/jotai";
+import { NavigationProp, RootStackParamList } from "../navigation/types";
+
+import type { StackScreenProps } from "@react-navigation/stack";
 
 export function HomeScreen({
   navigation,

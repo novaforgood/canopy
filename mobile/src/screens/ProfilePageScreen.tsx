@@ -1,27 +1,30 @@
-import type { StackScreenProps } from "@react-navigation/stack";
+import { useEffect } from "react";
+
+import { useNavigation } from "@react-navigation/native";
+import Constants from "expo-constants";
+import { useAtom } from "jotai";
+import { ScrollView, SafeAreaView, Linking } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+
 import { Box } from "../components/atomic/Box";
 import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
-import { useProfileByIdQuery } from "../generated/graphql";
-import { useUserData } from "../hooks/useUserData";
-import { NavigationProp, RootStackParamList } from "../navigation/types";
-import { ScrollView, SafeAreaView, Linking } from "react-native";
-import { BxEdit, BxMessageDetail } from "../generated/icons/regular";
+import { HtmlDisplay } from "../components/HtmlDisplay";
+import { ProfileSocialsDisplay } from "../components/profile-socials/ProfileSocialsDisplay";
 import { ProfileImage } from "../components/ProfileImage";
-import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { Tag } from "../components/Tag";
+import { useProfileByIdQuery } from "../generated/graphql";
+import { BxEdit, BxMessageDetail } from "../generated/icons/regular";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
-import { HtmlDisplay } from "../components/HtmlDisplay";
-import { Tag } from "../components/Tag";
-import { ProfileSocialsDisplay } from "../components/profile-socials/ProfileSocialsDisplay";
-import { HOST_URL } from "../lib/url";
-import Constants from "expo-constants";
-import { useNavigation } from "@react-navigation/native";
-import { useAtom } from "jotai";
-import { filteredProfileIdsAtom } from "../lib/jotai";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useProfileViewTracker } from "../hooks/useProfileViewTracker";
-import { useEffect } from "react";
+import { useUserData } from "../hooks/useUserData";
+import { filteredProfileIdsAtom } from "../lib/jotai";
+import { HOST_URL } from "../lib/url";
+import { NavigationProp, RootStackParamList } from "../navigation/types";
+
+import type { StackScreenProps } from "@react-navigation/stack";
 
 export function ProfilePageScreen({
   route,

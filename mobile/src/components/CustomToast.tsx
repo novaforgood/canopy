@@ -2,7 +2,9 @@ import type { ReactNode } from "react";
 import React, { useEffect, useState } from "react";
 
 import Toast from "react-native-toast-message";
+
 import { Theme } from "../theme";
+
 import { Box } from "./atomic/Box";
 import { Text } from "./atomic/Text";
 
@@ -101,6 +103,7 @@ function ToastComponent({
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const toastConfig: Record<string, (args: any) => ReactNode> = {
   [ToastLevel.Error]({ text1, type, props }) {
     return <ToastComponent text={text1} level={type} prefix={props.prefix} />;

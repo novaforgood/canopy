@@ -1,12 +1,15 @@
 import React, { forwardRef, useState } from "react";
+
 import { createText, BorderProps, useTheme } from "@shopify/restyle";
 import {
   TextInput as RNTextInput,
   TextInputProps as RNTextInputProps,
 } from "react-native";
+
 import { Theme } from "../../theme";
-import { Text } from "./Text";
+
 import { Box, BoxProps } from "./Box";
+import { Text } from "./Text";
 
 const TextInputBase = createText<Theme, RNTextInputProps & BorderProps<Theme>>(
   RNTextInput

@@ -1,4 +1,5 @@
 import { Pressable, TouchableOpacity } from "react-native";
+
 import { Box } from "../../../components/atomic/Box";
 import { Text } from "../../../components/atomic/Text";
 import { ProfileImage } from "../../../components/ProfileImage";

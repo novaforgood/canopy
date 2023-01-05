@@ -1,21 +1,10 @@
-import type { StackScreenProps } from "@react-navigation/stack";
 import { useCallback, useEffect, useState } from "react";
-import { Box } from "../components/atomic/Box";
-import { Button } from "../components/atomic/Button";
-import { Text } from "../components/atomic/Text";
-import { TextInput } from "../components/atomic/TextInput";
-import {
-  signInWithCredential,
-  signInWithEmailAndPassword,
-  signInWithGoogle,
-  signOut,
-} from "../lib/firebase";
-import type { RootStackParamList } from "../navigation/types";
+
+import { AuthSessionResult } from "expo-auth-session";
+import { useIdTokenAuthRequest } from "expo-auth-session/providers/google";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
-import { useIdTokenAuthRequest } from "expo-auth-session/providers/google";
 import { getAdditionalUserInfo, GoogleAuthProvider } from "firebase/auth";
-import { HOST_URL } from "../lib/url";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -25,11 +14,25 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import { BxlGoogle } from "../generated/icons/logos";
+
+import { Box } from "../components/atomic/Box";
+import { Button } from "../components/atomic/Button";
+import { Text } from "../components/atomic/Text";
+import { TextInput } from "../components/atomic/TextInput";
 import { CustomKeyboardAvoidingView } from "../components/CustomKeyboardAvoidingView";
 import { toast } from "../components/CustomToast";
-import { AuthSessionResult } from "expo-auth-session";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { BxlGoogle } from "../generated/icons/logos";
+import {
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  signInWithGoogle,
+  signOut,
+} from "../lib/firebase";
+import { HOST_URL } from "../lib/url";
+
+import type { RootStackParamList } from "../navigation/types";
+import type { StackScreenProps } from "@react-navigation/stack";
 
 WebBrowser.maybeCompleteAuthSession();
 

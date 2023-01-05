@@ -1,11 +1,13 @@
+import { useEffect, useMemo, useRef } from "react";
+
 import {
   useNavigation,
   useNavigationState,
   useRoute,
 } from "@react-navigation/native";
 import { getDayOfYear } from "date-fns";
+import Fuse from "fuse.js";
 import { useAtom } from "jotai";
-import { useEffect, useMemo, useRef } from "react";
 import {
   KeyboardAvoidingView,
   SafeAreaView,
@@ -13,31 +15,30 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Fuse from "fuse.js";
 
 import { Box } from "../../../components/atomic/Box";
+import { SelectAutocomplete } from "../../../components/atomic/SelectAutocomplete";
+import { Text } from "../../../components/atomic/Text";
+import { TextInput } from "../../../components/atomic/TextInput";
+import { CustomKeyboardAvoidingView } from "../../../components/CustomKeyboardAvoidingView";
+import { HtmlDisplay } from "../../../components/HtmlDisplay";
+import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
 import {
   Profile_Role_Enum,
   useProfileListingsInSpaceQuery,
 } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
+import { getCurrentUser } from "../../../lib/firebase";
 import {
   filteredProfileIdsAtom,
   searchQueryAtom,
   selectedTagIdsAtom,
 } from "../../../lib/jotai";
-import { ProfileCard } from "./ProfileCard";
 import { NavigationProp } from "../../../navigation/types";
-import { TextInput } from "../../../components/atomic/TextInput";
-import { HtmlDisplay } from "../../../components/HtmlDisplay";
-import { Text } from "../../../components/atomic/Text";
-import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
 
-import { CustomKeyboardAvoidingView } from "../../../components/CustomKeyboardAvoidingView";
-import { SelectAutocomplete } from "../../../components/atomic/SelectAutocomplete";
 import { FilterBar } from "./FilterBar";
-import { getCurrentUser } from "../../../lib/firebase";
+import { ProfileCard } from "./ProfileCard";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -117,7 +118,7 @@ export function ProfilesList() {
     setFilteredProfileIds(
       filteredProfileListings.map((listing) => listing.profile.id)
     );
-  }, [filteredProfileListings]);
+  }, [filteredProfileListings, setFilteredProfileIds]);
 
   return (
     <CustomKeyboardAvoidingView>

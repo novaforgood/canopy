@@ -1,7 +1,9 @@
 import { Linking, TouchableOpacity } from "react-native";
+
 import { useProfileListingSocialsQuery } from "../../generated/graphql";
 import { BxsEnvelope } from "../../generated/icons/solid";
 import { Box } from "../atomic/Box";
+
 import { MAP_SOCIAL_TYPE_TO_PROPERTIES } from "./constants";
 
 function IconLink(props: {

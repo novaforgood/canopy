@@ -1,11 +1,15 @@
-import { Link, useNavigation } from "@react-navigation/native";
-import { format } from "date-fns";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 
+import { Link, useNavigation } from "@react-navigation/native";
+import { format } from "date-fns";
 import { Button, Keyboard, ScrollView, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { Box } from "../../components/atomic/Box";
 import { Text } from "../../components/atomic/Text";
 import { TextInput } from "../../components/atomic/TextInput";
+import { CustomKeyboardAvoidingView } from "../../components/CustomKeyboardAvoidingView";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { ProfileImage } from "../../components/ProfileImage";
 import {
   useMessagesQuery,
@@ -22,9 +26,6 @@ import { usePrevious } from "../../hooks/usePrevious";
 import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "../../lib/constants";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { NavigationProp } from "../../navigation/types";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { CustomKeyboardAvoidingView } from "../../components/CustomKeyboardAvoidingView";
 
 type ChatMessage = MessagesQuery["chat_message"][number];
 type ChatRoom = ChatRoomQuery["chat_room_by_pk"];
@@ -259,8 +260,6 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
               navigation.navigate("ProfilePage", {
                 profileId: otherProfile.id,
-                firstName: otherProfile.user.first_name ?? "",
-                lastName: otherProfile.user.last_name ?? "",
               });
             }}
           >
