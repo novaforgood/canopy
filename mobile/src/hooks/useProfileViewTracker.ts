@@ -59,8 +59,6 @@ export function useProfileViewTracker() {
       const shouldTrack = await shouldTrackView(viewedProfileId);
       if (!shouldTrack) return;
 
-      console.log("Should track!");
-
       return insertProfileViewEvent({
         viewed_profile_id: viewedProfileId,
         viewer_profile_id: viewerProfileId,

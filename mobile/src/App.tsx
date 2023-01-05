@@ -32,7 +32,7 @@ import { RootNavigator } from "./navigation/RootNavigator";
 import theme from "./theme";
 import { UrqlProvider } from "./providers/UrqlProvider";
 import { useAtom } from "jotai";
-import { sessionAtom, showNavDrawerAtom } from "./lib/jotai";
+import { sessionAtom } from "./lib/jotai";
 import Animated, {
   useSharedValue,
   withTiming,

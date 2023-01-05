@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
 
+import { useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 interface HtmlDusplayProps {

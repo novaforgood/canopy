@@ -1,5 +1,5 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box } from "../components/atomic/Box";
 import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
@@ -43,64 +43,72 @@ export function SignInScreen({
     clientId: Constants.expoConfig?.extra?.["FIREBASE_WEB_CLIENT_ID"] ?? "",
   });
 
-  useEffect(() => {
-    const processResponse = async (response: AuthSessionResult) => {
-      if (response.type !== "success") {
-        toast.error("Failed to sign in with Google");
-        return;
-      }
-      if (!response.authentication) {
-        toast.error("No response.authentication");
-        return;
-      }
-
-      const credential = GoogleAuthProvider.credential(
-        response.authentication.idToken
-      );
-
-      signInWithCredential(credential)
-        .then(async (userCred) => {
-          const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
-
-          if (isNewUser) {
-            // User has never signed in before
-            await userCred.user.delete();
-            // toast.error("Account not created yet. Please sign up first!");
-          } else if (!userCred.user.emailVerified) {
-            // User has signed in before but has not verified email
-            // router.push({ pathname: "/verify", query: router.query });
-          } else {
-            const idToken = await userCred.user.getIdToken();
-            await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
-              method: "POST",
-              headers: {
-                authorization: `Bearer ${idToken}`,
-              },
-            });
-            // await redirectUsingQueryParam("/");
-          }
-        })
-        .catch((err) => {
-          toast.error(err.message);
-          signOut();
-        })
-        .finally(() => {
-          setSigningIn(false);
-        });
-    };
-
-    if (response) {
-      processResponse(response);
+  const processResponse = useCallback(async (response: AuthSessionResult) => {
+    if (response.type !== "success") {
+      toast.error("Failed to sign in with Google");
+      return;
     }
-  }, [response]);
+    if (!response.authentication) {
+      toast.error("Missing `response.authentication`");
+      return;
+    }
+
+    const credential = GoogleAuthProvider.credential(
+      response.authentication.idToken
+    );
+
+    console.log(credential);
+    console.log("Ligma ballsng");
+    signInWithCredential(credential)
+      .then(async (userCred) => {
+        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
+
+        if (isNewUser) {
+          // User has never signed in before
+          await userCred.user.delete();
+          // toast.error("Account not created yet. Please sign up first!");
+        } else if (!userCred.user.emailVerified) {
+          // User has signed in before but has not verified email
+          // router.push({ pathname: "/verify", query: router.query });
+        } else {
+          const idToken = await userCred.user.getIdToken();
+          const res = await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${idToken}`,
+            },
+          });
+
+          console.log(res);
+          // await redirectUsingQueryParam("/");
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+        signOut();
+      })
+      .finally(() => {
+        setSigningIn(false);
+      });
+  }, []);
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
     setSigningIn(true);
     await promptAsync()
       .then((response) => {
+        console.log("Ligma");
         if (response.type === "success") {
           console.log("res", response);
+          return response;
+        } else {
+          throw new Error("Google sign in failed");
+        }
+      })
+      .then((response) => {
+        console.log("Ligma");
+        if (response) {
+          processResponse(response);
         } else {
           throw new Error("Google sign in failed");
         }
