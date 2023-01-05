@@ -36,6 +36,7 @@ export type ProfileImageProps = BoxProps & {
   alt?: string;
   rounded?: boolean;
   border?: boolean;
+  showLightbox?: boolean;
 };
 
 export function ProfileImage(props: ProfileImageProps) {
@@ -44,16 +45,9 @@ export function ProfileImage(props: ProfileImageProps) {
     alt = "Profile",
     rounded = true,
     border = true,
+    showLightbox = false,
     ...rest
   } = props;
-
-  //   const styles = classNames({
-  //     "bg-gray-100 shrink-0 select-none": true,
-  //     "border border-green-500": border,
-  //     "rounded-full": rounded,
-  //     "bg-olive-200 text-gray-50 flex items-center justify-center": !src,
-  //     [`${className}`]: true,
-  //   });
 
   const theme = useTheme();
   return src ? (
@@ -62,6 +56,7 @@ export function ProfileImage(props: ProfileImageProps) {
       borderRadius={rounded ? "full" : undefined}
       overflow="hidden"
       style={{ aspectRatio: 1 }}
+      pointerEvents={showLightbox ? "auto" : "none"}
       {...rest}
     >
       <Lightbox

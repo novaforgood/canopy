@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
+import { useDisclosure } from "@mantine/hooks";
 import { useNavigation } from "@react-navigation/native";
-import Constants from "expo-constants";
 import { useAtom } from "jotai";
-import { ScrollView, SafeAreaView, Linking } from "react-native";
+import { ScrollView, SafeAreaView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Box } from "../components/atomic/Box";
@@ -14,15 +14,16 @@ import { ProfileSocialsDisplay } from "../components/profile-socials/ProfileSoci
 import { ProfileImage } from "../components/ProfileImage";
 import { Tag } from "../components/Tag";
 import { useProfileByIdQuery } from "../generated/graphql";
-import { BxEdit, BxMessageDetail } from "../generated/icons/regular";
+import { BxSend } from "../generated/icons/regular";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useProfileViewTracker } from "../hooks/useProfileViewTracker";
 import { useUserData } from "../hooks/useUserData";
 import { filteredProfileIdsAtom } from "../lib/jotai";
-import { HOST_URL } from "../lib/url";
 import { NavigationProp, RootStackParamList } from "../navigation/types";
+
+import { MessageModal } from "./MessageModal";
 
 import type { StackScreenProps } from "@react-navigation/stack";
 
@@ -46,6 +47,8 @@ export function ProfilePageScreen({
 
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
+
+  const [messageModalOpen, messageModalHandlers] = useDisclosure(false);
 
   const { attemptTrackView } = useProfileViewTracker();
   useEffect(() => {
@@ -90,25 +93,26 @@ export function ProfilePageScreen({
       <ScrollView style={{ height: "100%" }}>
         <Box flexDirection="column" width="100%" backgroundColor="white">
           <Box
-            backgroundColor="lime100"
+            backgroundColor="white"
             px={4}
             pt={8}
-            pb={12}
+            pb={8}
             borderBottomWidth={1}
             borderColor="green700"
           >
             <Box flexDirection="row" alignItems="center" mb={6}>
               <ProfileImage
+                showLightbox
                 src={listing?.profile_listing_image?.image.url}
                 alt={`${first_name} ${last_name}`}
                 height={100}
                 width={100}
               />
               <Box mt={4} ml={6} flexDirection="column">
-                <Text variant="heading4" color="lime900">
+                <Text variant="heading4" color="black">
                   {first_name} {last_name}
                 </Text>
-                <Text mt={1} variant="body1" color="lime800">
+                <Text mt={1} variant="body1" color="gray800">
                   {listing?.headline}
                 </Text>
               </Box>
@@ -119,7 +123,6 @@ export function ProfilePageScreen({
                   navigation.navigate("Account");
                 }}
                 variant="outline"
-                size="sm"
               >
                 Edit profile
               </Button>
@@ -130,9 +133,10 @@ export function ProfilePageScreen({
                 borderRadius="full"
                 onPress={() => {
                   const chatRoomId =
-                    profileData?.profile_to_chat_room?.[0].chat_room_id;
+                    profileData?.profile_to_chat_room?.[0]?.chat_room_id;
+
                   if (!chatRoomId) {
-                    return;
+                    messageModalHandlers.open();
                   } else {
                     navigation.navigate("ChatRoom", {
                       chatRoomId,
@@ -142,12 +146,23 @@ export function ProfilePageScreen({
                 }}
                 disabled={isMyProfile}
                 variant="outline"
-                size="sm"
               >
-                Message
+                <Box flexDirection="row">
+                  <Text variant="body1">Message</Text>
+                  <Box ml={1.5} mr={-1.5} height={18} width={18}>
+                    <BxSend height="100%" width="100%" color="black" />
+                  </Box>
+                </Box>
               </Button>
             )}
           </Box>
+
+          <MessageModal
+            isOpen={messageModalOpen}
+            onClose={messageModalHandlers.close}
+            onMessageSent={refetchProfileById}
+            profileId={profileId}
+          />
 
           <Box
             flexDirection="row"
@@ -188,6 +203,7 @@ export function ProfilePageScreen({
             pb={8}
             flexDirection="column"
             borderBottomWidth={1}
+            backgroundColor="lime100"
             borderBottomColor="green700"
           >
             {listing?.profile_listing_responses.map((response) => {

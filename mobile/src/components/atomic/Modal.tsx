@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import RNModal from "react-native-modal";
 
-import { BxX } from "../../generated/icons/regular";
+import { BxSad, BxX } from "../../generated/icons/regular";
 
 import type { ModalProps } from "react-native-modal";
 
@@ -38,7 +38,7 @@ export function Modal(props: ComponentProps & Partial<ModalProps>) {
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           onPress={onCloseButtonPress}
         >
-          <BxX color="white" />
+          <BxX height={24} width={24} color="white" />
         </TouchableOpacity>
         {children}
       </View>
@@ -56,8 +56,7 @@ const styles = StyleSheet.create({
 
   closeButton: {
     position: "absolute",
-    padding: 10,
-    paddingBottom: 20,
+    paddingBottom: 5,
     bottom: "100%",
     right: 0,
   },

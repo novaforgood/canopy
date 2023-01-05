@@ -46,7 +46,7 @@ import { NavDrawer } from "./components/NavDrawer";
 import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import { onAuthStateChanged } from "./lib/firebase";
-import { sessionAtom } from "./lib/jotai";
+import { sessionAtom, showNavDrawerAtom } from "./lib/jotai";
 import { RootNavigator } from "./navigation/RootNavigator";
 import { RootStackParamList } from "./navigation/types";
 import { UrqlProvider } from "./providers/UrqlProvider";
@@ -90,6 +90,8 @@ function App() {
     };
   }, [refreshSession, setSession]);
 
+  const [showDrawer] = useAtom(showNavDrawerAtom);
+
   const sessionLoaded = session !== undefined;
   const appIsReady = fontsLoaded && sessionLoaded;
 
@@ -105,7 +107,7 @@ function App() {
               <EventProvider style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" />
                 <RootNavigator />
-                <NavDrawer />
+                {showDrawer && <NavDrawer />}
               </EventProvider>
             </NavigationContainer>
             <CustomToast />
@@ -164,7 +166,7 @@ function AnimatedSplashScreen({
 
   useEffect(() => {
     if (isAppReady) {
-      animation.value = withTiming(0, { duration: 500 });
+      animation.value = withTiming(0, { duration: 300 });
     }
   }, [animation, isAppReady]);
 

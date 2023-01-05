@@ -18,19 +18,16 @@ import { Button } from "./atomic/Button";
 import { Text } from "./atomic/Text";
 
 export function NavDrawer() {
-  const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
+  const [_, setShowDrawer] = useAtom(showNavDrawerAtom);
 
   const { userData } = useUserData();
   const drawerRef = useRef(null);
   const navigation = useNavigation<NavigationProp>();
 
-  if (!showDrawer) {
-    return null;
-  }
   return (
     <Animated.View
       entering={SlideInRight}
-      exiting={SlideOutRight.duration(200)}
+      exiting={SlideOutRight.duration(300)}
       style={{
         position: "absolute",
         top: 0,
@@ -39,17 +36,17 @@ export function NavDrawer() {
         width: "100%",
       }}
     >
-      <OutsidePressHandler
-        disabled={false}
-        onOutsidePress={() => {
-          setShowDrawer(false);
-        }}
+      <Box
+        width="100%"
+        justifyContent="flex-end"
+        flexDirection="row"
+        height="100%"
       >
-        <Box
-          width="100%"
-          justifyContent="flex-end"
-          flexDirection="row"
-          height="100%"
+        <OutsidePressHandler
+          disabled={false}
+          onOutsidePress={() => {
+            setShowDrawer(false);
+          }}
         >
           <Box
             ref={drawerRef}
@@ -106,8 +103,8 @@ export function NavDrawer() {
               </Box>
             </SafeAreaView>
           </Box>
-        </Box>
-      </OutsidePressHandler>
+        </OutsidePressHandler>
+      </Box>
     </Animated.View>
   );
 }

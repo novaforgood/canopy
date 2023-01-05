@@ -14,7 +14,7 @@ export type RootStackParamList = {
   };
   ChatRoom: {
     chatRoomId: string;
-    chatRoomName: string;
+    chatRoomName?: string;
   };
 };
 

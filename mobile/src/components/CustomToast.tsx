@@ -80,6 +80,7 @@ function ToastComponent({
       flexDirection="row"
       justifyContent="center"
       maxWidth="100%"
+      zIndex={100}
     >
       <Box width={5} height="100%" backgroundColor={COLOR_MAP[level]}></Box>
 
