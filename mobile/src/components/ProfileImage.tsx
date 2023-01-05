@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, SvgProps } from "react-native-svg";
 
 import { BxX } from "../generated/icons/regular";
+import { Theme } from "../theme";
 
 import { Box, BoxProps } from "./atomic/Box";
 
@@ -49,7 +50,7 @@ export function ProfileImage(props: ProfileImageProps) {
     ...rest
   } = props;
 
-  const theme = useTheme();
+  const theme = useTheme<Theme>();
   return src ? (
     <Box
       backgroundColor="gray100"

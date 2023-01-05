@@ -50,7 +50,7 @@ import { sessionAtom, showNavDrawerAtom } from "./lib/jotai";
 import { RootNavigator } from "./navigation/RootNavigator";
 import { RootStackParamList } from "./navigation/types";
 import { UrqlProvider } from "./providers/UrqlProvider";
-import theme from "./theme";
+import { theme } from "./theme";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -160,10 +160,9 @@ function AnimatedSplashScreen({
   imageUri: string;
   isAppReady: boolean;
 }) {
-  const animation = useSharedValue(1);
-
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const animation = useSharedValue(1);
   useEffect(() => {
     if (isAppReady) {
       animation.value = withTiming(0, { duration: 300 });

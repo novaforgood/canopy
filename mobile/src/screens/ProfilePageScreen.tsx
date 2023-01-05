@@ -10,6 +10,7 @@ import { Box } from "../components/atomic/Box";
 import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { HtmlDisplay } from "../components/HtmlDisplay";
+import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { ProfileSocialsDisplay } from "../components/profile-socials/ProfileSocialsDisplay";
 import { ProfileImage } from "../components/ProfileImage";
 import { Tag } from "../components/Tag";
@@ -33,8 +34,6 @@ export function ProfilePageScreen({
   const { profileId } = route.params;
 
   const navigation = useNavigation<NavigationProp>();
-
-  const { userData } = useUserData();
 
   const isLoggedIn = useIsLoggedIn();
 
@@ -109,10 +108,21 @@ export function ProfilePageScreen({
                 width={120}
               />
               <Box mt={4} ml={6} flexDirection="column">
-                <Text variant="heading4" color="black">
+                <Text
+                  variant="heading4"
+                  color="black"
+                  loading={fetchingProfileData}
+                  loadingWidth={100}
+                >
                   {first_name} {last_name}
                 </Text>
-                <Text mt={1} variant="body1" color="gray800">
+                <Text
+                  mt={1}
+                  variant="body1"
+                  color="gray800"
+                  loading={fetchingProfileData}
+                  loadingWidth={120}
+                >
                   {listing?.headline}
                 </Text>
               </Box>
