@@ -1,7 +1,9 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
 import {
+  FlatList,
   ScrollView,
+  TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import OutsidePressHandler from "react-native-outside-press";
@@ -83,12 +85,11 @@ export function SelectAutocomplete<T extends string>(
         zIndex={1}
       >
         <TextInput
+          blurOnSubmit={false}
+          onPressOut={() => setFocused((prev) => !prev)}
           ref={inputRef}
           width="100%"
           placeholder={placeholder}
-          onPressOut={() => {
-            setFocused((prev) => !prev);
-          }}
           value={query}
           onChangeText={setQuery}
         ></TextInput>
@@ -117,39 +118,32 @@ export function SelectAutocomplete<T extends string>(
               elevation={5}
               borderRadius="sm"
             >
-              <ScrollView
-                style={{ maxHeight: 200 }}
-                keyboardShouldPersistTaps="handled"
-              >
-                {filteredOptions.map((option, idx) => (
-                  <TouchableWithoutFeedback
-                    key={idx}
-                    onPress={() => {
-                      onSelect(option.value, option.label);
-                      setQuery("");
-                      setFocused(false);
-                      console.log("What the fuck");
-                    }}
-                  >
-                    <Box
-                      key={option.value}
-                      flexDirection="row"
-                      alignItems="center"
-                      py={2}
-                      px={2}
-                    >
-                      <Text>{option.label}</Text>
-                    </Box>
-                  </TouchableWithoutFeedback>
-                ))}
-                {filteredOptions.length === 0 && (
-                  <Box position="relative" py={2} px={4}>
+              <FlatList
+                data={filteredOptions}
+                ListEmptyComponent={
+                  <Box position="relative" py={2} px={2}>
                     <Text color="gray700" variant="body2Italic">
                       Nothing found.
                     </Text>
                   </Box>
+                }
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      onSelect(item.value, item.label);
+                      setQuery("");
+                      setFocused(false);
+                    }}
+                  >
+                    <Box flexDirection="row" alignItems="center" py={2} px={2}>
+                      <Text>{item.label}</Text>
+                    </Box>
+                  </TouchableOpacity>
                 )}
-              </ScrollView>
+                keyExtractor={(item) => item.value}
+                keyboardShouldPersistTaps="always"
+                style={{ maxHeight: 200 }}
+              />
             </Box>
           </Animated.View>
         )}

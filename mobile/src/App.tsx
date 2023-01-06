@@ -90,8 +90,6 @@ function App() {
     };
   }, [refreshSession, setSession]);
 
-  const [showDrawer] = useAtom(showNavDrawerAtom);
-
   const sessionLoaded = session !== undefined;
   const appIsReady = fontsLoaded && sessionLoaded;
 
@@ -107,7 +105,7 @@ function App() {
               <EventProvider style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" />
                 <RootNavigator />
-                {showDrawer && <NavDrawer />}
+                <NavDrawer />
               </EventProvider>
             </NavigationContainer>
             <CustomToast />
