@@ -317,7 +317,7 @@ export function RenderChatRoom() {
     );
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-md">
+    <div className="flex h-full w-full  flex-col overflow-hidden rounded-md">
       <div className="flex h-16 shrink-0 items-center bg-olive-50 px-4 shadow-sm">
         {!renderDesktopMode && (
           <button
@@ -392,43 +392,38 @@ export function RenderChatRoom() {
                   typeof nextMessageSentByMe.id === "string");
 
               messageJsxElement = (
-                <div className="flex items-end gap-3">
-                  <div className="flex-1"></div>
-
-                  <div
-                    className={classNames({
-                      "flex flex-col items-end": true,
-                      "mb-4": breakAfter,
-                      "mb-1": !breakAfter,
-                    })}
+                <div
+                  className={classNames({
+                    "flex max-w-full flex-col items-end overflow-hidden pl-14":
+                      true,
+                    "mb-4": breakAfter,
+                    "mb-1": !breakAfter,
+                  })}
+                >
+                  <Tooltip
+                    content={formatDateConcisely(new Date(message.created_at))}
+                    placement="left"
+                    delayMs={[500, 0]}
                   >
-                    <Tooltip
-                      content={formatDateConcisely(
-                        new Date(message.created_at)
-                      )}
-                      placement="left"
-                      delayMs={[500, 0]}
+                    <div
+                      className={classNames({
+                        "max-w-full whitespace-pre-wrap rounded-l-lg px-4 py-1.5 lg:ml-20":
+                          true,
+                        "bg-lime-300": isPending,
+                        "bg-lime-400": !isPending,
+                        "rounded-tr-lg": breakBefore,
+                        "rounded-br-lg": breakAfter,
+                      })}
                     >
-                      <div
-                        className={classNames({
-                          "ml-12 whitespace-pre-wrap rounded-l-lg px-4 py-1.5 lg:ml-20":
-                            true,
-                          "bg-lime-300": isPending,
-                          "bg-lime-400": !isPending,
-                          "rounded-tr-lg": breakBefore,
-                          "rounded-br-lg": breakAfter,
-                        })}
-                      >
-                        <Text>{message.text}</Text>
-                      </div>
-                    </Tooltip>
+                      <Text className="break-words">{message.text}</Text>
+                    </div>
+                  </Tooltip>
 
-                    {isLastDelivered && (
-                      <Text variant="body3" className="mt-px text-gray-700">
-                        Delivered
-                      </Text>
-                    )}
-                  </div>
+                  {isLastDelivered && (
+                    <Text variant="body3" className="mt-px text-gray-700">
+                      Delivered
+                    </Text>
+                  )}
                 </div>
               );
             } else {
@@ -447,10 +442,10 @@ export function RenderChatRoom() {
                   .url;
 
               messageJsxElement = (
-                <div className="flex items-end gap-3">
+                <div className="flex max-w-full items-end gap-3">
                   <div
                     className={classNames({
-                      "flex items-end gap-3": true,
+                      "flex max-w-full items-end gap-3": true,
                       "mb-4": isLastMessage,
                       "mb-1": !isLastMessage,
                     })}
@@ -482,13 +477,13 @@ export function RenderChatRoom() {
                     >
                       <div
                         className={classNames({
-                          "mr-12 whitespace-pre-wrap rounded-r-lg bg-gray-100 px-4 py-1.5 lg:mr-20":
+                          "mr-12 max-w-full whitespace-pre-wrap rounded-r-lg bg-gray-100 px-4 py-1.5 lg:mr-20":
                             true,
                           "rounded-tl-lg": breakBefore,
                           "rounded-bl-lg": breakAfter,
                         })}
                       >
-                        <Text>{message.text}</Text>
+                        <Text className="break-words">{message.text}</Text>
                       </div>
                     </Tooltip>
                   </div>
@@ -498,7 +493,7 @@ export function RenderChatRoom() {
             }
 
             return (
-              <div key={message.id}>
+              <div key={message.id} className="w-full">
                 {breakBefore && (
                   <div className="mt-4 mb-2 flex w-full items-center justify-center">
                     <Text className="text-gray-700" variant="body3">

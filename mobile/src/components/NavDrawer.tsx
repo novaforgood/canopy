@@ -1,16 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useNavigation } from "@react-navigation/native";
 import { useAtom } from "jotai";
 import { TouchableOpacity } from "react-native";
 import OutsidePressHandler from "react-native-outside-press";
 import Animated, {
-  FadeOut,
-  SlideInRight,
-  SlideOutRight,
   useAnimatedStyle,
   useSharedValue,
-  withRepeat,
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";

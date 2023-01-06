@@ -115,7 +115,7 @@ export function ChatRoomList() {
         <div className="shrink=0 h-4"></div>
       </div>
       <div className="h-px w-full bg-olive-600"></div>
-      <div className="flex h-full flex-col overflow-hidden overflow-y-scroll pt-2 md:p-2">
+      <div className="flex h-full flex-col overflow-hidden overflow-y-scroll overscroll-contain pt-2 md:p-2">
         {fetching && (
           <div className="ml-4 md:ml-0">
             <Text variant="body1" loading={true} loadingWidthClassName="w-32">

@@ -43,11 +43,11 @@ function DesktopChatLayout(props: DesktopChatLayoutProps) {
       className="flex min-h-0 flex-1 flex-col items-center border-b border-gray-600 bg-olive-100 pb-8"
       innerClassName="h-full"
     >
-      <div className="flex h-full items-start rounded-lg border border-olive-700 bg-white py-4">
+      <div className="flex h-full w-full items-start rounded-lg border border-olive-700 bg-white py-4">
         <div className="h-full w-72 shrink-0">
           <ChatRoomList />
         </div>
-        <div className="h-full w-full self-stretch rounded-md border border-olive-600">
+        <div className="h-full min-w-0 flex-1 overflow-hidden rounded-md border border-olive-600">
           {children}
         </div>
         <div className="w-8 shrink-0">
