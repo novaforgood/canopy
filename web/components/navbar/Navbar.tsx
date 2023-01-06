@@ -25,6 +25,7 @@ import { Button, Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
 import { SidePadding } from "../layout/SidePadding";
 import { LoadingPlaceholderRect } from "../LoadingPlaceholderRect";
+import { NumberBadge } from "../NumberBadge";
 import { ProfileImage } from "../ProfileImage";
 
 import { Dropdown } from "./Dropdown";
@@ -234,12 +235,10 @@ function DesktopNavbar() {
               <Link href={`/space/${spaceSlug}/chat`} passHref>
                 <a className="relative">
                   {notificationsCount > 0 ? (
-                    <div
-                      className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
-                  bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
-                    >
-                      {notificationsCount}
-                    </div>
+                    <NumberBadge
+                      className="absolute -top-0.5 -right-1"
+                      number={notificationsCount}
+                    />
                   ) : null}
                   <IconButton icon={<BxMessageDetail className="h-6 w-6" />} />
                 </a>
