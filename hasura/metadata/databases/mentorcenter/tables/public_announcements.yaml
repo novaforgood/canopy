@@ -60,8 +60,6 @@ select_permissions:
                           _eq: X-Hasura-User-Id
                       - space_id:
                           _eq: X-Hasura-Space-Id
-                      - profile_role:
-                          _eq: Admin
 delete_permissions:
   - role: user
     permission:

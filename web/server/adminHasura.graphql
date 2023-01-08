@@ -192,6 +192,16 @@ mutation InsertChatIntro($data: chat_intro_insert_input!) {
   }
 }
 
+mutation InsertAnnouncement($object: announcements_insert_input!) {
+  insert_announcements_one(object: $object) {
+    id
+    author_profile_id
+    created_at
+    deleted
+    content
+  }
+}
+
 query EmailsBySpaceId($_user_attr_filter: jsonb!, $_space_id: uuid!) {
   profile(
     where: {
@@ -203,6 +213,7 @@ query EmailsBySpaceId($_user_attr_filter: jsonb!, $_space_id: uuid!) {
     user {
       id
       email
+      type
     }
   }
 }

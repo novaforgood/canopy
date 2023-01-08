@@ -52,7 +52,6 @@ query AllProfilesOfUser($user_id: String!) {
         }
       }
     }
-
     flattened_profile_roles {
       id
       profile_id
@@ -76,6 +75,7 @@ query AllProfilesOfUser($user_id: String!) {
       first_name
       last_name
     }
+    last_read_announcement_id
   }
 }
 
@@ -758,16 +758,6 @@ mutation UpdateSpaceTagCategory(
   }
 }
 
-mutation InsertAnnouncement($object: announcements_insert_input!) {
-  insert_announcements_one(object: $object) {
-    id
-    author_profile_id
-    created_at
-    deleted
-    content
-  }
-}
-
 query AnnouncementsBySpaceId($space_id: uuid!) {
   announcements(
     order_by: { created_at: desc }
@@ -797,5 +787,17 @@ query AnnouncementsBySpaceId($space_id: uuid!) {
     content
     author_profile_id
     deleted
+  }
+}
+
+mutation updateLatestReadAnnouncement(
+  $last_read_announcement_id: bigint = ""
+  $id: uuid = ""
+) {
+  update_profile(
+    _set: { last_read_announcement_id: $last_read_announcement_id }
+    where: { id: { _eq: $id } }
+  ) {
+    affected_rows
   }
 }

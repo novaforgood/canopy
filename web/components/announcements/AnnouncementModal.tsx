@@ -1,10 +1,11 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useInsertAnnouncementMutation } from "../../generated/graphql";
+
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { apiClient } from "../../lib/apiClient";
 import { Text } from "../atomic";
+import { ToggleSwitch } from "../atomic/ToggleSwitch";
 import { RichTextInput } from "../inputs/RichTextInput";
 import { ActionModal } from "../modals/ActionModal";
 
@@ -18,10 +19,8 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
-  const [_, insertMutation] = useInsertAnnouncementMutation();
-
   // rich text editor content
-  const [postContentHTML, setPostContentHTML] = useState("");
+  const [announcementHTML, setAnnouncementHTML] = useState("");
 
   return (
     <ActionModal
@@ -29,44 +28,23 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
       onClose={props.closeCallback}
       actionText="Post Announcement"
       onAction={async () => {
-        const new_announcement = {
-          space_id: currentSpace?.id,
-          author_profile_id: currentProfile?.id,
-          created_at: new Date().toISOString(),
-          deleted: false,
-          content: postContentHTML,
-        };
+        // TODO: Error toast when announcement message is empty
 
-        await insertMutation({
-          object: new_announcement,
-        });
-
+        // send stuff to endpoint to process the new announcement
         await apiClient
-          .post("/api/services/sendAnnouncementEmail", {
-            type: "ANNOUNCEMENT",
-            payload: {
-              space_id: currentSpace?.id,
-              space_name: currentSpace?.name,
-              announcement_data: {
-                timeCreated: new_announcement.created_at,
-                contentHTML: new_announcement.content,
-                author: {
-                  first_name: currentProfile?.user.first_name ?? "",
-                  last_name: currentProfile?.user.last_name ?? "",
-                  profile_img_url:
-                    currentProfile?.profile_listing?.profile_listing_image
-                      ?.image.url ?? "",
-                },
-              },
-            },
+          .post("/api/services/sendAnnouncement", {
+            authorProfileId: currentProfile?.id,
+            announcementContent: announcementHTML,
+          })
+          .then(() => {
+            toast.success("Announcement Posted!");
+
+            setAnnouncementHTML("");
+            props.actionCallback();
           })
           .catch((err) => {
-            toast.error(err.message);
+            toast.error(`Error Posting: ${err.message}`);
           });
-
-        console.log("sent");
-
-        props.actionCallback();
       }}
       secondaryActionText="Cancel"
       onSecondaryAction={props.closeCallback}
@@ -77,10 +55,12 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
         <div className="h-8"></div>
 
         <RichTextInput
+          initContent={announcementHTML}
           onUpdate={({ editor }) => {
-            setPostContentHTML(editor.getHTML());
+            setAnnouncementHTML(editor.getHTML());
           }}
         />
+
         <div className="h-8"></div>
       </div>
     </ActionModal>
