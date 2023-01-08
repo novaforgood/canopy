@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
 
+import { useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 interface HtmlDusplayProps {
@@ -20,6 +20,7 @@ export function HtmlDisplay(props: HtmlDusplayProps) {
           p: {
             margin: 0,
             marginTop: 4,
+            fontSize: "1.125rem",
           },
         }),
         []

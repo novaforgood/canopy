@@ -7,7 +7,6 @@ export function CustomKeyboardAvoidingView(props: {
   const { children } = props;
 
   const headerHeight = useHeaderHeight();
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

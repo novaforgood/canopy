@@ -1,12 +1,10 @@
-import { Link, useNavigation } from "@react-navigation/native";
-import { format } from "date-fns";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 
+import { Link, useNavigation } from "@react-navigation/native";
+import { format } from "date-fns";
 import { Button, Keyboard, ScrollView, TouchableOpacity } from "react-native";
-import { Box } from "../../components/atomic/Box";
-import { Text } from "../../components/atomic/Text";
-import { TextInput } from "../../components/atomic/TextInput";
-import { ProfileImage } from "../../components/ProfileImage";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import {
   useMessagesQuery,
   useUpdateLatestReadMessageMutation,
@@ -14,20 +12,30 @@ import {
   useSendMessageMutation,
   ChatRoomQuery,
   MessagesQuery,
+  User_Type_Enum,
 } from "../../generated/graphql";
 import { BxChevronLeft, BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePrevious } from "../../hooks/usePrevious";
-import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "../../lib/constants";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { NavigationProp } from "../../navigation/types";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { CustomKeyboardAvoidingView } from "../../components/CustomKeyboardAvoidingView";
+import { Box } from "../atomic/Box";
+import { Text } from "../atomic/Text";
+import { TextInput } from "../atomic/TextInput";
+import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
+import { LoadingSpinner } from "../LoadingSpinner";
+import { ProfileImage } from "../ProfileImage";
+
+import { ChatRoomImage } from "./ChatRoomImage";
+import { ChatTitle } from "./ChatTitle";
+import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "./constants";
+import { ChatRoom } from "./types";
+import { useChatRoom } from "./useChatRoom";
+import { useMessages } from "./useMessages";
+import { getChatParticipants, getChatRoomSubtitle } from "./utils";
 
 type ChatMessage = MessagesQuery["chat_message"][number];
-type ChatRoom = ChatRoomQuery["chat_room_by_pk"];
 
 const promiseQueue = new PromiseQueue();
 
@@ -53,6 +61,10 @@ function shouldBreak(
   if (!message1 || !message2) {
     return true;
   }
+  if (message1.sender_profile_id !== message2.sender_profile_id) {
+    return true;
+  }
+
   const date1 = new Date(message1.created_at);
   const date2 = new Date(message2.created_at);
   const diff = date2.getTime() - date1.getTime();
@@ -61,143 +73,29 @@ function shouldBreak(
 }
 
 export interface RenderChatRoomProps {
-  chatRoom: NonNullable<ChatRoom>;
+  chatRoomId: string;
 }
 
 export function RenderChatRoom(props: RenderChatRoomProps) {
-  const { chatRoom } = props;
+  const { chatRoomId } = props;
 
   const navigation = useNavigation<NavigationProp>();
 
   const { currentSpace } = useCurrentSpace();
   const spaceSlug = currentSpace?.slug ?? "";
 
-  const [currentTime] = useState(new Date());
+  const [newMessage, setNewMessage] = useState("");
+  const { chatRoom, chatParticipants } = useChatRoom(chatRoomId ?? "");
 
   const { currentProfile } = useCurrentProfile();
-
-  const otherProfileEntry = chatRoom.profile_to_chat_rooms.find(
-    (p) => currentProfile && p.profile.id !== currentProfile.id
-  );
-  const myProfileEntry = chatRoom.profile_to_chat_rooms.find(
-    (p) => currentProfile && p.profile.id === currentProfile.id
-  );
-
-  const otherProfile = otherProfileEntry?.profile;
-
-  const [idCap, setIdCap] = useState(DEFAULT_ID_CAP);
-  const [{ data: messagesData, fetching: fetchingMessages }] = useMessagesQuery(
-    {
-      variables: {
-        chat_room_id: chatRoom.id,
-        limit: MESSAGES_PER_FETCH,
-        id_cap: idCap,
-      },
-    }
-  );
-  const messagesList = useMemo(
-    () => messagesData?.chat_message ?? [],
-    [messagesData?.chat_message]
-  );
-
-  // Mark message as read
-  const [__, markAsRead] = useUpdateLatestReadMessageMutation();
-  const markMessageAsRead = useCallback(
-    async (message?: ChatMessage) => {
-      if (!myProfileEntry || !message) {
-        return;
-      }
-
-      if (!message) {
-        return;
-      }
-      if (message.chat_room_id !== chatRoom.id) {
-        return;
-      }
-      if (message.id <= myProfileEntry.latest_read_chat_message_id) {
-        // No point in updating if not increasing
-        return;
-      }
-
-      // console.log("SUCCESSFULLY AS READ");
-      // console.log("   ", message.id, message.text);
-      // console.log("   ", myProfileEntry.id);
-      return markAsRead({
-        id: myProfileEntry.id,
-        latest_read_chat_message_id: message.id,
-      });
-    },
-    [chatRoom.id, markAsRead, myProfileEntry]
-  );
-
-  useMessagesStreamSubscription<void>({
-    variables: {
-      chat_room_id: chatRoom.id,
-      after: currentTime.toISOString(),
-    },
-  });
-
-  const firstMessageId = chatRoom.first_chat_message[0].id;
-
-  const minId = useMemo(() => {
-    if (!messagesData) {
-      return null;
-    }
-    const ids = messagesData?.chat_message.map((m) => m.id);
-    return Math.min(...ids);
-  }, [messagesData]);
-
-  const noMoreMessages = minId === firstMessageId;
-
-  const fetchMore = useCallback(() => {
-    if (!minId) return;
-    if (minId > 0) {
-      setIdCap(minId);
-    }
-  }, [minId]);
-
-  const loadMoreDisabled = idCap === minId;
-
-  const [_, sendMessage] = useSendMessageMutation();
-  const [message, setMessage] = useState("");
-
-  const onMessageSubmit = useCallback(async () => {
-    const processedMessage = message.trim();
-    if (processedMessage.length === 0) {
-      return;
-    }
-
-    if (!chatRoom.id) {
-      return;
-    }
-    if (!currentProfile) {
-      return;
-    }
-
-    setMessage("");
-
-    const promise = sendMessage({
-      input: {
-        chat_room_id: chatRoom.id,
-        sender_profile_id: currentProfile.id,
-        text: processedMessage,
-      },
-    })
-      .then((res) => {
-        if (res.error) {
-          throw new Error(res.error.message);
-        }
-      })
-      .catch((error) => {
-        console.error(`Error sending message: ${error.message}`);
-      })
-      .finally(() => {});
-
-    promiseQueue.enqueue(promise);
-  }, [message, chatRoom.id, currentProfile, sendMessage]);
-
-  const { first_name, last_name } = otherProfile?.user ?? {};
-  const image = otherProfile?.profile_listing?.profile_listing_image?.image;
+  const {
+    messagesList,
+    onMessageSubmit,
+    fetchMore,
+    fetchingMessages,
+    markMessageAsRead,
+    noMoreMessages,
+  } = useMessages(chatRoomId ?? "");
 
   const lastMessageIdByOther: number = useMemo(() => {
     return (
@@ -228,9 +126,14 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
-  if (fetchingMessages) {
+  if (fetchingMessages || !chatRoom) {
     return <LoadingSpinner />;
   }
+
+  const chatSubtitle = getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "");
+  const otherHumans = getChatParticipants(chatRoom?.profile_to_chat_rooms ?? [])
+    .filter((p) => p.userType === User_Type_Enum.User)
+    .filter((p) => p.profileId !== currentProfile?.id);
   return (
     <CustomKeyboardAvoidingView>
       <Box
@@ -243,30 +146,38 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
           flexDirection="row"
           alignItems="center"
           backgroundColor="olive100"
-          p={4}
+          px={4}
+          py={2}
+          borderBottomColor="gray200"
+          borderBottomWidth={1}
         >
-          <TouchableOpacity
-            onPress={() => {
-              // Navigate to profile
-              if (!otherProfile) return;
-
-              navigation.navigate("ProfilePage", {
-                profileId: otherProfile.id,
-                firstName: otherProfile.user.first_name ?? "",
-                lastName: otherProfile.user.last_name ?? "",
-              });
-            }}
-          >
-            <ProfileImage src={image?.url} height={48} width={48} mr={4} />
-          </TouchableOpacity>
+          <ChatRoomImage
+            profiles={otherHumans.map((p) => ({
+              imageUrl: p.profileImage?.url,
+              profileUrl: `/space/${spaceSlug}/profile/${p.profileId}`,
+            }))}
+            onPress={
+              otherHumans.length === 1
+                ? () => {
+                    navigation.navigate("ProfilePage", {
+                      profileId: otherHumans[0].profileId,
+                    });
+                  }
+                : undefined
+            }
+            height={40}
+            width={40}
+            mr={4}
+          />
 
           <Box>
-            <Text variant="subheading1">
-              {first_name} {last_name}
-            </Text>
-            <Text variant="body2" color="gray700">
-              {otherProfile?.profile_listing?.headline}
-            </Text>
+            <ChatTitle chatRoom={chatRoom} />
+
+            {chatSubtitle && (
+              <Text variant="body2" color="gray700">
+                {chatSubtitle}
+              </Text>
+            )}
           </Box>
         </Box>
 
@@ -355,6 +266,11 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                   const isLastMessage =
                     breakAfter || nextMessageIsFromDifferentSender;
 
+                  const senderProfile =
+                    chatParticipants.find(
+                      (p) => p.profileId === message.sender_profile_id
+                    ) ?? null;
+
                   messageJsxElement = (
                     <Box flexDirection="row" alignItems="flex-end">
                       <Box
@@ -363,38 +279,43 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                         mb={isLastMessage ? 4 : 1}
                       >
                         {isLastMessage ? (
-                          <Box position="relative" width={40} flexShrink={0}>
+                          <Box position="relative" width={36} flexShrink={0}>
                             <Box
                               position="absolute"
                               bottom={0}
-                              height={40}
-                              width={40}
+                              height={36}
+                              width={36}
                               flexShrink={0}
                             >
                               <ProfileImage
-                                src={image?.url}
-                                height={40}
-                                width={40}
+                                src={senderProfile?.profileImage?.url}
+                                height={36}
+                                width={36}
                               />
                             </Box>
                           </Box>
                         ) : (
-                          <Box width={40} flexShrink={0}></Box>
+                          <Box width={36} flexShrink={0}></Box>
                         )}
-                        <Box
-                          mr={12}
-                          ml={2}
-                          borderTopRightRadius="lg"
-                          borderBottomRightRadius="lg"
-                          backgroundColor="gray200"
-                          px={4}
-                          py={1.5}
-                          borderTopLeftRadius={breakBefore ? "lg" : undefined}
-                          borderBottomLeftRadius={breakAfter ? "lg" : undefined}
-                        >
-                          <Text variant="body1" selectable={true}>
-                            {message.text}
-                          </Text>
+                        <Box flex={1} flexDirection="row">
+                          <Box
+                            ml={2}
+                            mr={3}
+                            borderTopRightRadius="lg"
+                            borderBottomRightRadius="lg"
+                            backgroundColor="gray200"
+                            px={4}
+                            py={1.5}
+                            borderTopLeftRadius={breakBefore ? "lg" : undefined}
+                            borderBottomLeftRadius={
+                              breakAfter ? "lg" : undefined
+                            }
+                          >
+                            <Text variant="body1" selectable={true}>
+                              {message.text}
+                            </Text>
+                          </Box>
+                          <Box flex={1}></Box>
                         </Box>
                       </Box>
                       <Box flex={1}></Box>
@@ -458,10 +379,10 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
         >
           <Box flex={1} mr={2}>
             <TextInput
-              placeholder={`Type a message to ${first_name}`}
+              placeholder={`Type a message to send...`}
               width="100%"
-              value={message}
-              onChangeText={setMessage}
+              value={newMessage}
+              onChangeText={setNewMessage}
               multiline={true}
               blurOnSubmit={false}
               // Submit on enter without shift being held down.
@@ -470,7 +391,8 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
           <TouchableOpacity
             onPress={(e) => {
               e.preventDefault();
-              onMessageSubmit();
+              onMessageSubmit(newMessage);
+              setNewMessage("");
             }}
           >
             <BxSend height={32} width={32} color="black" />

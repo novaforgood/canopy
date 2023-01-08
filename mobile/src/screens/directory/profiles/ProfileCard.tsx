@@ -1,4 +1,5 @@
 import { Pressable, TouchableOpacity } from "react-native";
+
 import { Box } from "../../../components/atomic/Box";
 import { Text } from "../../../components/atomic/Text";
 import { ProfileImage } from "../../../components/ProfileImage";
@@ -35,51 +36,52 @@ export function ProfileCard(props: ProfileCardProps) {
   return (
     <TouchableOpacity onPress={onPress} style={{ overflow: "hidden" }}>
       <Box
-        mb={4}
-        flexDirection="column"
-        alignItems="flex-start"
+        mb={3}
+        flexDirection="row"
+        alignItems="center"
         borderRadius="md"
-        borderWidth={1}
-        borderColor="gray400"
         backgroundColor="white"
+        shadowColor="black"
+        shadowOffset={{ width: 0, height: 1 }}
+        shadowOpacity={0.1}
+        shadowRadius={1}
+        elevation={1}
       >
-        <Box pb={4} width="100%">
-          <ProfileImage
-            width={"100%"}
-            rounded={false}
-            border={false}
-            src={imageUrl}
-            alt={name}
-          />
-        </Box>
-        <Box flexDirection="column" alignItems="flex-start" px={4} width="100%">
-          <Text variant="heading4" color="gray900">
+        <ProfileImage
+          width="40%"
+          rounded={false}
+          borderTopLeftRadius="md"
+          borderBottomLeftRadius="md"
+          border={false}
+          src={imageUrl}
+          alt={name}
+        />
+        <Box flexDirection="column" alignItems="flex-start" px={4} flex={1}>
+          <Text variant="subheading1" color="gray900">
             {name}
           </Text>
           {subtitle && (
-            <Text mt={1} color="gray900" variant="body2">
+            <Text numberOfLines={2} mt={1} color="gray900" variant="body2">
               {subtitle}
             </Text>
           )}
-          <Text mt={4} variant="body2Medium">
-            {descriptionTitle}
-          </Text>
+
           <Box
-            mt={1.5}
+            mt={4}
+            width="100%"
             flexDirection="row"
-            flexWrap="wrap"
+            // flexWrap="wrap"
             overflow="hidden"
-            mb={4}
           >
             {processedTags.length > 0 ? (
               processedTags.map((tag, index) => (
-                <Box mb={1} mr={1} key={index}>
-                  <Tag text={tag} variant="outline" />
+                <Box mb={1} mr={1} key={index} overflow="hidden">
+                  <Tag text={tag} variant="outline" size="sm" />
                 </Box>
               ))
             ) : (
-              <Text color="gray500" variant="body1Italic">
-                none
+              <Text color="gray500" variant="body3Italic">
+                no tags
               </Text>
             )}
           </Box>

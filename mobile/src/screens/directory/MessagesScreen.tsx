@@ -1,13 +1,21 @@
+import { useState, useEffect, useCallback, useMemo } from "react";
+
 import { Link, useNavigation } from "@react-navigation/native";
 import { formatDistanceStrict } from "date-fns";
-import { useState, useEffect, useCallback, useMemo } from "react";
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
+
 import { Box } from "../../components/atomic/Box";
 import { Button } from "../../components/atomic/Button";
 import { Text } from "../../components/atomic/Text";
+import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
+import { ChatTitle } from "../../components/chat/ChatTitle";
+import { getChatParticipants } from "../../components/chat/utils";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { ProfileImage } from "../../components/ProfileImage";
-import { useAllChatRoomsSubscription } from "../../generated/graphql";
+import {
+  useAllChatRoomsSubscription,
+  User_Type_Enum,
+} from "../../generated/graphql";
 import { BxChevronRight } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
@@ -92,7 +100,7 @@ export function MessagesScreen() {
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
-        <Box minHeight="100%">
+        <Box minHeight="100%" mt={2}>
           {chatRooms.length === 0 && (
             <Box
               p={4}
@@ -132,7 +140,7 @@ export function MessagesScreen() {
             const image =
               otherProfileEntry.profile.profile_listing?.profile_listing_image
                 ?.image;
-            const latestMessage = room.chat_messages[0];
+            const latestMessage = room.latest_chat_message[0];
 
             const shouldNotHighlight =
               // Latest message was sent by me
@@ -140,6 +148,10 @@ export function MessagesScreen() {
               // Latest message sent by the other guy was read
               (myProfileEntry.latest_read_chat_message_id &&
                 latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
+
+            const otherHumans = getChatParticipants(room.profile_to_chat_rooms)
+              .filter((h) => h.userType === User_Type_Enum.User)
+              .filter((h) => h.profileId !== currentProfile?.id);
 
             return (
               <TouchableOpacity
@@ -157,20 +169,29 @@ export function MessagesScreen() {
                   flexDirection="row"
                   alignItems="center"
                   borderRadius="md"
-                  p={4}
+                  px={4}
+                  py={2}
                 >
-                  <ProfileImage src={image?.url} height={48} width={48} />
+                  <ChatRoomImage
+                    height={60}
+                    width={60}
+                    profiles={otherHumans.map((p) => ({
+                      imageUrl: p.profileImage?.url,
+                    }))}
+                  />
 
-                  <Box ml={3} flexDirection="column">
-                    <Text
-                      variant={
-                        shouldNotHighlight ? "subheading2" : "subheading2Medium"
-                      }
-                      mb={1}
+                  <Box ml={3} flexDirection="column" flex={1}>
+                    <ChatTitle
+                      chatRoom={room}
+                      highlight={!shouldNotHighlight}
+                    />
+
+                    <Box
+                      mt={1}
+                      flexDirection="row"
+                      alignItems="center"
+                      width="100%"
                     >
-                      {first_name} {last_name}
-                    </Text>
-                    <Box flexDirection="row" alignItems="center" width="100%">
                       <Text
                         color={shouldNotHighlight ? "gray800" : "black"}
                         variant={shouldNotHighlight ? "body2" : "body2Medium"}
@@ -193,7 +214,7 @@ export function MessagesScreen() {
                       </Text>
                     </Box>
                   </Box>
-                  <Box flex={1} flexDirection="row" justifyContent="flex-end">
+                  <Box flexDirection="row" justifyContent="flex-end">
                     <BxChevronRight height={28} width={28} color="gray700" />
                   </Box>
                 </Box>

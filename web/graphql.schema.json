@@ -7386,6 +7386,18 @@
         "description": "columns and relationships of \"chat_room\"",
         "fields": [
           {
+            "name": "chat_intro_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "chat_messages",
             "description": "An array relationship",
             "args": [
@@ -7680,6 +7692,18 @@
             "deprecationReason": null
           },
           {
+            "name": "chat_intro_id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "chat_messages",
             "description": null,
             "type": {
@@ -7738,6 +7762,18 @@
         "description": "Ordering options when selecting data from \"chat_room\".",
         "fields": null,
         "inputFields": [
+          {
+            "name": "chat_intro_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "chat_messages_aggregate",
             "description": null,
@@ -7800,6 +7836,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "chat_intro_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "created_at",
             "description": "column name",
             "isDeprecated": false,
@@ -7859,6 +7901,18 @@
         "description": "Initial value of the column from where the streaming should start",
         "fields": null,
         "inputFields": [
+          {
+            "name": "chat_intro_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "created_at",
             "description": null,

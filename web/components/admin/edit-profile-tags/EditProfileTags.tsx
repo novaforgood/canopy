@@ -8,7 +8,6 @@ import {
 } from "react";
 
 import { Tab } from "@headlessui/react";
-import classNames from "classnames";
 import toast from "react-hot-toast";
 
 import {
@@ -26,6 +25,8 @@ import { useSaveChangesState } from "../../../hooks/useSaveChangesState";
 import { isTempId, resolveId } from "../../../lib/tempId";
 import { NewSpaceTag, NewTagCategory } from "../../../lib/types";
 import { Button, Select, Text } from "../../atomic";
+import { CustomTab } from "../../CustomTab";
+import { NumberBadge } from "../../NumberBadge";
 import { RoundedCard } from "../../RoundedCard";
 import { Tag } from "../../Tag";
 
@@ -34,37 +35,6 @@ import { ApprovedTagItem } from "./ApprovedTagItem";
 import { CreateNewTag } from "./CreateNewTag";
 import RigidToggleSwitch from "./RigidToggleSwitch";
 import { ViewDeletedTags } from "./ViewDeletedTags";
-
-interface CustomTabProps {
-  title: string;
-}
-function CustomTab(props: CustomTabProps) {
-  const { title } = props;
-
-  return (
-    <Tab>
-      {({ selected }) => (
-        <div
-          className={classNames({
-            "border-b-2 pb-1": true,
-            "border-gray-400": !selected,
-            "border-gray-900": selected,
-          })}
-        >
-          <Text
-            bold
-            className={classNames({
-              "text-gray-400": !selected,
-              "text-gray-900": selected,
-            })}
-          >
-            {title}
-          </Text>
-        </div>
-      )}
-    </Tab>
-  );
-}
 
 export function EditProfileTags() {
   const { currentSpace } = useCurrentSpace();

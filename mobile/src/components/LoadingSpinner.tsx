@@ -1,4 +1,5 @@
 import { ActivityIndicator } from "react-native";
+
 import { Box } from "./atomic/Box";
 
 export function LoadingSpinner() {

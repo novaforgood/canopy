@@ -1,7 +1,6 @@
-import { useAtom } from "jotai";
 import { useMemo } from "react";
 
-import { useRecoilValue } from "recoil";
+import { useAtom } from "jotai";
 
 import { useUserQuery } from "../generated/graphql";
 import { sessionAtom } from "../lib/jotai";

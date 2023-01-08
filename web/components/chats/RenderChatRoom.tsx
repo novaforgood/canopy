@@ -1,23 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { format } from "date-fns";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import toast from "react-hot-toast";
 
-import { makeListSentence } from "../../common/lib/words";
-import {
-  ChatRoomQuery,
-  Chat_Message,
-  Chat_Room,
-  useChatRoomQuery,
-  useMessagesQuery,
-  useMessagesStreamSubscription,
-  User_Type_Enum,
-  useSendMessageMutation,
-  useUpdateLatestReadMessageMutation,
-} from "../../generated/graphql";
+import { Chat_Message, User_Type_Enum } from "../../generated/graphql";
 import { BxChevronLeft, BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
@@ -31,39 +18,21 @@ import { Tooltip } from "../tooltips";
 
 import { ChatProfileImage } from "./ChatProfileImage";
 import { ChatRoomImage } from "./ChatRoomImage";
-import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "./constants";
+import { ChatTitle } from "./ChatTitle";
+import { useChatRoom } from "./useChatRoom";
+import { useMessages } from "./useMessages";
+import {
+  getChatRoomSubtitle,
+  getChatRoomTitle,
+  getChatParticipants,
+} from "./utils";
 
 // Query specific types
-type ProfileToChatRoom = NonNullable<
-  ChatRoomQuery["chat_room_by_pk"]
->["profile_to_chat_rooms"][number];
 type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
-
-const promiseQueue = new PromiseQueue();
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 const ONE_DAY = 1000 * 60 * 60 * 24;
-
-export function getOtherHumanChatParticipants(
-  ptcrs: ProfileToChatRoom[],
-  currentProfileId: string
-) {
-  return ptcrs
-    .filter(
-      (ptcr) =>
-        ptcr.profile.user.type === User_Type_Enum.User &&
-        ptcr.profile.id !== currentProfileId
-    )
-    .map((ptcr) => ({
-      fullName: `${ptcr.profile.user.first_name} ${ptcr.profile.user.last_name}`,
-      firstName: ptcr.profile.user.first_name,
-      lastName: ptcr.profile.user.last_name,
-      headline: ptcr.profile.profile_listing?.headline,
-      profileImage: ptcr.profile.profile_listing?.profile_listing_image?.image,
-      profileId: ptcr.profile.id,
-    }));
-}
 
 function formatDateConcisely(date: Date): string {
   const timeAgo = Math.abs(date.getTime() - Date.now());
@@ -83,6 +52,9 @@ function shouldBreak(
   if (!message1 || !message2) {
     return true;
   }
+  if (message1.sender_profile_id !== message2.sender_profile_id) {
+    return true;
+  }
   const date1 = new Date(message1.created_at);
   const date2 = new Date(message2.created_at);
   const diff = date2.getTime() - date1.getTime();
@@ -99,164 +71,21 @@ export function RenderChatRoom() {
   const chatRoomId = useQueryParam("chatRoomId", "string");
   const baseRoute = `/space/${spaceSlug}/chat`;
 
-  const [{ data: chatRoomData }] = useChatRoomQuery({
-    pause: !chatRoomId,
-    variables: { chat_room_id: chatRoomId ?? "" },
-  });
-
-  const chatRoom = chatRoomData?.chat_room_by_pk;
-
-  const [currentTime] = useState(new Date());
+  const { chatRoom, chatParticipants } = useChatRoom(chatRoomId ?? "");
 
   const { currentProfile } = useCurrentProfile();
-
-  const profileIdToProfileEntryMap = useMemo(
-    () =>
-      chatRoom?.profile_to_chat_rooms?.reduce((acc, profileToChatRoom) => {
-        acc[profileToChatRoom.profile.id] = profileToChatRoom;
-        return acc;
-      }, {} as Record<string, NonNullable<ChatRoomQuery["chat_room_by_pk"]>["profile_to_chat_rooms"][number]>) ??
-      {},
-    [chatRoom?.profile_to_chat_rooms]
-  );
-
-  const myProfileEntry = currentProfile
-    ? profileIdToProfileEntryMap[currentProfile.id]
-    : null;
-
-  const [idCap, setIdCap] = useState(DEFAULT_ID_CAP);
-  const [{ data: messagesData, fetching: fetchingMessages }] = useMessagesQuery(
-    {
-      pause: !chatRoom,
-      variables: {
-        chat_room_id: chatRoom?.id ?? "",
-        limit: MESSAGES_PER_FETCH,
-        id_cap: idCap,
-      },
-    }
-  );
-  const messagesList = useMemo(
-    () => messagesData?.chat_message ?? [],
-    [messagesData?.chat_message]
-  );
-
-  // Mark message as read
-  const [__, markAsRead] = useUpdateLatestReadMessageMutation();
-  const markMessageAsRead = useCallback(
-    async (message?: ChatMessage) => {
-      if (!myProfileEntry || !message) {
-        return;
-      }
-
-      if (!message) {
-        return;
-      }
-      if (message.chat_room_id !== chatRoom?.id) {
-        return;
-      }
-      if (message.id <= myProfileEntry.latest_read_chat_message_id) {
-        // No point in updating if not increasing
-        return;
-      }
-
-      // console.log("SUCCESSFULLY AS READ");
-      // console.log("   ", message.id, message.text);
-      // console.log("   ", myProfileEntry.id);
-      return markAsRead({
-        id: myProfileEntry.id,
-        latest_read_chat_message_id: message.id,
-      });
-    },
-    [chatRoom?.id, markAsRead, myProfileEntry]
-  );
-
-  useMessagesStreamSubscription<void>({
-    pause: !chatRoom,
-    variables: {
-      chat_room_id: chatRoom?.id ?? "",
-      after: currentTime.toISOString(),
-    },
-  });
-
-  const firstMessageId = chatRoom?.first_chat_message[0].id;
-
-  const minId = useMemo(() => {
-    if (!messagesData) {
-      return null;
-    }
-    const ids = messagesData?.chat_message.map((m) => m.id);
-    return Math.min(...ids);
-  }, [messagesData]);
-
-  const noMoreMessages = minId === firstMessageId;
-
-  const fetchMore = useCallback(() => {
-    if (!minId) return;
-    if (minId > 0) {
-      setIdCap(minId);
-    }
-  }, [minId]);
-
-  const loadMoreDisabled = idCap === minId;
-
-  const [_, sendMessage] = useSendMessageMutation();
-  const [message, setMessage] = useState("");
-
-  const onMessageSubmit = useCallback(async () => {
-    const processedMessage = message.trim();
-    if (processedMessage.length === 0) {
-      return;
-    }
-
-    if (!chatRoom?.id) {
-      toast.error("No chat room id");
-      return;
-    }
-    if (!currentProfile) {
-      toast.error("No current profile");
-      return;
-    }
-    setMessage("");
-    const promise = sendMessage({
-      input: {
-        chat_room_id: chatRoom.id,
-        sender_profile_id: currentProfile.id,
-        text: processedMessage,
-      },
-    })
-      .then((res) => {
-        if (res.error) {
-          throw new Error(res.error.message);
-        }
-      })
-      .catch((error) => {
-        toast.error(`Error sending message: ${error.message}`);
-      })
-      .finally(() => {});
-
-    promiseQueue.enqueue(promise);
-  }, [message, chatRoom?.id, currentProfile, sendMessage]);
-
-  const markLatestMessageAsRead = useCallback(async () => {
-    if (!myProfileEntry) return;
-    const latestMessageByOther = messagesList.find(
-      (m) => m.sender_profile_id !== myProfileEntry.profile.id
-    );
-    if (latestMessageByOther) {
-      promiseQueue.enqueue(markMessageAsRead(latestMessageByOther));
-    }
-  }, [markMessageAsRead, messagesList, myProfileEntry]);
-
-  // Mark latest chat message as read when window focuses
+  const {
+    messagesList,
+    onMessageSubmit,
+    fetchMore,
+    fetchingMessages,
+    markMessageAsRead,
+    noMoreMessages,
+  } = useMessages(chatRoomId ?? "");
+  const [newMessage, setNewMessage] = useState("");
   useEffect(() => {
-    const onFocus = () => {
-      markLatestMessageAsRead();
-    };
-    window.addEventListener("focus", onFocus);
-    return () => {
-      window.removeEventListener("focus", onFocus);
-    };
-  }, [markLatestMessageAsRead]);
+    setNewMessage("");
+  }, [chatRoomId]);
 
   const lastMessageIdByOther: number = useMemo(() => {
     return (
@@ -289,16 +118,9 @@ export function RenderChatRoom() {
   ]);
 
   // Chat topbar
-  const otherHumans = getOtherHumanChatParticipants(
-    chatRoom?.profile_to_chat_rooms ?? [],
-    currentProfile?.id ?? ""
-  );
-  const humanNames = otherHumans.map((p) => p.fullName);
-
-  const chatRoomName = humanNames.join(", ");
-
-  const chatHeadline =
-    otherHumans.length == 1 ? otherHumans[0].headline : "Group Chat";
+  const otherHumans = getChatParticipants(chatRoom?.profile_to_chat_rooms ?? [])
+    .filter((p) => p.userType === User_Type_Enum.User)
+    .filter((p) => p.profileId !== currentProfile?.id);
 
   if (!chatRoom)
     return (
@@ -313,8 +135,11 @@ export function RenderChatRoom() {
       </div>
     );
 
+  const chatRoomName = getChatRoomTitle(chatRoom, currentProfile?.id ?? "");
+  const chatHeadline = getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "");
+
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-md">
+    <div className="flex h-full w-full  flex-col overflow-hidden rounded-md">
       <div className="flex h-16 shrink-0 items-center bg-olive-50 px-4 shadow-sm">
         {!renderDesktopMode && (
           <button
@@ -337,9 +162,7 @@ export function RenderChatRoom() {
         />
 
         <div>
-          <Text loading={!chatRoomName} loadingWidthClassName="w-4">
-            {chatRoomName}
-          </Text>
+          <ChatTitle chatRoom={chatRoom} />
           {chatHeadline && (
             <>
               <div></div>
@@ -389,43 +212,38 @@ export function RenderChatRoom() {
                   typeof nextMessageSentByMe.id === "string");
 
               messageJsxElement = (
-                <div className="flex items-end gap-3">
-                  <div className="flex-1"></div>
-
-                  <div
-                    className={classNames({
-                      "flex flex-col items-end": true,
-                      "mb-4": breakAfter,
-                      "mb-1": !breakAfter,
-                    })}
+                <div
+                  className={classNames({
+                    "flex max-w-full flex-col items-end overflow-hidden pl-14":
+                      true,
+                    "mb-4": breakAfter,
+                    "mb-1": !breakAfter,
+                  })}
+                >
+                  <Tooltip
+                    content={formatDateConcisely(new Date(message.created_at))}
+                    placement="left"
+                    delayMs={[500, 0]}
                   >
-                    <Tooltip
-                      content={formatDateConcisely(
-                        new Date(message.created_at)
-                      )}
-                      placement="left"
-                      delayMs={[500, 0]}
+                    <div
+                      className={classNames({
+                        "max-w-full whitespace-pre-wrap rounded-l-lg px-4 py-1.5 lg:ml-20":
+                          true,
+                        "bg-lime-300": isPending,
+                        "bg-lime-400": !isPending,
+                        "rounded-tr-lg": breakBefore,
+                        "rounded-br-lg": breakAfter,
+                      })}
                     >
-                      <div
-                        className={classNames({
-                          "ml-12 whitespace-pre-wrap rounded-l-lg px-4 py-1.5 lg:ml-20":
-                            true,
-                          "bg-lime-300": isPending,
-                          "bg-lime-400": !isPending,
-                          "rounded-tr-lg": breakBefore,
-                          "rounded-br-lg": breakAfter,
-                        })}
-                      >
-                        <Text>{message.text}</Text>
-                      </div>
-                    </Tooltip>
+                      <Text className="break-words">{message.text}</Text>
+                    </div>
+                  </Tooltip>
 
-                    {isLastDelivered && (
-                      <Text variant="body3" className="mt-px text-gray-700">
-                        Delivered
-                      </Text>
-                    )}
-                  </div>
+                  {isLastDelivered && (
+                    <Text variant="body3" className="mt-px text-gray-700">
+                      Delivered
+                    </Text>
+                  )}
                 </div>
               );
             } else {
@@ -434,20 +252,21 @@ export function RenderChatRoom() {
                 breakAfter || nextMessageIsFromDifferentSender;
 
               const senderProfile =
-                profileIdToProfileEntryMap[message.sender_profile_id]
-                  ?.profile ?? null;
+                chatParticipants.find(
+                  (p) => p.profileId === message.sender_profile_id
+                ) ?? null;
 
-              const firstName = senderProfile.user.first_name;
-              const lastName = senderProfile?.user.last_name;
-              const profileImageUrl =
-                senderProfile?.profile_listing?.profile_listing_image?.image
-                  .url;
+              if (!senderProfile) return null;
+
+              const firstName = senderProfile.firstName;
+              const lastName = senderProfile.lastName;
+              const profileImageUrl = senderProfile.profileImage?.url;
 
               messageJsxElement = (
-                <div className="flex items-end gap-3">
+                <div className="flex max-w-full items-end gap-3">
                   <div
                     className={classNames({
-                      "flex items-end gap-3": true,
+                      "flex max-w-full items-end gap-3": true,
                       "mb-4": isLastMessage,
                       "mb-1": !isLastMessage,
                     })}
@@ -461,7 +280,7 @@ export function RenderChatRoom() {
                           <div className="absolute bottom-0 h-10 w-10 shrink-0">
                             <ChatProfileImage
                               src={profileImageUrl}
-                              userType={senderProfile.user.type}
+                              userType={senderProfile.userType}
                               className="h-10 w-10"
                             />
                           </div>
@@ -479,13 +298,13 @@ export function RenderChatRoom() {
                     >
                       <div
                         className={classNames({
-                          "mr-12 whitespace-pre-wrap rounded-r-lg bg-gray-100 px-4 py-1.5 lg:mr-20":
+                          "mr-12 max-w-full whitespace-pre-wrap rounded-r-lg bg-gray-100 px-4 py-1.5 lg:mr-20":
                             true,
                           "rounded-tl-lg": breakBefore,
                           "rounded-bl-lg": breakAfter,
                         })}
                       >
-                        <Text>{message.text}</Text>
+                        <Text className="break-words">{message.text}</Text>
                       </div>
                     </Tooltip>
                   </div>
@@ -495,7 +314,7 @@ export function RenderChatRoom() {
             }
 
             return (
-              <div key={message.id}>
+              <div key={message.id} className="w-full">
                 {breakBefore && (
                   <div className="mt-4 mb-2 flex w-full items-center justify-center">
                     <Text className="text-gray-700" variant="body3">
@@ -511,7 +330,7 @@ export function RenderChatRoom() {
           <div className="my-4 flex w-full justify-center">
             <Button
               variant="secondary"
-              loading={loadMoreDisabled}
+              loading={fetchingMessages}
               size="small"
               onClick={() => {
                 fetchMore();
@@ -529,18 +348,22 @@ export function RenderChatRoom() {
           placeholder={`Type a message to send...`}
           minRows={1}
           className="w-full"
-          value={message}
-          onValueChange={setMessage}
+          value={newMessage}
+          onValueChange={setNewMessage}
           // Submit on enter without shift being held down.
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              onMessageSubmit();
+              onMessageSubmit(newMessage);
+              setNewMessage("");
             }
           }}
         />
         <IconButton
-          onClick={onMessageSubmit}
+          onClick={() => {
+            onMessageSubmit(newMessage);
+            setNewMessage("");
+          }}
           icon={<BxSend className="h-6 w-6" />}
         ></IconButton>
       </div>

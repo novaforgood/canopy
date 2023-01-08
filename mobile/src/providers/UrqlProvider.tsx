@@ -1,9 +1,9 @@
-import { useAtom } from "jotai";
 import { useMemo } from "react";
 
+import { useAtom } from "jotai";
 import { Provider } from "urql";
-import { sessionAtom } from "../lib/jotai";
 
+import { sessionAtom } from "../lib/jotai";
 import { getUrqlClient } from "../lib/urql";
 
 export interface UrqlProviderProps {

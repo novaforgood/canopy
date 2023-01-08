@@ -10,7 +10,10 @@ import {
 } from "@urql/exchange-graphcache";
 import { nanoid } from "nanoid";
 
-import { MESSAGES_PER_FETCH, DEFAULT_ID_CAP } from "./constants";
+import {
+  MESSAGES_PER_FETCH,
+  DEFAULT_ID_CAP,
+} from "../components/chat/constants";
 import { Chat_Message, MessagesDocument } from "../generated/graphql";
 
 // TODO: Comment this code x)

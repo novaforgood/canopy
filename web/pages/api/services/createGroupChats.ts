@@ -159,9 +159,7 @@ export default applyMiddleware({
             },
           ],
         },
-        attributes: {
-          chatIntroId: chatIntroId,
-        },
+        chat_intro_id: chatIntroId,
         profile_to_chat_rooms: {
           data: [
             { profile_id: canopyBotProfileId },

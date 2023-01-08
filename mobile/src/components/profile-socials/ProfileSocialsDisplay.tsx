@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
 import { Linking, TouchableOpacity } from "react-native";
+
 import { useProfileListingSocialsQuery } from "../../generated/graphql";
 import { BxsEnvelope } from "../../generated/icons/solid";
 import { Box } from "../atomic/Box";
-import { Text } from "../atomic/Text";
+
 import { MAP_SOCIAL_TYPE_TO_PROPERTIES } from "./constants";
 
 function IconLink(props: {
@@ -20,6 +20,7 @@ function IconLink(props: {
       }}
     >
       <Box
+        mr={2}
         height={40}
         width={40}
         p={1.5}

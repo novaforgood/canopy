@@ -1,28 +1,44 @@
+import { useEffect, useMemo, useRef } from "react";
+
 import {
   useNavigation,
   useNavigationState,
   useRoute,
 } from "@react-navigation/native";
 import { getDayOfYear } from "date-fns";
-import { useAtom } from "jotai";
-import { useMemo } from "react";
-import { SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
 import Fuse from "fuse.js";
+import { useAtom } from "jotai";
+import {
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { Box } from "../../../components/atomic/Box";
+import { SelectAutocomplete } from "../../../components/atomic/SelectAutocomplete";
+import { Text } from "../../../components/atomic/Text";
+import { TextInput } from "../../../components/atomic/TextInput";
+import { CustomKeyboardAvoidingView } from "../../../components/CustomKeyboardAvoidingView";
+import { HtmlDisplay } from "../../../components/HtmlDisplay";
+import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
 import {
   Profile_Role_Enum,
   useProfileListingsInSpaceQuery,
 } from "../../../generated/graphql";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { searchQueryAtom } from "../../../lib/jotai";
-import { ProfileCard } from "./ProfileCard";
+import { getCurrentUser } from "../../../lib/firebase";
+import {
+  filteredProfileIdsAtom,
+  searchQueryAtom,
+  selectedTagIdsAtom,
+} from "../../../lib/jotai";
 import { NavigationProp } from "../../../navigation/types";
-import { TextInput } from "../../../components/atomic/TextInput";
-import { HtmlDisplay } from "../../../components/HtmlDisplay";
-import { Text } from "../../../components/atomic/Text";
-import { SpaceCoverPhoto } from "../../../components/SpaceCoverPhoto";
+
+import { FilterBar } from "./FilterBar";
+import { ProfileCard } from "./ProfileCard";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -54,6 +70,7 @@ export function ProfilesList() {
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
 
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+  const [selectedTagIds, setSelectedTagIds] = useAtom(selectedTagIdsAtom);
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
     useProfileListingsInSpaceQuery({
@@ -67,6 +84,16 @@ export function ProfilesList() {
             },
           },
           public: { _eq: true },
+          // filter by tags if tags selected
+          ...(Array.from(selectedTagIds).length > 0
+            ? {
+                _and: Array.from(selectedTagIds).map((tagId) => ({
+                  profile_listing_to_space_tags: {
+                    space_tag_id: { _eq: tagId },
+                  },
+                })),
+              }
+            : undefined),
         },
       },
     });
@@ -86,29 +113,49 @@ export function ProfilesList() {
     return fuse.search(searchQueryLower).map((result) => result.item);
   }, [allProfileListings, searchQuery]);
 
+  const [_, setFilteredProfileIds] = useAtom(filteredProfileIdsAtom);
+  useEffect(() => {
+    setFilteredProfileIds(
+      filteredProfileListings.map((listing) => listing.profile.id)
+    );
+  }, [filteredProfileListings, setFilteredProfileIds]);
+
   return (
-    <SafeAreaView>
+    <CustomKeyboardAvoidingView>
       <ScrollView style={{ height: "100%" }}>
-        <Box flexDirection="column">
+        <Box
+          flexDirection="column"
+          borderBottomWidth={1}
+          borderColor="green700"
+          borderTopWidth={1}
+        >
           <SpaceCoverPhoto
             src={currentSpace?.space_cover_image?.image.url}
           ></SpaceCoverPhoto>
-          <Box py={6} px={4} backgroundColor="olive100">
+          <Box py={6} pb={12} px={4} backgroundColor="olive100">
             <Text mb={2} variant="heading3">
               {currentSpace?.name}
             </Text>
             <HtmlDisplay html={currentSpace?.description_html ?? ""} />
           </Box>
         </Box>
-        <Box p={4} backgroundColor="gray50">
-          <Box mt={4}></Box>
-          <TextInput
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder="Search members..."
-            width="100%"
-          />
-          <Box mt={4}></Box>
+        <Box p={4} backgroundColor="gray50" minHeight={600}>
+          <Text mt={4} color="gray800" variant="body1Medium">
+            Search / filter
+          </Text>
+
+          <FilterBar />
+
+          <Text mt={8} color="gray800" variant="body1Medium">
+            Results
+          </Text>
+
+          <Box mt={2}></Box>
+          {filteredProfileListings.length === 0 && (
+            <Text mt={4} color="gray500" variant="body1Italic">
+              No results
+            </Text>
+          )}
           {filteredProfileListings.map((listing, idx) => {
             const { first_name, last_name } = listing.profile.user;
 
@@ -127,8 +174,6 @@ export function ProfilesList() {
                   // );
                   navigation.navigate("ProfilePage", {
                     profileId: listing.profile.id,
-                    firstName: first_name ?? "",
-                    lastName: last_name ?? "",
                   });
                 }}
                 name={`${first_name} ${last_name}`}
@@ -141,7 +186,7 @@ export function ProfilesList() {
           })}
         </Box>
       </ScrollView>
-    </SafeAreaView>
+    </CustomKeyboardAvoidingView>
   );
 }
 

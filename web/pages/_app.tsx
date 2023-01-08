@@ -54,7 +54,7 @@ function useNumberOfNotifications() {
           (entry) => entry.profile.id === currentProfile?.id
         );
         if (!myProfileEntry) return acc;
-        const latestMessage = room.chat_messages[0];
+        const latestMessage = room.latest_chat_message[0];
         if (!latestMessage) return acc;
 
         const shouldNotHighlight =

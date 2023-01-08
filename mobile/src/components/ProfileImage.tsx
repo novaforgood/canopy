@@ -1,6 +1,14 @@
 import { ImgHTMLAttributes, SVGProps } from "react";
-import { Image } from "react-native";
+
+import { useTheme } from "@shopify/restyle";
+import { Image, TouchableOpacity } from "react-native";
+import Lightbox from "react-native-lightbox";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, SvgProps } from "react-native-svg";
+
+import { BxX } from "../generated/icons/regular";
+import { Theme } from "../theme";
+
 import { Box, BoxProps } from "./atomic/Box";
 
 function UserSvg(props: SvgProps) {
@@ -29,6 +37,8 @@ export type ProfileImageProps = BoxProps & {
   alt?: string;
   rounded?: boolean;
   border?: boolean;
+  showLightbox?: boolean;
+  onPress?: () => void;
 };
 
 export function ProfileImage(props: ProfileImageProps) {
@@ -37,18 +47,74 @@ export function ProfileImage(props: ProfileImageProps) {
     alt = "Profile",
     rounded = true,
     border = true,
+    showLightbox = false,
+    onPress,
     ...rest
   } = props;
 
-  //   const styles = classNames({
-  //     "bg-gray-100 shrink-0 select-none": true,
-  //     "border border-green-500": border,
-  //     "rounded-full": rounded,
-  //     "bg-olive-200 text-gray-50 flex items-center justify-center": !src,
-  //     [`${className}`]: true,
-  //   });
+  const theme = useTheme<Theme>();
 
-  return src ? (
+  let image = null;
+  if (src) {
+    image = (
+      <Image
+        style={{ width: "100%", height: "100%" }}
+        source={{
+          uri: src,
+        }}
+      />
+    );
+  } else {
+    image = (
+      <Box
+        overflow="hidden"
+        backgroundColor="olive200"
+        alignItems="center"
+        justifyContent="center"
+        style={{ aspectRatio: 1 }}
+        borderRadius={rounded ? "full" : undefined}
+        width="100%"
+        height="100%"
+      >
+        <UserSvg width="66%" height="66%" color="gray50" />
+      </Box>
+    );
+  }
+
+  let inside = null;
+  if (showLightbox && src) {
+    inside = (
+      <Lightbox
+        renderHeader={(close: () => void) => (
+          <Box mt={8} ml={4}>
+            <TouchableOpacity onPress={close}>
+              <BxX height={28} width={28} color="white" />
+            </TouchableOpacity>
+          </Box>
+        )}
+        renderContent={() => (
+          <Image
+            style={{
+              width: "100%",
+              aspectRatio: 1,
+              borderRadius: rounded ? theme.borderRadii.full : undefined,
+            }}
+            source={{
+              uri: src,
+            }}
+          />
+        )}
+      >
+        {image}
+      </Lightbox>
+    );
+  } else if (onPress) {
+    inside = <TouchableOpacity onPress={onPress}>{image}</TouchableOpacity>;
+  } else {
+    inside = image;
+  }
+
+  return (
     <Box
       backgroundColor="gray100"
       borderRadius={rounded ? "full" : undefined}
@@ -56,24 +122,7 @@ export function ProfileImage(props: ProfileImageProps) {
       style={{ aspectRatio: 1 }}
       {...rest}
     >
-      <Image
-        style={{ width: "100%", height: "100%" }}
-        source={{
-          uri: src,
-        }}
-      />
-    </Box>
-  ) : (
-    <Box
-      overflow="hidden"
-      backgroundColor="olive200"
-      alignItems="center"
-      justifyContent="center"
-      style={{ aspectRatio: 1 }}
-      borderRadius={rounded ? "full" : undefined}
-      {...rest}
-    >
-      <UserSvg width="66%" height="66%" color="gray50" />
+      {inside}
     </Box>
   );
 }

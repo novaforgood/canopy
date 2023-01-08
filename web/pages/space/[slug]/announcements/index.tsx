@@ -1,6 +1,8 @@
+import { useEffect } from "react";
+
 import { useDisclosure } from "@mantine/hooks";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+
 import { AnnouncementProps } from "../../../../components/announcements/Announcement";
 import AnnouncementList from "../../../../components/announcements/AnnouncementList";
 import AnnouncementModal from "../../../../components/announcements/AnnouncementModal";

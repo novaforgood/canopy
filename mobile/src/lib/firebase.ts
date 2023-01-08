@@ -1,7 +1,5 @@
-import { getApp, getApps, initializeApp } from "firebase/app";
-
 import Constants from "expo-constants";
-
+import { getApp, getApps, initializeApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,

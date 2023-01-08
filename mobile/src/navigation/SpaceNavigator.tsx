@@ -1,25 +1,29 @@
+import { useEffect } from "react";
+
 import {
   BottomTabBarProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
-import { MessagesScreen } from "../screens/directory/MessagesScreen";
-import { ProfilesList } from "../screens/directory/profiles/ProfilesList";
-import { AccountScreen } from "../screens/directory/AccountScreen";
+import { StackScreenProps } from "@react-navigation/stack";
+import { useAtom } from "jotai";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { SvgProps } from "react-native-svg";
+
+import { Box } from "../components/atomic/Box";
 import { Text } from "../components/atomic/Text";
+import { Navbar } from "../components/Navbar";
 import {
   BxGroup,
+  BxHome,
   BxMessageAltDetail,
   BxUser,
 } from "../generated/icons/regular";
-import { SvgProps } from "react-native-svg";
-import { Box } from "../components/atomic/Box";
-import { Navbar } from "../components/Navbar";
-import { RootStackParamList, SpaceStackParamList } from "./types";
-import { StackScreenProps } from "@react-navigation/stack";
-import { useEffect } from "react";
-import { useAtom } from "jotai";
 import { currentSpaceAtom } from "../lib/jotai";
+import { AccountScreen } from "../screens/directory/AccountScreen";
+import { MessagesScreen } from "../screens/directory/MessagesScreen";
+import { ProfilesList } from "../screens/directory/profiles/ProfilesList";
+
+import { RootStackParamList, SpaceStackParamList } from "./types";
 
 const TabNav = createBottomTabNavigator<SpaceStackParamList>();
 
@@ -27,8 +31,8 @@ const BOTTOM_TABS: Record<
   keyof SpaceStackParamList,
   { icon: (props: SvgProps & { color: string }) => JSX.Element; title: string }
 > = {
-  ProfilesList: { icon: BxGroup, title: "View Profiles" },
-  ChatMessages: { icon: BxMessageAltDetail, title: "Messages" },
+  ProfilesList: { icon: BxHome, title: "Home" },
+  ChatMessages: { icon: BxMessageAltDetail, title: "Chats" },
   Account: { icon: BxUser, title: "Account" },
 };
 
@@ -44,7 +48,7 @@ export function SpaceNavigator({
         name: route.params.spaceName,
       });
     }
-  }, [route.params]);
+  }, [route.params, setCurrentSpace]);
 
   return (
     <TabNav.Navigator tabBar={MyTabBar} screenOptions={{ headerShown: false }}>

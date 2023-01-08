@@ -1,5 +1,4 @@
 import { createTheme } from "@shopify/restyle";
-import { Platform } from "react-native";
 
 type BaseTextVariant =
   | "heading1"
@@ -70,6 +69,7 @@ function makeTextVariants() {
       };
     });
     return acc;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, {} as Record<string, any>) as Record<TextVariant, any>;
 }
 
@@ -146,7 +146,7 @@ const SPACING_MAP = {
   [-16]: -64,
 } as const;
 
-const theme = createTheme({
+export const theme = createTheme({
   colors: {
     black: "#000000",
     white: "#FFFFFF",
@@ -223,4 +223,3 @@ const theme = createTheme({
 });
 
 export type Theme = typeof theme;
-export default theme;

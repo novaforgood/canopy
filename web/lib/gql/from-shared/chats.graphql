@@ -1,78 +1,58 @@
+fragment ChatRoomFragment on chat_room {
+  id
+  created_at
+  chat_intro_id
+  profile_to_chat_rooms {
+    id
+    latest_read_chat_message_id
+    profile {
+      id
+      user {
+        id
+        first_name
+        last_name
+        type
+      }
+      profile_listing {
+        id
+        headline
+        profile_listing_image {
+          id
+          image {
+            url
+            id
+          }
+        }
+      }
+    }
+  }
+  latest_chat_message: chat_messages(limit: 1, order_by: { id: desc }) {
+    id
+    text
+    sender_profile_id
+    created_at
+  }
+  first_chat_message: chat_messages(limit: 1, order_by: { id: asc }) {
+    id
+    text
+    sender_profile_id
+    created_at
+  }
+}
+
 # Get all chats, including latest message of each chat
 subscription AllChatRooms($profile_id: uuid!) {
   chat_room(
     where: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
     order_by: { chat_messages_aggregate: { max: { id: desc } } }
   ) {
-    id
-    created_at
-    profile_to_chat_rooms {
-      id
-      latest_read_chat_message_id
-      profile {
-        id
-        user {
-          id
-          first_name
-          last_name
-          type
-        }
-        profile_listing {
-          id
-          headline
-          profile_listing_image {
-            id
-            image {
-              url
-              id
-            }
-          }
-        }
-      }
-    }
-    chat_messages(limit: 1, order_by: { id: desc }) {
-      id
-      text
-      sender_profile_id
-      created_at
-    }
+    ...ChatRoomFragment
   }
 }
 
 query ChatRoom($chat_room_id: uuid!) {
   chat_room_by_pk(id: $chat_room_id) {
-    id
-    created_at
-    first_chat_message: chat_messages(limit: 1, order_by: { id: asc }) {
-      id
-      text
-      sender_profile_id
-      created_at
-    }
-    profile_to_chat_rooms {
-      id
-      latest_read_chat_message_id
-      profile {
-        user {
-          id
-          first_name
-          last_name
-          type
-        }
-        id
-        profile_listing {
-          id
-          headline
-          profile_listing_image {
-            id
-            image {
-              url
-              id
-            }
-          }
-        }
-      }
-    }
+    ...ChatRoomFragment
   }
 }
 

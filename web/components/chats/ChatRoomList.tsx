@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { Tab } from "@headlessui/react";
 import classNames from "classnames";
 import { formatDistanceStrict } from "date-fns";
 import Link from "next/link";
@@ -16,33 +17,16 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
-import { ProfileImage } from "../ProfileImage";
+import { CustomTab } from "../CustomTab";
 
 import { ChatRoomImage } from "./ChatRoomImage";
-
-type ProfileToChatRoom = NonNullable<
-  AllChatRoomsSubscription["chat_room"][number]
->["profile_to_chat_rooms"][number];
-
-export function getOtherHumanChatParticipants(
-  ptcrs: ProfileToChatRoom[],
-  currentProfileId: string
-) {
-  return ptcrs
-    .filter(
-      (ptcr) =>
-        ptcr.profile.user.type === User_Type_Enum.User &&
-        ptcr.profile.id !== currentProfileId
-    )
-    .map((ptcr) => ({
-      fullName: `${ptcr.profile.user.first_name} ${ptcr.profile.user.last_name}`,
-      firstName: ptcr.profile.user.first_name,
-      lastName: ptcr.profile.user.last_name,
-      headline: ptcr.profile.profile_listing?.headline,
-      profileImage: ptcr.profile.profile_listing?.profile_listing_image?.image,
-      profileId: ptcr.profile.id,
-    }));
-}
+import { ChatTitle } from "./ChatTitle";
+import { ChatRoom, ProfileToChatRoom } from "./types";
+import {
+  shouldHighlightChatRoom,
+  getChatParticipants,
+  getChatRoomTitle,
+} from "./utils";
 
 function useTimeFormatter() {
   const [timeNow, setTimeNow] = useState(new Date());
@@ -96,14 +80,34 @@ export function ChatRoomList() {
   const chatRoomId = useQueryParam("chatRoomId", "string");
   const spaceSlug = useQueryParam("slug", "string");
 
-  const chatRooms = data?.chat_room ?? [];
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const dmChatRooms = useMemo(() => {
+    return data?.chat_room?.filter((r) => !r.chat_intro_id) ?? [];
+  }, [data?.chat_room]);
+
+  const introChatRooms = useMemo(() => {
+    return data?.chat_room?.filter((r) => !!r.chat_intro_id) ?? [];
+  }, [data?.chat_room]);
+
+  const chatRooms = useMemo(() => {
+    if (tabIndex === 0) {
+      return data?.chat_room ?? [];
+    } else if (tabIndex === 1) {
+      return dmChatRooms;
+    } else if (tabIndex === 2) {
+      return introChatRooms;
+    }
+
+    return [];
+  }, [data?.chat_room, dmChatRooms, introChatRooms, tabIndex]);
 
   return (
     <div className="flex h-full w-full shrink-0 flex-col overflow-hidden">
-      <div className="bg-olive-50  md:bg-white">
+      <div className="h-20 bg-olive-50 md:bg-white">
         <div className="h-4 md:hidden"></div>
-        <div className="flex h-12 w-full items-center justify-between gap-8 px-4 ">
-          <Text variant="heading4">Direct Messages</Text>
+        <div className="flex w-full items-center justify-between gap-8 px-4 ">
+          <Text variant="heading4">Messages</Text>
           <Link href={`/space/${currentSpace?.slug}/chat/new`} passHref>
             <a>
               <IconButton
@@ -112,14 +116,32 @@ export function ChatRoomList() {
             </a>
           </Link>
         </div>
-        <div className="shrink=0 h-4"></div>
+        <div className="h-4"></div>
+
+        <Tab.Group
+          selectedIndex={tabIndex}
+          onChange={setTabIndex}
+          defaultIndex={0}
+        >
+          <Tab.List className="flex items-center gap-8 border-b border-olive-600 px-4">
+            <CustomTab title="All"></CustomTab>
+            <CustomTab title="DMs"></CustomTab>
+            <CustomTab title="Intros"></CustomTab>
+          </Tab.List>
+        </Tab.Group>
       </div>
-      <div className="h-px w-full bg-olive-600"></div>
-      <div className="flex h-full flex-col overflow-hidden overflow-y-scroll pt-2 md:p-2">
+      <div className="flex h-full flex-col overflow-hidden overflow-y-scroll overscroll-contain pt-2 md:p-2">
         {fetching && (
           <div className="ml-4 md:ml-0">
             <Text variant="body1" loading={true} loadingWidthClassName="w-32">
               Loading...
+            </Text>
+          </div>
+        )}
+        {chatRooms.length === 0 && !fetching && (
+          <div className="ml-4 md:ml-0">
+            <Text variant="body1" italic className="text-gray-700">
+              No results
             </Text>
           </div>
         )}
@@ -135,29 +157,26 @@ export function ChatRoomList() {
             return null;
           }
 
-          const otherHumans = getOtherHumanChatParticipants(
-            room.profile_to_chat_rooms,
-            currentProfile?.id ?? ""
-          );
+          const otherHumans = getChatParticipants(room.profile_to_chat_rooms)
+            .filter((h) => h.userType === User_Type_Enum.User)
+            .filter((h) => h.profileId !== currentProfile?.id);
 
-          const chatTitle = otherHumans.map((h) => h.fullName).join(", ");
+          // Determine chat title
+          const chatTitle = getChatRoomTitle(room, currentProfile?.id ?? "");
 
           const { first_name, last_name } = otherProfileEntry.profile.user;
           const image =
             otherProfileEntry.profile.profile_listing?.profile_listing_image
               ?.image;
-          const latestMessage = room.chat_messages[0];
+          const latestMessage = room.latest_chat_message[0];
 
           const selected = router.query.chatRoomId === room.id;
 
-          const shouldNotHighlight =
-            // Latest message was sent by me
-            latestMessage.sender_profile_id === myProfileEntry.profile.id ||
-            // Currently viewing the chat room
-            room.id === chatRoomId ||
-            // Latest message sent by the other guy was read
-            (myProfileEntry.latest_read_chat_message_id &&
-              latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
+          const shouldNotHighlight = !shouldHighlightChatRoom(
+            room,
+            chatRoomId ?? "",
+            currentProfile?.id ?? ""
+          );
 
           return (
             <Link
@@ -181,7 +200,11 @@ export function ChatRoomList() {
                   />
 
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <Text>{chatTitle}</Text>
+                    <ChatTitle
+                      chatRoom={room}
+                      highlight={!shouldNotHighlight}
+                    />
+
                     <div className="flex w-full items-center">
                       <Text
                         className={classNames({

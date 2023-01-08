@@ -1,30 +1,27 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import React, { useCallback, useEffect, useState } from "react";
-import { HomeScreen } from "../screens/HomeScreen";
 
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useTheme } from "@shopify/restyle";
+import { useAtom } from "jotai";
+import { TouchableOpacity } from "react-native";
+
+import { Box } from "../components/atomic/Box";
+import { useSpaceBySlugQuery } from "../generated/graphql";
+import { BxMenu } from "../generated/icons/regular";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-
-import { useSpaceBySlugQuery } from "../generated/graphql";
-import { usePrevious } from "../hooks/usePrevious";
-import { SecureStore, SecureStoreKey } from "../lib/secureStore";
-import { RootStackParamList } from "./types";
-import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
-import { SignInScreen } from "../screens/SignInScreen";
-import { useAtom } from "jotai";
 import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
-import { SpaceNavigator } from "./SpaceNavigator";
-import { ProfilePageScreen } from "../screens/ProfilePageScreen";
+import { SecureStore, SecureStoreKey } from "../lib/secureStore";
 import { ChatRoomScreen } from "../screens/ChatRoomScreen";
-import { Box } from "../components/atomic/Box";
-import { useTheme } from "@shopify/restyle";
+import { HomeScreen } from "../screens/HomeScreen";
+import { ProfilePageScreen } from "../screens/ProfilePageScreen";
+import { SignInScreen } from "../screens/SignInScreen";
 import { Theme } from "../theme";
-import { TouchableOpacity } from "react-native";
-import { BxMenu } from "../generated/icons/regular";
-import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
-import { Text } from "../components/atomic/Text";
-import { FullWindowOverlay } from "react-native-screens";
+
+import { SpaceNavigator } from "./SpaceNavigator";
+import { RootStackParamList } from "./types";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -118,10 +115,8 @@ export function RootNavigator() {
               height="100%"
               width="100%"
               shadowColor="black"
-              shadowRadius={10}
-              shadowOffset={{ width: 0, height: 5 }}
-              shadowOpacity={0.2}
-              elevation={5}
+              borderBottomColor="olive200"
+              borderBottomWidth={1}
             />
           ),
           headerTintColor: theme.colors.green800,
@@ -164,9 +159,10 @@ export function RootNavigator() {
               component={SpaceNavigator}
               options={({ route }) => ({
                 title: spaceRaw?.name,
-                headerBackTitle: "Back",
+                headerBackVisible: false,
               })}
             />
+
             <RootStack.Screen
               name="ProfilePage"
               component={ProfilePageScreen}
@@ -174,6 +170,7 @@ export function RootNavigator() {
                 // title: `${route.params.firstName} ${route.params.lastName}`,
                 title: "",
                 headerBackTitle: "Back",
+                animationTypeForReplace: "push",
               })}
             />
             <RootStack.Screen
@@ -183,6 +180,15 @@ export function RootNavigator() {
                 // title: route.params.chatRoomName,
                 title: "",
                 headerBackTitle: "Back",
+                headerBackground: () => (
+                  <Box
+                    backgroundColor="olive100"
+                    height="100%"
+                    width="100%"
+                    shadowColor="black"
+                    flexDirection="row"
+                  ></Box>
+                ),
               })}
             />
           </>
