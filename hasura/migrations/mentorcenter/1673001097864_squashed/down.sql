@@ -1,3 +1,8 @@
+
+alter table "public"."chat_room" alter column "attributes" set default jsonb_build_object();
+alter table "public"."chat_room" alter column "attributes" drop not null;
+alter table "public"."chat_room" add column "attributes" jsonb;
+
 -- Could not auto-generate a down migration.
 -- Please write an appropriate down migration for the SQL below:
 -- CREATE OR REPLACE VIEW "public"."chat_intro_data" AS
@@ -20,3 +25,15 @@
 --     count(*) AS num_rooms_with_replies
 --    FROM rooms_with_replies
 --   GROUP BY rooms_with_replies.chat_intro_id;
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- UPDATE chat_room
+--   SET chat_intro_id = (attributes ->> 'chatIntroId')::uuid;
+
+alter table "public"."chat_room" drop constraint "chat_room_chat_intro_id_fkey";
+
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- alter table "public"."chat_room" add column "chat_intro_id" uuid
+--  null;
