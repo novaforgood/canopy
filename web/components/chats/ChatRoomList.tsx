@@ -200,7 +200,10 @@ export function ChatRoomList() {
                   />
 
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <ChatTitle chatRoom={room} />
+                    <ChatTitle
+                      chatRoom={room}
+                      highlight={!shouldNotHighlight}
+                    />
 
                     <div className="flex w-full items-center">
                       <Text
