@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+
 import { BxChat, BxMessageDetail } from "../../generated/icons/regular";
 import { Button, Text } from "../atomic";
 import { HtmlDisplay } from "../HtmlDisplay";
@@ -23,7 +24,7 @@ const Announcement = ({ data }: { data: AnnouncementProps }) => {
   const timeString = format(data.timeCreated, "h:mm aa");
 
   return (
-    <RoundedCard className="flex flex-col gap-2 ">
+    <RoundedCard className="flex flex-col gap-2">
       <div className="flex flex-row items-start gap-4 sm:overflow-auto">
         {/* Profile photo */}
         <ProfileImage
@@ -58,15 +59,16 @@ const Announcement = ({ data }: { data: AnnouncementProps }) => {
         ></HtmlDisplay>
       </div>
 
-      <div className="mt-4 flex flex-row justify-start sm:justify-end">
+      {/* <div className="mt-4 flex flex-row justify-start sm:justify-end">
         <Button
+          size="small"
           variant="outline"
           className=" mr-2 ml-2 mb-2 bg-transparent px-3.5 text-body2 text-gray-700"
         >
-          <BxMessageDetail className="mr-2 h-6 w-6" />
-          Message Admin
+          <BxMessageDetail className="-ml-1 mr-1 h-4 w-4" />
+          Message Poster
         </Button>
-      </div>
+      </div> */}
     </RoundedCard>
   );
 };
