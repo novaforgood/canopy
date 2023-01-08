@@ -33,6 +33,8 @@
 }
 
 .ProseMirror p {
+  @apply text-body2;
+
   display: block;
   margin-block-start: 0.5rem;
   margin-block-end: 0.5rem;

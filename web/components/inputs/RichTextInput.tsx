@@ -176,7 +176,13 @@ export const RichTextInput = (props: RichTextInputProps) => {
           <div className="h-6 w-1 border-l border-gray-300"></div>
 
           <EditorButton>
-            <BxLink className="fill-gray-300" />
+            <BxLink
+              className={`transition ${
+                editor?.isActive("link")
+                  ? "fill-gray-900"
+                  : "fill-gray-300 group-hover:fill-gray-500"
+              }`}
+            />
           </EditorButton>
         </div>
         <EditorContent {...rest} editor={editor} />

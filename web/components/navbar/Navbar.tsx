@@ -19,7 +19,10 @@ import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { useUserData } from "../../hooks/useUserData";
 import { signOut } from "../../lib/firebase";
-import { notificationsCountAtom } from "../../lib/jotai";
+import {
+  announcementNotificationsCountAtom,
+  notificationsCountAtom,
+} from "../../lib/jotai";
 import { LocalStorage } from "../../lib/localStorage";
 import { Button, Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
@@ -185,6 +188,9 @@ function DesktopNavbar() {
   const isHome = arr[arr.length - 1] === spaceSlug;
 
   const [notificationsCount] = useAtom(notificationsCountAtom);
+  const [announcementNotificationsCount] = useAtom(
+    announcementNotificationsCountAtom
+  );
 
   return (
     <SidePadding>
@@ -246,14 +252,14 @@ function DesktopNavbar() {
               </Link>
               <Link href={`/space/${spaceSlug}/announcements`} passHref>
                 <a className="relative">
-                  {notificationsCount > 0 && (
+                  {announcementNotificationsCount > 0 ? (
                     <div
                       className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
-                          bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
+                  bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
                     >
-                      {notificationsCount}
+                      {announcementNotificationsCount}
                     </div>
-                  )}
+                  ) : null}
                   <IconButton icon={<BxBell className="h-6 w-6" />} />
                 </a>
               </Link>
