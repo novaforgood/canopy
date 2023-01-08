@@ -1,7 +1,7 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
-const runtimeVersion = 0; // Increase by 1 every time your update requires a new native build
+const runtimeVersion = 1; // Increase by 1 every time your update requires a new native build
 const version = `1.0.${runtimeVersion}`; // Version that the user sees
 const config = {
   name: process.env.APP_NAME,
@@ -57,6 +57,10 @@ export default {
     },
     ios: {
       bundleIdentifier: config.appId,
+      buildNumber: runtimeVersion.toString(),
+    },
+    android: {
+      versionCode: runtimeVersion,
     },
   },
 };
