@@ -20,6 +20,7 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - chat_intro_id
         - created_at
         - id
       filter:

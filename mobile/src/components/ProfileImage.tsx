@@ -38,6 +38,7 @@ export type ProfileImageProps = BoxProps & {
   rounded?: boolean;
   border?: boolean;
   showLightbox?: boolean;
+  onPress?: () => void;
 };
 
 export function ProfileImage(props: ProfileImageProps) {
@@ -47,19 +48,42 @@ export function ProfileImage(props: ProfileImageProps) {
     rounded = true,
     border = true,
     showLightbox = false,
+    onPress,
     ...rest
   } = props;
 
   const theme = useTheme<Theme>();
-  return src ? (
-    <Box
-      backgroundColor="gray100"
-      borderRadius={rounded ? "full" : undefined}
-      overflow="hidden"
-      style={{ aspectRatio: 1 }}
-      pointerEvents={showLightbox ? "auto" : "none"}
-      {...rest}
-    >
+
+  let image = null;
+  if (src) {
+    image = (
+      <Image
+        style={{ width: "100%", height: "100%" }}
+        source={{
+          uri: src,
+        }}
+      />
+    );
+  } else {
+    image = (
+      <Box
+        overflow="hidden"
+        backgroundColor="olive200"
+        alignItems="center"
+        justifyContent="center"
+        style={{ aspectRatio: 1 }}
+        borderRadius={rounded ? "full" : undefined}
+        width="100%"
+        height="100%"
+      >
+        <UserSvg width="66%" height="66%" color="gray50" />
+      </Box>
+    );
+  }
+
+  let inside = null;
+  if (showLightbox && src) {
+    inside = (
       <Lightbox
         renderHeader={(close: () => void) => (
           <Box mt={8} ml={4}>
@@ -81,25 +105,24 @@ export function ProfileImage(props: ProfileImageProps) {
           />
         )}
       >
-        <Image
-          style={{ width: "100%", height: "100%" }}
-          source={{
-            uri: src,
-          }}
-        />
+        {image}
       </Lightbox>
-    </Box>
-  ) : (
+    );
+  } else if (onPress) {
+    inside = <TouchableOpacity onPress={onPress}>{image}</TouchableOpacity>;
+  } else {
+    inside = image;
+  }
+
+  return (
     <Box
-      overflow="hidden"
-      backgroundColor="olive200"
-      alignItems="center"
-      justifyContent="center"
-      style={{ aspectRatio: 1 }}
+      backgroundColor="gray100"
       borderRadius={rounded ? "full" : undefined}
+      overflow="hidden"
+      style={{ aspectRatio: 1 }}
       {...rest}
     >
-      <UserSvg width="66%" height="66%" color="gray50" />
+      {inside}
     </Box>
   );
 }
