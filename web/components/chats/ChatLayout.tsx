@@ -29,7 +29,7 @@ function DesktopChatLayout(props: DesktopChatLayoutProps) {
           {children}
         </div>
         <div className="w-8 shrink-0">
-          <div className="h-20"></div>
+          <div className="h-14"></div>
           <div className="h-px w-full bg-olive-600"></div>
         </div>
       </div>

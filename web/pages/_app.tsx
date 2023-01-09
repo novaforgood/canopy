@@ -14,6 +14,7 @@ import {
   useSpaceBySlugQuery,
 } from "../generated/graphql";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { usePrevious } from "../hooks/usePrevious";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useRefreshSession } from "../hooks/useRefreshSession";
@@ -34,7 +35,6 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import { useCurrentSpace } from "../hooks/useCurrentSpace";
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
@@ -90,7 +90,7 @@ function useNumberOfAnnouncementNotifications() {
 
   const numUnreadAnnouncements = useMemo(
     () =>
-      data?.announcements.filter(
+      data?.announcement.filter(
         (e) => e.id > currentProfile?.last_read_announcement_id
       )?.length,
     [data, currentProfile?.last_read_announcement_id]

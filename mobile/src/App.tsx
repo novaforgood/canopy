@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
 
 import {
   Rubik_400Regular,
@@ -21,15 +15,8 @@ import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useAtom } from "jotai";
-import {
-  GestureResponderEvent,
-  Image,
-  ImageSourcePropType,
-  StatusBar,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Alert, Image, StatusBar, View } from "react-native";
+import { setJSExceptionHandler } from "react-native-exception-handler";
 import { EventProvider } from "react-native-outside-press";
 import Animated, {
   useSharedValue,
@@ -41,19 +28,34 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import splashImage from "../assets/images/splash.png";
 
 import { CustomToast } from "./components/CustomToast";
-import { LoadingSpinner } from "./components/LoadingSpinner";
 import { NavDrawer } from "./components/NavDrawer";
+import { useExpoUpdate } from "./hooks/useExpoUpdate";
 import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import { onAuthStateChanged } from "./lib/firebase";
-import { sessionAtom, showNavDrawerAtom } from "./lib/jotai";
+import { sessionAtom } from "./lib/jotai";
 import { RootNavigator } from "./navigation/RootNavigator";
-import { RootStackParamList } from "./navigation/types";
 import { UrqlProvider } from "./providers/UrqlProvider";
 import { theme } from "./theme";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
+
+const errorHandler = (e: Error, isFatal: boolean) => {
+  if (isFatal) {
+    Alert.alert("Unexpected error occurred", `${e.message}`, [
+      {
+        text: "Close",
+        onPress: () => {
+          // do nothing
+        },
+      },
+    ]);
+  } else {
+    console.log("Uncaught error", e); // So that we can see it in the ADB logs in case of Android if needed
+  }
+};
+setJSExceptionHandler(errorHandler, true);
 
 function App() {
   const [fontsLoaded] = useFonts({

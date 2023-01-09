@@ -1,5 +1,7 @@
 import { atom } from "jotai";
 
+export const updatingAtom = atom<boolean>(false);
+
 type Session = {
   jwt: string;
   userId: string;

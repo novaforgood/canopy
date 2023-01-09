@@ -1484,8 +1484,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements",
-        "description": "columns and relationships of \"announcements\"",
+        "name": "announcement",
+        "description": "columns and relationships of \"announcement\"",
         "fields": [
           {
             "name": "author_profile",
@@ -1623,8 +1623,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_aggregate",
-        "description": "aggregated selection of \"announcements\"",
+        "name": "announcement_aggregate",
+        "description": "aggregated selection of \"announcement\"",
         "fields": [
           {
             "name": "aggregate",
@@ -1632,7 +1632,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_aggregate_fields",
+              "name": "announcement_aggregate_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1653,7 +1653,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "announcements",
+                    "name": "announcement",
                     "ofType": null
                   }
                 }
@@ -1670,7 +1670,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_aggregate_bool_exp",
+        "name": "announcement_aggregate_bool_exp",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -1679,7 +1679,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_aggregate_bool_exp_bool_and",
+              "name": "announcement_aggregate_bool_exp_bool_and",
               "ofType": null
             },
             "defaultValue": null,
@@ -1691,7 +1691,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_aggregate_bool_exp_bool_or",
+              "name": "announcement_aggregate_bool_exp_bool_or",
               "ofType": null
             },
             "defaultValue": null,
@@ -1703,7 +1703,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_aggregate_bool_exp_count",
+              "name": "announcement_aggregate_bool_exp_count",
               "ofType": null
             },
             "defaultValue": null,
@@ -1717,7 +1717,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_aggregate_bool_exp_bool_and",
+        "name": "announcement_aggregate_bool_exp_bool_and",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -1729,7 +1729,7 @@
               "name": null,
               "ofType": {
                 "kind": "ENUM",
-                "name": "announcements_select_column_announcements_aggregate_bool_exp_bool_and_arguments_columns",
+                "name": "announcement_select_column_announcement_aggregate_bool_exp_bool_and_arguments_columns",
                 "ofType": null
               }
             },
@@ -1754,7 +1754,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_bool_exp",
+              "name": "announcement_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -1784,7 +1784,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_aggregate_bool_exp_bool_or",
+        "name": "announcement_aggregate_bool_exp_bool_or",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -1796,7 +1796,7 @@
               "name": null,
               "ofType": {
                 "kind": "ENUM",
-                "name": "announcements_select_column_announcements_aggregate_bool_exp_bool_or_arguments_columns",
+                "name": "announcement_select_column_announcement_aggregate_bool_exp_bool_or_arguments_columns",
                 "ofType": null
               }
             },
@@ -1821,7 +1821,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_bool_exp",
+              "name": "announcement_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -1851,7 +1851,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_aggregate_bool_exp_count",
+        "name": "announcement_aggregate_bool_exp_count",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -1866,7 +1866,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "ENUM",
-                  "name": "announcements_select_column",
+                  "name": "announcement_select_column",
                   "ofType": null
                 }
               }
@@ -1892,7 +1892,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_bool_exp",
+              "name": "announcement_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -1922,8 +1922,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_aggregate_fields",
-        "description": "aggregate fields of \"announcements\"",
+        "name": "announcement_aggregate_fields",
+        "description": "aggregate fields of \"announcement\"",
         "fields": [
           {
             "name": "avg",
@@ -1931,7 +1931,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_avg_fields",
+              "name": "announcement_avg_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1952,7 +1952,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "announcements_select_column",
+                      "name": "announcement_select_column",
                       "ofType": null
                     }
                   }
@@ -1992,7 +1992,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_max_fields",
+              "name": "announcement_max_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2004,7 +2004,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_min_fields",
+              "name": "announcement_min_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2016,7 +2016,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_stddev_fields",
+              "name": "announcement_stddev_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2028,7 +2028,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_stddev_pop_fields",
+              "name": "announcement_stddev_pop_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2040,7 +2040,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_stddev_samp_fields",
+              "name": "announcement_stddev_samp_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2052,7 +2052,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_sum_fields",
+              "name": "announcement_sum_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2064,7 +2064,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_var_pop_fields",
+              "name": "announcement_var_pop_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2076,7 +2076,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_var_samp_fields",
+              "name": "announcement_var_samp_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2088,7 +2088,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_variance_fields",
+              "name": "announcement_variance_fields",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2102,8 +2102,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_aggregate_order_by",
-        "description": "order by aggregate values of table \"announcements\"",
+        "name": "announcement_aggregate_order_by",
+        "description": "order by aggregate values of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2111,7 +2111,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_avg_order_by",
+              "name": "announcement_avg_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2135,7 +2135,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_max_order_by",
+              "name": "announcement_max_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2147,7 +2147,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_min_order_by",
+              "name": "announcement_min_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2159,7 +2159,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_stddev_order_by",
+              "name": "announcement_stddev_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2171,7 +2171,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_stddev_pop_order_by",
+              "name": "announcement_stddev_pop_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2183,7 +2183,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_stddev_samp_order_by",
+              "name": "announcement_stddev_samp_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2195,7 +2195,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_sum_order_by",
+              "name": "announcement_sum_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2207,7 +2207,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_var_pop_order_by",
+              "name": "announcement_var_pop_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2219,7 +2219,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_var_samp_order_by",
+              "name": "announcement_var_samp_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2231,7 +2231,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_variance_order_by",
+              "name": "announcement_variance_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -2245,8 +2245,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_arr_rel_insert_input",
-        "description": "input type for inserting array relation for remote table \"announcements\"",
+        "name": "announcement_arr_rel_insert_input",
+        "description": "input type for inserting array relation for remote table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2263,7 +2263,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "announcements_insert_input",
+                    "name": "announcement_insert_input",
                     "ofType": null
                   }
                 }
@@ -2278,7 +2278,7 @@
             "description": "upsert condition",
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_on_conflict",
+              "name": "announcement_on_conflict",
               "ofType": null
             },
             "defaultValue": null,
@@ -2292,7 +2292,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_avg_fields",
+        "name": "announcement_avg_fields",
         "description": "aggregate avg on columns",
         "fields": [
           {
@@ -2315,8 +2315,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_avg_order_by",
-        "description": "order by avg() on columns of table \"announcements\"",
+        "name": "announcement_avg_order_by",
+        "description": "order by avg() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2338,8 +2338,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_bool_exp",
-        "description": "Boolean expression to filter rows from the table \"announcements\". All fields are combined with a logical 'AND'.",
+        "name": "announcement_bool_exp",
+        "description": "Boolean expression to filter rows from the table \"announcement\". All fields are combined with a logical 'AND'.",
         "fields": null,
         "inputFields": [
           {
@@ -2353,7 +2353,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 }
               }
@@ -2367,7 +2367,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_bool_exp",
+              "name": "announcement_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -2385,7 +2385,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 }
               }
@@ -2497,8 +2497,8 @@
       },
       {
         "kind": "ENUM",
-        "name": "announcements_constraint",
-        "description": "unique or primary key constraints on table \"announcements\"",
+        "name": "announcement_constraint",
+        "description": "unique or primary key constraints on table \"announcement\"",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -2514,8 +2514,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_inc_input",
-        "description": "input type for incrementing numeric columns in table \"announcements\"",
+        "name": "announcement_inc_input",
+        "description": "input type for incrementing numeric columns in table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2537,8 +2537,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_insert_input",
-        "description": "input type for inserting data into table \"announcements\"",
+        "name": "announcement_insert_input",
+        "description": "input type for inserting data into table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2644,7 +2644,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_max_fields",
+        "name": "announcement_max_fields",
         "description": "aggregate max on columns",
         "fields": [
           {
@@ -2715,8 +2715,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_max_order_by",
-        "description": "order by max() on columns of table \"announcements\"",
+        "name": "announcement_max_order_by",
+        "description": "order by max() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2786,7 +2786,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_min_fields",
+        "name": "announcement_min_fields",
         "description": "aggregate min on columns",
         "fields": [
           {
@@ -2857,8 +2857,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_min_order_by",
-        "description": "order by min() on columns of table \"announcements\"",
+        "name": "announcement_min_order_by",
+        "description": "order by min() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2928,8 +2928,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_mutation_response",
-        "description": "response of any mutation on the table \"announcements\"",
+        "name": "announcement_mutation_response",
+        "description": "response of any mutation on the table \"announcement\"",
         "fields": [
           {
             "name": "affected_rows",
@@ -2962,7 +2962,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "announcements",
+                    "name": "announcement",
                     "ofType": null
                   }
                 }
@@ -2979,8 +2979,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_on_conflict",
-        "description": "on_conflict condition type for table \"announcements\"",
+        "name": "announcement_on_conflict",
+        "description": "on_conflict condition type for table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -2991,7 +2991,7 @@
               "name": null,
               "ofType": {
                 "kind": "ENUM",
-                "name": "announcements_constraint",
+                "name": "announcement_constraint",
                 "ofType": null
               }
             },
@@ -3013,7 +3013,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "ENUM",
-                    "name": "announcements_update_column",
+                    "name": "announcement_update_column",
                     "ofType": null
                   }
                 }
@@ -3028,7 +3028,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_bool_exp",
+              "name": "announcement_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -3042,8 +3042,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_order_by",
-        "description": "Ordering options when selecting data from \"announcements\".",
+        "name": "announcement_order_by",
+        "description": "Ordering options when selecting data from \"announcement\".",
         "fields": null,
         "inputFields": [
           {
@@ -3149,8 +3149,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_pk_columns_input",
-        "description": "primary key columns input for table: announcements",
+        "name": "announcement_pk_columns_input",
+        "description": "primary key columns input for table: announcement",
         "fields": null,
         "inputFields": [
           {
@@ -3176,8 +3176,8 @@
       },
       {
         "kind": "ENUM",
-        "name": "announcements_select_column",
-        "description": "select columns of table \"announcements\"",
+        "name": "announcement_select_column",
+        "description": "select columns of table \"announcement\"",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3223,8 +3223,8 @@
       },
       {
         "kind": "ENUM",
-        "name": "announcements_select_column_announcements_aggregate_bool_exp_bool_and_arguments_columns",
-        "description": "select \"announcements_aggregate_bool_exp_bool_and_arguments_columns\" columns of table \"announcements\"",
+        "name": "announcement_select_column_announcement_aggregate_bool_exp_bool_and_arguments_columns",
+        "description": "select \"announcement_aggregate_bool_exp_bool_and_arguments_columns\" columns of table \"announcement\"",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3240,8 +3240,8 @@
       },
       {
         "kind": "ENUM",
-        "name": "announcements_select_column_announcements_aggregate_bool_exp_bool_or_arguments_columns",
-        "description": "select \"announcements_aggregate_bool_exp_bool_or_arguments_columns\" columns of table \"announcements\"",
+        "name": "announcement_select_column_announcement_aggregate_bool_exp_bool_or_arguments_columns",
+        "description": "select \"announcement_aggregate_bool_exp_bool_or_arguments_columns\" columns of table \"announcement\"",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3257,8 +3257,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_set_input",
-        "description": "input type for updating data in table \"announcements\"",
+        "name": "announcement_set_input",
+        "description": "input type for updating data in table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3340,7 +3340,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_stddev_fields",
+        "name": "announcement_stddev_fields",
         "description": "aggregate stddev on columns",
         "fields": [
           {
@@ -3363,8 +3363,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_stddev_order_by",
-        "description": "order by stddev() on columns of table \"announcements\"",
+        "name": "announcement_stddev_order_by",
+        "description": "order by stddev() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3386,7 +3386,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_stddev_pop_fields",
+        "name": "announcement_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
         "fields": [
           {
@@ -3409,8 +3409,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_stddev_pop_order_by",
-        "description": "order by stddev_pop() on columns of table \"announcements\"",
+        "name": "announcement_stddev_pop_order_by",
+        "description": "order by stddev_pop() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3432,7 +3432,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_stddev_samp_fields",
+        "name": "announcement_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
         "fields": [
           {
@@ -3455,8 +3455,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_stddev_samp_order_by",
-        "description": "order by stddev_samp() on columns of table \"announcements\"",
+        "name": "announcement_stddev_samp_order_by",
+        "description": "order by stddev_samp() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3478,8 +3478,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_stream_cursor_input",
-        "description": "Streaming cursor of the table \"announcements\"",
+        "name": "announcement_stream_cursor_input",
+        "description": "Streaming cursor of the table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3490,7 +3490,7 @@
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "announcements_stream_cursor_value_input",
+                "name": "announcement_stream_cursor_value_input",
                 "ofType": null
               }
             },
@@ -3517,7 +3517,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_stream_cursor_value_input",
+        "name": "announcement_stream_cursor_value_input",
         "description": "Initial value of the column from where the streaming should start",
         "fields": null,
         "inputFields": [
@@ -3600,7 +3600,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_sum_fields",
+        "name": "announcement_sum_fields",
         "description": "aggregate sum on columns",
         "fields": [
           {
@@ -3623,8 +3623,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_sum_order_by",
-        "description": "order by sum() on columns of table \"announcements\"",
+        "name": "announcement_sum_order_by",
+        "description": "order by sum() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3646,8 +3646,8 @@
       },
       {
         "kind": "ENUM",
-        "name": "announcements_update_column",
-        "description": "update columns of table \"announcements\"",
+        "name": "announcement_update_column",
+        "description": "update columns of table \"announcement\"",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3693,7 +3693,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_updates",
+        "name": "announcement_updates",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3702,7 +3702,7 @@
             "description": "increments the numeric columns with given value of the filtered values",
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_inc_input",
+              "name": "announcement_inc_input",
               "ofType": null
             },
             "defaultValue": null,
@@ -3714,7 +3714,7 @@
             "description": "sets the columns of the filtered rows to the given values",
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_set_input",
+              "name": "announcement_set_input",
               "ofType": null
             },
             "defaultValue": null,
@@ -3729,7 +3729,7 @@
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "announcements_bool_exp",
+                "name": "announcement_bool_exp",
                 "ofType": null
               }
             },
@@ -3744,7 +3744,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_var_pop_fields",
+        "name": "announcement_var_pop_fields",
         "description": "aggregate var_pop on columns",
         "fields": [
           {
@@ -3767,8 +3767,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_var_pop_order_by",
-        "description": "order by var_pop() on columns of table \"announcements\"",
+        "name": "announcement_var_pop_order_by",
+        "description": "order by var_pop() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3790,7 +3790,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_var_samp_fields",
+        "name": "announcement_var_samp_fields",
         "description": "aggregate var_samp on columns",
         "fields": [
           {
@@ -3813,8 +3813,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_var_samp_order_by",
-        "description": "order by var_samp() on columns of table \"announcements\"",
+        "name": "announcement_var_samp_order_by",
+        "description": "order by var_samp() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -3836,7 +3836,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "announcements_variance_fields",
+        "name": "announcement_variance_fields",
         "description": "aggregate variance on columns",
         "fields": [
           {
@@ -3859,8 +3859,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "announcements_variance_order_by",
-        "description": "order by variance() on columns of table \"announcements\"",
+        "name": "announcement_variance_order_by",
+        "description": "order by variance() on columns of table \"announcement\"",
         "fields": null,
         "inputFields": [
           {
@@ -16346,8 +16346,8 @@
         "description": "mutation root",
         "fields": [
           {
-            "name": "delete_announcements",
-            "description": "delete data from the table: \"announcements\"",
+            "name": "delete_announcement",
+            "description": "delete data from the table: \"announcement\"",
             "args": [
               {
                 "name": "where",
@@ -16357,7 +16357,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "announcements_bool_exp",
+                    "name": "announcement_bool_exp",
                     "ofType": null
                   }
                 },
@@ -16368,15 +16368,15 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_mutation_response",
+              "name": "announcement_mutation_response",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "delete_announcements_by_pk",
-            "description": "delete single row from the table: \"announcements\"",
+            "name": "delete_announcement_by_pk",
+            "description": "delete single row from the table: \"announcement\"",
             "args": [
               {
                 "name": "id",
@@ -16397,7 +16397,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements",
+              "name": "announcement",
               "ofType": null
             },
             "isDeprecated": false,
@@ -17522,6 +17522,122 @@
             "deprecationReason": null
           },
           {
+            "name": "delete_report",
+            "description": "delete data from the table: \"report\"",
+            "args": [
+              {
+                "name": "where",
+                "description": "filter the rows which have to be deleted",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_bool_exp",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_mutation_response",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "delete_report_by_pk",
+            "description": "delete single row from the table: \"report\"",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "uuid",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "delete_report_to_image",
+            "description": "delete data from the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "where",
+                "description": "filter the rows which have to be deleted",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_to_image_bool_exp",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image_mutation_response",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "delete_report_to_image_by_pk",
+            "description": "delete single row from the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "uuid",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "delete_space",
             "description": "delete data from the table: \"space\"",
             "args": [
@@ -18102,8 +18218,8 @@
             "deprecationReason": null
           },
           {
-            "name": "insert_announcements",
-            "description": "insert data into the table: \"announcements\"",
+            "name": "insert_announcement",
+            "description": "insert data into the table: \"announcement\"",
             "args": [
               {
                 "name": "objects",
@@ -18119,7 +18235,7 @@
                       "name": null,
                       "ofType": {
                         "kind": "INPUT_OBJECT",
-                        "name": "announcements_insert_input",
+                        "name": "announcement_insert_input",
                         "ofType": null
                       }
                     }
@@ -18134,7 +18250,7 @@
                 "description": "upsert condition",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_on_conflict",
+                  "name": "announcement_on_conflict",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -18144,15 +18260,15 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_mutation_response",
+              "name": "announcement_mutation_response",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "insert_announcements_one",
-            "description": "insert a single row into the table: \"announcements\"",
+            "name": "insert_announcement_one",
+            "description": "insert a single row into the table: \"announcement\"",
             "args": [
               {
                 "name": "object",
@@ -18162,7 +18278,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "announcements_insert_input",
+                    "name": "announcement_insert_input",
                     "ofType": null
                   }
                 },
@@ -18175,7 +18291,7 @@
                 "description": "upsert condition",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_on_conflict",
+                  "name": "announcement_on_conflict",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -18185,7 +18301,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements",
+              "name": "announcement",
               "ofType": null
             },
             "isDeprecated": false,
@@ -19944,6 +20060,186 @@
             "deprecationReason": null
           },
           {
+            "name": "insert_report",
+            "description": "insert data into the table: \"report\"",
+            "args": [
+              {
+                "name": "objects",
+                "description": "the rows to be inserted",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "report_insert_input",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "on_conflict",
+                "description": "upsert condition",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_on_conflict",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_mutation_response",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "insert_report_one",
+            "description": "insert a single row into the table: \"report\"",
+            "args": [
+              {
+                "name": "object",
+                "description": "the row to be inserted",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_insert_input",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "on_conflict",
+                "description": "upsert condition",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_on_conflict",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "insert_report_to_image",
+            "description": "insert data into the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "objects",
+                "description": "the rows to be inserted",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "report_to_image_insert_input",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "on_conflict",
+                "description": "upsert condition",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_on_conflict",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image_mutation_response",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "insert_report_to_image_one",
+            "description": "insert a single row into the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "object",
+                "description": "the row to be inserted",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_to_image_insert_input",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "on_conflict",
+                "description": "upsert condition",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_on_conflict",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "insert_space",
             "description": "insert data into the table: \"space\"",
             "args": [
@@ -20844,15 +21140,15 @@
             "deprecationReason": null
           },
           {
-            "name": "update_announcements",
-            "description": "update data of the table: \"announcements\"",
+            "name": "update_announcement",
+            "description": "update data of the table: \"announcement\"",
             "args": [
               {
                 "name": "_inc",
                 "description": "increments the numeric columns with given value of the filtered values",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_inc_input",
+                  "name": "announcement_inc_input",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -20864,7 +21160,7 @@
                 "description": "sets the columns of the filtered rows to the given values",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_set_input",
+                  "name": "announcement_set_input",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -20879,7 +21175,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "announcements_bool_exp",
+                    "name": "announcement_bool_exp",
                     "ofType": null
                   }
                 },
@@ -20890,22 +21186,22 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements_mutation_response",
+              "name": "announcement_mutation_response",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "update_announcements_by_pk",
-            "description": "update single row of the table: \"announcements\"",
+            "name": "update_announcement_by_pk",
+            "description": "update single row of the table: \"announcement\"",
             "args": [
               {
                 "name": "_inc",
                 "description": "increments the numeric columns with given value of the filtered values",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_inc_input",
+                  "name": "announcement_inc_input",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -20917,7 +21213,7 @@
                 "description": "sets the columns of the filtered rows to the given values",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_set_input",
+                  "name": "announcement_set_input",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -20932,7 +21228,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "announcements_pk_columns_input",
+                    "name": "announcement_pk_columns_input",
                     "ofType": null
                   }
                 },
@@ -20943,15 +21239,15 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements",
+              "name": "announcement",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "update_announcements_many",
-            "description": "update multiples rows of table: \"announcements\"",
+            "name": "update_announcement_many",
+            "description": "update multiples rows of table: \"announcement\"",
             "args": [
               {
                 "name": "updates",
@@ -20967,7 +21263,7 @@
                       "name": null,
                       "ofType": {
                         "kind": "INPUT_OBJECT",
-                        "name": "announcements_updates",
+                        "name": "announcement_updates",
                         "ofType": null
                       }
                     }
@@ -20983,7 +21279,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "announcements_mutation_response",
+                "name": "announcement_mutation_response",
                 "ofType": null
               }
             },
@@ -23590,6 +23886,252 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "public_space_mutation_response",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_report",
+            "description": "update data of the table: \"report\"",
+            "args": [
+              {
+                "name": "_set",
+                "description": "sets the columns of the filtered rows to the given values",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_set_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows which have to be updated",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_bool_exp",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_mutation_response",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_report_by_pk",
+            "description": "update single row of the table: \"report\"",
+            "args": [
+              {
+                "name": "_set",
+                "description": "sets the columns of the filtered rows to the given values",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_set_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "pk_columns",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_pk_columns_input",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_report_many",
+            "description": "update multiples rows of table: \"report\"",
+            "args": [
+              {
+                "name": "updates",
+                "description": "updates to execute, in order",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "report_updates",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report_mutation_response",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_report_to_image",
+            "description": "update data of the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "_set",
+                "description": "sets the columns of the filtered rows to the given values",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_set_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows which have to be updated",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_to_image_bool_exp",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image_mutation_response",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_report_to_image_by_pk",
+            "description": "update single row of the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "_set",
+                "description": "sets the columns of the filtered rows to the given values",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_set_input",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "pk_columns",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_to_image_pk_columns_input",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_report_to_image_many",
+            "description": "update multiples rows of table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "updates",
+                "description": "updates to execute, in order",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "report_to_image_updates",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report_to_image_mutation_response",
                 "ofType": null
               }
             },
@@ -45053,8 +45595,8 @@
         "description": null,
         "fields": [
           {
-            "name": "announcements",
-            "description": "fetch data from the table: \"announcements\"",
+            "name": "announcement",
+            "description": "fetch data from the table: \"announcement\"",
             "args": [
               {
                 "name": "distinct_on",
@@ -45067,7 +45609,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "announcements_select_column",
+                      "name": "announcement_select_column",
                       "ofType": null
                     }
                   }
@@ -45111,7 +45653,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "announcements_order_by",
+                      "name": "announcement_order_by",
                       "ofType": null
                     }
                   }
@@ -45125,7 +45667,7 @@
                 "description": "filter the rows returned",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -45144,7 +45686,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "announcements",
+                    "name": "announcement",
                     "ofType": null
                   }
                 }
@@ -45154,8 +45696,8 @@
             "deprecationReason": null
           },
           {
-            "name": "announcements_aggregate",
-            "description": "fetch aggregated fields from the table: \"announcements\"",
+            "name": "announcement_aggregate",
+            "description": "fetch aggregated fields from the table: \"announcement\"",
             "args": [
               {
                 "name": "distinct_on",
@@ -45168,7 +45710,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "announcements_select_column",
+                      "name": "announcement_select_column",
                       "ofType": null
                     }
                   }
@@ -45212,7 +45754,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "announcements_order_by",
+                      "name": "announcement_order_by",
                       "ofType": null
                     }
                   }
@@ -45226,7 +45768,7 @@
                 "description": "filter the rows returned",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -45239,7 +45781,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "announcements_aggregate",
+                "name": "announcement_aggregate",
                 "ofType": null
               }
             },
@@ -45247,8 +45789,8 @@
             "deprecationReason": null
           },
           {
-            "name": "announcements_by_pk",
-            "description": "fetch data from the table: \"announcements\" using primary key columns",
+            "name": "announcement_by_pk",
+            "description": "fetch data from the table: \"announcement\" using primary key columns",
             "args": [
               {
                 "name": "id",
@@ -45269,7 +45811,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements",
+              "name": "announcement",
               "ofType": null
             },
             "isDeprecated": false,
@@ -50276,6 +50818,452 @@
             "deprecationReason": null
           },
           {
+            "name": "report",
+            "description": "fetch data from the table: \"report\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_aggregate",
+            "description": "fetch aggregated fields from the table: \"report\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report_aggregate",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_by_pk",
+            "description": "fetch data from the table: \"report\" using primary key columns",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "uuid",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_image",
+            "description": "fetch data from the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_to_image_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_to_image_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report_to_image",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_image_aggregate",
+            "description": "fetch aggregated fields from the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_to_image_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_to_image_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report_to_image_aggregate",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_image_by_pk",
+            "description": "fetch data from the table: \"report_to_image\" using primary key columns",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "uuid",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "space",
             "description": "fetch data from the table: \"space\"",
             "args": [
@@ -52513,6 +53501,2723 @@
       },
       {
         "kind": "OBJECT",
+        "name": "report",
+        "description": "columns and relationships of \"report\"",
+        "fields": [
+          {
+            "name": "body",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "timestamptz",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_images",
+            "description": "An array relationship",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_to_image_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_to_image_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report_to_image",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_images_aggregate",
+            "description": "An aggregate relationship",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_to_image_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_to_image_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report_to_image_aggregate",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile",
+            "description": "An object relationship",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "profile",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile",
+            "description": "An object relationship",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "profile",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_aggregate",
+        "description": "aggregated selection of \"report\"",
+        "fields": [
+          {
+            "name": "aggregate",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_aggregate_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "nodes",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_aggregate_fields",
+        "description": "aggregate fields of \"report\"",
+        "fields": [
+          {
+            "name": "count",
+            "description": null,
+            "args": [
+              {
+                "name": "columns",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "distinct",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "max",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_max_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "min",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_min_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_bool_exp",
+        "description": "Boolean expression to filter rows from the table \"report\". All fields are combined with a logical 'AND'.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "_and",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_bool_exp",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_not",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_or",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_bool_exp",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "body",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "timestamptz_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_images",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_images_aggregate",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_aggregate_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "report_constraint",
+        "description": "unique or primary key constraints on table \"report\"",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "report_pkey",
+            "description": "unique or primary key constraint on columns \"id\"",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_insert_input",
+        "description": "input type for inserting data into table \"report\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "body",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamptz",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_images",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_arr_rel_insert_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_obj_rel_insert_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_obj_rel_insert_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_max_fields",
+        "description": "aggregate max on columns",
+        "fields": [
+          {
+            "name": "body",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamptz",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_min_fields",
+        "description": "aggregate min on columns",
+        "fields": [
+          {
+            "name": "body",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamptz",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_mutation_response",
+        "description": "response of any mutation on the table \"report\"",
+        "fields": [
+          {
+            "name": "affected_rows",
+            "description": "number of rows affected by the mutation",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "returning",
+            "description": "data from the rows affected by the mutation",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_obj_rel_insert_input",
+        "description": "input type for inserting object relation for remote table \"report\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "data",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "report_insert_input",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "on_conflict",
+            "description": "upsert condition",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_on_conflict",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_on_conflict",
+        "description": "on_conflict condition type for table \"report\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "constraint",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "report_constraint",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_columns",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "report_update_column",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "defaultValue": "[]",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "where",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_order_by",
+        "description": "Ordering options when selecting data from \"report\".",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "body",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_images_aggregate",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_aggregate_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "profile_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_pk_columns_input",
+        "description": "primary key columns input for table: report",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "report_select_column",
+        "description": "select columns of table \"report\"",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "body",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_set_input",
+        "description": "input type for updating data in table \"report\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "body",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamptz",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_stream_cursor_input",
+        "description": "Streaming cursor of the table \"report\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "initial_value",
+            "description": "Stream column input with initial value",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "report_stream_cursor_value_input",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ordering",
+            "description": "cursor ordering",
+            "type": {
+              "kind": "ENUM",
+              "name": "cursor_ordering",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_stream_cursor_value_input",
+        "description": "Initial value of the column from where the streaming should start",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "body",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamptz",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_to_image",
+        "description": "columns and relationships of \"report_to_image\"",
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image",
+            "description": "An object relationship",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "image",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report",
+            "description": "An object relationship",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_to_image_aggregate",
+        "description": "aggregated selection of \"report_to_image\"",
+        "fields": [
+          {
+            "name": "aggregate",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image_aggregate_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "nodes",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report_to_image",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_aggregate_bool_exp",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "count",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_aggregate_bool_exp_count",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_aggregate_bool_exp_count",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "arguments",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "report_to_image_select_column",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "distinct",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "filter",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "predicate",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "Int_comparison_exp",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_to_image_aggregate_fields",
+        "description": "aggregate fields of \"report_to_image\"",
+        "fields": [
+          {
+            "name": "count",
+            "description": null,
+            "args": [
+              {
+                "name": "columns",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_to_image_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "distinct",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "max",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image_max_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "min",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image_min_fields",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_aggregate_order_by",
+        "description": "order by aggregate values of table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "max",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_max_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "min",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_min_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_arr_rel_insert_input",
+        "description": "input type for inserting array relation for remote table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "data",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "report_to_image_insert_input",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "on_conflict",
+            "description": "upsert condition",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_on_conflict",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_bool_exp",
+        "description": "Boolean expression to filter rows from the table \"report_to_image\". All fields are combined with a logical 'AND'.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "_and",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_not",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "_or",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "image_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "uuid_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "report_to_image_constraint",
+        "description": "unique or primary key constraints on table \"report_to_image\"",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "report_to_image_pkey",
+            "description": "unique or primary key constraint on columns \"id\"",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_insert_input",
+        "description": "input type for inserting data into table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "image_obj_rel_insert_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_obj_rel_insert_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_to_image_max_fields",
+        "description": "aggregate max on columns",
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_max_order_by",
+        "description": "order by max() on columns of table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_to_image_min_fields",
+        "description": "aggregate min on columns",
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_min_order_by",
+        "description": "order by min() on columns of table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "report_to_image_mutation_response",
+        "description": "response of any mutation on the table \"report_to_image\"",
+        "fields": [
+          {
+            "name": "affected_rows",
+            "description": "number of rows affected by the mutation",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "returning",
+            "description": "data from the rows affected by the mutation",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report_to_image",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_on_conflict",
+        "description": "on_conflict condition type for table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "constraint",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "report_to_image_constraint",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "update_columns",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "report_to_image_update_column",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "defaultValue": "[]",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "where",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_bool_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_order_by",
+        "description": "Ordering options when selecting data from \"report_to_image\".",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "image_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_pk_columns_input",
+        "description": "primary key columns input for table: report_to_image",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "uuid",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "report_to_image_select_column",
+        "description": "select columns of table \"report_to_image\"",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_set_input",
+        "description": "input type for updating data in table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_stream_cursor_input",
+        "description": "Streaming cursor of the table \"report_to_image\"",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "initial_value",
+            "description": "Stream column input with initial value",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "report_to_image_stream_cursor_value_input",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ordering",
+            "description": "cursor ordering",
+            "type": {
+              "kind": "ENUM",
+              "name": "cursor_ordering",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_stream_cursor_value_input",
+        "description": "Initial value of the column from where the streaming should start",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "report_to_image_update_column",
+        "description": "update columns of table \"report_to_image\"",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_to_image_updates",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "_set",
+            "description": "sets the columns of the filtered rows to the given values",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_to_image_set_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "where",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "report_to_image_bool_exp",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "report_update_column",
+        "description": "update columns of table \"report\"",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "body",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reporter_profile_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "subject_profile_id",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "report_updates",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "_set",
+            "description": "sets the columns of the filtered rows to the given values",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "report_set_input",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "where",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "report_bool_exp",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "space",
         "description": "columns and relationships of \"space\"",
         "fields": [
@@ -52846,7 +56551,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "announcements_select_column",
+                      "name": "announcement_select_column",
                       "ofType": null
                     }
                   }
@@ -52890,7 +56595,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "announcements_order_by",
+                      "name": "announcement_order_by",
                       "ofType": null
                     }
                   }
@@ -52904,7 +56609,7 @@
                 "description": "filter the rows returned",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -52923,7 +56628,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "announcements",
+                    "name": "announcement",
                     "ofType": null
                   }
                 }
@@ -52947,7 +56652,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "announcements_select_column",
+                      "name": "announcement_select_column",
                       "ofType": null
                     }
                   }
@@ -52991,7 +56696,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "announcements_order_by",
+                      "name": "announcement_order_by",
                       "ofType": null
                     }
                   }
@@ -53005,7 +56710,7 @@
                 "description": "filter the rows returned",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -53018,7 +56723,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "announcements_aggregate",
+                "name": "announcement_aggregate",
                 "ofType": null
               }
             },
@@ -53756,7 +57461,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_bool_exp",
+              "name": "announcement_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -53768,7 +57473,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_aggregate_bool_exp",
+              "name": "announcement_aggregate_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -55061,7 +58766,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_arr_rel_insert_input",
+              "name": "announcement_arr_rel_insert_input",
               "ofType": null
             },
             "defaultValue": null,
@@ -60360,7 +64065,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "announcements_aggregate_order_by",
+              "name": "announcement_aggregate_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -67079,8 +70784,8 @@
         "description": null,
         "fields": [
           {
-            "name": "announcements",
-            "description": "fetch data from the table: \"announcements\"",
+            "name": "announcement",
+            "description": "fetch data from the table: \"announcement\"",
             "args": [
               {
                 "name": "distinct_on",
@@ -67093,7 +70798,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "announcements_select_column",
+                      "name": "announcement_select_column",
                       "ofType": null
                     }
                   }
@@ -67137,7 +70842,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "announcements_order_by",
+                      "name": "announcement_order_by",
                       "ofType": null
                     }
                   }
@@ -67151,7 +70856,7 @@
                 "description": "filter the rows returned",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -67170,7 +70875,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "announcements",
+                    "name": "announcement",
                     "ofType": null
                   }
                 }
@@ -67180,8 +70885,8 @@
             "deprecationReason": null
           },
           {
-            "name": "announcements_aggregate",
-            "description": "fetch aggregated fields from the table: \"announcements\"",
+            "name": "announcement_aggregate",
+            "description": "fetch aggregated fields from the table: \"announcement\"",
             "args": [
               {
                 "name": "distinct_on",
@@ -67194,7 +70899,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "announcements_select_column",
+                      "name": "announcement_select_column",
                       "ofType": null
                     }
                   }
@@ -67238,7 +70943,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "announcements_order_by",
+                      "name": "announcement_order_by",
                       "ofType": null
                     }
                   }
@@ -67252,7 +70957,7 @@
                 "description": "filter the rows returned",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -67265,7 +70970,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "announcements_aggregate",
+                "name": "announcement_aggregate",
                 "ofType": null
               }
             },
@@ -67273,8 +70978,8 @@
             "deprecationReason": null
           },
           {
-            "name": "announcements_by_pk",
-            "description": "fetch data from the table: \"announcements\" using primary key columns",
+            "name": "announcement_by_pk",
+            "description": "fetch data from the table: \"announcement\" using primary key columns",
             "args": [
               {
                 "name": "id",
@@ -67295,15 +71000,15 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "announcements",
+              "name": "announcement",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "announcements_stream",
-            "description": "fetch data from the table in a streaming manner: \"announcements\"",
+            "name": "announcement_stream",
+            "description": "fetch data from the table in a streaming manner: \"announcement\"",
             "args": [
               {
                 "name": "batch_size",
@@ -67332,7 +71037,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "announcements_stream_cursor_input",
+                      "name": "announcement_stream_cursor_input",
                       "ofType": null
                     }
                   }
@@ -67346,7 +71051,7 @@
                 "description": "filter the rows returned",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "announcements_bool_exp",
+                  "name": "announcement_bool_exp",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -67365,7 +71070,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "announcements",
+                    "name": "announcement",
                     "ofType": null
                   }
                 }
@@ -74045,6 +77750,598 @@
                   "ofType": {
                     "kind": "OBJECT",
                     "name": "public_space",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report",
+            "description": "fetch data from the table: \"report\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_aggregate",
+            "description": "fetch aggregated fields from the table: \"report\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report_aggregate",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_by_pk",
+            "description": "fetch data from the table: \"report\" using primary key columns",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "uuid",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_stream",
+            "description": "fetch data from the table in a streaming manner: \"report\"",
+            "args": [
+              {
+                "name": "batch_size",
+                "description": "maximum number of rows returned in a single batch",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "cursor",
+                "description": "cursor to stream the results returned by the query",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_stream_cursor_input",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_image",
+            "description": "fetch data from the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_to_image_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_to_image_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report_to_image",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_image_aggregate",
+            "description": "fetch aggregated fields from the table: \"report_to_image\"",
+            "args": [
+              {
+                "name": "distinct_on",
+                "description": "distinct select on columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "report_to_image_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "limit",
+                "description": "limit the number of rows returned",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "offset",
+                "description": "skip the first n rows. Use only with order_by",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "order_by",
+                "description": "sort the rows by one or more columns",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_to_image_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "report_to_image_aggregate",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_image_by_pk",
+            "description": "fetch data from the table: \"report_to_image\" using primary key columns",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "uuid",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "report_to_image",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "report_to_image_stream",
+            "description": "fetch data from the table in a streaming manner: \"report_to_image\"",
+            "args": [
+              {
+                "name": "batch_size",
+                "description": "maximum number of rows returned in a single batch",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "cursor",
+                "description": "cursor to stream the results returned by the query",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "report_to_image_stream_cursor_input",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "where",
+                "description": "filter the rows returned",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "report_to_image_bool_exp",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "report_to_image",
                     "ofType": null
                   }
                 }

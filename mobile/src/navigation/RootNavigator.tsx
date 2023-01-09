@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native";
 import { Box } from "../components/atomic/Box";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { BxMenu } from "../generated/icons/regular";
+import { useExpoUpdate } from "../hooks/useExpoUpdate";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
@@ -16,6 +17,7 @@ import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
 import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { HomeScreen } from "../screens/HomeScreen";
+import { LoadingScreen } from "../screens/LoadingScreen";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { SignInScreen } from "../screens/SignInScreen";
 import { Theme } from "../theme";
@@ -105,6 +107,9 @@ export function RootNavigator() {
   const theme = useTheme<Theme>();
 
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
+
+  const { updateChecked } = useExpoUpdate();
+
   return (
     <>
       <RootStack.Navigator
@@ -138,7 +143,13 @@ export function RootNavigator() {
           ),
         }}
       >
-        {!isLoggedIn ? (
+        {!updateChecked ? (
+          <RootStack.Screen
+            name="Loading"
+            component={LoadingScreen}
+            options={{ headerShown: false, animation: "fade" }}
+          />
+        ) : !isLoggedIn ? (
           <RootStack.Screen
             name="SignIn"
             options={{

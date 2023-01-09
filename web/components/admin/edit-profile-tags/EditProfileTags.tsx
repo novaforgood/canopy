@@ -26,7 +26,6 @@ import { isTempId, resolveId } from "../../../lib/tempId";
 import { NewSpaceTag, NewTagCategory } from "../../../lib/types";
 import { Button, Select, Text } from "../../atomic";
 import { CustomTab } from "../../CustomTab";
-import { NumberBadge } from "../../NumberBadge";
 import { RoundedCard } from "../../RoundedCard";
 import { Tag } from "../../Tag";
 

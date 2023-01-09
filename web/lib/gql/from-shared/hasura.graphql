@@ -517,7 +517,6 @@ mutation UpdateSpace($space_id: uuid!, $variables: space_set_input!) {
       image {
         id
         url
-        uploader_user_id
       }
     }
   }
@@ -564,7 +563,6 @@ mutation UpsertSpaceCoverImage($image_id: uuid!, $space_id: uuid!) {
     id
     image {
       id
-      uploader_user_id
       url
     }
     image_id
@@ -759,7 +757,7 @@ mutation UpdateSpaceTagCategory(
 }
 
 query AnnouncementsBySpaceId($space_id: uuid!) {
-  announcements(
+  announcement(
     order_by: { created_at: desc }
     where: { space_id: { _eq: $space_id } }
   ) {

@@ -22,5 +22,4 @@ select_permissions:
       columns:
         - id
         - url
-        - uploader_user_id
       filter: {}

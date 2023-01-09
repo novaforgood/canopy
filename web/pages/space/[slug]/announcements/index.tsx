@@ -26,7 +26,7 @@ function mapQueryDataToObjects(
   queryData: AnnouncementsBySpaceIdQuery | undefined
 ) {
   // filter deleted posts
-  const filtered = queryData?.announcements.filter((entry) => !entry.deleted);
+  const filtered = queryData?.announcement.filter((entry) => !entry.deleted);
 
   // map query data to AnnouncementProps
   return filtered?.map(
@@ -61,11 +61,9 @@ const AnnouncementsPage: CustomPage = () => {
 
   // update read announcements
   useEffect(() => {
-    if (currentProfile && queryData?.announcements) {
+    if (currentProfile && queryData?.announcement) {
       const latestAnnouncementId =
-        queryData.announcements.length > 0
-          ? queryData.announcements[0].id
-          : null;
+        queryData.announcement.length > 0 ? queryData.announcement[0].id : null;
 
       // update if last_read_announcement_id is null or less than the latest announcement
       const shouldUpdate =
@@ -80,7 +78,12 @@ const AnnouncementsPage: CustomPage = () => {
         refetchCurrentProfile();
       }
     }
-  }, [currentProfile, queryData]);
+  }, [
+    currentProfile,
+    queryData,
+    refetchCurrentProfile,
+    updateReadAnnouncement,
+  ]);
 
   // "Create Announcement" Modal
   const [modalOpen, modalHandlers] = useDisclosure(false);
@@ -95,10 +98,10 @@ const AnnouncementsPage: CustomPage = () => {
 
         {/* Title */}
         <Text variant="heading3" className="text-green-900">
-          Community-Wide Announcements
+          Announcements
         </Text>
         <div className="h-4" />
-        <Text variant="subheading2" className="text-green-900">
+        <Text variant="body1" className="text-green-900">
           All messages from {currentSpace?.name} admins will be posted here.
         </Text>
 

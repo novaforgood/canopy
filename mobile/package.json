@@ -37,6 +37,7 @@
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-native": "0.69.6",
+    "react-native-exception-handler": "^2.10.10",
     "react-native-gesture-handler": "~2.5.0",
     "react-native-get-random-values": "^1.8.0",
     "react-native-lightbox": "^0.8.1",
@@ -83,6 +84,12 @@
     "build:graphql": "graphql-codegen --config graphql-codegen.config.js",
     "build:all": "yarn build:icons && yarn build:graphql",
     "postinstall": "npm run build:all",
-    "introspect": "npx env-cmd graphql-codegen --config graphql-introspect.config.js"
+    "introspect": "npx env-cmd graphql-codegen --config graphql-introspect.config.js",
+    "eas:update:staging": "eas update --branch staging",
+    "eas:build:staging": "eas build --profile staging",
+    "eas:submit:staging": "eas submit --profile staging",
+    "eas:update:production": "eas update --branch production",
+    "eas:build:production": "eas build --profile production",
+    "eas:submit:production": "eas submit --profile production"
   }
 }

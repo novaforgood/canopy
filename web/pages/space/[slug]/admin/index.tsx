@@ -10,6 +10,7 @@ import { EditHomepage } from "../../../../components/admin/EditHomepage";
 import { EditProfileFormat } from "../../../../components/admin/EditProfileFormat";
 import { InviteLinksList } from "../../../../components/admin/InviteLinksList";
 import { MembersList } from "../../../../components/admin/MembersList";
+import { Reports } from "../../../../components/admin/Reports";
 import { SetPrivacySettings } from "../../../../components/admin/SetPrivacySettings";
 import { Button, Select, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
@@ -29,6 +30,7 @@ import { useSaveChangesState } from "../../../../hooks/useSaveChangesState";
 
 enum ManageSpaceTabs {
   Members = "Members",
+  Reports = "Reports",
   PrivacySettings = "Privacy Settings",
   EditProfileFormat = "Edit Profile Format",
   EditProfileTags = "Edit Tags",
@@ -37,6 +39,7 @@ enum ManageSpaceTabs {
 
 const MAP_TAB_TO_COMPONENT = {
   [ManageSpaceTabs.Members]: MembersList,
+  [ManageSpaceTabs.Reports]: Reports,
   [ManageSpaceTabs.PrivacySettings]: SetPrivacySettings,
   [ManageSpaceTabs.EditProfileFormat]: EditProfileFormat,
   [ManageSpaceTabs.EditProfileTags]: EditProfileTags,
@@ -45,6 +48,7 @@ const MAP_TAB_TO_COMPONENT = {
 
 const MAP_TAB_TO_TITLE = {
   [ManageSpaceTabs.Members]: "Members",
+  [ManageSpaceTabs.Reports]: "Reports",
   [ManageSpaceTabs.PrivacySettings]: "Privacy Settings",
   [ManageSpaceTabs.EditProfileFormat]: "Edit Profile Format",
   [ManageSpaceTabs.EditProfileTags]: "Edit Profile Tags",
@@ -168,14 +172,14 @@ export default function AdminPage() {
           <InviteLinksList />
         </RoundedCard>
         <div className="h-10"></div>
-        <RoundedCard className="w-full">
+        {/* <RoundedCard className="w-full">
           <div className="flex items-center gap-2">
             <BxTransfer className="h-7 w-7" />
             <Text variant="heading4">Chat Introductions</Text>
           </div>
           <ChatIntroductions />
         </RoundedCard>
-        <div className="h-10"></div>
+        <div className="h-10"></div> */}
         <ManageSpace />
         <div className="h-16"></div>
       </SidePadding>

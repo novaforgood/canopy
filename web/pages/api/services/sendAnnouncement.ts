@@ -1,5 +1,7 @@
+import sendgridMail from "@sendgrid/mail";
 import { z } from "zod";
 
+import { requireServerEnv } from "../../../server/env";
 import {
   executeEmailsBySpaceIdQuery,
   executeGetProfileQuery,
@@ -9,9 +11,7 @@ import {
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiError, makeApiSuccess } from "../../../server/response";
 
-// temp
-import sendgridMail from "@sendgrid/mail";
-import { requireServerEnv } from "../../../server/env";
+const HOST_URL = requireServerEnv("HOST_URL");
 const SENDGRID_API_KEY = requireServerEnv("SENDGRID_API_KEY");
 sendgridMail.setApiKey(SENDGRID_API_KEY);
 
@@ -64,6 +64,7 @@ export default applyMiddleware({
     author_headline: profile_listing?.headline,
     author_img_url: profile_listing?.profile_listing_image?.image.url,
     announcement_content: announcementContent,
+    view_announcements_url: `${HOST_URL}/space/${space?.slug}/announcements`,
   };
 
   await sendgridMail

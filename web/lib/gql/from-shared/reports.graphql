@@ -1,0 +1,52 @@
+query ReportsInSpace($space_id: uuid!) {
+  report(where: { subject_profile: { space_id: { _eq: $space_id } } }) {
+    id
+    created_at
+    body
+    subject_profile_id
+    reporter_profile_id
+    report_to_images {
+      id
+      image {
+        id
+        url
+      }
+    }
+    subject_profile {
+      id
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+      user {
+        id
+        first_name
+        last_name
+      }
+    }
+    reporter_profile {
+      id
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+      user {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+}
