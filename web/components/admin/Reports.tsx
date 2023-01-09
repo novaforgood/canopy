@@ -131,7 +131,7 @@ export function Reports() {
             info.getValue() as Profile;
           return (
             <div className="flex items-center">
-              <ProfileImage className="mr-2 h-10 w-10" src={profileImageUrl} />
+              <ProfileImage className="mr-2 h-6 w-6" src={profileImageUrl} />
               {firstName} {lastName}
             </div>
           );
@@ -143,13 +143,13 @@ export function Reports() {
         accessorFn: (row) => row.reporterProfile,
         cell: (info) => {
           if (!info.getValue()) {
-            return <Text italic>Anonymous</Text>;
+            return <Text className="text-gray-600">Anonymous</Text>;
           }
           const { firstName, lastName, profileImageUrl } =
             info.getValue() as Profile;
           return (
             <div className="flex items-center">
-              <ProfileImage className="mr-2 h-10 w-10" src={profileImageUrl} />
+              <ProfileImage className="mr-2 h-6 w-6" src={profileImageUrl} />
               {firstName} {lastName}
             </div>
           );
@@ -165,7 +165,11 @@ export function Reports() {
       {
         id: "description",
         accessorFn: (row) => row.description,
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <div className="max-h-32 w-64 overflow-y-scroll">
+            {info.getValue() as string}
+          </div>
+        ),
         header: () => <span>description</span>,
       },
       {
@@ -203,7 +207,7 @@ export function Reports() {
   }
 
   return (
-    <div className="">
+    <div className="overflow-x-scroll">
       <Table table={table} />
     </div>
   );
