@@ -52,6 +52,11 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
     >
       <div className="mt-4 flex w-160 flex-col px-8">
         <Text variant="heading4">Start a post in {currentSpace?.name}</Text>
+        <div className="h-2"></div>
+        <Text className="text-gray-700">
+          If you post an announcement, an e-mail will be sent notifying all
+          members of this directory.
+        </Text>
 
         <div className="h-8"></div>
 
