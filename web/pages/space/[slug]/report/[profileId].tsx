@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { boolean } from "zod";
 
@@ -222,6 +223,8 @@ function ReportProfile(props: ReportProfileProps) {
 }
 
 const ProfilePage: CustomPage = () => {
+  const router = useRouter();
+  const spaceSlug = useQueryParam("slug", "string");
   const [submitted, setSubmitted] = useState(false);
 
   const profileId = useQueryParam("profileId", "string");
@@ -255,14 +258,25 @@ const ProfilePage: CustomPage = () => {
                 to contact the admin if you have any further concerns.
               </Text>
               <div className="h-4"></div>
-              <Button
-                rounded
-                onClick={() => {
-                  setSubmitted(false);
-                }}
-              >
-                Submit another report
-              </Button>
+              <div className="flex flex-wrap items-center">
+                <Button
+                  rounded
+                  onClick={() => {
+                    router.push(`/space/${spaceSlug}`);
+                  }}
+                >
+                  Back to homepage
+                </Button>
+                <Button
+                  rounded
+                  variant="secondary"
+                  onClick={() => {
+                    setSubmitted(false);
+                  }}
+                >
+                  Submit another report
+                </Button>
+              </div>
             </div>
           </div>
         ) : (

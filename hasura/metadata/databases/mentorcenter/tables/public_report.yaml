@@ -20,10 +20,11 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - id
-        - subject_profile_id
         - body
+        - created_at
+        - id
         - reporter_profile_id
+        - subject_profile_id
       filter:
         _or:
           - _and:
@@ -41,4 +42,4 @@ select_permissions:
                           _eq: Admin
               - subject_profile:
                   space_id:
-                    _eq: X-Hasura-User-Id
+                    _eq: X-Hasura-Space-Id
