@@ -92,10 +92,8 @@ function App() {
     };
   }, [refreshSession, setSession]);
 
-  const { updateChecked } = useExpoUpdate();
-
   const sessionLoaded = session !== undefined;
-  const appIsReady = fontsLoaded && sessionLoaded && updateChecked;
+  const appIsReady = fontsLoaded && sessionLoaded;
 
   return (
     <AnimatedAppLoader

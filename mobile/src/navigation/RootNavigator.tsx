@@ -17,6 +17,7 @@ import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
 import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { HomeScreen } from "../screens/HomeScreen";
+import { LoadingScreen } from "../screens/LoadingScreen";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { SignInScreen } from "../screens/SignInScreen";
 import { Theme } from "../theme";
@@ -107,6 +108,8 @@ export function RootNavigator() {
 
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
 
+  const { updateChecked } = useExpoUpdate();
+
   return (
     <>
       <RootStack.Navigator
@@ -140,7 +143,13 @@ export function RootNavigator() {
           ),
         }}
       >
-        {!isLoggedIn ? (
+        {!updateChecked ? (
+          <RootStack.Screen
+            name="Loading"
+            component={LoadingScreen}
+            options={{ headerShown: false, animation: "fade" }}
+          />
+        ) : !isLoggedIn ? (
           <RootStack.Screen
             name="SignIn"
             options={{

@@ -3,6 +3,7 @@ import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type RootStackParamList = {
+  Loading: undefined;
   SignIn: undefined;
   Home: undefined;
   SpaceHome: {

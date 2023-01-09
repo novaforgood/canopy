@@ -60,65 +60,54 @@ export function SignInScreen({
       response.authentication.idToken
     );
 
-    signInWithCredential(credential)
-      .then(async (userCred) => {
-        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
+    signInWithCredential(credential).then(async (userCred) => {
+      const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
 
-        if (isNewUser) {
-          // User has never signed in before
-          await userCred.user.delete();
-          // toast.error("Account not created yet. Please sign up first!");
-        } else if (!userCred.user.emailVerified) {
-          // User has signed in before but has not verified email
-          // router.push({ pathname: "/verify", query: router.query });
-        } else {
-          const idToken = await userCred.user.getIdToken();
-          const res = await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${idToken}`,
-            },
-          });
+      if (isNewUser) {
+        // User has never signed in before
+        await userCred.user.delete();
+        // toast.error("Account not created yet. Please sign up first!");
+      } else if (!userCred.user.emailVerified) {
+        // User has signed in before but has not verified email
+        // router.push({ pathname: "/verify", query: router.query });
+      } else {
+        const idToken = await userCred.user.getIdToken();
+        const res = await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${idToken}`,
+          },
+        });
 
-          console.log(res);
-          // await redirectUsingQueryParam("/");
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
-        signOut();
-      })
-      .finally(() => {
-        setSigningIn(false);
-      });
+        console.log(res);
+        // await redirectUsingQueryParam("/");
+      }
+    });
   }, []);
 
-  const googleSignIn = async () => {
-    // sign in with google and upsert data to our DB
-    setSigningIn(true);
-    await promptAsync()
-      .then((response) => {
-        console.log("Ligma");
-        if (response.type === "success") {
-          console.log("res", response);
-          return response;
-        } else {
-          throw new Error("Google sign in failed");
-        }
-      })
-      .then((response) => {
-        console.log("Ligma");
-        if (response) {
-          processResponse(response);
-        } else {
-          throw new Error("Google sign in failed");
-        }
-      })
-      .catch((e) => {
+  useEffect(() => {
+    if (response) {
+      console.log(response);
+      processResponse(response).catch((e) => {
         toast.error(e.message);
         signOut();
         setSigningIn(false);
       });
+    }
+  }, [processResponse, response]);
+
+  const googleSignIn = async () => {
+    // sign in with google and upsert data to our DB
+    setSigningIn(true);
+    await promptAsync().then((response) => {
+      console.log("Ligma");
+      if (response.type === "success") {
+        console.log("res", response);
+        return response;
+      } else {
+        throw new Error("Google sign in failed");
+      }
+    });
   };
 
   const signInManually = async (email: string, password: string) => {
