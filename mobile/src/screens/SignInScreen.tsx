@@ -49,19 +49,17 @@ export function SignInScreen({
   const processResponse = useCallback(async (response: AuthSessionResult) => {
     if (response.type !== "success") {
       toast.error("Failed to sign in with Google");
-      return;
+      throw new Error("Failed to sign in with Google");
     }
     if (!response.authentication) {
       toast.error("Missing `response.authentication`");
-      return;
+      throw new Error("Missing `response.authentication`");
     }
 
     const credential = GoogleAuthProvider.credential(
       response.authentication.idToken
     );
 
-    console.log(credential);
-    console.log("Ligma ballsng");
     signInWithCredential(credential)
       .then(async (userCred) => {
         const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;

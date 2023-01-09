@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native";
 import { Box } from "../components/atomic/Box";
 import { useSpaceBySlugQuery } from "../generated/graphql";
 import { BxMenu } from "../generated/icons/regular";
+import { useExpoUpdate } from "../hooks/useExpoUpdate";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
@@ -105,6 +106,7 @@ export function RootNavigator() {
   const theme = useTheme<Theme>();
 
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
+
   return (
     <>
       <RootStack.Navigator

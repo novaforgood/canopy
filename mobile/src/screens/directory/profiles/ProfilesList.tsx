@@ -132,6 +132,7 @@ export function ProfilesList() {
           <SpaceCoverPhoto
             src={currentSpace?.space_cover_image?.image.url}
           ></SpaceCoverPhoto>
+          <Text>Test</Text>
           <Box py={6} pb={12} px={4} backgroundColor="olive100">
             <Text mb={2} variant="heading3">
               {currentSpace?.name}
