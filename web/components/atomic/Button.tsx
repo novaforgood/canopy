@@ -28,7 +28,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   rounded?: boolean;
   floating?: boolean;
   variant?: "cta" | "primary" | "outline" | "secondary";
-  size?: "small" | "medium";
+  size?: "small" | "medium" | "auto";
 };
 
 export const Button = ({

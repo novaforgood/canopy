@@ -1,5 +1,7 @@
+import sendgridMail from "@sendgrid/mail";
 import { z } from "zod";
 
+import { requireServerEnv } from "../../../server/env";
 import {
   executeEmailsBySpaceIdQuery,
   executeGetProfileQuery,
@@ -9,9 +11,6 @@ import {
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiError, makeApiSuccess } from "../../../server/response";
 
-// temp
-import sendgridMail from "@sendgrid/mail";
-import { requireServerEnv } from "../../../server/env";
 const SENDGRID_API_KEY = requireServerEnv("SENDGRID_API_KEY");
 sendgridMail.setApiKey(SENDGRID_API_KEY);
 

@@ -59,44 +59,7 @@ export function SpaceDropdown() {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute z-10 left-0 top-full mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-md border border-gray-100 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {/* {allProfilesData?.profile.map((profile) => {
-                  return (
-                    <Menu.Item key={profile.id}>
-                      {({ active }) => {
-                        const styles = classNames({
-                          "group flex w-full items-center rounded-md px-2 py-3 text-sm whitespace-nowrap truncate":
-                            true,
-                          "bg-white": !active,
-                          "bg-gray-50": active,
-                        });
-
-                        const hasAdminstatus = profile.flattened_profile_roles
-                          .map((role) => role.profile_role)
-                          .includes(Profile_Role_Enum.Admin);
-
-                        return (
-                          <button
-                            className={styles}
-                            onClick={() => {
-                              router.push(
-                                `/space/${profile.space.slug}` +
-                                  (hasAdminstatus ? "/admin" : "")
-                              );
-                            }}
-                          >
-                            <BxTransfer className="w-5 h-5 mr-2 flex-none" />
-                            {profile.space.name}{" "}
-                            {hasAdminstatus && (
-                              <BxsCrown className="w-3 h-3 text-gray-400 ml-1.5 shrink-0" />
-                            )}
-                          </button>
-                        );
-                      }}
-                    </Menu.Item>
-                  );
-                })} */}
-
+              <Menu.Items className="absolute left-0 top-full z-10 mt-2 w-64 origin-top-right divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <Menu.Item>
                   {({ active }) => {
                     const styles = classNames({
@@ -112,7 +75,7 @@ export function SpaceDropdown() {
                           router.push(`/`);
                         }}
                       >
-                        <BxTransfer className="w-5 h-5 mr-2 flex-none" />
+                        <BxTransfer className="mr-2 h-5 w-5 flex-none" />
                         <Text variant="body2">Change directory</Text>
                       </button>
                     );
@@ -134,7 +97,7 @@ export function SpaceDropdown() {
                           router.push(`/create`);
                         }}
                       >
-                        <BxsAddToQueue className="w-5 h-5 mr-2" />
+                        <BxsAddToQueue className="mr-2 h-5 w-5" />
                         <Text bold variant="body2">
                           Create new directory
                         </Text>
