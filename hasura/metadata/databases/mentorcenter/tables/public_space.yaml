@@ -24,7 +24,7 @@ array_relationships:
           id: space_id
         insertion_order: null
         remote_table:
-          name: announcements
+          name: announcement
           schema: public
   - name: space_listing_questions
     using:
