@@ -7,6 +7,7 @@ import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useEditor, EditorContent, EditorContentProps } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+
 import { BxBold, BxItalic, BxLink } from "../../generated/icons/regular";
 
 type RichTextInputProps = Omit<EditorContentProps, "editor" | "ref"> & {
@@ -173,7 +174,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
             </span>
           </EditorButton>
 
-          <div className="h-6 w-1 border-l border-gray-300"></div>
+          {/* <div className="h-6 w-1 border-l border-gray-300"></div>
 
           <EditorButton>
             <BxLink
@@ -183,7 +184,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
                   : "fill-gray-300 group-hover:fill-gray-500"
               }`}
             />
-          </EditorButton>
+          </EditorButton> */}
         </div>
         <EditorContent {...rest} editor={editor} />
       </div>

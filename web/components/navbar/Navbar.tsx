@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SVGProps, useState } from "react";
 
 import { Transition } from "@headlessui/react";
 import { useAtom } from "jotai";
@@ -30,8 +30,24 @@ import { SidePadding } from "../layout/SidePadding";
 import { LoadingPlaceholderRect } from "../LoadingPlaceholderRect";
 import { NumberBadge } from "../NumberBadge";
 import { ProfileImage } from "../ProfileImage";
+import { Tooltip } from "../tooltips";
 
 import { Dropdown } from "./Dropdown";
+
+const BxMegaphone = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="currentColor"
+    viewBox="0 0 43 43"
+    width="100%"
+    height="100%"
+    {...props}
+  >
+    <path
+      d="M39.7113 20.6142C39.7113 18.5187 38.8789 16.5091 37.3972 15.0274C35.9155 13.5457 33.9059 12.7133 31.8105 12.7133H25.2264C25.1441 12.7133 16.6013 12.5981 8.48647 5.78358C8.10181 5.45895 7.63169 5.25213 7.13247 5.1879C6.63325 5.12367 6.12609 5.20477 5.67179 5.42146C5.21485 5.62923 4.82831 5.96558 4.55939 6.38943C4.29046 6.81327 4.1508 7.30626 4.15745 7.80818V33.4201C4.1508 33.9221 4.29046 34.415 4.55939 34.8389C4.82831 35.2627 5.21485 35.5991 5.67179 35.8069C6.02291 35.9683 6.40461 36.0525 6.79107 36.0538C7.41047 36.0578 8.01121 35.842 8.48647 35.4447C14.7249 30.2104 21.1937 28.9265 23.9096 28.6138V34.3913C23.9081 34.8244 24.014 35.2511 24.218 35.6332C24.4219 36.0153 24.7175 36.3408 25.0783 36.5805L26.8889 37.7985C27.2454 38.0241 27.6488 38.1651 28.0682 38.2107C28.4876 38.2564 28.9118 38.2055 29.3085 38.0619C29.7024 37.9089 30.0533 37.6627 30.3314 37.3446C30.6094 37.0264 30.8063 36.6456 30.9052 36.2348L32.8639 28.4492C34.7578 28.1874 36.4934 27.2506 37.7515 25.811C39.0096 24.3714 39.7055 22.526 39.7113 20.6142ZM6.79107 33.4201V7.80818C13.8196 13.7009 21.0126 14.9848 23.9096 15.2646V25.9637C21.0126 26.2435 13.8196 27.5274 6.79107 33.4201ZM28.3538 35.5929L26.5432 34.3913V28.515H30.1315L28.3538 35.5929ZM31.8105 25.8814H26.5432V15.3469H31.8105C33.2074 15.3469 34.5472 15.9019 35.535 16.8897C36.5228 17.8775 37.0777 19.2172 37.0777 20.6142C37.0777 22.0111 36.5228 23.3509 35.535 24.3387C34.5472 25.3265 33.2074 25.8814 31.8105 25.8814Z"
+      fill="black"
+    />
+  </svg>
+);
 
 function MobileNavbar() {
   const router = useRouter();
@@ -107,6 +123,25 @@ function MobileNavbar() {
                   }}
                 >
                   Browse Community Profiles
+                </Button>
+
+                <Button
+                  className="w-full justify-center"
+                  onClick={() => {
+                    navigate(`/space/${spaceSlug}/chat`);
+                  }}
+                  variant="cta"
+                >
+                  Messages
+                </Button>
+                <Button
+                  className="w-full justify-center"
+                  onClick={() => {
+                    navigate(`/space/${spaceSlug}/announcements`);
+                  }}
+                  variant="cta"
+                >
+                  Announcements
                 </Button>
 
                 {isAdmin && (
@@ -237,31 +272,43 @@ function DesktopNavbar() {
         </div>
         <div className="flex items-center gap-4">
           {spaceSlug && (
-            <div className="flex gap-1">
-              <Link href={`/space/${spaceSlug}/chat`} passHref>
-                <a className="relative">
-                  {notificationsCount > 0 ? (
-                    <NumberBadge
-                      className="absolute -top-0.5 -right-1"
-                      number={notificationsCount}
-                    />
-                  ) : null}
-                  <IconButton icon={<BxMessageDetail className="h-6 w-6" />} />
-                </a>
-              </Link>
-              <Link href={`/space/${spaceSlug}/announcements`} passHref>
-                <a className="relative">
-                  {announcementNotificationsCount > 0 ? (
-                    <div
-                      className="absolute -top-0.5 -right-1 flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full 
-                  bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm"
-                    >
-                      {announcementNotificationsCount}
-                    </div>
-                  ) : null}
-                  <IconButton icon={<BxBell className="h-6 w-6" />} />
-                </a>
-              </Link>
+            <div className="flex gap-2">
+              <Tooltip content="Messages" delayMs={[500, 0]} placement="bottom">
+                <div>
+                  <Link href={`/space/${spaceSlug}/chat`} passHref>
+                    <a className="relative">
+                      {notificationsCount > 0 ? (
+                        <NumberBadge
+                          className="absolute -top-0.5 -right-1"
+                          number={notificationsCount}
+                        />
+                      ) : null}
+                      <IconButton
+                        icon={<BxMessageDetail className="h-6 w-6" />}
+                      />
+                    </a>
+                  </Link>
+                </div>
+              </Tooltip>
+              <Tooltip
+                content="Announcements"
+                delayMs={[500, 0]}
+                placement="bottom"
+              >
+                <div>
+                  <Link href={`/space/${spaceSlug}/announcements`} passHref>
+                    <a className="relative">
+                      {announcementNotificationsCount > 0 ? (
+                        <NumberBadge
+                          number={announcementNotificationsCount}
+                          className="absolute -top-0.5 -right-1"
+                        />
+                      ) : null}
+                      <IconButton icon={<BxMegaphone className="h-6 w-6" />} />
+                    </a>
+                  </Link>
+                </div>
+              </Tooltip>
             </div>
           )}
           <Dropdown />

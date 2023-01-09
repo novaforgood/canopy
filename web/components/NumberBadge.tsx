@@ -9,7 +9,7 @@ export function NumberBadge(props: NumberBadgeProps) {
   const { number, className } = props;
 
   const styles = classNames({
-    "flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full bg-green-700 px-0.5 text-center text-[0.7rem] leading-3 text-white shadow-sm":
+    "flex h-[1.2rem] min-w-[1.2rem] items-center justify-center rounded-full bg-[#ff481f] px-0.5 text-center text-[0.7rem] leading-3 text-white font-bold shadow-sm":
       true,
     [`${className}`]: true,
   });

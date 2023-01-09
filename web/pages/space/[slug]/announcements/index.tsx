@@ -101,7 +101,7 @@ const AnnouncementsPage: CustomPage = () => {
           Announcements
         </Text>
         <div className="h-4" />
-        <Text variant="subheading2" className="text-green-900">
+        <Text variant="body1" className="text-green-900">
           All messages from {currentSpace?.name} admins will be posted here.
         </Text>
 
