@@ -1,18 +1,21 @@
 import { Fragment, useEffect } from "react";
 
 import { faker } from "@faker-js/faker";
+import { Menu, Transition } from "@headlessui/react";
 import { useDisclosure } from "@mantine/hooks";
 import { LexRuntime } from "aws-sdk";
+import classNames from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Button, Select, Text } from "../../../../components/atomic";
 import { Breadcrumbs } from "../../../../components/Breadcrumbs";
+import { IconButton } from "../../../../components/buttons/IconButton";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { PageNotFound } from "../../../../components/error-screens/PageNotFound";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
 import { SidePadding } from "../../../../components/layout/SidePadding";
-import { Navbar } from "../../../../components/Navbar";
+import { Navbar } from "../../../../components/navbar/Navbar";
 import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
 import { IntroduceModal } from "../../../../components/profile-page/IntroduceModal";
 import { MessageModal } from "../../../../components/profile-page/MessageModal";
@@ -20,20 +23,111 @@ import { ProfileImage } from "../../../../components/ProfileImage";
 import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import {
+  BxCaretDown,
+  BxDotsHorizontal,
+  BxDotsHorizontalRounded,
   BxEdit,
+  BxFile,
   BxMessageDetail,
+  BxTransfer,
   BxUser,
 } from "../../../../generated/icons/regular";
+import { BxsAddToQueue } from "../../../../generated/icons/solid";
 import { useProfileViewTracker } from "../../../../hooks/analytics/useProfileViewTracker";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { useUserData } from "../../../../hooks/useUserData";
 import { CustomPage } from "../../../../types";
+
+function ProfilePageDropdown() {
+  const profileId = useQueryParam("profileId", "string");
+  const isLoggedIn = useIsLoggedIn();
+  const spaceSlug = useQueryParam("slug", "string");
+
+  const [
+    { data: profileData, fetching: fetchingProfileData },
+    refetchProfileById,
+  ] = useProfileByIdQuery({
+    variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
+  });
+
+  const router = useRouter();
+
+  if (!profileData?.profile_by_pk) {
+    return null;
+  }
+
+  const { first_name, last_name } = profileData.profile_by_pk.user;
+
+  return (
+    <Menu as="div" className="relative inline-block text-left">
+      {({ open }) => {
+        const caretStyles = classNames({
+          "h-7 w-7 transition": true,
+          "rotate-180": open,
+        });
+
+        return (
+          <>
+            <Transition
+              show={open}
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 top-full z-10 mt-2 origin-top-right divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Item>
+                  {({ active }) => {
+                    const styles = classNames({
+                      "group flex w-full items-center rounded-md px-4 py-3 text-sm":
+                        true,
+                      "bg-white": !active,
+                      "bg-gray-50": active,
+                    });
+                    return (
+                      <button
+                        className={styles}
+                        onClick={() => {
+                          router.push(
+                            `/space/${spaceSlug}/report/${profileId}`
+                          );
+                        }}
+                      >
+                        <BxFile className="mr-2 h-5 w-5 flex-none" />
+                        <Text variant="body2" className="whitespace-nowrap">
+                          Report {first_name} {last_name}
+                        </Text>
+                      </button>
+                    );
+                  }}
+                </Menu.Item>
+              </Menu.Items>
+            </Transition>
+
+            <Menu.Button className="focus:outline-none">
+              <div>
+                <IconButton
+                  icon={<BxDotsHorizontalRounded className="h-5 w-5" />}
+                  className="ml-4 rounded-full"
+                  onClick={() => {}}
+                />
+              </div>
+            </Menu.Button>
+          </>
+        );
+      }}
+    </Menu>
+  );
+}
 
 const ProfilePage: CustomPage = () => {
   const router = useRouter();
-  const { attemptTrackView } = useProfileViewTracker();
 
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
   const spaceSlug = useQueryParam("slug", "string");
@@ -42,6 +136,7 @@ const ProfilePage: CustomPage = () => {
   const { currentProfile } = useCurrentProfile();
   const isLoggedIn = useIsLoggedIn();
 
+  const { attemptTrackView } = useProfileViewTracker();
   useEffect(() => {
     if (!profileId) {
       return;
@@ -129,27 +224,35 @@ const ProfilePage: CustomPage = () => {
                   </a>
                 </Link>
               ) : (
-                <Button
-                  rounded
-                  className="flex items-center"
-                  onClick={() => {
-                    if (isLoggedIn) {
-                      const chatRoomId =
-                        profileData?.profile_to_chat_room?.[0]?.chat_room_id;
-                      if (chatRoomId) {
-                        router.push(`/space/${spaceSlug}/chat/${chatRoomId}`);
+                <div className="flex items-center">
+                  <Button
+                    rounded
+                    className="flex items-center"
+                    onClick={() => {
+                      if (isLoggedIn) {
+                        const dmChatRoomId =
+                          profileData?.profile_to_chat_room?.find(
+                            (room) =>
+                              room.chat_room.profile_to_chat_rooms.length === 2
+                          )?.chat_room_id;
+                        if (dmChatRoomId) {
+                          router.push(
+                            `/space/${spaceSlug}/chat/${dmChatRoomId}`
+                          );
+                        } else {
+                          handlers.open();
+                        }
                       } else {
-                        handlers.open();
+                        loginModalHandlers.open();
                       }
-                    } else {
-                      loginModalHandlers.open();
-                    }
-                  }}
-                  disabled={isMyProfile}
-                >
-                  <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
-                  Message
-                </Button>
+                    }}
+                    disabled={isMyProfile}
+                  >
+                    <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
+                    Message
+                  </Button>
+                  <ProfilePageDropdown />
+                </div>
               )}
             </div>
             <div className="h-16"></div>

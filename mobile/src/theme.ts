@@ -1,5 +1,4 @@
 import { createTheme } from "@shopify/restyle";
-import { Platform } from "react-native";
 
 type BaseTextVariant =
   | "heading1"
@@ -37,51 +36,12 @@ const MAP_WEIGHT_TO_NAME: Record<FontWeight, string> = {
 };
 
 export type TextVariant =
-  | "heading1"
-  | "heading1Medium"
-  | "heading1MediumItalic"
-  | "heading1Bold"
-  | "heading1BoldItalic"
-  | "heading2"
-  | "heading2Medium"
-  | "heading2MediumItalic"
-  | "heading2Bold"
-  | "heading2BoldItalic"
-  | "heading3"
-  | "heading3Medium"
-  | "heading3MediumItalic"
-  | "heading3Bold"
-  | "heading3BoldItalic"
-  | "heading4"
-  | "heading4Medium"
-  | "heading4MediumItalic"
-  | "heading4Bold"
-  | "heading4BoldItalic"
-  | "subheading1"
-  | "subheading1Medium"
-  | "subheading1MediumItalic"
-  | "subheading1Bold"
-  | "subheading1BoldItalic"
-  | "subheading2"
-  | "subheading2Medium"
-  | "subheading2MediumItalic"
-  | "subheading2Bold"
-  | "subheading2BoldItalic"
-  | "body1"
-  | "body1Medium"
-  | "body1MediumItalic"
-  | "body1Bold"
-  | "body1BoldItalic"
-  | "body2"
-  | "body2Medium"
-  | "body2MediumItalic"
-  | "body2Bold"
-  | "body2BoldItalic"
-  | "body3"
-  | "body3Medium"
-  | "body3MediumItalic"
-  | "body3Bold"
-  | "body3BoldItalic";
+  | BaseTextVariant
+  | `${BaseTextVariant}Italic`
+  | `${BaseTextVariant}Medium`
+  | `${BaseTextVariant}MediumItalic`
+  | `${BaseTextVariant}Bold`
+  | `${BaseTextVariant}BoldItalic`;
 
 function makeTextVariants() {
   const baseVariants: BaseTextVariant[] = [
@@ -109,6 +69,7 @@ function makeTextVariants() {
       };
     });
     return acc;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, {} as Record<string, any>) as Record<TextVariant, any>;
 }
 
@@ -143,7 +104,49 @@ type Base = "base";
 type Append = "append";
 type Product = Base | Append;
 
-const theme = createTheme({
+const SPACING_MAP = {
+  1: 4,
+  1.5: 6,
+  2: 8,
+  3: 12,
+  4: 16,
+  5: 20,
+  6: 24,
+  7: 28,
+  8: 32,
+  10: 40,
+  12: 48,
+  14: 56,
+  16: 64,
+  20: 80,
+  24: 96,
+  28: 112,
+  32: 128,
+  36: 144,
+  40: 160,
+  48: 192,
+  56: 224,
+  64: 256,
+  72: 288,
+  80: 320,
+  96: 384,
+
+  [-1]: -4,
+  [-1.5]: -6,
+  [-2]: -8,
+  [-3]: -12,
+  [-4]: -16,
+  [-5]: -20,
+  [-6]: -24,
+  [-7]: -28,
+  [-8]: -32,
+  [-10]: -40,
+  [-12]: -48,
+  [-14]: -56,
+  [-16]: -64,
+} as const;
+
+export const theme = createTheme({
   colors: {
     black: "#000000",
     white: "#FFFFFF",
@@ -194,32 +197,7 @@ const theme = createTheme({
     lime800: "#535720",
     lime900: "#27290E",
   },
-  spacing: {
-    1: 4,
-    2: 8,
-    3: 12,
-    4: 16,
-    5: 20,
-    6: 24,
-    7: 28,
-    8: 32,
-    10: 40,
-    12: 48,
-    14: 56,
-    16: 64,
-    20: 80,
-    24: 96,
-    28: 112,
-    32: 128,
-    36: 144,
-    40: 160,
-    48: 192,
-    56: 224,
-    64: 256,
-    72: 288,
-    80: 320,
-    96: 384,
-  },
+  spacing: SPACING_MAP,
   breakpoints: {
     phone: 0,
     tablet: 768,
@@ -231,10 +209,17 @@ const theme = createTheme({
     },
     ...textVariants,
   },
+  borderRadii: {
+    none: 0,
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
+    full: 9999,
+  },
   buttonVariants: {
     ...buttonVariants,
   },
 });
 
 export type Theme = typeof theme;
-export default theme;

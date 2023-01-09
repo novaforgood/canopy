@@ -1,0 +1,45 @@
+table:
+  name: report
+  schema: public
+object_relationships:
+  - name: reporter_profile
+    using:
+      foreign_key_constraint_on: reporter_profile_id
+  - name: subject_profile
+    using:
+      foreign_key_constraint_on: subject_profile_id
+array_relationships:
+  - name: report_to_images
+    using:
+      foreign_key_constraint_on:
+        column: report_id
+        table:
+          name: report_to_image
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - body
+        - created_at
+        - id
+        - reporter_profile_id
+        - subject_profile_id
+      filter:
+        _or:
+          - _and:
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+              - subject_profile:
+                  space_id:
+                    _eq: X-Hasura-Space-Id

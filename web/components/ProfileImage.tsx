@@ -46,23 +46,18 @@ export function ProfileImage(props: ProfileImageProps) {
   } = props;
 
   const styles = classNames({
-    "bg-gray-100 shrink-0 select-none": true,
+    "bg-gray-100 shrink-0 select-none flex items-center justify-center overflow-hidden":
+      true,
     "border border-green-500": border,
     "rounded-full": rounded,
-    "bg-olive-200 text-gray-50 flex items-center justify-center": !src,
+    "bg-olive-200 text-gray-50": !src,
     [`${className}`]: true,
   });
 
   return (
     <div className={styles} style={{ aspectRatio: "1/1" }} {...rest}>
       {src ? (
-        <img
-          src={src}
-          alt={alt}
-          className={styles}
-          draggable={false}
-          {...rest}
-        />
+        <img src={src} alt={alt} draggable={false} {...rest} />
       ) : (
         <UserSvg className="h-2/3 w-2/3" />
       )}

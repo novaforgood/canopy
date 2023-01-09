@@ -90,6 +90,11 @@ export function EditResponse(props: EditResponseProps) {
       >
         <div className="flex w-96 flex-col p-8 py-16">
           <Text variant="heading4">{question.title}</Text>
+          {question.description ? (
+            <Text variant="body2" className="text-gray-700">
+              {question.description}
+            </Text>
+          ) : null}
           <div className="h-4"></div>
           <SimpleRichTextInput
             characterLimit={question.char_count}

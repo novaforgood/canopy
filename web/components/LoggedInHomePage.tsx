@@ -8,7 +8,7 @@ import { signOut } from "../lib/firebase";
 
 import { Button, Text } from "./atomic";
 import { SidePadding } from "./layout/SidePadding";
-import { Navbar } from "./Navbar";
+import { Navbar } from "./navbar/Navbar";
 import { SpaceCoverPhoto } from "./SpaceCoverPhoto";
 
 export function LoggedInHomePage() {
@@ -28,13 +28,13 @@ export function LoggedInHomePage() {
           Your Canopy Directories
         </Text>
         <div className="h-8"></div>
-        <div className="flex flex-col-reverse md:flex-row items-start gap-8">
-          <div className="grid grid-rows sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full ">
+        <div className="flex flex-col-reverse items-start gap-8 md:flex-row">
+          <div className="grid-rows grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3 ">
             {profileData?.profile.map((profile) => {
               return (
                 <div key={profile.id} className="">
                   <button
-                    className="w-full border rounded-md shadow-sm border-gray-400 hover:border-green-500 overflow-hidden transition"
+                    className="w-full overflow-hidden rounded-md border border-gray-400 shadow-sm transition hover:border-green-500"
                     onClick={() => {
                       router.push(`/space/${profile.space.slug}`);
                     }}
@@ -44,8 +44,8 @@ export function LoggedInHomePage() {
                       src={profile.space.space_cover_image?.image.url ?? null}
                       alt=""
                     />
-                    <div className="flex bg-white p-2 gap-2 items-center">
-                      <BxsGroup className="w-6 h-6 shrink-0" />
+                    <div className="flex items-center gap-2 bg-white p-2">
+                      <BxsGroup className="h-6 w-6 shrink-0" />
                       <Text
                         variant="subheading1"
                         mobileVariant="subheading2"
@@ -66,7 +66,7 @@ export function LoggedInHomePage() {
             }}
             className="flex items-center"
           >
-            <BxPlus className="h-5 w-5 mr-1" />
+            <BxPlus className="mr-1 h-5 w-5" />
             Create new directory
           </Button>
         </div>

@@ -1,4 +1,6 @@
 src/generated
+.env
+dist
 
 # OSX
 #

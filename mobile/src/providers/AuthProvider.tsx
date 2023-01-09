@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser, onAuthStateChanged } from "../lib/firebase";
-import { sessionAtom } from "../lib/recoil";
+import { sessionAtom } from "../lib/jotai";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 export function AuthProvider({ children }: AuthProviderProps) {
   const isLoggedIn = useIsLoggedIn();
-  const [session, setSession] = useRecoilState(sessionAtom);
+  const [session, setSession] = useAtom(sessionAtom);
 
   const { refreshSession } = useRefreshSession();
 

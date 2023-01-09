@@ -1,6 +1,7 @@
 // Universal webhook handler endpoint
 import { z } from "zod";
 
+import { makeListSentence } from "../../common/lib/words";
 import { requireServerEnv } from "../../server/env";
 import { executeGetUnreadMessagesCountsQuery } from "../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../server/middleware";
@@ -80,12 +81,7 @@ async function handleCronJob(cronJobType: CronJobType) {
 
               // Concat first names into list sentence (e.g. "NameA, NameB, and NameC")
               const firstNames = senderProfiles.map((item) => item.firstName);
-              const firstNamesSentence = firstNames
-                .slice(0, -1)
-                .join(", ")
-                .concat(firstNames.length > 1 ? " and " : "")
-                .concat(firstNames.slice(-1)[0]);
-
+              const firstNamesSentence = makeListSentence(firstNames);
               return {
                 viewChatsUrl: `${HOST_URL}/space/${space.slug}/chat`,
                 totalUnreadMessagesCount,

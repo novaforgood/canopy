@@ -142,8 +142,7 @@ const SignUpPage: CustomPage = () => {
                 signInWithGoogle()
                   .then(async (userCred) => {
                     const isNewUser =
-                      userCred.user.metadata.creationTime ===
-                      userCred.user.metadata.lastSignInTime;
+                      getAdditionalUserInfo(userCred)?.isNewUser;
 
                     if (isNewUser) {
                       const idToken = await userCred.user.getIdToken();

@@ -10,15 +10,18 @@ import { Metadata } from "../components/Metadata";
 import { CatchUnsavedChanges } from "../components/singletons/CatchUnsavedChanges";
 import {
   useAllChatRoomsSubscription,
+  useAnnouncementsBySpaceIdQuery,
   useSpaceBySlugQuery,
 } from "../generated/graphql";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
+import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { usePrevious } from "../hooks/usePrevious";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
 import {
   adminBypassAtom,
+  announcementNotificationsCountAtom,
   notificationsCountAtom,
   searchQueryAtom,
   selectedTagIdsAtom,
@@ -51,7 +54,7 @@ function useNumberOfNotifications() {
           (entry) => entry.profile.id === currentProfile?.id
         );
         if (!myProfileEntry) return acc;
-        const latestMessage = room.chat_messages[0];
+        const latestMessage = room.latest_chat_message[0];
         if (!latestMessage) return acc;
 
         const shouldNotHighlight =
@@ -76,8 +79,34 @@ function useNumberOfNotifications() {
   }, [numUnreadMessages, setNotificationsCount]);
 }
 
+function useNumberOfAnnouncementNotifications() {
+  const { currentSpace } = useCurrentSpace();
+  const { currentProfile } = useCurrentProfile();
+
+  const [{ data }] = useAnnouncementsBySpaceIdQuery({
+    variables: { space_id: currentSpace?.id ?? "" },
+    pause: !currentSpace,
+  });
+
+  const numUnreadAnnouncements = useMemo(
+    () =>
+      data?.announcement.filter(
+        (e) => e.id > currentProfile?.last_read_announcement_id
+      )?.length,
+    [data, currentProfile?.last_read_announcement_id]
+  );
+
+  const [_, setAnnouncementNotificationsCount] = useAtom(
+    announcementNotificationsCountAtom
+  );
+  useEffect(() => {
+    setAnnouncementNotificationsCount(numUnreadAnnouncements ?? 0);
+  }, [numUnreadAnnouncements, setAnnouncementNotificationsCount]);
+}
+
 function App({ Component, pageProps }: CustomAppProps) {
   useNumberOfNotifications();
+  useNumberOfAnnouncementNotifications();
 
   const { refreshSession } = useRefreshSession();
 

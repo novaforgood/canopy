@@ -28,6 +28,7 @@ insert_permissions:
       columns:
         - char_count
         - deleted
+        - description
         - id
         - listing_order
         - space_id
@@ -54,6 +55,7 @@ select_permissions:
       columns:
         - char_count
         - deleted
+        - description
         - id
         - listing_order
         - space_id
@@ -70,6 +72,7 @@ update_permissions:
       columns:
         - char_count
         - deleted
+        - description
         - listing_order
         - title
       filter:
@@ -93,7 +96,6 @@ update_permissions:
 delete_permissions:
   - role: user
     permission:
-      backend_only: false
       filter:
         _or:
           - space:

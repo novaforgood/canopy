@@ -1,22 +1,31 @@
+import React, { useCallback, useEffect, useState } from "react";
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useTheme } from "@shopify/restyle";
+import { useAtom } from "jotai";
+import { TouchableOpacity } from "react-native";
 
-import React, { useCallback, useEffect } from "react";
-import DirectoryScreen from "../screens/Directory";
-import HomeScreen from "../screens/Home";
-
-import { RecoilRoot, useRecoilState } from "recoil";
+import { Box } from "../components/atomic/Box";
+import { useSpaceBySlugQuery } from "../generated/graphql";
+import { BxMenu } from "../generated/icons/regular";
+import { useExpoUpdate } from "../hooks/useExpoUpdate";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-
-import { currentSpaceSlugAtom, sessionAtom } from "../lib/recoil";
-import { useSpaceBySlugQuery } from "../generated/graphql";
-import { usePrevious } from "../hooks/usePrevious";
+import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
-import { RootStackParams } from "../types/navigation";
-import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+import { ChatRoomScreen } from "../screens/ChatRoomScreen";
+import { HomeScreen } from "../screens/HomeScreen";
+import { LoadingScreen } from "../screens/LoadingScreen";
+import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { SignInScreen } from "../screens/SignInScreen";
+import { Theme } from "../theme";
 
-const RootStack = createNativeStackNavigator<RootStackParams>();
+import { SpaceNavigator } from "./SpaceNavigator";
+import { RootStackParamList } from "./types";
+
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
   const { refreshSession } = useRefreshSession();
@@ -34,12 +43,15 @@ export function RootNavigator() {
 
       if (expiresIn < expireThreshold) {
         console.log("Force updating JWT since it expires in 3 minutes...");
-        const lastVisitedSpaceId = await SecureStore.get(
+        const lastVisitedSpaceId = SecureStore.get(
           SecureStoreKey.LastVisitedSpaceId
-        )?.toString();
+        );
         refreshSession({
           forceUpdateJwt: true,
-          spaceId: lastVisitedSpaceId ?? undefined,
+          spaceId:
+            typeof lastVisitedSpaceId === "string"
+              ? lastVisitedSpaceId
+              : undefined,
         });
       }
     }
@@ -53,8 +65,9 @@ export function RootNavigator() {
   }, [refreshSessionIfNeeded]);
 
   ///// Force update JWT if user changed space /////
-  const [session, setSession] = useRecoilState(sessionAtom);
-  const [spaceSlug, setSpaceSlug] = useRecoilState(currentSpaceSlugAtom);
+  const [session, setSession] = useAtom(sessionAtom);
+  const [spaceRaw, _] = useAtom(currentSpaceAtom);
+  const spaceSlug = spaceRaw?.slug;
 
   const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
     pause: true,
@@ -81,6 +94,7 @@ export function RootNavigator() {
         if (spaceId) {
           console.log("Refreshing JWT due to spaceId change...");
           refreshSession({ forceUpdateJwt: true, spaceId: spaceId });
+
           SecureStore.set(SecureStoreKey.LastVisitedSpaceId, spaceId);
         }
       }
@@ -90,24 +104,107 @@ export function RootNavigator() {
 
   const isLoggedIn = useIsLoggedIn();
 
-  console.log("isLoggedIn", isLoggedIn);
+  const theme = useTheme<Theme>();
+
+  const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
+
+  const { updateChecked } = useExpoUpdate();
+
   return (
-    <RootStack.Navigator>
-      {!isLoggedIn && (
-        <RootStack.Screen
-          name="SignIn"
-          options={{
-            title: "Sign in",
-          }}
-          component={SignInScreen}
-        />
-      )}
-      <RootStack.Screen name="Home" component={HomeScreen} />
-      <RootStack.Screen
-        name="Directory"
-        component={DirectoryScreen}
-        options={({ route }) => ({ title: route.params.spaceSlug })}
-      />
-    </RootStack.Navigator>
+    <>
+      <RootStack.Navigator
+        screenOptions={{
+          headerBackground: () => (
+            <Box
+              backgroundColor="olive100"
+              height="100%"
+              width="100%"
+              shadowColor="black"
+              borderBottomColor="olive200"
+              borderBottomWidth={1}
+            />
+          ),
+          headerTintColor: theme.colors.green800,
+          headerRight: () => (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowDrawer(true);
+                }}
+              >
+                <BxMenu
+                  height={28}
+                  width={28}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  color="black"
+                />
+              </TouchableOpacity>
+            </>
+          ),
+        }}
+      >
+        {!updateChecked ? (
+          <RootStack.Screen
+            name="Loading"
+            component={LoadingScreen}
+            options={{ headerShown: false, animation: "fade" }}
+          />
+        ) : !isLoggedIn ? (
+          <RootStack.Screen
+            name="SignIn"
+            options={{
+              title: "Sign in",
+              headerRight: undefined,
+            }}
+            component={SignInScreen}
+          />
+        ) : (
+          <>
+            <RootStack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ title: "Canopy Home" }}
+            />
+            <RootStack.Screen
+              name="SpaceHome"
+              component={SpaceNavigator}
+              options={({ route }) => ({
+                title: spaceRaw?.name,
+                headerBackVisible: false,
+              })}
+            />
+
+            <RootStack.Screen
+              name="ProfilePage"
+              component={ProfilePageScreen}
+              options={({ route }) => ({
+                // title: `${route.params.firstName} ${route.params.lastName}`,
+                title: "",
+                headerBackTitle: "Back",
+                animationTypeForReplace: "push",
+              })}
+            />
+            <RootStack.Screen
+              name="ChatRoom"
+              component={ChatRoomScreen}
+              options={({ route }) => ({
+                // title: route.params.chatRoomName,
+                title: "",
+                headerBackTitle: "Back",
+                headerBackground: () => (
+                  <Box
+                    backgroundColor="olive100"
+                    height="100%"
+                    width="100%"
+                    shadowColor="black"
+                    flexDirection="row"
+                  ></Box>
+                ),
+              })}
+            />
+          </>
+        )}
+      </RootStack.Navigator>
+    </>
   );
 }

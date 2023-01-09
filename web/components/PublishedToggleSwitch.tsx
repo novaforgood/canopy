@@ -34,7 +34,7 @@ export default function PublishedToggleSwitch(
   if (fetching) return null;
 
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex items-center gap-4">
       <Switch
         checked={profileIsPublic}
         onChange={async (newVal: boolean) => {
@@ -64,7 +64,7 @@ export default function PublishedToggleSwitch(
             }
           );
         }}
-        className={`${profileIsPublic ? "bg-black" : "bg-gray-600"}
+        className={`${profileIsPublic ? "bg-lime-600" : "bg-gray-400"}
           relative inline-flex h-7 w-32 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
       >
         <span className="sr-only">Use setting</span>

@@ -1,0 +1,38 @@
+table:
+  name: chat_intro_data
+  schema: public
+object_relationships:
+  - name: chat_intro
+    using:
+      manual_configuration:
+        column_mapping:
+          chat_intro_id: id
+        insertion_order: null
+        remote_table:
+          name: chat_intro
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - chat_intro_id
+        - num_rooms_with_replies
+      filter:
+        _or:
+          - _and:
+              - chat_intro:
+                  space_id:
+                    _eq: X-Hasura-Space-Id
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+      allow_aggregations: true

@@ -1,0 +1,82 @@
+table:
+  name: announcement
+  schema: public
+object_relationships:
+  - name: author_profile
+    using:
+      foreign_key_constraint_on: author_profile_id
+  - name: space
+    using:
+      foreign_key_constraint_on: space_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+      columns:
+        - author_profile_id
+        - content
+        - created_at
+        - deleted
+        - id
+        - space_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - author_profile_id
+        - content
+        - created_at
+        - deleted
+        - id
+        - space_id
+      filter:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _or:
+          - _and:
+              - space_id:
+                  _eq: X-Hasura-Space-Id
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin

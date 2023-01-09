@@ -17,6 +17,15 @@ array_relationships:
         table:
           name: profile
           schema: public
+  - name: space_announcements
+    using:
+      manual_configuration:
+        column_mapping:
+          id: space_id
+        insertion_order: null
+        remote_table:
+          name: announcement
+          schema: public
   - name: space_listing_questions
     using:
       foreign_key_constraint_on:
@@ -102,7 +111,6 @@ update_permissions:
 delete_permissions:
   - role: user
     permission:
-      backend_only: false
       filter:
         owner_id:
           _eq: X-Hasura-User-Id

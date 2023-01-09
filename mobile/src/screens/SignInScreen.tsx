@@ -1,80 +1,128 @@
-import type { StackScreenProps } from "@react-navigation/stack";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import { AuthSessionResult } from "expo-auth-session";
+import { useIdTokenAuthRequest } from "expo-auth-session/providers/google";
+import Constants from "expo-constants";
+import * as WebBrowser from "expo-web-browser";
+import { getAdditionalUserInfo, GoogleAuthProvider } from "firebase/auth";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Linking,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
+
 import { Box } from "../components/atomic/Box";
 import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { TextInput } from "../components/atomic/TextInput";
+import { CustomKeyboardAvoidingView } from "../components/CustomKeyboardAvoidingView";
+import { toast } from "../components/CustomToast";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { BxlGoogle } from "../generated/icons/logos";
 import {
+  signInWithCredential,
   signInWithEmailAndPassword,
   signInWithGoogle,
   signOut,
 } from "../lib/firebase";
-import type { RootStackParams } from "../types/navigation";
-import Constants from "expo-constants";
+import { HOST_URL } from "../lib/url";
+
+import type { RootStackParamList } from "../navigation/types";
+import type { StackScreenProps } from "@react-navigation/stack";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export function SignInScreen({
   navigation,
-}: StackScreenProps<RootStackParams, "SignIn">) {
+}: StackScreenProps<RootStackParamList, "SignIn">) {
   const [signingIn, setSigningIn] = useState(false);
+
+  const [request, response, promptAsync] = useIdTokenAuthRequest({
+    iosClientId: Constants.expoConfig?.extra?.["FIREBASE_IOS_CLIENT_ID"] ?? "",
+    clientId: Constants.expoConfig?.extra?.["FIREBASE_WEB_CLIENT_ID"] ?? "",
+  });
+
+  const processResponse = useCallback(async (response: AuthSessionResult) => {
+    if (response.type !== "success") {
+      toast.error("Failed to sign in with Google");
+      throw new Error("Failed to sign in with Google");
+    }
+    if (!response.authentication) {
+      toast.error("Missing `response.authentication`");
+      throw new Error("Missing `response.authentication`");
+    }
+
+    const credential = GoogleAuthProvider.credential(
+      response.authentication.idToken
+    );
+
+    signInWithCredential(credential).then(async (userCred) => {
+      const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
+
+      if (isNewUser) {
+        // User has never signed in before
+        await userCred.user.delete();
+        // toast.error("Account not created yet. Please sign up first!");
+      } else if (!userCred.user.emailVerified) {
+        // User has signed in before but has not verified email
+        // router.push({ pathname: "/verify", query: router.query });
+      } else {
+        const idToken = await userCred.user.getIdToken();
+        const res = await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${idToken}`,
+          },
+        });
+
+        console.log(res);
+        // await redirectUsingQueryParam("/");
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (response) {
+      console.log(response);
+      processResponse(response).catch((e) => {
+        toast.error(e.message);
+        signOut();
+        setSigningIn(false);
+      });
+    }
+  }, [processResponse, response]);
+
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
     setSigningIn(true);
-    signInWithGoogle()
-      .then(async (userCred) => {
-        const isNewUser =
-          userCred.user.metadata.creationTime ===
-          userCred.user.metadata.lastSignInTime;
-
-        if (isNewUser) {
-          // User has never signed in before
-          await userCred.user.delete();
-          // toast.error("Account not created yet. Please sign up first!");
-        } else if (!userCred.user.emailVerified) {
-          // User has signed in before but has not verified email
-          // router.push({ pathname: "/verify", query: router.query });
-        } else {
-          const idToken = await userCred.user.getIdToken();
-          await fetch(`/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${idToken}`,
-            },
-          });
-          // await redirectUsingQueryParam("/");
-        }
-      })
-      .catch((e) => {
-        // toast.error(e.message);
-        // handleError(e);
-        console.log(e.message);
-      })
-      .finally(() => {
-        setSigningIn(false);
-      });
+    await promptAsync().then((response) => {
+      console.log("Ligma");
+      if (response.type === "success") {
+        console.log("res", response);
+        return response;
+      } else {
+        throw new Error("Google sign in failed");
+      }
+    });
   };
 
   const signInManually = async (email: string, password: string) => {
     // sign in using firebase auth and upsert to our DB
     setSigningIn(true);
-    console.log("trytng");
     signInWithEmailAndPassword(email, password)
       .then(async (userCred) => {
-        console.log("success");
         if (!userCred.user.emailVerified) {
           // router.push({ pathname: "/verify", query: router.query });
+          // Linking.openURL(`${HOST_URL}/verify`)
+          throw new Error("Please verify your email first!");
         } else {
           const tokenResult = await userCred.user.getIdTokenResult();
-          console.log(tokenResult);
-          const { manifest } = Constants;
 
-          const api =
-            typeof manifest?.packagerOpts === `object` &&
-            manifest.packagerOpts.dev
-              ? manifest?.debuggerHost?.split(`:`).shift()?.concat(`:3000`)
-              : `api.example.com`;
-
-          console.log(`http://${api}/api/auth/upsertUserData`);
-          await fetch(`http://${api}/api/auth/upsertUserData`, {
+          await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
             method: "POST",
             headers: {
               authorization: `Bearer ${tokenResult.token}`,
@@ -84,8 +132,7 @@ export function SignInScreen({
         }
       })
       .catch((e) => {
-        // toast.error(e.code + ": " + e.message);
-        console.log(e.message);
+        toast.error(e.message);
         signOut();
       })
       .finally(() => {
@@ -95,25 +142,107 @@ export function SignInScreen({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  return (
-    <Box>
-      <Box>
-        <Text variant="heading1">Sign in</Text>
-        <TextInput value={email} onChangeText={setEmail} />
-        <TextInput
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
-        <Button
-          onPress={() => {
-            console.log("Pressed");
-            signInManually(email, password);
-          }}
+  if (signingIn) {
+    return (
+      <SafeAreaView>
+        <Box
+          height="100%"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection="column"
         >
-          Test
-        </Button>
-      </Box>
-    </Box>
+          <Box mb={4} height={40}>
+            <LoadingSpinner />
+          </Box>
+          <Text variant="body1">Signing in...</Text>
+        </Box>
+      </SafeAreaView>
+    );
+  }
+  return (
+    <SafeAreaView style={{ overflow: "hidden" }}>
+      <CustomKeyboardAvoidingView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Box
+            padding={4}
+            height="100%"
+            flexDirection="column"
+            justifyContent="flex-end"
+          >
+            <Box mt={16}>
+              <Text variant="heading3">Sign in to Canopy</Text>
+            </Box>
+            <Box mt={8} />
+            <TouchableOpacity onPress={googleSignIn}>
+              <Box
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="center"
+                py={2}
+                borderRadius="md"
+                borderWidth={1}
+                borderColor="black"
+              >
+                <BxlGoogle color="black" height={24} width={24} />
+                <Text variant="body1" ml={2}>
+                  Sign in with Google
+                </Text>
+              </Box>
+            </TouchableOpacity>
+            <Box
+              my={8}
+              flexDirection="row"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Box height={1} backgroundColor="gray600" flex={1}></Box>
+              <Text variant="body1" mx={4} color="gray600">
+                or
+              </Text>
+              <Box height={1} backgroundColor="gray600" flex={1}></Box>
+            </Box>
+            <TextInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              onBlur={() => Keyboard.dismiss()}
+            />
+            <TextInput
+              label="Password"
+              mt={4}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={true}
+              onBlur={() => Keyboard.dismiss()}
+            />
+            <Button
+              mt={8}
+              onPress={() => {
+                signInManually(email, password);
+              }}
+            >
+              Sign in
+            </Button>
+            <Box mt={2}>
+              <Text variant="body1" color="gray800" mt={4}>
+                Don't have an account?{" "}
+                <Text
+                  variant="body1Medium"
+                  color="green700"
+                  textDecorationLine="underline"
+                  onPress={() => {
+                    Linking.openURL(`${HOST_URL}/signup`);
+                  }}
+                >
+                  Sign up
+                </Text>
+              </Text>
+            </Box>
+            <Box flex={1} />
+          </Box>
+        </TouchableWithoutFeedback>
+      </CustomKeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

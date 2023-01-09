@@ -1,5 +1,5 @@
 - name: send_chat_message_notification
-  webhook: "{{CANOPY_CRON_WEBHOOK_URL}}"
+  webhook: '{{CANOPY_CRON_WEBHOOK_URL}}'
   schedule: 0 19 * * *
   include_in_metadata: true
   payload:

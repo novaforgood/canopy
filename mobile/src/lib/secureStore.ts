@@ -6,6 +6,7 @@ export enum SecureStoreKey {
   CreateSpace = "CreateSpace",
   LastVisitedSpaceId = "LastVisitedSpaceId",
   SpaceHomepageBannerClosed = "SpaceHomepageBannerClosed",
+  ProfileLastViewedCooldown = "ProfileLastViewedCooldown",
 }
 
 export const SecureStore = {
