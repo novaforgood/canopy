@@ -104,7 +104,7 @@ export function ChatRoomList() {
 
   return (
     <div className="flex h-full w-full shrink-0 flex-col overflow-hidden">
-      <div className="h-20 bg-olive-50 md:bg-white">
+      <div className="flex h-14 shrink-0 flex-col bg-olive-50 md:bg-white">
         <div className="h-4 md:hidden"></div>
         <div className="flex w-full items-center justify-between gap-8 px-4 ">
           <Text variant="heading4">Messages</Text>
@@ -117,16 +117,16 @@ export function ChatRoomList() {
           </Link>
         </div>
         <div className="h-4"></div>
-
+        <div className="flex-1"></div>
         <Tab.Group
           selectedIndex={tabIndex}
           onChange={setTabIndex}
           defaultIndex={0}
         >
           <Tab.List className="flex items-center gap-8 border-b border-olive-600 px-4">
-            <CustomTab title="All"></CustomTab>
+            {/* <CustomTab title="All"></CustomTab>
             <CustomTab title="DMs"></CustomTab>
-            <CustomTab title="Intros"></CustomTab>
+            <CustomTab title="Intros"></CustomTab> */}
           </Tab.List>
         </Tab.Group>
       </div>

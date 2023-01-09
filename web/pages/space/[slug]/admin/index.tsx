@@ -172,14 +172,14 @@ export default function AdminPage() {
           <InviteLinksList />
         </RoundedCard>
         <div className="h-10"></div>
-        <RoundedCard className="w-full">
+        {/* <RoundedCard className="w-full">
           <div className="flex items-center gap-2">
             <BxTransfer className="h-7 w-7" />
             <Text variant="heading4">Chat Introductions</Text>
           </div>
           <ChatIntroductions />
         </RoundedCard>
-        <div className="h-10"></div>
+        <div className="h-10"></div> */}
         <ManageSpace />
         <div className="h-16"></div>
       </SidePadding>
