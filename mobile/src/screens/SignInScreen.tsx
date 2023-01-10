@@ -66,7 +66,7 @@ export function SignInScreen({
       if (isNewUser) {
         // User has never signed in before
         await userCred.user.delete();
-        // toast.error("Account not created yet. Please sign up first!");
+        toast.error("Account not created yet. Please sign up first!");
       } else if (!userCred.user.emailVerified) {
         // User has signed in before but has not verified email
         // router.push({ pathname: "/verify", query: router.query });
