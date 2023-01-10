@@ -48,11 +48,9 @@ export function SignInScreen({
 
   const processResponse = useCallback(async (response: AuthSessionResult) => {
     if (response.type !== "success") {
-      toast.error("Failed to sign in with Google");
       throw new Error("Failed to sign in with Google");
     }
     if (!response.authentication) {
-      toast.error("Missing `response.authentication`");
       throw new Error("Missing `response.authentication`");
     }
 
@@ -66,7 +64,7 @@ export function SignInScreen({
       if (isNewUser) {
         // User has never signed in before
         await userCred.user.delete();
-        toast.error("Account not created yet. Please sign up first!");
+        throw new Error("Account not created yet. Please sign up first!");
       } else if (!userCred.user.emailVerified) {
         // User has signed in before but has not verified email
         // router.push({ pathname: "/verify", query: router.query });
@@ -79,7 +77,6 @@ export function SignInScreen({
           },
         });
 
-        console.log(res);
         // await redirectUsingQueryParam("/");
       }
     });
@@ -100,7 +97,6 @@ export function SignInScreen({
     // sign in with google and upsert data to our DB
     setSigningIn(true);
     await promptAsync().then((response) => {
-      console.log("Ligma");
       if (response.type === "success") {
         console.log("res", response);
         return response;
