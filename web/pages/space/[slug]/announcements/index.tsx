@@ -116,7 +116,7 @@ const AnnouncementsPage: CustomPage = () => {
                 className="grow-0"
                 onClick={modalHandlers.open}
               >
-                Make a new Post
+                Make a new Post (Admins Only)
               </Button>
             )}
           </div>
