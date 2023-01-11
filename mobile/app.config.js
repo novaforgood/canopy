@@ -30,10 +30,6 @@ function filterEnvVariables(env) {
     }, {});
 }
 
-function removeProtocolFromUrl(url) {
-  return url.split("://")[1];
-}
-
 export default {
   expo: {
     name: config.name,
@@ -63,7 +59,8 @@ export default {
       bundleIdentifier: config.appId,
       buildNumber: runtimeVersion.toString(),
       associatedDomains: [
-        `applinks:${removeProtocolFromUrl(process.env["HOST_URL"])}`,
+        `applinks:canopy-git-dev-novaforgood.vercel.app`,
+        `applinks:*.joincanopy.org`,
       ],
     },
     android: {
