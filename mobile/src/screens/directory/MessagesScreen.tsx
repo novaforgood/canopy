@@ -159,7 +159,6 @@ export function MessagesScreen() {
                   // nav
                   navigation.navigate("ChatRoom", {
                     chatRoomId: room.id,
-                    chatRoomName: `${first_name} ${last_name}`,
                   });
                 }}
                 key={room.id}

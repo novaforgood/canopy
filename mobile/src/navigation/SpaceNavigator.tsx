@@ -1,124 +1,161 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
-import {
-  BottomTabBarProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StackScreenProps } from "@react-navigation/stack";
+import { useTheme } from "@shopify/restyle";
 import { useAtom } from "jotai";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
-import { SvgProps } from "react-native-svg";
+import { TouchableOpacity } from "react-native";
 
 import { Box } from "../components/atomic/Box";
-import { Text } from "../components/atomic/Text";
-import { Navbar } from "../components/Navbar";
-import {
-  BxGroup,
-  BxHome,
-  BxMessageAltDetail,
-  BxUser,
-} from "../generated/icons/regular";
-import { currentSpaceAtom } from "../lib/jotai";
-import { AccountScreen } from "../screens/directory/AccountScreen";
-import { MessagesScreen } from "../screens/directory/MessagesScreen";
-import { ProfilesList } from "../screens/directory/profiles/ProfilesList";
+import { useSpaceBySlugQuery } from "../generated/graphql";
+import { BxMenu } from "../generated/icons/regular";
+import { useRefreshSession } from "../hooks/useRefreshSession";
+import { getCurrentUser, signOut } from "../lib/firebase";
+import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
+import { ChatRoomScreen } from "../screens/ChatRoomScreen";
+import { ProfilePageScreen } from "../screens/ProfilePageScreen";
+import { Theme } from "../theme";
 
+import { SpaceBottomTabNavigator } from "./SpaceBottomTabNavigator";
 import { RootStackParamList, SpaceStackParamList } from "./types";
 
-const TabNav = createBottomTabNavigator<SpaceStackParamList>();
-
-const BOTTOM_TABS: Record<
-  keyof SpaceStackParamList,
-  { icon: (props: SvgProps & { color: string }) => JSX.Element; title: string }
-> = {
-  ProfilesList: { icon: BxHome, title: "Home" },
-  ChatMessages: { icon: BxMessageAltDetail, title: "Chats" },
-  Account: { icon: BxUser, title: "Account" },
-};
+const SpaceStack = createNativeStackNavigator<SpaceStackParamList>();
 
 export function SpaceNavigator({
   route,
 }: StackScreenProps<RootStackParamList, "SpaceHome">) {
-  const [_, setCurrentSpace] = useAtom(currentSpaceAtom);
+  const theme = useTheme<Theme>();
+  const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
+
+  ///// Force update JWT if user changed space /////
+  const { refreshSession } = useRefreshSession();
+  const [session, setSession] = useAtom(sessionAtom);
+  const { spaceSlug } = route.params;
+
+  const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
+    pause: true,
+    variables: { slug: spaceSlug ?? "" },
+  });
+  useEffect(() => {
+    // Update space data when slug changes to a non-empty string.
+    if (spaceSlug) {
+      console.log("Re-executing space lazy query...");
+      executeQuery();
+    }
+  }, [spaceSlug, executeQuery]);
+
+  const spaceId = spaceData?.space[0]?.id;
 
   useEffect(() => {
-    if (route.params) {
-      setCurrentSpace({
-        slug: route.params.spaceSlug,
-        name: route.params.spaceName,
+    const attemptRefreshJwt = async () => {
+      const idToken = await getCurrentUser()?.getIdTokenResult();
+      if (!idToken) {
+        signOut();
+        return;
+      }
+
+      const claimsSpaceId = (
+        idToken.claims["https://hasura.io/jwt/claims"] as {
+          ["x-hasura-space-id"]: string;
+        }
+      )["x-hasura-space-id"];
+
+      if (spaceId === claimsSpaceId) {
+        return;
+      } else {
+        if (spaceId) {
+          console.log("Refreshing JWT due to spaceId change...");
+          refreshSession({ forceUpdateJwt: true, spaceId: spaceId });
+        }
+      }
+    };
+    attemptRefreshJwt();
+  }, [spaceId, setSession, refreshSession]);
+
+  // Update current space atom
+  const [currSpace, setCurrSpace] = useAtom(currentSpaceAtom);
+  useEffect(() => {
+    const space = spaceData?.space[0];
+    if (space) {
+      setCurrSpace({
+        slug: space.slug,
+        name: space.name,
       });
+    } else {
+      setCurrSpace(undefined);
     }
-  }, [route.params, setCurrentSpace]);
+  }, [setCurrSpace, spaceData?.space]);
 
   return (
-    <TabNav.Navigator tabBar={MyTabBar} screenOptions={{ headerShown: false }}>
-      <TabNav.Screen name="ProfilesList" component={ProfilesList} />
-      <TabNav.Screen name="ChatMessages" component={MessagesScreen} />
-      <TabNav.Screen name="Account" component={AccountScreen} />
-    </TabNav.Navigator>
-  );
-}
-
-function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  return (
-    <Box borderTopColor="green700" borderTopWidth={1}>
-      <SafeAreaView style={{ flexDirection: "row" }}>
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const label = route.name as keyof SpaceStackParamList;
-          const isFocused = state.index === index;
-
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
-
-            if (!isFocused && !event.defaultPrevented) {
-              // The `merge: true` option makes sure that the params inside the tab screen are preserved
-              navigation.navigate({
-                name: route.name,
-                merge: true,
-                params: {},
-              });
-            }
-          };
-
-          const onLongPress = () => {
-            navigation.emit({
-              type: "tabLongPress",
-              target: route.key,
-            });
-          };
-
-          const Icon = BOTTOM_TABS[label].icon;
-          const title = BOTTOM_TABS[label].title;
-          return (
-            <TouchableOpacity
-              key={index}
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              style={{ flex: 1 }}
-            >
-              <Box flexDirection="column" alignItems="center" pt={2}>
-                <Icon
-                  color={isFocused ? "black" : "gray500"}
-                  height={24}
-                  width={24}
+    <>
+      <SpaceStack.Navigator
+        initialRouteName="SpaceBottomTabs"
+        screenOptions={{
+          headerBackground: () => (
+            <Box
+              backgroundColor="olive100"
+              height="100%"
+              width="100%"
+              shadowColor="black"
+              borderBottomColor="olive200"
+              borderBottomWidth={1}
+            />
+          ),
+          title: currSpace?.name,
+          headerTintColor: theme.colors.green800,
+          headerRight: () => (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowDrawer(true);
+                }}
+              >
+                <BxMenu
+                  height={28}
+                  width={28}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  color="black"
                 />
-                <Text color={isFocused ? "black" : "gray500"} mt={1}>
-                  {title}
-                </Text>
-              </Box>
-            </TouchableOpacity>
-          );
-        })}
-      </SafeAreaView>
-    </Box>
+              </TouchableOpacity>
+            </>
+          ),
+        }}
+      >
+        <SpaceStack.Screen
+          name="SpaceBottomTabs"
+          component={SpaceBottomTabNavigator}
+          options={({ route }) => ({})}
+        />
+
+        <SpaceStack.Screen
+          name="ProfilePage"
+          component={ProfilePageScreen}
+          options={({ route }) => ({
+            // title: `${route.params.firstName} ${route.params.lastName}`,
+            title: "",
+            headerBackTitle: "Back",
+            animationTypeForReplace: "push",
+          })}
+        />
+        <SpaceStack.Screen
+          name="ChatRoom"
+          component={ChatRoomScreen}
+          options={({ route }) => ({
+            // title: route.params.chatRoomName,
+            title: "",
+            headerBackTitle: "Back",
+            headerBackground: () => (
+              <Box
+                backgroundColor="olive100"
+                height="100%"
+                width="100%"
+                shadowColor="black"
+                flexDirection="row"
+              ></Box>
+            ),
+          })}
+        />
+      </SpaceStack.Navigator>
+    </>
   );
 }

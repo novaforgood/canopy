@@ -22,7 +22,11 @@ import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useProfileViewTracker } from "../hooks/useProfileViewTracker";
 import { useUserData } from "../hooks/useUserData";
 import { filteredProfileIdsAtom } from "../lib/jotai";
-import { NavigationProp, RootStackParamList } from "../navigation/types";
+import {
+  NavigationProp,
+  RootStackParamList,
+  SpaceStackParamList,
+} from "../navigation/types";
 
 import { MessageModal } from "./MessageModal";
 
@@ -30,10 +34,11 @@ import type { StackScreenProps } from "@react-navigation/stack";
 
 export function ProfilePageScreen({
   route,
-}: StackScreenProps<RootStackParamList, "ProfilePage">) {
+  navigation,
+}: StackScreenProps<SpaceStackParamList, "ProfilePage">) {
   const { profileId } = route.params;
 
-  const navigation = useNavigation<NavigationProp>();
+  const globalNavigation = useNavigation<NavigationProp>();
 
   const isLoggedIn = useIsLoggedIn();
 
@@ -130,7 +135,7 @@ export function ProfilePageScreen({
             {isMyProfile ? (
               <Button
                 onPress={() => {
-                  navigation.navigate("Account");
+                  globalNavigation.navigate("Account");
                 }}
                 variant="outline"
               >
@@ -150,7 +155,6 @@ export function ProfilePageScreen({
                   } else {
                     navigation.navigate("ChatRoom", {
                       chatRoomId,
-                      chatRoomName: `${first_name} ${last_name}`,
                     });
                   }
                 }}
