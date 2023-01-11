@@ -41,9 +41,7 @@ export default applyMiddleware({
       content: announcementContent,
     },
   }).catch((err) => {
-    const response = makeApiError(`Failed to publish announcement: ${err}`);
-    res.status(response.code).json(response);
-    return;
+    throw makeApiError(`Failed to publish announcement: ${err}`);
   });
 
   // send emails
@@ -80,9 +78,7 @@ export default applyMiddleware({
       dynamicTemplateData: emailTemplateParams,
     })
     .catch((err) => {
-      const response = makeApiError(`Failed to send emails: ${err}`);
-      res.status(response.code).json(response);
-      return;
+      throw makeApiError(`Failed to send emails: ${err}`);
     });
 
   const response = makeApiSuccess({ detail: "Announcement Posted!" });
