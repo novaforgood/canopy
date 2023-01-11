@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "673NQUF29T.com.joincanopy.app",
+        "paths": ["/go/joincanopy*"],
+        "comment": "Prod"
+      },
+      {
+        "appID": "673NQUF29T.staging.com.joincanopy.app",
+        "paths": ["/go/joincanopystaging*"],
+        "comment": "Staging"
+      },
+      {
+        "appID": "673NQUF29T.dev.com.joincanopy.app",
+        "paths": ["/go/joincanopydev*"],
+        "comment": "Dev"
+      }
+    ]
+  }
+}
