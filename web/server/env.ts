@@ -8,6 +8,7 @@ const SERVER_PROCESS_ENV = {
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   DISABLE_EMAILS: process.env.DISABLE_EMAILS ?? "false",
   HOST_URL: process.env.HOST_URL ?? process.env.VERCEL_URL,
+  MOBILE_APP_SCHEME: process.env.MOBILE_APP_SCHEME,
   CRON_CLIENT_KEY: process.env.CRON_CLIENT_KEY,
 } as const;
 

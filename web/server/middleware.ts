@@ -4,7 +4,14 @@ import nc, { Middleware } from "next-connect";
 import { z, ZodType } from "zod";
 
 import { auth } from "./firebaseAdmin";
+import {
+  executeGetProfilesQuery,
+  GetProfilesQuery,
+  Profile_Role_Enum,
+} from "./generated/serverGraphql";
 import { makeApiFail } from "./response";
+
+type Profile = GetProfilesQuery["profile"][number];
 
 function validateMiddleware<T>(
   schema: z.Schema<T>
@@ -39,21 +46,66 @@ function authMiddleware(): Middleware<NextApiRequest, NextApiResponse> {
       return res.status(500).end("Error verifying token");
     }
 
-    Object.assign(req, { token: decodedToken });
+    // If x-hasura-space-id is provided, fetch profile
+    let callerProfile: Profile | undefined = undefined;
+    const spaceId: string | undefined =
+      decodedToken["https://hasura.io/jwt/claims"]?.["x-hasura-space-id"];
+    if (spaceId) {
+      const { data: callerUserData } = await executeGetProfilesQuery({
+        where: {
+          space_id: { _eq: spaceId },
+          user_id: { _eq: decodedToken.uid },
+        },
+      });
+      callerProfile = callerUserData?.profile[0];
+    }
+
+    Object.assign(req, { token: decodedToken, callerProfile });
     next();
   };
 }
 
-interface MiddlewareOptions<TAuth extends boolean, TValidation> {
+function authorizationMiddleware(
+  requiredRoles: Profile_Role_Enum[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Middleware<CustomApiRequest<true, any>, NextApiResponse> {
+  return async (req, res, next) => {
+    const callerProfile = req.callerProfile;
+    if (!callerProfile) {
+      throw makeApiFail("Caller profile is undefined");
+    }
+
+    const roles = callerProfile.flattened_profile_roles.map(
+      (item) => item.profile_role
+    );
+    for (const requiredRole of requiredRoles) {
+      if (!roles.includes(requiredRole)) {
+        throw makeApiFail(
+          `Caller does not have role: ${requiredRole} in space ${callerProfile.space.id}`
+        );
+      }
+    }
+
+    next();
+  };
+}
+
+type MiddlewareOptions<TAuth extends boolean, TValidation> = {
   authenticated: TAuth;
   validationSchema?: TValidation;
-}
+} & (TAuth extends true
+  ? {
+      authorizationsInSpace?: Profile_Role_Enum[];
+    }
+  : Record<string, never>);
 
 type CustomApiRequest<
   TAuth extends boolean,
   TValidation extends ZodType
 > = Omit<NextApiRequest, "token" | "body"> &
-  (TAuth extends true ? { token: DecodedIdToken } : Record<string, unknown>) &
+  (TAuth extends true
+    ? { token: DecodedIdToken; callerProfile?: Profile }
+    : Record<string, unknown>) &
   (TValidation extends undefined
     ? Record<string, unknown>
     : { body: z.infer<TValidation> });
@@ -72,6 +124,12 @@ export function applyMiddleware<
 
   if (options.authenticated) {
     middleware = middleware.use(authMiddleware());
+  }
+
+  if (options.authorizationsInSpace) {
+    middleware = middleware.use(
+      authorizationMiddleware(options.authorizationsInSpace)
+    );
   }
 
   if (options.validationSchema) {
