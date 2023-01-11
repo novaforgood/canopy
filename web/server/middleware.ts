@@ -90,14 +90,12 @@ function authorizationMiddleware(
   };
 }
 
-type MiddlewareOptions<TAuth extends boolean, TValidation> = {
+type MiddlewareOptions<TAuth extends boolean, TValidation extends ZodType> = {
   authenticated: TAuth;
   validationSchema?: TValidation;
 } & (TAuth extends true
-  ? {
-      authorizationsInSpace?: Profile_Role_Enum[];
-    }
-  : Record<string, never>);
+  ? { authorizationsInSpace?: Profile_Role_Enum[] }
+  : { authorizationsInSpace?: null });
 
 type CustomApiRequest<
   TAuth extends boolean,
@@ -105,9 +103,9 @@ type CustomApiRequest<
 > = Omit<NextApiRequest, "token" | "body"> &
   (TAuth extends true
     ? { token: DecodedIdToken; callerProfile?: Profile }
-    : Record<string, unknown>) &
+    : Record<string, never>) &
   (TValidation extends undefined
-    ? Record<string, unknown>
+    ? Record<string, never>
     : { body: z.infer<TValidation> });
 
 export function applyMiddleware<
@@ -124,12 +122,13 @@ export function applyMiddleware<
 
   if (options.authenticated) {
     middleware = middleware.use(authMiddleware());
-  }
 
-  if (options.authorizationsInSpace) {
-    middleware = middleware.use(
-      authorizationMiddleware(options.authorizationsInSpace)
-    );
+    // Only run if user is authenticated
+    if (options.authorizationsInSpace) {
+      middleware = middleware.use(
+        authorizationMiddleware(options.authorizationsInSpace)
+      );
+    }
   }
 
   if (options.validationSchema) {
