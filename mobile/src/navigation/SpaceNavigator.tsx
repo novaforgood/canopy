@@ -126,7 +126,6 @@ export function SpaceNavigator({
           component={SpaceBottomTabNavigator}
           options={({ route }) => ({})}
         />
-
         <SpaceStack.Screen
           name="ProfilePage"
           component={ProfilePageScreen}
