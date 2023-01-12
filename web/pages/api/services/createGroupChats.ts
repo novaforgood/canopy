@@ -63,32 +63,15 @@ enum ChatBotIds {
  */
 export default applyMiddleware({
   authenticated: true,
+  authorizationsInSpace: [Profile_Role_Enum.Admin],
   validationSchema: createGroupChatsSchema,
 }).post(async (req, res) => {
+  const { callerProfile } = req;
+  const spaceId = callerProfile?.space.id;
   const { groupSize } = req.body;
 
-  const spaceId =
-    req.token["https://hasura.io/jwt/claims"]?.["x-hasura-space-id"];
   if (!spaceId) {
-    throw makeApiFail("No space ID found in token");
-  }
-
-  // Verify that the user is an admin of the space.
-  const { data: callerUserData } = await executeGetProfilesQuery({
-    where: {
-      space_id: { _eq: spaceId },
-      user_id: { _eq: req.token.uid },
-    },
-  });
-  const callerProfile = callerUserData?.profile[0];
-  if (!callerProfile) {
-    throw makeApiFail("No profile found for caller");
-  }
-  const roles = callerProfile.flattened_profile_roles.map(
-    (item) => item.profile_role
-  );
-  if (!roles.includes(Profile_Role_Enum.Admin)) {
-    throw makeApiFail("Only admins can create group chats");
+    throw makeApiFail("Missing spaceId in headers");
   }
 
   // Upsert chat bot profile in space if doesn't exist
@@ -127,7 +110,7 @@ export default applyMiddleware({
       data: {
         group_size: groupSize,
         space_id: spaceId,
-        creator_profile_id: callerProfile.id,
+        creator_profile_id: callerProfile?.id,
         num_groups_created: profileGroups.length,
         num_people_matched: allProfiles.length,
       },

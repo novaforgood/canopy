@@ -4,7 +4,6 @@ type JSONType = Record<string, unknown> | string | boolean | number;
 
 export enum SecureStoreKey {
   CreateSpace = "CreateSpace",
-  LastVisitedSpaceId = "LastVisitedSpaceId",
   SpaceHomepageBannerClosed = "SpaceHomepageBannerClosed",
   ProfileLastViewedCooldown = "ProfileLastViewedCooldown",
 }

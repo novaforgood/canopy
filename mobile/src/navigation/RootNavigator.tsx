@@ -13,7 +13,7 @@ import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-import { currentSpaceAtom, sessionAtom, showNavDrawerAtom } from "../lib/jotai";
+import { sessionAtom, showNavDrawerAtom } from "../lib/jotai";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
 import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { HomeScreen } from "../screens/HomeScreen";
@@ -22,6 +22,7 @@ import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { SignInScreen } from "../screens/SignInScreen";
 import { Theme } from "../theme";
 
+import { SpaceBottomTabNavigator } from "./SpaceBottomTabNavigator";
 import { SpaceNavigator } from "./SpaceNavigator";
 import { RootStackParamList } from "./types";
 
@@ -43,15 +44,8 @@ export function RootNavigator() {
 
       if (expiresIn < expireThreshold) {
         console.log("Force updating JWT since it expires in 3 minutes...");
-        const lastVisitedSpaceId = SecureStore.get(
-          SecureStoreKey.LastVisitedSpaceId
-        );
         refreshSession({
           forceUpdateJwt: true,
-          spaceId:
-            typeof lastVisitedSpaceId === "string"
-              ? lastVisitedSpaceId
-              : undefined,
         });
       }
     }
@@ -63,44 +57,6 @@ export function RootNavigator() {
       clearInterval(interval);
     };
   }, [refreshSessionIfNeeded]);
-
-  ///// Force update JWT if user changed space /////
-  const [session, setSession] = useAtom(sessionAtom);
-  const [spaceRaw, _] = useAtom(currentSpaceAtom);
-  const spaceSlug = spaceRaw?.slug;
-
-  const [{ data: spaceData }, executeQuery] = useSpaceBySlugQuery({
-    pause: true,
-    variables: { slug: spaceSlug ?? "" },
-  });
-  const previousSlug = usePrevious(spaceSlug);
-  useEffect(() => {
-    // Update space data when slug changes to a non-empty string.
-    if (spaceSlug && spaceSlug !== previousSlug) {
-      console.log("Re-executing space lazy query...");
-      executeQuery();
-    }
-  }, [spaceSlug, executeQuery, previousSlug]);
-  const spaceId = spaceData?.space[0]?.id;
-
-  useEffect(() => {
-    const attemptRefreshJwt = async () => {
-      const lastVisitedSpaceId = await SecureStore.get(
-        SecureStoreKey.LastVisitedSpaceId
-      );
-      if (spaceId === lastVisitedSpaceId) {
-        return;
-      } else {
-        if (spaceId) {
-          console.log("Refreshing JWT due to spaceId change...");
-          refreshSession({ forceUpdateJwt: true, spaceId: spaceId });
-
-          SecureStore.set(SecureStoreKey.LastVisitedSpaceId, spaceId);
-        }
-      }
-    };
-    attemptRefreshJwt();
-  }, [spaceId, setSession, refreshSession]);
 
   const isLoggedIn = useIsLoggedIn();
 
@@ -169,37 +125,7 @@ export function RootNavigator() {
               name="SpaceHome"
               component={SpaceNavigator}
               options={({ route }) => ({
-                title: spaceRaw?.name,
-                headerBackVisible: false,
-              })}
-            />
-
-            <RootStack.Screen
-              name="ProfilePage"
-              component={ProfilePageScreen}
-              options={({ route }) => ({
-                // title: `${route.params.firstName} ${route.params.lastName}`,
-                title: "",
-                headerBackTitle: "Back",
-                animationTypeForReplace: "push",
-              })}
-            />
-            <RootStack.Screen
-              name="ChatRoom"
-              component={ChatRoomScreen}
-              options={({ route }) => ({
-                // title: route.params.chatRoomName,
-                title: "",
-                headerBackTitle: "Back",
-                headerBackground: () => (
-                  <Box
-                    backgroundColor="olive100"
-                    height="100%"
-                    width="100%"
-                    shadowColor="black"
-                    flexDirection="row"
-                  ></Box>
-                ),
+                header: () => null,
               })}
             />
           </>

@@ -1,5 +1,8 @@
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { CompositeNavigationProp } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  NavigatorScreenParams,
+} from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type RootStackParamList = {
@@ -8,24 +11,29 @@ export type RootStackParamList = {
   Home: undefined;
   SpaceHome: {
     spaceSlug: string;
-    spaceName: string;
   };
+};
+
+export type SpaceStackParamList = {
+  SpaceBottomTabs: undefined;
   ProfilePage: {
     profileId: string;
   };
   ChatRoom: {
     chatRoomId: string;
-    chatRoomName?: string;
   };
 };
 
-export type SpaceStackParamList = {
+export type SpaceBottomTabStackParamList = {
   ProfilesList: undefined;
   ChatMessages: undefined;
   Account: undefined;
 };
 
 export type NavigationProp = CompositeNavigationProp<
-  StackNavigationProp<RootStackParamList>,
-  BottomTabNavigationProp<SpaceStackParamList>
+  CompositeNavigationProp<
+    StackNavigationProp<RootStackParamList>,
+    StackNavigationProp<SpaceStackParamList>
+  >,
+  BottomTabNavigationProp<SpaceBottomTabStackParamList>
 >;

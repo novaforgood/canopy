@@ -1,25 +1,12 @@
-import { useNavigation } from "@react-navigation/native";
-import { useAtom } from "jotai";
-import {
-  View,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { ScrollView, TouchableOpacity, SafeAreaView } from "react-native";
 
 import { Box } from "../components/atomic/Box";
-import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { SpaceCoverPhoto } from "../components/SpaceCoverPhoto";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
-import { BxCog } from "../generated/icons/regular";
 import { BxsGroup } from "../generated/icons/solid";
 import { useUserData } from "../hooks/useUserData";
-import { signOut } from "../lib/firebase";
-import { currentSpaceAtom } from "../lib/jotai";
-import { NavigationProp, RootStackParamList } from "../navigation/types";
+import { RootStackParamList } from "../navigation/types";
 
 import type { StackScreenProps } from "@react-navigation/stack";
 
@@ -59,7 +46,6 @@ export function HomeScreen({
                     onPress={() => {
                       navigation.navigate("SpaceHome", {
                         spaceSlug: profile.space.slug,
-                        spaceName: profile.space.name,
                       });
                     }}
                   >

@@ -8,11 +8,16 @@ import {
   Rubik_700Bold_Italic,
   Rubik_500Medium_Italic,
 } from "@expo-google-fonts/rubik";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  LinkingOptions,
+  NavigationContainer,
+  NavigatorScreenParams,
+} from "@react-navigation/native";
 import { ThemeProvider } from "@shopify/restyle";
 import { Asset } from "expo-asset";
 import Constants from "expo-constants";
 import { useFonts } from "expo-font";
+import * as Linking from "expo-linking";
 import * as SplashScreen from "expo-splash-screen";
 import { useAtom } from "jotai";
 import { Alert, Image, StatusBar, View } from "react-native";
@@ -34,7 +39,9 @@ import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import { onAuthStateChanged } from "./lib/firebase";
 import { sessionAtom } from "./lib/jotai";
+import { HOST_URL } from "./lib/url";
 import { RootNavigator } from "./navigation/RootNavigator";
+import { RootStackParamList } from "./navigation/types";
 import { UrqlProvider } from "./providers/UrqlProvider";
 import { theme } from "./theme";
 
@@ -56,6 +63,44 @@ const errorHandler = (e: Error, isFatal: boolean) => {
   }
 };
 setJSExceptionHandler(errorHandler, true);
+
+const prefix = Linking.createURL("");
+const scheme = prefix.split("://")[0]; // For example, "joincanopy:// -> joincanopy"
+
+const linking: LinkingOptions<{
+  SpaceHome: NavigatorScreenParams<{
+    ChatRoom: { chatRoomId: string };
+    ProfilePage: { profileId: string };
+  }>;
+}> = {
+  prefixes: [
+    prefix,
+    `https://*.canopy-git-dev-novaforgood.vercel.app/go/${scheme}`,
+    `https://canopy-git-dev-novaforgood.vercel.app/go/${scheme}`,
+    `https://joincanopy.org/go/${scheme}`,
+    `https://*.joincanopy.org/go/${scheme}`,
+  ],
+  config: {
+    screens: {
+      // ProfilePage: {
+      //   path: `${scheme}/space/:spaceSlug/profile/:profileId`,
+      //   parse: {},
+      // },
+      // ChatRoom: `${scheme}/space/:spaceSlug/chat/:chatRoomId`,
+      SpaceHome: {
+        path: "/space/:spaceSlug",
+        screens: {
+          ChatRoom: {
+            path: "chat/:chatRoomId",
+          },
+          ProfilePage: {
+            path: "profile/:profileId",
+          },
+        },
+      },
+    },
+  },
+};
 
 function App() {
   const [fontsLoaded] = useFonts({
@@ -95,6 +140,14 @@ function App() {
   const sessionLoaded = session !== undefined;
   const appIsReady = fontsLoaded && sessionLoaded;
 
+  const url = Linking.useURL();
+  console.log(url);
+  console.log([
+    prefix,
+    `https://*.canopy-git-dev-novaforgood.vercel.app/go/${scheme}`,
+    `https://*.joincanopy.org/go/${scheme}`,
+  ]);
+
   return (
     <AnimatedAppLoader
       isAppReady={appIsReady}
@@ -103,7 +156,7 @@ function App() {
       <SafeAreaProvider>
         <UrqlProvider>
           <ThemeProvider theme={theme}>
-            <NavigationContainer>
+            <NavigationContainer linking={linking}>
               <EventProvider style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" />
                 <RootNavigator />
