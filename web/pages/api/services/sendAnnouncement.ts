@@ -65,7 +65,7 @@ export default applyMiddleware({
     author_headline: profile_listing?.headline,
     author_img_url: profile_listing?.profile_listing_image?.image.url,
     announcement_content: announcementContent,
-    view_announcements_url: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space?.slug}/announcements`,
+    view_announcements_url: `${HOST_URL}/space/${space?.slug}/announcements`,
   };
 
   await sendgridMail

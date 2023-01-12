@@ -29,6 +29,9 @@ export function Footer() {
               <a target="_blank" className="hover:underline" href="/">
                 Home
               </a>
+              <a target="_blank" className="hover:underline" href="/contact">
+                Contact Us
+              </a>
             </div>
           </div>
         </div>
