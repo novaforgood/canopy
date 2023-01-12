@@ -3,6 +3,17 @@
     "version": ">= 0.34.1"
   },
   "build": {
+    "preview": {
+      "channel": "preview",
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "APP_NAME": "Canopy",
+        "APP_ID": "com.joincanopy.app",
+        "APP_SCHEME": "joincanopy"
+      }
+    },
     "production": {
       "channel": "production",
       "env": {
