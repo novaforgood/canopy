@@ -31,49 +31,6 @@ import {
 // Query specific types
 type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
 
-const FIVE_MINUTES = 1000 * 60 * 5;
-const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
-const ONE_DAY = 1000 * 60 * 60 * 24;
-
-function formatDateConcisely(date: Date): string {
-  const timeAgo = Math.abs(date.getTime() - Date.now());
-  if (timeAgo > ONE_WEEK) {
-    return format(date, "MMM d, yyyy 'at' h:mm a");
-  } else if (timeAgo > ONE_DAY) {
-    return format(date, "EEEE 'at' h:mm a");
-  } else {
-    return format(date, "h:mm a");
-  }
-}
-
-function shouldTimeBreak(
-  message1: ChatMessage | null,
-  message2: ChatMessage | null
-) {
-  if (!message1 || !message2) {
-    return true;
-  }
-
-  const date1 = new Date(message1.created_at);
-  const date2 = new Date(message2.created_at);
-  const diff = date2.getTime() - date1.getTime();
-
-  return diff > FIVE_MINUTES;
-}
-
-function shouldBreak(
-  message1: ChatMessage | null,
-  message2: ChatMessage | null
-) {
-  if (!message1 || !message2) {
-    return true;
-  }
-  if (message1.sender_profile_id !== message2.sender_profile_id) {
-    return true;
-  }
-  return shouldTimeBreak(message1, message2);
-}
-
 export function RenderChatRoom() {
   const router = useRouter();
   const renderDesktopMode = useMediaQuery({
