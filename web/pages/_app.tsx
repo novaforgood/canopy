@@ -18,7 +18,7 @@ import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { usePrevious } from "../hooks/usePrevious";
 import { useQueryParam } from "../hooks/useQueryParam";
 import { useRefreshSession } from "../hooks/useRefreshSession";
-import { getCurrentUser } from "../lib/firebase";
+import { getCurrentUser, signOut } from "../lib/firebase";
 import {
   adminBypassAtom,
   announcementNotificationsCountAtom,
@@ -123,12 +123,8 @@ function App({ Component, pageProps }: CustomAppProps) {
 
       if (expiresIn < expireThreshold) {
         console.log("Force updating JWT since it expires in 3 minutes...");
-        const lastVisitedSpaceId = LocalStorage.get(
-          LocalStorageKey.LastVisitedSpaceId
-        )?.toString();
         refreshSession({
           forceUpdateJwt: true,
-          spaceId: lastVisitedSpaceId ?? undefined,
         });
       }
     }
@@ -160,18 +156,29 @@ function App({ Component, pageProps }: CustomAppProps) {
   const spaceId = spaceData?.space[0]?.id;
 
   useEffect(() => {
-    const lastVisitedSpaceId = LocalStorage.get(
-      LocalStorageKey.LastVisitedSpaceId
-    );
-    if (spaceId === lastVisitedSpaceId) {
-      return;
-    } else {
-      if (spaceId) {
-        console.log("Refreshing JWT due to spaceId change...");
-        refreshSession({ forceUpdateJwt: true, spaceId: spaceId });
-        LocalStorage.set(LocalStorageKey.LastVisitedSpaceId, spaceId);
+    const attemptRefreshJwt = async () => {
+      const idToken = await getCurrentUser()?.getIdTokenResult();
+      if (!idToken) {
+        signOut();
+        return;
       }
-    }
+
+      const claimsSpaceId = (
+        idToken.claims["https://hasura.io/jwt/claims"] as {
+          ["x-hasura-space-id"]: string;
+        }
+      )["x-hasura-space-id"];
+
+      if (spaceId === claimsSpaceId) {
+        return;
+      } else {
+        if (spaceId) {
+          console.log("Refreshing JWT due to spaceId change...");
+          refreshSession({ forceUpdateJwt: true, spaceId: spaceId });
+        }
+      }
+    };
+    attemptRefreshJwt();
   }, [spaceId, setSession, refreshSession]);
 
   // On space slug change
