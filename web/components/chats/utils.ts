@@ -27,7 +27,7 @@ export function getChatParticipants(
     headline: ptcr.profile.profile_listing?.headline ?? undefined,
     profileImage: ptcr.profile.profile_listing?.profile_listing_image?.image,
     profileId: ptcr.profile.id,
-    latestReadMessageId: ptcr.latest_read_chat_message_id,
+    latestReadMessageId: ptcr.latest_read_chat_message_id ?? null,
     id: ptcr.id,
   }));
 }
