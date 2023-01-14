@@ -2,6 +2,7 @@ import { ButtonHTMLAttributes } from "react";
 
 import classNames from "classnames";
 
+import { BxTrash } from "../generated/icons/regular";
 import { BxsPencil, BxsTrash, BxsTrashAlt } from "../generated/icons/solid";
 
 type DeleteButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -21,7 +22,7 @@ export function DeleteButton(props: DeleteButtonProps) {
       {variant === "solid" ? (
         <BxsTrashAlt className={styles} />
       ) : (
-        <BxsTrash className={styles} />
+        <BxTrash className={styles} />
       )}
     </button>
   );

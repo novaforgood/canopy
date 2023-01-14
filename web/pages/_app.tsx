@@ -91,7 +91,9 @@ function useNumberOfAnnouncementNotifications() {
   const numUnreadAnnouncements = useMemo(
     () =>
       data?.announcement.filter(
-        (e) => e.id > currentProfile?.last_read_announcement_id
+        (e) =>
+          currentProfile?.last_read_announcement_id &&
+          e.id > currentProfile?.last_read_announcement_id
       )?.length,
     [data, currentProfile?.last_read_announcement_id]
   );

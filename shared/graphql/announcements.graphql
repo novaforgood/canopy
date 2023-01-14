@@ -30,6 +30,18 @@ query AnnouncementsBySpaceId($space_id: uuid!) {
   }
 }
 
+mutation updateAnnouncement(
+  $announcement_id: bigint = ""
+  $changes: announcement_set_input = {}
+) {
+  update_announcement(
+    _set: $changes
+    where: { id: { _eq: $announcement_id } }
+  ) {
+    affected_rows
+  }
+}
+
 mutation updateLatestReadAnnouncement(
   $last_read_announcement_id: bigint = ""
   $id: uuid = ""
