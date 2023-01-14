@@ -16,7 +16,7 @@ interface AnnouncementModalProps {
   actionCallback: () => void;
 }
 
-const AnnouncementModal = (props: AnnouncementModalProps) => {
+export const AnnouncementModal = (props: AnnouncementModalProps) => {
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
@@ -72,5 +72,3 @@ const AnnouncementModal = (props: AnnouncementModalProps) => {
     </ActionModal>
   );
 };
-
-export default AnnouncementModal;

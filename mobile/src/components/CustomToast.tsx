@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import React, { useEffect, useState } from "react";
 
+import Modal from "react-native-modal/dist/modal";
 import Toast from "react-native-toast-message";
 
 import { Theme } from "../theme";

@@ -1,0 +1,55 @@
+query AnnouncementsBySpaceId($space_id: uuid!) {
+  announcement(
+    order_by: { created_at: desc }
+    where: { space_id: { _eq: $space_id } }
+  ) {
+    id
+    author_profile {
+      id
+      profile_listing {
+        id
+        profile_listing_image {
+          id
+          image {
+            id
+            url
+          }
+        }
+      }
+      user_id
+      user {
+        id
+        first_name
+        last_name
+      }
+    }
+    created_at
+    content
+    author_profile_id
+    deleted
+  }
+}
+
+mutation updateAnnouncement(
+  $announcement_id: bigint = ""
+  $changes: announcement_set_input = {}
+) {
+  update_announcement(
+    _set: $changes
+    where: { id: { _eq: $announcement_id } }
+  ) {
+    affected_rows
+  }
+}
+
+mutation updateLatestReadAnnouncement(
+  $last_read_announcement_id: bigint = ""
+  $id: uuid = ""
+) {
+  update_profile(
+    _set: { last_read_announcement_id: $last_read_announcement_id }
+    where: { id: { _eq: $id } }
+  ) {
+    affected_rows
+  }
+}

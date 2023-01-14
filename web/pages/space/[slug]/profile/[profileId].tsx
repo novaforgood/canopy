@@ -1,15 +1,12 @@
 import { Fragment, useEffect } from "react";
 
-import { faker } from "@faker-js/faker";
 import { Menu, Transition } from "@headlessui/react";
 import { useDisclosure } from "@mantine/hooks";
-import { LexRuntime } from "aws-sdk";
 import classNames from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Button, Select, Text } from "../../../../components/atomic";
-import { Breadcrumbs } from "../../../../components/Breadcrumbs";
+import { Button, Text } from "../../../../components/atomic";
 import { IconButton } from "../../../../components/buttons/IconButton";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { PageNotFound } from "../../../../components/error-screens/PageNotFound";
@@ -17,28 +14,21 @@ import { HtmlDisplay } from "../../../../components/HtmlDisplay";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
 import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
-import { IntroduceModal } from "../../../../components/profile-page/IntroduceModal";
 import { MessageModal } from "../../../../components/profile-page/MessageModal";
 import { ProfileImage } from "../../../../components/ProfileImage";
 import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import {
-  BxCaretDown,
-  BxDotsHorizontal,
   BxDotsHorizontalRounded,
   BxEdit,
   BxFile,
   BxMessageDetail,
-  BxTransfer,
-  BxUser,
 } from "../../../../generated/icons/regular";
-import { BxsAddToQueue } from "../../../../generated/icons/solid";
 import { useProfileViewTracker } from "../../../../hooks/analytics/useProfileViewTracker";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
-import { useUserData } from "../../../../hooks/useUserData";
 import { CustomPage } from "../../../../types";
 
 function ProfilePageDropdown() {
