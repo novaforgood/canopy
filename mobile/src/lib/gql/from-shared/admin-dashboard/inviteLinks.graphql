@@ -1,0 +1,31 @@
+query InviteLinks($space_id: uuid!) {
+  space_invite_link(where: { space_id: { _eq: $space_id } }) {
+    id
+    expires_at
+    created_at
+    space_id
+    type
+  }
+}
+
+mutation CreateInviteLink(
+  $space_id: uuid!
+  $type: space_invite_link_type_enum!
+  $expires_at: timestamptz
+) {
+  insert_space_invite_link_one(
+    object: { space_id: $space_id, type: $type, expires_at: $expires_at }
+  ) {
+    id
+    expires_at
+    created_at
+    space_id
+    type
+  }
+}
+
+mutation DeleteInviteLink($id: uuid!) {
+  delete_space_invite_link_by_pk(id: $id) {
+    id
+  }
+}
