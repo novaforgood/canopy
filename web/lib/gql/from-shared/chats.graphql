@@ -116,3 +116,20 @@ mutation UpdateLatestReadMessage(
     latest_read_chat_message_id
   }
 }
+
+mutation updateChatMessage(
+  $chat_message_id: bigint!
+  $changes: chat_message_set_input!
+) {
+  update_chat_message_by_pk(
+    pk_columns: { id: $chat_message_id }
+    _set: $changes
+  ) {
+    id
+    deleted
+    created_at
+    chat_room_id
+    text
+    sender_profile_id
+  }
+}

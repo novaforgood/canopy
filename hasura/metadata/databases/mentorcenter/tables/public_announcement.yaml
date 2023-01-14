@@ -60,6 +60,17 @@ select_permissions:
                           _eq: X-Hasura-User-Id
                       - space_id:
                           _eq: X-Hasura-Space-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - deleted
+      filter:
+        _or:
+          - author_profile:
+              user_id:
+                _eq: X-Hasura-User-Id
+      check: null
 delete_permissions:
   - role: user
     permission:

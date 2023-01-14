@@ -54,6 +54,21 @@ function formatDateConcisely(date: Date): string {
   }
 }
 
+function shouldTimeBreak(
+  message1: ChatMessage | null,
+  message2: ChatMessage | null
+) {
+  if (!message1 || !message2) {
+    return true;
+  }
+
+  const date1 = new Date(message1.created_at);
+  const date2 = new Date(message2.created_at);
+  const diff = date2.getTime() - date1.getTime();
+
+  return diff > FIVE_MINUTES;
+}
+
 function shouldBreak(
   message1: ChatMessage | null,
   message2: ChatMessage | null
@@ -64,12 +79,7 @@ function shouldBreak(
   if (message1.sender_profile_id !== message2.sender_profile_id) {
     return true;
   }
-
-  const date1 = new Date(message1.created_at);
-  const date2 = new Date(message2.created_at);
-  const diff = date2.getTime() - date1.getTime();
-
-  return diff > FIVE_MINUTES;
+  return shouldTimeBreak(message1, message2);
 }
 
 export interface RenderChatRoomProps {
@@ -201,6 +211,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                 const prevMessage = messagesList[idx + 1] ?? null;
                 const nextMessage = messagesList[idx - 1] ?? null;
 
+                const timeBreakBefore = shouldTimeBreak(prevMessage, message);
                 const breakBefore = shouldBreak(prevMessage, message);
                 const breakAfter = shouldBreak(message, nextMessage);
 
@@ -325,7 +336,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
                 return (
                   <Box key={message.id}>
-                    {breakBefore && (
+                    {timeBreakBefore && (
                       <Box
                         mt={4}
                         mb={2}

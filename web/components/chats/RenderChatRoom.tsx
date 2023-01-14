@@ -19,6 +19,7 @@ import { Tooltip } from "../tooltips";
 import { ChatProfileImage } from "./ChatProfileImage";
 import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
+import { RenderMessage } from "./RenderMessage";
 import { useChatRoom } from "./useChatRoom";
 import { useMessages } from "./useMessages";
 import {
@@ -29,38 +30,6 @@ import {
 
 // Query specific types
 type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
-
-const FIVE_MINUTES = 1000 * 60 * 5;
-const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
-const ONE_DAY = 1000 * 60 * 60 * 24;
-
-function formatDateConcisely(date: Date): string {
-  const timeAgo = Math.abs(date.getTime() - Date.now());
-  if (timeAgo > ONE_WEEK) {
-    return format(date, "MMM d, yyyy 'at' h:mm a");
-  } else if (timeAgo > ONE_DAY) {
-    return format(date, "EEEE 'at' h:mm a");
-  } else {
-    return format(date, "h:mm a");
-  }
-}
-
-function shouldBreak(
-  message1: ChatMessage | null,
-  message2: ChatMessage | null
-) {
-  if (!message1 || !message2) {
-    return true;
-  }
-  if (message1.sender_profile_id !== message2.sender_profile_id) {
-    return true;
-  }
-  const date1 = new Date(message1.created_at);
-  const date2 = new Date(message2.created_at);
-  const diff = date2.getTime() - date1.getTime();
-
-  return diff > FIVE_MINUTES;
-}
 
 export function RenderChatRoom() {
   const router = useRouter();
@@ -87,10 +56,13 @@ export function RenderChatRoom() {
     setNewMessage("");
   }, [chatRoomId]);
 
-  const lastMessageIdByOther: number = useMemo(() => {
+  const lastMessageIdByOther: number | null = useMemo(() => {
     return (
       messagesList.find(
-        (m) => currentProfile && m.sender_profile_id !== currentProfile.id
+        (m) =>
+          currentProfile &&
+          m.sender_profile_id &&
+          m.sender_profile_id !== currentProfile.id
       )?.id ?? null
     );
   }, [messagesList, currentProfile]);
@@ -184,146 +156,24 @@ export function RenderChatRoom() {
             // Note: Messages are ordered by created_at DESC
             const prevMessage = messagesList[idx + 1] ?? null;
             const nextMessage = messagesList[idx - 1] ?? null;
-
-            const breakBefore = shouldBreak(prevMessage, message);
-            const breakAfter = shouldBreak(message, nextMessage);
-
-            const nextMessageIsFromDifferentSender =
-              nextMessage?.sender_profile_id !== message.sender_profile_id;
-
-            let messageJsxElement = null;
-            if (message.sender_profile_id === currentProfile.id) {
-              // Sent by me. Render chat bubble with my profile image on the right.
-              const isPending = typeof message.id === "string";
-
-              // Find next message sent by me
-              let nextMessageSentByMe = null;
-              for (let j = idx - 1; j >= 0; j--) {
-                const msg = messagesList[j];
-                if (msg.sender_profile_id === currentProfile.id) {
-                  nextMessageSentByMe = msg;
-                  break;
-                }
+            let nextMessageSentByMe = null;
+            for (let j = idx - 1; j >= 0; j--) {
+              const msg = messagesList[j];
+              if (msg.sender_profile_id === currentProfile.id) {
+                nextMessageSentByMe = msg;
+                break;
               }
-              const isLastDelivered =
-                !isPending &&
-                (nextMessage === null ||
-                  nextMessageSentByMe === null ||
-                  typeof nextMessageSentByMe.id === "string");
-
-              messageJsxElement = (
-                <div
-                  className={classNames({
-                    "flex max-w-full flex-col items-end overflow-hidden pl-14":
-                      true,
-                    "mb-4": breakAfter,
-                    "mb-1": !breakAfter,
-                  })}
-                >
-                  <Tooltip
-                    content={formatDateConcisely(new Date(message.created_at))}
-                    placement="left"
-                    delayMs={[500, 0]}
-                  >
-                    <div
-                      className={classNames({
-                        "max-w-full whitespace-pre-wrap rounded-l-lg px-4 py-1.5 lg:ml-20":
-                          true,
-                        "bg-lime-300": isPending,
-                        "bg-lime-400": !isPending,
-                        "rounded-tr-lg": breakBefore,
-                        "rounded-br-lg": breakAfter,
-                      })}
-                    >
-                      <Text className="break-words">{message.text}</Text>
-                    </div>
-                  </Tooltip>
-
-                  {isLastDelivered && (
-                    <Text variant="body3" className="mt-px text-gray-700">
-                      Delivered
-                    </Text>
-                  )}
-                </div>
-              );
-            } else {
-              // Sent by other. Render chat bubble with their profile image on the left.
-              const isLastMessage =
-                breakAfter || nextMessageIsFromDifferentSender;
-
-              const senderProfile =
-                chatParticipants.find(
-                  (p) => p.profileId === message.sender_profile_id
-                ) ?? null;
-
-              if (!senderProfile) return null;
-
-              const firstName = senderProfile.firstName;
-              const lastName = senderProfile.lastName;
-              const profileImageUrl = senderProfile.profileImage?.url;
-
-              messageJsxElement = (
-                <div className="flex max-w-full items-end gap-3">
-                  <div
-                    className={classNames({
-                      "flex max-w-full items-end gap-3": true,
-                      "mb-4": isLastMessage,
-                      "mb-1": !isLastMessage,
-                    })}
-                  >
-                    {isLastMessage ? (
-                      <div className="relative w-10 shrink-0">
-                        <Tooltip
-                          content={`${firstName} ${lastName}`}
-                          placement="left"
-                        >
-                          <div className="absolute bottom-0 h-10 w-10 shrink-0">
-                            <ChatProfileImage
-                              src={profileImageUrl}
-                              userType={senderProfile.userType}
-                              className="h-10 w-10"
-                            />
-                          </div>
-                        </Tooltip>
-                      </div>
-                    ) : (
-                      <div className="w-10 shrink-0"></div>
-                    )}
-                    <Tooltip
-                      content={formatDateConcisely(
-                        new Date(message.created_at)
-                      )}
-                      placement="left"
-                      delayMs={[500, 0]}
-                    >
-                      <div
-                        className={classNames({
-                          "mr-12 max-w-full whitespace-pre-wrap rounded-r-lg bg-gray-100 px-4 py-1.5 lg:mr-20":
-                            true,
-                          "rounded-tl-lg": breakBefore,
-                          "rounded-bl-lg": breakAfter,
-                        })}
-                      >
-                        <Text className="break-words">{message.text}</Text>
-                      </div>
-                    </Tooltip>
-                  </div>
-                  <div className="flex-1"></div>
-                </div>
-              );
             }
 
             return (
-              <div key={message.id} className="w-full">
-                {breakBefore && (
-                  <div className="mt-4 mb-2 flex w-full items-center justify-center">
-                    <Text className="text-gray-700" variant="body3">
-                      {formatDateConcisely(new Date(message.created_at))}
-                    </Text>
-                  </div>
-                )}
-                {messageJsxElement}
-              </div>
+              <RenderMessage
+                key={message.id}
+                message={message}
+                prevMessage={prevMessage}
+                nextMessage={nextMessage}
+                nextMessageByMe={nextMessageSentByMe}
+                chatParticipants={chatParticipants}
+              />
             );
           })}
         {currentProfile && !noMoreMessages && (

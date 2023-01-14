@@ -19,6 +19,7 @@ module.exports = {
         scalars: {
           timestamptz: "string",
           uuid: "string",
+          bigint: "number",
         },
       },
     },

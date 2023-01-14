@@ -118,7 +118,6 @@ function App() {
     }
   }, [fontsLoaded]);
 
-  const isLoggedIn = useIsLoggedIn();
   const [session, setSession] = useAtom(sessionAtom);
 
   const { refreshSession } = useRefreshSession();
@@ -139,14 +138,6 @@ function App() {
 
   const sessionLoaded = session !== undefined;
   const appIsReady = fontsLoaded && sessionLoaded;
-
-  const url = Linking.useURL();
-  console.log(url);
-  console.log([
-    prefix,
-    `https://*.canopy-git-dev-novaforgood.vercel.app/go/${scheme}`,
-    `https://*.joincanopy.org/go/${scheme}`,
-  ]);
 
   return (
     <AnimatedAppLoader
