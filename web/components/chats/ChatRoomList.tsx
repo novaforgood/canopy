@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import {
-  AllChatRoomsSubscription,
   useAllChatRoomsSubscription,
   User_Type_Enum,
 } from "../../generated/graphql";
@@ -17,11 +16,9 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
-import { CustomTab } from "../CustomTab";
 
 import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
-import { ChatRoom, ProfileToChatRoom } from "./types";
 import {
   shouldHighlightChatRoom,
   getChatParticipants,

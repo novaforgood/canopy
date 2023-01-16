@@ -13,7 +13,7 @@ import { useQueryParam } from "../../hooks/useQueryParam";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { Button, Text, Textarea } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
-import { ProfileImage } from "../ProfileImage";
+import { ProfileImage } from "../common/ProfileImage";
 import { Tooltip } from "../tooltips";
 
 import { ChatProfileImage } from "./ChatProfileImage";
