@@ -3,7 +3,7 @@ import { table } from "console";
 import { flexRender, Table } from "@tanstack/react-table";
 import classNames from "classnames";
 
-import { BxsUpArrow, BxsDownArrow } from "../generated/icons/solid";
+import { BxsUpArrow, BxsDownArrow } from "../../generated/icons/solid";
 
 export function Table<T>({ table }: { table: Table<T> }) {
   return (

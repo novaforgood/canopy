@@ -26,10 +26,10 @@ import {
 import { LocalStorage } from "../../lib/localStorage";
 import { Button, Text } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
+import { NumberBadge } from "../common/NumberBadge";
+import { ProfileImage } from "../common/ProfileImage";
 import { SidePadding } from "../layout/SidePadding";
 import { LoadingPlaceholderRect } from "../LoadingPlaceholderRect";
-import { NumberBadge } from "../NumberBadge";
-import { ProfileImage } from "../ProfileImage";
 import { Tooltip } from "../tooltips";
 
 import { Dropdown } from "./Dropdown";

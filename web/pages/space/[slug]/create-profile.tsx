@@ -4,7 +4,7 @@ import { customAlphabet } from "nanoid";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../components/atomic";
-import { BackButton } from "../../../components/BackButton";
+import { BackButton } from "../../../components/common/BackButton";
 import { EnterBasicInfo } from "../../../components/create-profile/EnterBasicInfo";
 import { EnterContactInfo } from "../../../components/create-profile/EnterContactInfo";
 import { EnterResponses } from "../../../components/create-profile/EnterResponses";
@@ -101,8 +101,8 @@ const ListerOnboardingPage: CustomPage = () => {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:h-screen">
-      <div className="bg-olive-100 p-6 sm:p-12 sm:pt-40 sm:h-screen shrink-0 flex flex-col items-start justify-between">
+    <div className="flex flex-col sm:h-screen sm:flex-row">
+      <div className="flex shrink-0 flex-col items-start justify-between bg-olive-100 p-6 sm:h-screen sm:p-12 sm:pt-40">
         <div className="w-full">
           <StageNavigator
             currentStage={currentStage}

@@ -14,7 +14,7 @@ import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
 import { uploadImage } from "../../lib/image";
 import { Input, Text, Textarea } from "../atomic";
-import { ImageUploader } from "../ImageUploader";
+import { ImageUploader } from "../common/ImageUploader";
 import { TextInput } from "../inputs/TextInput";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
@@ -100,7 +100,7 @@ export function EnterBasicInfo(props: EnterNameProps) {
       <div className="flex flex-col items-start">
         <div className="h-8"></div>
 
-        <Text variant="subheading2" className="text-gray-600 font-bold">
+        <Text variant="subheading2" className="font-bold text-gray-600">
           Name
         </Text>
         <div className="h-4"></div>
@@ -110,7 +110,7 @@ export function EnterBasicInfo(props: EnterNameProps) {
 
         <div className="h-8"></div>
 
-        <Text variant="subheading2" className="text-gray-600 font-bold">
+        <Text variant="subheading2" className="font-bold text-gray-600">
           Profile photo
         </Text>
         <div className="h-4"></div>
@@ -128,7 +128,7 @@ export function EnterBasicInfo(props: EnterNameProps) {
 
         <div className="h-8"></div>
 
-        <Text variant="subheading2" className="text-gray-600 font-bold">
+        <Text variant="subheading2" className="font-bold text-gray-600">
           Your headline
         </Text>
         <div className="h-2"></div>

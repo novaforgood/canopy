@@ -1,13 +1,22 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../../components/atomic";
+import { Dropdown } from "../../../../components/atomic/Dropdown";
 import { ChatLayout } from "../../../../components/chats/ChatLayout";
+import {
+  ProfileMultiSelect,
+  SelectedProfile,
+} from "../../../../components/chats/ProfileMultiSelect";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
 import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSplashPage";
+import {
+  SearchProfilesInSpaceQuery,
+  useFindChaRoomtWithProfileIdsQuery,
+} from "../../../../generated/graphql";
 import {
   BxChevronLeft,
   BxMessageDetail,
@@ -24,6 +33,18 @@ const NewChatPage: CustomPage = () => {
     showIfBiggerThan: "md",
   });
 
+  const [selectedProfiles, setSelectedProfiles] = useState<SelectedProfile[]>(
+    []
+  );
+
+  const [{ data }] = useFindChaRoomtWithProfileIdsQuery({
+    variables: {
+      profile_ids: selectedProfiles.map((p) => p.profileId),
+    },
+  });
+
+  console.log(data?.chat_room);
+
   return (
     <div className="overflow-hidden rounded-md">
       <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
@@ -37,7 +58,14 @@ const NewChatPage: CustomPage = () => {
             <BxChevronLeft className="h-10 w-10" />
           </button>
         )}
-        <Text>Connect with someone new</Text>
+        {/* <Text>Connect with someone new</Text> */}
+        <div className="flex items-center gap-2">
+          <Text>To:</Text>
+          <ProfileMultiSelect
+            selectedProfiles={selectedProfiles}
+            onChange={setSelectedProfiles}
+          />
+        </div>
       </div>
 
       <div className="mx-auto mt-24 flex max-w-xs flex-col items-center">

@@ -36,12 +36,12 @@ import {
 } from "../../lib/types";
 import { Button, Input, Text } from "../atomic";
 import { CheckBox } from "../atomic/CheckBox";
-import { DeleteButton } from "../DeleteButton";
-import { DragHandle } from "../DragHandle";
-import { EditButton } from "../EditButton";
+import { DeleteButton } from "../common/DeleteButton";
+import { DragHandle } from "../common/DragHandle";
+import { EditButton } from "../common/EditButton";
+import { Tag, TagProps } from "../common/Tag";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
-import { Tag, TagProps } from "../Tag";
 
 type EditMode = "normal" | "reorder";
 interface EditTagProps extends TagProps {

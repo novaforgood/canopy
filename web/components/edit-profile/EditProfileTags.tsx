@@ -19,9 +19,9 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { showTagOnProfile } from "../../lib/tags";
 import { Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { EditButton } from "../EditButton";
+import { EditButton } from "../common/EditButton";
+import { Tag } from "../common/Tag";
 import { ActionModal } from "../modals/ActionModal";
-import { Tag } from "../Tag";
 
 type SelectedTag = {
   label: string;

@@ -12,7 +12,7 @@ import {
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useUserData } from "../../hooks/useUserData";
 import { Input, Text } from "../atomic";
-import { EditButton } from "../EditButton";
+import { EditButton } from "../common/EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleTextArea } from "../inputs/SimpleTextArea";
 import { TextInput } from "../inputs/TextInput";

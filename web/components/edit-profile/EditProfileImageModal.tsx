@@ -10,7 +10,7 @@ import {
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { uploadImage } from "../../lib/image";
 import { Text } from "../atomic";
-import { ImageUploader } from "../ImageUploader";
+import { ImageUploader } from "../common/ImageUploader";
 import { ActionModal } from "../modals/ActionModal";
 
 export interface EditProfileImageModalProps {

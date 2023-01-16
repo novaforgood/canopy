@@ -2,15 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 
 import classNames from "classnames";
 
-import { BxX } from "../generated/icons/regular";
-
-import { Tooltip } from "./tooltips";
+import { BxX } from "../../generated/icons/regular";
+import { Tooltip } from "../tooltips";
 
 export interface TagProps {
   text: string;
   onDeleteClick?: () => void;
   renderRightIcon?: () => React.ReactNode;
-  variant?: "primary" | "outline";
+  variant?: "primary" | "outline" | "olive";
   className?: string;
   style?: React.CSSProperties;
 }
@@ -27,6 +26,7 @@ export function Tag(props: TagProps) {
   const tagContainerStyles = classNames({
     "rounded-full flex items-center px-3 py-1 overflow-hidden": true,
     "bg-lime-200": variant === "primary",
+    "bg-olive-200": variant === "olive",
     "bg-white border border-lime-700": variant === "outline",
     [`${className}`]: true,
   });
@@ -34,6 +34,7 @@ export function Tag(props: TagProps) {
   const tagStyles = classNames({
     "whitespace-nowrap text-xs truncate": true,
     "text-olive-700": variant === "primary",
+    "text-olive-800": variant === "olive",
     "text-lime-700": variant === "outline",
   });
 

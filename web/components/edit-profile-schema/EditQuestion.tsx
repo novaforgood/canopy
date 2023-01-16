@@ -7,9 +7,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { Space_Listing_Question_Insert_Input } from "../../generated/graphql";
 import { NewListingQuestion, NewTagCategory } from "../../lib/types";
 import { Input, Text, Textarea } from "../atomic";
-import { DeleteButton } from "../DeleteButton";
-import { DragHandle } from "../DragHandle";
-import { EditButton } from "../EditButton";
+import { DeleteButton } from "../common/DeleteButton";
+import { DragHandle } from "../common/DragHandle";
+import { EditButton } from "../common/EditButton";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
 

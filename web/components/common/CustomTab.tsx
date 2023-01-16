@@ -1,7 +1,7 @@
 import { Tab } from "@headlessui/react";
 import classNames from "classnames";
 
-import { Text } from "./atomic";
+import { Text } from "../atomic";
 
 interface CustomTabProps {
   title: string;

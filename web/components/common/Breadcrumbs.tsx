@@ -2,11 +2,10 @@ import { Fragment, ReactNode, useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { useProfileByIdQuery } from "../generated/graphql";
-import { BxsHome } from "../generated/icons/solid";
-import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
-
-import { Text } from "./atomic";
+import { useProfileByIdQuery } from "../../generated/graphql";
+import { BxsHome } from "../../generated/icons/solid";
+import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
+import { Text } from "../atomic";
 
 type BreadcrumbItem = {
   title: ReactNode;

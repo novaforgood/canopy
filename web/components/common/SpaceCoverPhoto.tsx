@@ -3,8 +3,8 @@ import { ImgHTMLAttributes, useState } from "react";
 import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
 
-import { BxImage } from "../generated/icons/regular";
-import { BxsImage } from "../generated/icons/solid";
+import { BxImage } from "../../generated/icons/regular";
+import { BxsImage } from "../../generated/icons/solid";
 
 type SpaceCoverPhotoProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src?: string | null;

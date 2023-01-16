@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../../components/atomic";
 import { IconButton } from "../../../../components/buttons/IconButton";
+import { ProfileImage } from "../../../../components/common/ProfileImage";
+import { Tag } from "../../../../components/common/Tag";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { PageNotFound } from "../../../../components/error-screens/PageNotFound";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
@@ -15,8 +17,6 @@ import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
 import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
 import { MessageModal } from "../../../../components/profile-page/MessageModal";
-import { ProfileImage } from "../../../../components/ProfileImage";
-import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import {
   BxDotsHorizontalRounded,

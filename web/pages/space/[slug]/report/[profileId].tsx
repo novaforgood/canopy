@@ -6,11 +6,11 @@ import { boolean } from "zod";
 
 import { Button, Text, Textarea } from "../../../../components/atomic";
 import { ToggleSwitch } from "../../../../components/atomic/ToggleSwitch";
-import { BackButton } from "../../../../components/BackButton";
+import { BackButton } from "../../../../components/common/BackButton";
+import { ProfileImage } from "../../../../components/common/ProfileImage";
 import { SimpleTextArea } from "../../../../components/inputs/SimpleTextArea";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
-import { ProfileImage } from "../../../../components/ProfileImage";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
