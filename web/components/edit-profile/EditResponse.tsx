@@ -11,7 +11,7 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { Text } from "../atomic";
-import { EditButton } from "../EditButton";
+import { EditButton } from "../common/EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
 import { ActionModal } from "../modals/ActionModal";

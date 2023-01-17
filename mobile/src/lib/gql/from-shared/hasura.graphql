@@ -282,6 +282,36 @@ query ProfileListingsInSpace($where: profile_listing_bool_exp) {
   }
 }
 
+query ProfilesByIds($profile_ids: [uuid!]!) {
+  profile(where: { id: { _in: $profile_ids } }) {
+    id
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+    profile_roles {
+      id
+      profile_role
+    }
+    profile_listing {
+      id
+      public
+      profile_listing_image {
+        id
+        image {
+          id
+          url
+        }
+      }
+    }
+    space_id
+    user_id
+    created_at
+  }
+}
+
 query ProfileById($profile_id: uuid!, $is_logged_in: Boolean!) {
   profile_by_pk(id: $profile_id) {
     id

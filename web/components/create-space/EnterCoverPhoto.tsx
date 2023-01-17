@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { BxsCloudUpload } from "../../generated/icons/solid";
 import { uploadImage } from "../../lib/image";
 import { Button, Input, Text } from "../atomic";
-import { ImageUploader } from "../ImageUploader";
+import { ImageUploader } from "../common/ImageUploader";
 
 import { HomepagePreview } from "./HomepagePreview";
 
@@ -48,8 +48,8 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
   }, [debouncedDimensions, imageSrc]);
 
   return (
-    <div className="flex gap-20 justify-start items-start h-full">
-      <div className="flex flex-col items-start w-full">
+    <div className="flex h-full items-start justify-start gap-20">
+      <div className="flex w-full flex-col items-start">
         <div className="h-10"></div>
         <Text variant="heading3">
           Upload a homepage picture for your directory.
@@ -68,7 +68,7 @@ export function EnterCoverPhoto(props: EnterCoverPhotoProps) {
           width={600}
           showZoom
           renderUploadIcon={() => (
-            <BxsCloudUpload className="text-gray-500 h-32 w-32 -mb-2" />
+            <BxsCloudUpload className="-mb-2 h-32 w-32 text-gray-500" />
           )}
           getRef={(ref) => {
             editor.current = ref;

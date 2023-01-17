@@ -20,7 +20,7 @@ import { useUserData } from "../../hooks/useUserData";
 import { signOut } from "../../lib/firebase";
 import { LocalStorage } from "../../lib/localStorage";
 import { Text } from "../atomic";
-import { ProfileImage } from "../ProfileImage";
+import { ProfileImage } from "../common/ProfileImage";
 
 export function Dropdown() {
   const { userData } = useUserData();

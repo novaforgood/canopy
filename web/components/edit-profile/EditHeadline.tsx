@@ -10,7 +10,7 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { Input, Text } from "../atomic";
-import { EditButton } from "../EditButton";
+import { EditButton } from "../common/EditButton";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { SimpleTextArea } from "../inputs/SimpleTextArea";
 import { TextInput } from "../inputs/TextInput";

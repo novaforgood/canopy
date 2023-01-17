@@ -1,5 +1,5 @@
 import { User_Type_Enum } from "../../generated/graphql";
-import { ProfileImage, ProfileImageProps } from "../ProfileImage";
+import { ProfileImage, ProfileImageProps } from "../common/ProfileImage";
 
 interface ChatProfileImageProps extends ProfileImageProps {
   userType: User_Type_Enum;

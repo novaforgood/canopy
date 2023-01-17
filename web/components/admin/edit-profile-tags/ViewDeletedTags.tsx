@@ -46,8 +46,8 @@ export function ViewDeletedTags(props: ViewDeletedTagsProps) {
         official again.
       </Text>
       <div className="h-6"></div>
-      <div className="flex items-center gap-3 pl-2 select-none">
-        <div className="rounded-full h-8 w-8 bg-gray-200 flex items-center justify-center">
+      <div className="flex select-none items-center gap-3 pl-2">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
           <Text variant="body3" bold>
             #
           </Text>
@@ -57,7 +57,7 @@ export function ViewDeletedTags(props: ViewDeletedTagsProps) {
         </Text>
       </div>
       <div className="h-4"></div>
-      <div className="flex flex-col gap-1.5 max-h-96 overflow-y-scroll overscroll-contain pr-3">
+      <div className="flex max-h-96 flex-col gap-1.5 overflow-y-scroll overscroll-contain pr-3">
         {tagCategory.space_tags?.data
           .filter((tag) => tag.status === Space_Tag_Status_Enum.Deleted)
           .map((tag) => (

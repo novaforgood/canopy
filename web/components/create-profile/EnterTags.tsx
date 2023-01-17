@@ -5,8 +5,6 @@ import toast from "react-hot-toast";
 import { Text } from "../../components/atomic";
 import {
   useSpaceTagCategoriesQuery,
-  useProfileListingToSpaceTagQuery,
-  useSpaceTagsQuery,
   useSetProfileListingTagsMutation,
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
@@ -17,7 +15,7 @@ import {
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { Tag } from "../Tag";
+import { Tag } from "../common/Tag";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
 

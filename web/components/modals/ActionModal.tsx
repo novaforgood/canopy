@@ -55,9 +55,11 @@ export function ActionModal({
           >
             {actionText}
           </Button>
-          <Button variant="secondary" rounded onClick={onSecondaryAction}>
-            {secondaryActionText}
-          </Button>
+          {secondaryActionText && (
+            <Button variant="secondary" rounded onClick={onSecondaryAction}>
+              {secondaryActionText}
+            </Button>
+          )}
         </div>
       </div>
     </Modal>

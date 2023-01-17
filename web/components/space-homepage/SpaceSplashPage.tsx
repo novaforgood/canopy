@@ -4,9 +4,9 @@ import classNames from "classnames";
 
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Text } from "../atomic";
+import { SpaceCoverPhoto } from "../common/SpaceCoverPhoto";
 import { HtmlDisplay } from "../HtmlDisplay";
 import { LoadingPlaceholderRect } from "../LoadingPlaceholderRect";
-import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 export function SpaceSplashPage() {
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();

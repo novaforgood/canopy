@@ -24,6 +24,7 @@ select_permissions:
                 profile:
                   user_id:
                     _eq: X-Hasura-User-Id
+      allow_aggregations: true
 update_permissions:
   - role: user
     permission:

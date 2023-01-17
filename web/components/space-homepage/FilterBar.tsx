@@ -7,8 +7,8 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { searchQueryAtom, selectedTagIdsAtom } from "../../lib/jotai";
 import { isTagOfficial } from "../../lib/tags";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { Tag } from "../common/Tag";
 import { TextInput } from "../inputs/TextInput";
-import { Tag } from "../Tag";
 
 export function FilterBar() {
   const { currentSpace } = useCurrentSpace();

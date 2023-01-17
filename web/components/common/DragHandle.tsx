@@ -2,8 +2,8 @@ import { ButtonHTMLAttributes } from "react";
 
 import classNames from "classnames";
 
-import { BxMove, BxMoveVertical } from "../generated/icons/regular";
-import { BxsPencil, BxsTrash, BxsTrashAlt } from "../generated/icons/solid";
+import { BxMove, BxMoveVertical } from "../../generated/icons/regular";
+import { BxsPencil, BxsTrash, BxsTrashAlt } from "../../generated/icons/solid";
 
 type DragHandleProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   sizeClassName?: string;

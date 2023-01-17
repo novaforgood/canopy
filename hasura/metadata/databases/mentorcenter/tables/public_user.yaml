@@ -9,6 +9,12 @@ array_relationships:
         table:
           name: profile
           schema: public
+computed_fields:
+  - name: full_name
+    definition:
+      function:
+        name: user_full_name
+        schema: public
 select_permissions:
   - role: public
     permission:
@@ -37,6 +43,8 @@ select_permissions:
         - id
         - last_name
         - type
+      computed_fields:
+        - full_name
       filter:
         _or:
           - id:

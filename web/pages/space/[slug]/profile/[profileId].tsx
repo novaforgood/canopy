@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../../components/atomic";
 import { IconButton } from "../../../../components/buttons/IconButton";
+import { ProfileImage } from "../../../../components/common/ProfileImage";
+import { Tag } from "../../../../components/common/Tag";
 import { ProfileSocialsDisplay } from "../../../../components/edit-socials-info/ProfileSocialsDisplay";
 import { PageNotFound } from "../../../../components/error-screens/PageNotFound";
 import { HtmlDisplay } from "../../../../components/HtmlDisplay";
@@ -15,8 +17,6 @@ import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
 import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
 import { MessageModal } from "../../../../components/profile-page/MessageModal";
-import { ProfileImage } from "../../../../components/ProfileImage";
-import { Tag } from "../../../../components/Tag";
 import { useProfileByIdQuery } from "../../../../generated/graphql";
 import {
   BxDotsHorizontalRounded,
@@ -103,7 +103,9 @@ function ProfilePageDropdown() {
             <Menu.Button className="focus:outline-none">
               <div>
                 <IconButton
-                  icon={<BxDotsHorizontalRounded className="h-5 w-5" />}
+                  icon={
+                    <BxDotsHorizontalRounded className="h-5 w-5 text-gray-700" />
+                  }
                   className="ml-4 rounded-full"
                   onClick={() => {}}
                 />
@@ -353,12 +355,15 @@ const ProfilePage: CustomPage = () => {
           </div>
         </div>
         <div className="h-32"></div>
-        <MessageModal
-          isOpen={open}
-          onClose={handlers.close}
-          profileId={profileId}
-          onMessageSent={refetchProfileById}
-        />
+        {profileId && (
+          <MessageModal
+            isOpen={open}
+            onClose={handlers.close}
+            receiverProfileIds={[profileId]}
+            onMessageSent={refetchProfileById}
+          />
+        )}
+
         <PleaseLogInModal
           isOpen={loginModalOpen}
           onClose={loginModalHandlers.close}

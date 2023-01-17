@@ -4,8 +4,8 @@ import classNames from "classnames";
 
 import { BxCaretDown } from "../../generated/icons/regular";
 import { Text } from "../atomic";
+import { SpaceCoverPhoto } from "../common/SpaceCoverPhoto";
 import { HtmlDisplay } from "../HtmlDisplay";
-import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 const SPACE_NAME_PLACEHOLDER = "Space Name";
 const ARRAY_LENGTH_8 = new Array(8).fill(0);
@@ -42,13 +42,13 @@ export function HomepagePreview(props: HomepagePreviewProps) {
   });
 
   return (
-    <div className="border border-black rounded-md p-4 w-96 2xl:w-120 mt-12 shrink-0">
+    <div className="mt-12 w-96 shrink-0 rounded-md border border-black p-4 2xl:w-120">
       <div className="flex items-center justify-between truncate">
         <Text variant="subheading1" className={headingStyles}>
           {title}
         </Text>
-        <div className="flex gap-1 items-center">
-          <div className="rounded-full bg-gray-700 h-5 w-5"></div>
+        <div className="flex items-center gap-1">
+          <div className="h-5 w-5 rounded-full bg-gray-700"></div>
           <BxCaretDown className="h-5 w-5" />
         </div>
       </div>
@@ -61,11 +61,11 @@ export function HomepagePreview(props: HomepagePreviewProps) {
         </div>
         <SpaceCoverPhoto className={coverStyles} src={coverSrc} />
       </div>
-      <div className="w-full h-0.5 bg-gray-50 my-8"></div>
-      <div className="grid grid-cols-4 gap-4 w-full">
+      <div className="my-8 h-0.5 w-full bg-gray-50"></div>
+      <div className="grid w-full grid-cols-4 gap-4">
         {ARRAY_LENGTH_8.map((_, idx) => {
           return (
-            <div key={idx} className="rounded-md bg-gray-50 h-24 2xl:h-28" />
+            <div key={idx} className="h-24 rounded-md bg-gray-50 2xl:h-28" />
           );
         })}
       </div>

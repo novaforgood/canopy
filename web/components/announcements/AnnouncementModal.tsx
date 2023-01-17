@@ -6,7 +6,6 @@ import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { apiClient } from "../../lib/apiClient";
 import { Text } from "../atomic";
-import { ToggleSwitch } from "../atomic/ToggleSwitch";
 import { RichTextInput } from "../inputs/RichTextInput";
 import { ActionModal } from "../modals/ActionModal";
 

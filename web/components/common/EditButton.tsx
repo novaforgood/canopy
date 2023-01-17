@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes } from "react";
 
 import classNames from "classnames";
 
-import { BxsPencil } from "../generated/icons/solid";
+import { BxsPencil } from "../../generated/icons/solid";
 
 type EditButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
