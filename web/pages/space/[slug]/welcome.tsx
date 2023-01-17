@@ -24,18 +24,18 @@ function ListerWelcomePage() {
           <StepDisplay
             stepNumber={1}
             title="Complete your profile"
-            description="It takes 3 minutes, and your profile can be edited or unpublished at any time."
+            description="It takes 2 minutes, and your profile can be edited at any time."
             highlighted
           />
           <StepDisplay
             stepNumber={2}
             title="Publish your profile in the community directory"
-            description="Other community members will be able to chat with you on Canopy or reach out through your other linked accounts."
+            description="Other community members will be able to read your profile, send you messages on Canopy, or reach out through your other linked accounts."
           />
           <StepDisplay
             stepNumber={3}
-            title="Wait for a connection request!"
-            description="You will be notified via email when someone starts a chat with you on Canopy. Be sure to regularly check your promotions inbox and junk folder!"
+            title="Reach out to others!"
+            description="Send a message to someone else introducing yourself or asking about something on their profile. You will be notified via email when someone starts a chat with you. Be sure to regularly check your junk folder!"
           />
         </div>
         <div className="h-16"></div>
