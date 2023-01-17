@@ -1,10 +1,9 @@
-import { ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import Link from "next/link";
+import { useDisclosure } from "@mantine/hooks";
 import { useRouter } from "next/router";
 
 import { Button, Text } from "../../../../components/atomic";
-import { Dropdown } from "../../../../components/atomic/Dropdown";
 import { ChatLayout } from "../../../../components/chats/ChatLayout";
 import {
   ProfileMultiSelect,
@@ -12,10 +11,8 @@ import {
 } from "../../../../components/chats/ProfileMultiSelect";
 import { RenderChatRoomMessages } from "../../../../components/chats/RenderChatRoomMessages";
 import { SendMessageInput } from "../../../../components/chats/SendMessageInput";
-import { SidePadding } from "../../../../components/layout/SidePadding";
 import { LoadingSpinner } from "../../../../components/LoadingSpinner";
-import { Navbar } from "../../../../components/navbar/Navbar";
-import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSplashPage";
+import { MessageModal } from "../../../../components/profile-page/MessageModal";
 import { useFindChatRoomsQuery } from "../../../../generated/graphql";
 import {
   BxChevronLeft,
@@ -33,31 +30,35 @@ const NewChatPage: CustomPage = () => {
     showIfBiggerThan: "md",
   });
 
+  const [open, handlers] = useDisclosure(false);
+
   const [selectedProfiles, setSelectedProfiles] = useState<SelectedProfile[]>(
     []
   );
 
-  const [{ data: findChatRoomsData, fetching: fetchingChatRooms }] =
-    useFindChatRoomsQuery({
-      variables: {
-        where: {
+  const [
+    { data: findChatRoomsData, fetching: fetchingChatRooms },
+    refetchChatRooms,
+  ] = useFindChatRoomsQuery({
+    variables: {
+      where: {
+        _and: selectedProfiles.map((profile) => ({
           profile_to_chat_rooms: {
-            _and: selectedProfiles.map((profile) => ({
-              profile_id: {
-                _eq: profile.profileId,
-              },
-            })),
+            profile_id: {
+              _eq: profile.profileId,
+            },
           },
-          profile_to_chat_rooms_aggregate: {
-            count: {
-              predicate: {
-                _eq: selectedProfiles.length + 1,
-              },
+        })),
+        profile_to_chat_rooms_aggregate: {
+          count: {
+            predicate: {
+              _eq: selectedProfiles.length + 1,
             },
           },
         },
       },
-    });
+    },
+  });
 
   const suggestedChatRoom = useMemo(() => {
     if (!findChatRoomsData || findChatRoomsData.chat_room.length === 0)
@@ -65,9 +66,11 @@ const NewChatPage: CustomPage = () => {
     return findChatRoomsData.chat_room[0];
   }, [findChatRoomsData]);
 
+  console.log(findChatRoomsData);
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-md">
-      <div className="flex h-16 shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
+      <div className="flex shrink-0 items-center gap-3 bg-olive-50 px-4 shadow-sm">
         {!renderDesktopMode && (
           <button
             className="-ml-2 mr-2 flex h-8 w-8 items-center justify-center rounded-full hover:bg-olive-100"
@@ -79,8 +82,8 @@ const NewChatPage: CustomPage = () => {
           </button>
         )}
         {/* <Text>Connect with someone new</Text> */}
-        <div className="flex items-center gap-2">
-          <Text>To:</Text>
+        <div className="flex items-start gap-2 py-4">
+          <Text className="mt-0.5 h-8">To:</Text>
           <ProfileMultiSelect
             selectedProfiles={selectedProfiles}
             onChange={setSelectedProfiles}
@@ -109,7 +112,7 @@ const NewChatPage: CustomPage = () => {
           {/* <div className="flex items-center gap-4">
             <BxMessageDetail className="h-10 w-10" />
             <Text variant="subheading1" className="mb-1">
-              Connect with someone
+              Create a group chat
             </Text>
           </div>
           <div className="h-8"></div>
@@ -124,10 +127,34 @@ const NewChatPage: CustomPage = () => {
         </div>
       ) : (
         <>
-          <div className="flex-1"></div>
-          <SendMessageInput chatRoomId={null} />
+          <div className="flex flex-1 flex-col items-center justify-start">
+            <div className="h-16"></div>
+            <Text className=" text-center text-gray-700">No chat found.</Text>
+            <div className="h-4"></div>
+            <Button
+              rounded
+              onClick={handlers.open}
+              disabled={
+                selectedProfiles.length > 5 || selectedProfiles.length === 0
+              }
+            >
+              <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
+              Create a chat
+            </Button>
+            {selectedProfiles.length > 5 && (
+              <Text variant="body2" className="mt-2" style={{ color: "red" }}>
+                Group chats can only have up to 5 members.
+              </Text>
+            )}
+          </div>
         </>
       )}
+      <MessageModal
+        isOpen={open}
+        onClose={handlers.close}
+        receiverProfileIds={selectedProfiles.map((p) => p.profileId)}
+        onMessageSent={refetchChatRooms}
+      />
     </div>
   );
 };

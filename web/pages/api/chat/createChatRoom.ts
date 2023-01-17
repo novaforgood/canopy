@@ -2,9 +2,9 @@ import { z } from "zod";
 
 import { requireServerEnv } from "../../../server/env";
 import {
-  executeGetChatRoomWithProfilesQuery,
-  executeGetProfileQuery,
+  executeGetChatRoomQuery,
   executeInsertChatRoomOneMutation,
+  Profile_Role_Enum,
 } from "../../../server/generated/serverGraphql";
 import { applyMiddleware } from "../../../server/middleware";
 import { makeApiFail, makeApiSuccess } from "../../../server/response";
@@ -15,21 +15,42 @@ import { TemplateId } from "./../../../server/sendgrid";
 const HOST_URL = requireServerEnv("HOST_URL");
 
 const createChatRoomSchema = z.object({
-  senderProfileId: z.string(),
-  receiverProfileId: z.string(),
+  receiverProfileIds: z.array(z.string()).min(1).max(5),
   firstMessage: z.string(),
 });
 
 export default applyMiddleware({
   authenticated: true,
+  authorizationsInSpace: [Profile_Role_Enum.Member],
   validationSchema: createChatRoomSchema,
 }).post(async (req, res) => {
-  const { senderProfileId, receiverProfileId, firstMessage } = req.body;
+  const { receiverProfileIds, firstMessage } = req.body;
+
+  const senderProfileId = req.callerProfile?.id;
+  if (!senderProfileId) {
+    throw makeApiFail("No sender profile id");
+  }
+
+  const allProfileIds = [senderProfileId, ...receiverProfileIds];
 
   const { data: chatRoomData, error: chatRoomError } =
-    await executeGetChatRoomWithProfilesQuery({
-      profile_id_1: senderProfileId,
-      profile_id_2: receiverProfileId,
+    await executeGetChatRoomQuery({
+      where: {
+        _and: allProfileIds.map((profileId) => ({
+          profile_to_chat_rooms: {
+            profile_id: {
+              _eq: profileId,
+            },
+          },
+        })),
+        profile_to_chat_rooms_aggregate: {
+          count: {
+            predicate: {
+              _eq: allProfileIds.length,
+            },
+          },
+        },
+      },
     });
 
   if (chatRoomError) {
@@ -50,10 +71,9 @@ export default applyMiddleware({
         ],
       },
       profile_to_chat_rooms: {
-        data: [
-          { profile_id: senderProfileId },
-          { profile_id: receiverProfileId },
-        ],
+        data: allProfileIds.map((profileId) => ({
+          profile_id: profileId,
+        })),
       },
     },
   });
@@ -62,16 +82,20 @@ export default applyMiddleware({
     throw makeApiFail(error?.message ?? "Chat room creation error");
   }
 
-  await sendEmail({
-    senderProfileId: senderProfileId,
-    receiverProfileId: receiverProfileId,
-    templateId: TemplateId.FirstChatRoomMessage,
-    dynamicTemplateData: ({ space }) => ({
-      replyUrl: `${HOST_URL}/space/${space.slug}/chat/${chatRoomId}`,
-      message: firstMessage,
-      spaceName: space.name,
-    }),
-  }).catch((err) => {
+  await Promise.all(
+    receiverProfileIds.map((receiverProfileId) => {
+      return sendEmail({
+        senderProfileId: senderProfileId,
+        receiverProfileId: receiverProfileId,
+        templateId: TemplateId.FirstChatRoomMessage,
+        dynamicTemplateData: ({ space }) => ({
+          replyUrl: `${HOST_URL}/space/${space.slug}/chat/${chatRoomId}`,
+          message: firstMessage,
+          spaceName: space.name,
+        }),
+      });
+    })
+  ).catch((err) => {
     console.error(err);
   });
 

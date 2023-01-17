@@ -103,7 +103,9 @@ function ProfilePageDropdown() {
             <Menu.Button className="focus:outline-none">
               <div>
                 <IconButton
-                  icon={<BxDotsHorizontalRounded className="h-5 w-5" />}
+                  icon={
+                    <BxDotsHorizontalRounded className="h-5 w-5 text-gray-700" />
+                  }
                   className="ml-4 rounded-full"
                   onClick={() => {}}
                 />
@@ -353,12 +355,15 @@ const ProfilePage: CustomPage = () => {
           </div>
         </div>
         <div className="h-32"></div>
-        <MessageModal
-          isOpen={open}
-          onClose={handlers.close}
-          profileId={profileId}
-          onMessageSent={refetchProfileById}
-        />
+        {profileId && (
+          <MessageModal
+            isOpen={open}
+            onClose={handlers.close}
+            receiverProfileIds={[profileId]}
+            onMessageSent={refetchProfileById}
+          />
+        )}
+
         <PleaseLogInModal
           isOpen={loginModalOpen}
           onClose={loginModalHandlers.close}

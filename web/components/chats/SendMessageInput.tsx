@@ -89,7 +89,8 @@ export function SendMessageInput(props: SendMessageInputProps) {
   return (
     <div className={classNames("flex shrink-0 items-center gap-2", className)}>
       <Textarea
-        autoFocus
+        // Only autofocus if we're in a chat room.
+        autoFocus={!!chatRoomIdFromQuery}
         placeholder={`Type a message to send...`}
         minRows={1}
         className="w-full"

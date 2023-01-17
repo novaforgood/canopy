@@ -118,8 +118,6 @@ const AnnouncementList = () => {
 
         {/* Announcement List */}
         <div className="grow">
-          <div className="h-20" />
-
           <div className="flex flex-col gap-4 sm:gap-6">
             {announcements?.map((entry) => (
               <AnnouncementDisplay
@@ -141,6 +139,7 @@ const AnnouncementList = () => {
           }}
         />
       </div>
+      <div className="h-20" />
     </div>
   );
 };
