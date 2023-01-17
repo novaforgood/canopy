@@ -1,35 +1,34 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 
-import classNames from "classnames";
-import { format } from "date-fns";
+import { useDisclosure } from "@mantine/hooks";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
-import { Chat_Message, User_Type_Enum } from "../../generated/graphql";
-import { BxChevronLeft, BxSend } from "../../generated/icons/regular";
+import {
+  Chat_Message,
+  User_Type_Enum,
+  useSendMessageMutation,
+} from "../../generated/graphql";
+import { BxChevronLeft, BxInfoCircle } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import { usePrevious } from "../../hooks/usePrevious";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { PromiseQueue } from "../../lib/PromiseQueue";
-import { Button, Text, Textarea } from "../atomic";
-import { IconButton } from "../buttons/IconButton";
-import { ProfileImage } from "../ProfileImage";
-import { Tooltip } from "../tooltips";
+import { Text } from "../atomic";
+import { ProfileImage } from "../common/ProfileImage";
+import { ActionModal } from "../modals/ActionModal";
 
-import { ChatProfileImage } from "./ChatProfileImage";
 import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
-import { RenderMessage } from "./RenderMessage";
+import { RenderChatRoomMessages } from "./RenderChatRoomMessages";
+import { SendMessageInput } from "./SendMessageInput";
 import { useChatRoom } from "./useChatRoom";
-import { useMessages } from "./useMessages";
 import {
   getChatRoomSubtitle,
-  getChatRoomTitle,
   getChatParticipants,
+  ChatParticipant,
 } from "./utils";
-
-// Query specific types
-type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
 
 export function RenderChatRoom() {
   const router = useRouter();
@@ -40,59 +39,17 @@ export function RenderChatRoom() {
   const chatRoomId = useQueryParam("chatRoomId", "string");
   const baseRoute = `/space/${spaceSlug}/chat`;
 
-  const { chatRoom, chatParticipants } = useChatRoom(chatRoomId ?? "");
+  const { chatRoom } = useChatRoom(chatRoomId ?? "");
 
   const { currentProfile } = useCurrentProfile();
-  const {
-    messagesList,
-    onMessageSubmit,
-    fetchMore,
-    fetchingMessages,
-    markMessageAsRead,
-    noMoreMessages,
-  } = useMessages(chatRoomId ?? "");
-  const [newMessage, setNewMessage] = useState("");
-  useEffect(() => {
-    setNewMessage("");
-  }, [chatRoomId]);
-
-  const lastMessageIdByOther: number | null = useMemo(() => {
-    return (
-      messagesList.find(
-        (m) =>
-          currentProfile &&
-          m.sender_profile_id &&
-          m.sender_profile_id !== currentProfile.id
-      )?.id ?? null
-    );
-  }, [messagesList, currentProfile]);
-
-  const prevLastMessageIdByOther = usePrevious(lastMessageIdByOther);
-
-  useEffect(() => {
-    if (document.hidden) {
-      return;
-    }
-    if (
-      lastMessageIdByOther &&
-      lastMessageIdByOther !== prevLastMessageIdByOther
-    ) {
-      const newMessage = messagesList.find(
-        (m) => m.id === lastMessageIdByOther
-      );
-      markMessageAsRead(newMessage);
-    }
-  }, [
-    lastMessageIdByOther,
-    markMessageAsRead,
-    messagesList,
-    prevLastMessageIdByOther,
-  ]);
 
   // Chat topbar
-  const otherHumans = getChatParticipants(chatRoom?.profile_to_chat_rooms ?? [])
-    .filter((p) => p.userType === User_Type_Enum.User)
-    .filter((p) => p.profileId !== currentProfile?.id);
+  const allHumans = getChatParticipants(
+    chatRoom?.profile_to_chat_rooms ?? []
+  ).filter((p) => p.userType === User_Type_Enum.User);
+  const otherHumans = allHumans.filter(
+    (p) => p.profileId !== currentProfile?.id
+  );
 
   if (!chatRoom)
     return (
@@ -107,11 +64,13 @@ export function RenderChatRoom() {
       </div>
     );
 
-  const chatRoomName = getChatRoomTitle(chatRoom, currentProfile?.id ?? "");
-  const chatHeadline = getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "");
+  const chatRoomSubtitle = getChatRoomSubtitle(
+    chatRoom,
+    currentProfile?.id ?? ""
+  );
 
   return (
-    <div className="flex h-full w-full  flex-col overflow-hidden rounded-md">
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-md">
       <div className="flex h-16 shrink-0 items-center bg-olive-50 px-4 shadow-sm">
         {!renderDesktopMode && (
           <button
@@ -133,90 +92,98 @@ export function RenderChatRoom() {
           }))}
         />
 
-        <div>
-          <ChatTitle chatRoom={chatRoom} />
-          {chatHeadline && (
-            <>
-              <div></div>
-              <Text
-                variant="body2"
-                className="text-gray-700"
-                loading={!chatHeadline}
-              >
-                {chatHeadline}
-              </Text>
-            </>
-          )}
+        <div className="flex w-full items-center justify-between">
+          <div className="flex-1">
+            <ChatTitle chatRoom={chatRoom} />
+            {chatRoomSubtitle && (
+              <>
+                <div></div>
+                <Text
+                  variant="body2"
+                  className="text-gray-700"
+                  loading={!chatRoomSubtitle}
+                >
+                  {chatRoomSubtitle}
+                </Text>
+              </>
+            )}
+          </div>
+          <div className="mr-2">
+            <ChatParticipantsModalButton chatParticipants={allHumans} />
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col-reverse overflow-y-scroll overscroll-contain p-4">
-        {currentProfile &&
-          messagesList.map((message, idx) => {
-            // Note: Messages are ordered by created_at DESC
-            const prevMessage = messagesList[idx + 1] ?? null;
-            const nextMessage = messagesList[idx - 1] ?? null;
-            let nextMessageSentByMe = null;
-            for (let j = idx - 1; j >= 0; j--) {
-              const msg = messagesList[j];
-              if (msg.sender_profile_id === currentProfile.id) {
-                nextMessageSentByMe = msg;
-                break;
-              }
-            }
-
-            return (
-              <RenderMessage
-                key={message.id}
-                message={message}
-                prevMessage={prevMessage}
-                nextMessage={nextMessage}
-                nextMessageByMe={nextMessageSentByMe}
-                chatParticipants={chatParticipants}
-              />
-            );
-          })}
-        {currentProfile && !noMoreMessages && (
-          <div className="my-4 flex w-full justify-center">
-            <Button
-              variant="secondary"
-              loading={fetchingMessages}
-              size="small"
-              onClick={() => {
-                fetchMore();
-              }}
-            >
-              Load more...
-            </Button>
-          </div>
-        )}
-      </div>
+      <RenderChatRoomMessages chatRoomId={chatRoomId ?? ""} />
       <div className="h-px w-full shrink-0 bg-gray-600"></div>
 
-      <div className="flex shrink-0 items-center gap-2 p-4 pl-16">
-        <Textarea
-          placeholder={`Type a message to send...`}
-          minRows={1}
-          className="w-full"
-          value={newMessage}
-          onValueChange={setNewMessage}
-          // Submit on enter without shift being held down.
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              onMessageSubmit(newMessage);
-              setNewMessage("");
-            }
-          }}
-        />
-        <IconButton
-          onClick={() => {
-            onMessageSubmit(newMessage);
-            setNewMessage("");
-          }}
-          icon={<BxSend className="h-6 w-6" />}
-        ></IconButton>
-      </div>
+      <SendMessageInput className="m-4 ml-16" chatRoomId={chatRoomId ?? null} />
     </div>
+  );
+}
+
+interface ChatParticipantsModalButtonProps {
+  chatParticipants: ChatParticipant[];
+}
+function ChatParticipantsModalButton(props: ChatParticipantsModalButtonProps) {
+  const { chatParticipants } = props;
+
+  const { currentProfile } = useCurrentProfile();
+  const spaceSlug = useQueryParam("slug", "string");
+  const [open, handlers] = useDisclosure(false);
+
+  return (
+    <>
+      <BxInfoCircle
+        className="h-5 w-5 cursor-pointer text-gray-500"
+        onClick={handlers.open}
+      />
+
+      <ActionModal
+        isOpen={open}
+        onClose={handlers.close}
+        actionText="Close"
+        onAction={handlers.close}
+      >
+        <div className="flex flex-col rounded-md bg-white px-8 py-8">
+          <div className="w-96"></div>
+          <Text variant="subheading1" className="mx-auto">
+            People in this chat
+          </Text>
+          <div className="h-8"></div>
+          <div className="flex flex-col gap-3">
+            {chatParticipants.map((p) => (
+              <div
+                className="flex items-center justify-between"
+                key={p.profileId}
+              >
+                <div className="flex items-center gap-2">
+                  <ProfileImage
+                    className="h-10 w-10"
+                    src={p.profileImage?.url}
+                  />
+                  <Text variant="body1">{p.fullName}</Text>
+                </div>
+                {p.profileId === currentProfile?.id ? (
+                  <Text variant="body1" className="text-gray-500">
+                    You
+                  </Text>
+                ) : (
+                  <a
+                    href={`/space/${spaceSlug}/profile/${p.profileId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Text className="text-gray-500 hover:underline">
+                      View Profile
+                    </Text>
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </ActionModal>
+    </>
   );
 }

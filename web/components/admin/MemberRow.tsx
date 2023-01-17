@@ -12,7 +12,7 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
 import { Select } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { ProfileImage } from "../ProfileImage";
+import { ProfileImage } from "../common/ProfileImage";
 
 import { MAP_ROLE_TO_TITLE, ROLE_SELECT_OPTIONS } from "./roles";
 interface MemberRowProps {

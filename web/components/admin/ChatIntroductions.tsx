@@ -27,7 +27,7 @@ import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { getCurrentUser } from "../../lib/firebase";
 import { Button, Select, Text } from "../atomic";
 import { CheckBox } from "../atomic/CheckBox";
-import { Table } from "../Table";
+import { Table } from "../common/Table";
 
 type ChatIntro = ChatIntrosQuery["chat_intro"][number];
 type ChatIntroData = ChatIntroDataQuery["chat_intro_data"][number];

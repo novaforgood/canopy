@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
-import { useCreateOwnerProfileInNewSpaceMutation } from "../../generated/graphql";
-import { BxCaretDown } from "../../generated/icons/regular";
-import { useUserData } from "../../hooks/useUserData";
-import { Button, Input, Text, Textarea } from "../atomic";
-import { HtmlDisplay } from "../HtmlDisplay";
+import { Button, Text } from "../atomic";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
 import { TextInput } from "../inputs/TextInput";
-import { SpaceCoverPhoto } from "../SpaceCoverPhoto";
 
 import { HomepagePreview } from "./HomepagePreview";
 
@@ -30,8 +24,8 @@ export function EnterName(props: EnterNameProps) {
   const { onComplete, data, onChange, initDescription } = props;
 
   return (
-    <div className="flex gap-20 justify-start items-start h-full">
-      <div className="flex flex-col items-start justify-between h-full w-full">
+    <div className="flex h-full items-start justify-start gap-20">
+      <div className="flex h-full w-full flex-col items-start justify-between">
         <div className="h-10"></div>
         <Text variant="heading4">Name your directory. *</Text>
         <div className="h-1"></div>
@@ -57,7 +51,7 @@ export function EnterName(props: EnterNameProps) {
           Who is in this directory? And how should people use this space?
         </Text>
         <div className="h-6"></div>
-        <div className="w-full flex flex-col" style={{ minHeight: 150 }}>
+        <div className="flex w-full flex-col" style={{ minHeight: 150 }}>
           <SimpleRichTextInput
             initContent={initDescription}
             onUpdate={({ editor }) => {

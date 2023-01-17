@@ -79,13 +79,8 @@ query GetProfile($profile_id: uuid!) {
   }
 }
 
-query GetChatRoomWithProfiles($profile_id_1: uuid!, $profile_id_2: uuid!) {
-  chat_room(
-    where: {
-      _and: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id_1 } } }
-      profile_to_chat_rooms: { profile_id: { _eq: $profile_id_2 } }
-    }
-  ) {
+query GetChatRoom($where: chat_room_bool_exp) {
+  chat_room(where: $where) {
     id
   }
 }

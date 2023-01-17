@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import Link from "next/link";
 
-import { ProfileImage } from "../ProfileImage";
+import { ProfileImage } from "../common/ProfileImage";
 
 interface ChatRoomImageProps {
   profiles: {

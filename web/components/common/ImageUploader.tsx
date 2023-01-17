@@ -4,10 +4,10 @@ import { useElementSize } from "@mantine/hooks";
 import classNames from "classnames";
 import AvatarEditor from "react-avatar-editor";
 
-import { BxsCloudUpload } from "../generated/icons/solid";
-import { useSingleImageDropzone } from "../hooks/useSingleImageDropzone";
+import { BxsCloudUpload } from "../../generated/icons/solid";
+import { useSingleImageDropzone } from "../../hooks/useSingleImageDropzone";
 
-import { Text, Button } from "./atomic";
+import { Text, Button } from "./../atomic";
 
 interface ImageUploaderProps {
   getRef?: (editor: AvatarEditor | null) => void;
@@ -150,7 +150,7 @@ export function ImageUploader(props: ImageUploaderProps) {
 
           {imageSrc ? (
             showReposition && (
-              <div className="absolute top-2 bg-black/50 py-1 px-2 pointer-events-none">
+              <div className="pointer-events-none absolute top-2 bg-black/50 py-1 px-2">
                 <Text variant="body2" className="text-white">
                   Drag to reposition
                 </Text>
@@ -171,7 +171,7 @@ export function ImageUploader(props: ImageUploaderProps) {
         {!!imageSrc && (
           <>
             {showZoom && (
-              <div className="flex items-center gap-2 mt-8">
+              <div className="mt-8 flex items-center gap-2">
                 <button
                   onClick={() => {
                     // Decrement scale by 0.5
@@ -181,12 +181,12 @@ export function ImageUploader(props: ImageUploaderProps) {
                       return newVal;
                     });
                   }}
-                  className="flex-none flex items-center justify-center rounded-sm h-5 w-5 border border-gray-50 hover:bg-gray-50 shadow-md active:translate-y-px"
+                  className="flex h-5 w-5 flex-none items-center justify-center rounded-sm border border-gray-50 shadow-md hover:bg-gray-50 active:translate-y-px"
                 >
                   -
                 </button>
                 <input
-                  className="appearance-none w-full h-1 bg-gray-200 rounded outline-none slider-thumb"
+                  className="slider-thumb h-1 w-full appearance-none rounded bg-gray-200 outline-none"
                   type="range"
                   min={0.5}
                   max={3}
@@ -206,7 +206,7 @@ export function ImageUploader(props: ImageUploaderProps) {
                       return newVal;
                     });
                   }}
-                  className="flex-none flex items-center justify-center rounded-sm h-5 w-5 border border-gray-50 hover:bg-gray-50 shadow-md active:translate-y-px"
+                  className="flex h-5 w-5 flex-none items-center justify-center rounded-sm border border-gray-50 shadow-md hover:bg-gray-50 active:translate-y-px"
                 >
                   +
                 </button>

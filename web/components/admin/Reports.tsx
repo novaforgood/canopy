@@ -1,43 +1,19 @@
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
-  CellContext,
   ColumnDef,
-  createColumnHelper,
-  flexRender,
   getCoreRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import classNames from "classnames";
 import { format } from "date-fns";
-import toast from "react-hot-toast";
 
-import {
-  ProfilesBySpaceIdQuery,
-  Profile_Role_Enum,
-  useProfilesBySpaceIdQuery,
-  useReportsInSpaceQuery,
-  useUpdateProfileRoleMutation,
-} from "../../generated/graphql";
-import {
-  BxDownArrow,
-  BxSearch,
-  BxUpArrow,
-} from "../../generated/icons/regular";
-import { BxsDownArrow, BxsUpArrow } from "../../generated/icons/solid";
+import { useReportsInSpaceQuery } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Text } from "../atomic";
-import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { TextInput } from "../inputs/TextInput";
-import { ActionModal } from "../modals/ActionModal";
-import { ProfileImage } from "../ProfileImage";
-import { Table } from "../Table";
-
-import { CopyText } from "./CopyText";
-import { MemberRow } from "./MemberRow";
-import { MAP_ROLE_TO_TITLE, ROLE_SELECT_OPTIONS } from "./roles";
+import { ProfileImage } from "../common/ProfileImage";
+import { Table } from "../common/Table";
 
 interface ImagesListProps {
   imageUrls: string[];

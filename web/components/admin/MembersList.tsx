@@ -27,9 +27,9 @@ import { BxsDownArrow, BxsUpArrow } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { Button, Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { Table } from "../common/Table";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
-import { Table } from "../Table";
 
 import { CopyText } from "./CopyText";
 import { MemberRow } from "./MemberRow";

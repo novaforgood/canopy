@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { BackButton } from "../BackButton";
+import { BackButton } from "../common/BackButton";
 
 interface ImageSidebarProps {
   imageSrc: string;
@@ -12,9 +12,9 @@ export function ImageSidebar(props: ImageSidebarProps) {
 
   const router = useRouter();
   return (
-    <div className="h-full w-full flex flex-col justify-center items-center px-8">
-      <div className="w-full max-w-lg flex flex-col items-start">
-        <img src={imageSrc} alt={imageAlt} className="shrink-0 w-full" />
+    <div className="flex h-full w-full flex-col items-center justify-center px-8">
+      <div className="flex w-full max-w-lg flex-col items-start">
+        <img src={imageSrc} alt={imageAlt} className="w-full shrink-0" />
         {canGoBack && (
           <>
             <div className="h-16"></div>

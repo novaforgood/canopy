@@ -60,11 +60,11 @@ function CollapsibleTipsBar() {
             />
             <IconTip
               icon={<BxLike />}
-              tip="Click the profile of someone you want to connect with"
+              tip="Click someone’s profile to learn more about them"
             />
             <IconTip
               icon={<BxEnvelope />}
-              tip="Contact them through the “Introduce Yourself” button!"
+              tip="Send a message asking about something on their profile!"
             />
           </div>
         </SidePadding>

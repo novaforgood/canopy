@@ -8,6 +8,8 @@ import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
 
 import { Button, Text } from "./atomic";
+import { EditButton } from "./common/EditButton";
+import { ProfileImage } from "./common/ProfileImage";
 import { EditHeadline } from "./edit-profile/EditHeadline";
 import { EditName } from "./edit-profile/EditName";
 import { EditProfileImageModal } from "./edit-profile/EditProfileImageModal";
@@ -15,8 +17,6 @@ import { EditProfileTags } from "./edit-profile/EditProfileTags";
 import { EditResponse } from "./edit-profile/EditResponse";
 import { ProfileSocialsDisplay } from "./edit-socials-info/ProfileSocialsDisplay";
 import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
-import { EditButton } from "./EditButton";
-import { ProfileImage } from "./ProfileImage";
 import PublishedToggleSwitch from "./PublishedToggleSwitch";
 
 function EditProfileImage() {

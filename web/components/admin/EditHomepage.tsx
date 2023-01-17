@@ -12,7 +12,7 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { uploadImage } from "../../lib/image";
 import { Button, Text } from "../atomic";
-import { ImageUploader } from "../ImageUploader";
+import { ImageUploader } from "../common/ImageUploader";
 import { SimpleRichTextInput } from "../inputs/SimpleRichTextInput";
 import { TextInput } from "../inputs/TextInput";
 

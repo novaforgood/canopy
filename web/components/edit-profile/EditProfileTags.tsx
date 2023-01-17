@@ -5,12 +5,9 @@ import toast from "react-hot-toast";
 import {
   Profile_Listing_Constraint,
   Profile_Listing_Update_Column,
-  Space_Tag,
-  Space_Tag_Category,
   Space_Tag_Constraint,
   Space_Tag_Status_Enum,
   Space_Tag_Update_Column,
-  useProfileListingQuery,
   useSetProfileListingTagsMutation,
   useSpaceTagCategoriesQuery,
 } from "../../generated/graphql";
@@ -19,9 +16,9 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { showTagOnProfile } from "../../lib/tags";
 import { Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
-import { EditButton } from "../EditButton";
+import { EditButton } from "../common/EditButton";
+import { Tag } from "../common/Tag";
 import { ActionModal } from "../modals/ActionModal";
-import { Tag } from "../Tag";
 
 type SelectedTag = {
   label: string;

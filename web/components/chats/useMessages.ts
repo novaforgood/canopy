@@ -115,45 +115,6 @@ export function useMessages(chatRoomId: string) {
     }
   }, [minId]);
 
-  const [_, sendMessage] = useSendMessageMutation();
-
-  const onMessageSubmit = useCallback(
-    async (newMessage: string) => {
-      const processedMessage = newMessage.trim();
-      if (processedMessage.length === 0) {
-        return;
-      }
-
-      if (!chatRoom?.id) {
-        toast.error("No chat room id");
-        return;
-      }
-      if (!currentProfile) {
-        toast.error("No current profile");
-        return;
-      }
-      const promise = sendMessage({
-        input: {
-          chat_room_id: chatRoom.id,
-          sender_profile_id: currentProfile.id,
-          text: processedMessage,
-        },
-      })
-        .then((res) => {
-          if (res.error) {
-            throw new Error(res.error.message);
-          }
-        })
-        .catch((error) => {
-          toast.error(`Error sending message: ${error.message}`);
-        })
-        .finally(() => {});
-
-      promiseQueue.enqueue(promise);
-    },
-    [chatRoom?.id, currentProfile, sendMessage]
-  );
-
   const markLatestMessageAsRead = useCallback(async () => {
     if (!myProfileEntry) return;
     const latestMessageByOther = messagesList.find(
@@ -178,7 +139,6 @@ export function useMessages(chatRoomId: string) {
   return useMemo(
     () => ({
       messagesList,
-      onMessageSubmit,
       fetchMore,
       fetchingMessages,
       markMessageAsRead,
@@ -186,7 +146,6 @@ export function useMessages(chatRoomId: string) {
     }),
     [
       messagesList,
-      onMessageSubmit,
       fetchMore,
       fetchingMessages,
       markMessageAsRead,

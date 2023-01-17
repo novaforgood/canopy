@@ -6,12 +6,12 @@ import { tuple } from "zod";
 
 import { Text, Button, Input, Textarea, Modal } from "../components/atomic";
 import { ToggleSwitch } from "../components/atomic/ToggleSwitch";
-import { ImageUploader } from "../components/ImageUploader";
+import { ImageUploader } from "../components/common/ImageUploader";
+import { ProfileImage } from "../components/common/ProfileImage";
 import { RichTextInput } from "../components/inputs/RichTextInput";
 import { SimpleRichTextInput } from "../components/inputs/SimpleRichTextInput";
 import { TextInput } from "../components/inputs/TextInput";
 import { ActionModal } from "../components/modals/ActionModal";
-import { ProfileImage } from "../components/ProfileImage";
 import { BxUser } from "../generated/icons/regular";
 import { theme } from "../tailwind.config";
 import { CustomPage } from "../types";

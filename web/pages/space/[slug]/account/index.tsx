@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../../../../components/atomic";
-import { Breadcrumbs } from "../../../../components/Breadcrumbs";
+import { Breadcrumbs } from "../../../../components/common/Breadcrumbs";
+import { ProfileImage } from "../../../../components/common/ProfileImage";
+import { RoundedCard } from "../../../../components/common/RoundedCard";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
-import { ProfileImage } from "../../../../components/ProfileImage";
-import { RoundedCard } from "../../../../components/RoundedCard";
 import {
   ConnectionRequestsQuery,
   Connection_Request_Status_Enum,

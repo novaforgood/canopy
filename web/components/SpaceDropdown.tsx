@@ -4,29 +4,13 @@ import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
-import {
-  Profile_Role_Enum,
-  useAllProfilesOfUserQuery,
-} from "../generated/graphql";
-import {
-  BxCaretDown,
-  BxLogOut,
-  BxTransfer,
-  BxWrench,
-} from "../generated/icons/regular";
-import {
-  BxsAddToQueue,
-  BxsCrown,
-  BxsUserAccount,
-  BxsWrench,
-} from "../generated/icons/solid";
+import { BxCaretDown, BxTransfer } from "../generated/icons/regular";
+import { BxsAddToQueue } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
-import { signOut } from "../lib/firebase";
 
 import { Text } from "./atomic";
-import { ProfileImage } from "./ProfileImage";
 
 export function SpaceDropdown() {
   const { userData } = useUserData();
