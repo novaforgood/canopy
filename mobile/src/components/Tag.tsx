@@ -1,7 +1,9 @@
+import { TouchableOpacity } from "react-native-gesture-handler";
+
+import { BxX } from "../generated/icons/regular";
+
 import { Box } from "./atomic/Box";
 import { Text } from "./atomic/Text";
-import { BxX } from "../generated/icons/regular";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 export interface TagProps {
   text: string;

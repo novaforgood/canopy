@@ -4,8 +4,8 @@ import { useSortable, defaultAnimateLayoutChanges } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { Text } from "./atomic";
-import { ProfileImage } from "./ProfileImage";
-import { Tag } from "./Tag";
+import { ProfileImage } from "./common/ProfileImage";
+import { Tag } from "./common/Tag";
 
 interface ProfileCardProps {
   imageUrl?: string;

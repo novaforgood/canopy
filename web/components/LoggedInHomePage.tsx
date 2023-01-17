@@ -7,9 +7,9 @@ import { useUserData } from "../hooks/useUserData";
 import { signOut } from "../lib/firebase";
 
 import { Button, Text } from "./atomic";
+import { SpaceCoverPhoto } from "./common/SpaceCoverPhoto";
 import { SidePadding } from "./layout/SidePadding";
 import { Navbar } from "./navbar/Navbar";
-import { SpaceCoverPhoto } from "./SpaceCoverPhoto";
 
 export function LoggedInHomePage() {
   const { userData } = useUserData();

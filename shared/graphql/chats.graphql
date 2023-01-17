@@ -133,3 +133,54 @@ mutation updateChatMessage(
     sender_profile_id
   }
 }
+
+query searchProfilesInSpace(
+  $search: String!
+  $space_id: uuid!
+  $my_profile_id: uuid!
+  $limit: Int!
+  $selected_profile_ids: [uuid!]!
+) {
+  profile(
+    limit: $limit
+    where: {
+      _and: [
+        { id: { _neq: $my_profile_id } }
+        { id: { _nin: $selected_profile_ids } }
+        { user: { type: { _eq: User } } }
+        { space_id: { _eq: $space_id } }
+        { user: { full_name: { _ilike: $search } } }
+      ]
+    }
+  ) {
+    id
+    user {
+      id
+      first_name
+      last_name
+      type
+    }
+    profile_listing {
+      id
+      headline
+      profile_listing_image {
+        id
+        image {
+          url
+          id
+        }
+      }
+    }
+  }
+}
+
+query findChatRooms($where: chat_room_bool_exp) {
+  chat_room(where: $where) {
+    id
+    created_at
+    chat_intro_id
+    profile_to_chat_rooms {
+      id
+    }
+  }
+}
