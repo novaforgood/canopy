@@ -18,16 +18,15 @@ import {
   useTagCountsQuery,
   useUpsertSpaceProfileSchemaMutation,
 } from "../../../generated/graphql";
-import { BxDownArrow, BxDownArrowAlt } from "../../../generated/icons/regular";
+import { BxDownArrowAlt } from "../../../generated/icons/regular";
 import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
 import { useSaveChangesState } from "../../../hooks/useSaveChangesState";
-import { isTempId, resolveId } from "../../../lib/tempId";
-import { NewSpaceTag, NewTagCategory } from "../../../lib/types";
+import { resolveId } from "../../../lib/tempId";
+import { NewTagCategory } from "../../../lib/types";
 import { Button, Select, Text } from "../../atomic";
-import { CustomTab } from "../../CustomTab";
-import { RoundedCard } from "../../RoundedCard";
-import { Tag } from "../../Tag";
+import { CustomTab } from "../../common/CustomTab";
+import { RoundedCard } from "../../common/RoundedCard";
 
 import { AddSuggestedTag } from "./AddSuggestedTag";
 import { ApprovedTagItem } from "./ApprovedTagItem";

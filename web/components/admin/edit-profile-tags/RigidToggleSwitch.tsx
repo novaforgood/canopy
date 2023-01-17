@@ -1,20 +1,10 @@
-import { Switch } from "@headlessui/react";
 import toast from "react-hot-toast";
 
 import {
-  Profile_Listing_Update_Column,
-  useProfileListingQuery,
-  useSpaceTagCategoriesQuery,
   useTagCategoryRigidSelectQuery,
   useUpdateSpaceTagCategoryMutation,
-  useUpsertProfileListingMutation,
 } from "../../../generated/graphql";
-import { BxsHide, BxsShow } from "../../../generated/icons/solid";
-import { useCurrentProfile } from "../../../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../../../hooks/useCurrentSpace";
-import { Text } from "../../atomic";
 import { CheckBox } from "../../atomic/CheckBox";
-import { ToggleSwitch } from "../../atomic/ToggleSwitch";
 
 interface RigidToggleSwitchProps {
   tagCategoryId: string;

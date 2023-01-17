@@ -14,7 +14,7 @@ import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { getTimeRelativeToNow } from "../../lib";
 import { Button, Select, Text } from "../atomic";
-import { DeleteButton } from "../DeleteButton";
+import { DeleteButton } from "../common/DeleteButton";
 
 import { CopyText } from "./CopyText";
 import {

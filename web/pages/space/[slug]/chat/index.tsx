@@ -1,19 +1,9 @@
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 
-import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Button, Text } from "../../../../components/atomic";
 import { ChatLayout } from "../../../../components/chats/ChatLayout";
-import { SidePadding } from "../../../../components/layout/SidePadding";
-import { Navbar } from "../../../../components/navbar/Navbar";
-import { SpaceSplashPage } from "../../../../components/space-homepage/SpaceSplashPage";
 import { useAllChatRoomsSubscription } from "../../../../generated/graphql";
-import {
-  BxMessage,
-  BxMessageAlt,
-  BxMessageDetail,
-} from "../../../../generated/icons/regular";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { CustomPage } from "../../../../types";

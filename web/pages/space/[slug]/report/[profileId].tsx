@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { boolean } from "zod";
 
 import { Button, Text, Textarea } from "../../../../components/atomic";
 import { ToggleSwitch } from "../../../../components/atomic/ToggleSwitch";
