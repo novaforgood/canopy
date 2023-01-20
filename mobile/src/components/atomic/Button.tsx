@@ -32,8 +32,8 @@ const VARIANT_STYLES: Record<
   {
     buttonProps: Partial<ButtonProps>;
     disabledButtonProps: Partial<ButtonProps>;
-    textProps: Partial<TextProps>;
-    disabledTextProps: Partial<TextProps>;
+    textProps: Partial<Omit<TextProps, "ref">>;
+    disabledTextProps: Partial<Omit<TextProps, "ref">>;
   }
 > = {
   primary: {
