@@ -159,12 +159,6 @@ export function ChatRoomList() {
             .filter((h) => h.profileId !== currentProfile?.id);
 
           // Determine chat title
-          const chatTitle = getChatRoomTitle(room, currentProfile?.id ?? "");
-
-          const { first_name, last_name } = otherProfileEntry.profile.user;
-          const image =
-            otherProfileEntry.profile.profile_listing?.profile_listing_image
-              ?.image;
           const latestMessage = room.latest_chat_message[0];
 
           const selected = router.query.chatRoomId === room.id;

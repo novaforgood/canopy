@@ -25,6 +25,7 @@ import {
 } from "../../generated/icons/regular";
 import { BxsDownArrow, BxsUpArrow } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { getFullNameOfUser } from "../../lib/user";
 import { Button, Text } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { Table } from "../common/Table";
@@ -76,8 +77,8 @@ export function MembersList() {
   const members: Member[] = useMemo(
     () =>
       profilesData?.profile.map((profile) => ({
-        name: `${profile.user.first_name} ${profile.user.last_name}`,
-        email: profile.user.email,
+        name: getFullNameOfUser(profile.user),
+        email: profile.user?.email ?? "N/A",
         role: profile.profile_roles[0].profile_role,
         profile: profile,
       })) ?? [],

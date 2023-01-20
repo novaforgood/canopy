@@ -9,6 +9,7 @@ import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
 import { getTimezoneSelectOptions } from "../../lib/timezone";
+import { getFirstNameOfUser } from "../../lib/user";
 import { Text, Textarea } from "../atomic";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { ActionModal } from "../modals/ActionModal";
@@ -49,6 +50,7 @@ export function IntroduceModal(props: IntroduceModalProps) {
     return null;
   }
 
+  const firstName = getFirstNameOfUser(profileData.profile_by_pk.user);
   return (
     <>
       <ActionModal
@@ -96,11 +98,10 @@ export function IntroduceModal(props: IntroduceModalProps) {
       >
         <div className="px-16 pt-8">
           <div className="flex w-96 flex-col items-center ">
-            <Text variant="heading4">{`Let's introduce you to ${profileData.profile_by_pk.user.first_name}`}</Text>
+            <Text variant="heading4">{`Let's introduce you to ${firstName}`}</Text>
             <div className="h-4"></div>
             <Text className="text-center text-gray-600" variant="body2">
-              {"We'll"} send an email to{" "}
-              {profileData.profile_by_pk.user.first_name}, as well as you at{" "}
+              {"We'll"} send an email to {firstName}, as well as you at{" "}
               <Text variant="body2" className="text-black">
                 {userData?.email}
               </Text>

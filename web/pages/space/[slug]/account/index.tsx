@@ -20,6 +20,7 @@ import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useUserData } from "../../../../hooks/useUserData";
 import { getTimeRelativeToNow } from "../../../../lib";
+import { getFullNameOfUser } from "../../../../lib/user";
 
 interface EditConnectionRequestProps {
   connectionRequest: ConnectionRequestsQuery["connection_request"][number];
@@ -47,7 +48,7 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
     new Date(connectionRequest.created_at)
   )}`;
 
-  const { first_name, last_name } = otherProfile.user;
+  const fullName = getFullNameOfUser(otherProfile.user);
   return (
     <div className="flex w-full items-center gap-4">
       <ProfileImage
@@ -55,9 +56,7 @@ function EditConnectionRequest(props: EditConnectionRequestProps) {
         className="h-10 w-10"
       />
       <div className="flex flex-1 flex-col items-start truncate">
-        <Text className="flex-1 truncate">
-          {first_name} {last_name}
-        </Text>
+        <Text className="flex-1 truncate">{fullName}</Text>
         <Text italic variant="body2" className="text-gray-600">
           {timestampString}
         </Text>

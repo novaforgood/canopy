@@ -65,6 +65,9 @@ export function EditProfileListing(props: EditProfileListingProps) {
   if (!currentProfile || !currentSpace) {
     return <div>Either profile or space is null</div>;
   }
+  if (!currentProfile.user) {
+    return <div>Profile user is null</div>;
+  }
 
   const { first_name, last_name, email, id } = currentProfile.user;
 

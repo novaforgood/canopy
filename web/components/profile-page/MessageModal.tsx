@@ -10,6 +10,7 @@ import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { useUserData } from "../../hooks/useUserData";
 import { apiClient } from "../../lib/apiClient";
+import { getFirstNameOfUser } from "../../lib/user";
 import { Text, Textarea } from "../atomic";
 import { ActionModal } from "../modals/ActionModal";
 
@@ -82,7 +83,7 @@ export function MessageModal(props: MessageModalProps) {
 
   const receiverProfiles = profileData.profile;
   const receiverNames = makeListSentence(
-    receiverProfiles.map((p) => p.user.first_name ?? "")
+    receiverProfiles.map((p) => getFirstNameOfUser(p.user))
   );
 
   return (

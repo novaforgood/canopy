@@ -10,7 +10,7 @@ import {
 import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
-import { Select } from "../atomic";
+import { getFullNameOfUser } from "../../lib/user";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { ProfileImage } from "../common/ProfileImage";
 
@@ -39,7 +39,8 @@ export function MemberRow(props: MemberRowProps) {
 
   const role = profile.profile_roles[0];
 
-  const { email, first_name, last_name } = profile.user;
+  const fullName = getFullNameOfUser(profile.user);
+  const email = profile.user?.email ?? "N/A";
 
   return (
     <Fragment>
@@ -50,8 +51,8 @@ export function MemberRow(props: MemberRowProps) {
             profile.profile_listing?.profile_listing_image?.image.url ?? null
           }
         />
-        {first_name} {last_name}{" "}
-        {currentSpace?.owner_id === profile.user.id && (
+        {fullName}{" "}
+        {currentSpace?.owner_id === profile.user?.id && (
           <BxsCrown className="ml-2 h-4 w-4 text-gray-600" />
         )}
       </div>
@@ -66,7 +67,7 @@ export function MemberRow(props: MemberRowProps) {
               updateProfileRole({ row_id: role.id, profile_role: newRole }),
               {
                 loading: "Loading",
-                success: `Updated ${first_name}'s role to ${MAP_ROLE_TO_TITLE[newRole]}`,
+                success: `Updated ${fullName}'s role to ${MAP_ROLE_TO_TITLE[newRole]}`,
                 error: "Error when fetching",
               }
             );

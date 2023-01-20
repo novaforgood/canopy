@@ -29,6 +29,7 @@ import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { getFullNameOfUser } from "../../../../lib/user";
 import { CustomPage } from "../../../../types";
 
 function ProfilePageDropdown() {
@@ -49,7 +50,7 @@ function ProfilePageDropdown() {
     return null;
   }
 
-  const { first_name, last_name } = profileData.profile_by_pk.user;
+  const fullName = getFullNameOfUser(profileData.profile_by_pk.user);
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -91,7 +92,7 @@ function ProfilePageDropdown() {
                       >
                         <BxFile className="mr-2 h-5 w-5 flex-none" />
                         <Text variant="body2" className="whitespace-nowrap">
-                          Report {first_name} {last_name}
+                          Report {fullName}
                         </Text>
                       </button>
                     );

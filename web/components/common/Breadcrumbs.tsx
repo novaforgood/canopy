@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useProfileByIdQuery } from "../../generated/graphql";
 import { BxsHome } from "../../generated/icons/solid";
 import { useIsLoggedIn } from "../../hooks/useIsLoggedIn";
+import { getFullNameOfUser } from "../../lib/user";
 import { Text } from "../atomic";
 
 type BreadcrumbItem = {
@@ -40,9 +41,9 @@ export function Breadcrumbs() {
       const pathArray: BreadcrumbItem[] = linkPath
         .map((path, i) => {
           if (path === profileId && profileData?.profile_by_pk) {
-            const { first_name, last_name } = profileData.profile_by_pk.user;
+            const fullName = getFullNameOfUser(profileData.profile_by_pk.user);
             return {
-              title: `${first_name} ${last_name}`,
+              title: fullName,
               href: `/space/${linkPath[i - 1]}/profile/${profileId}`,
             };
           } else if (path === "profile" && linkPath[i - 1] !== "account") {

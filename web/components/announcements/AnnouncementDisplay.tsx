@@ -21,6 +21,7 @@ export interface Announcement {
     profileId: string;
     firstName: string;
     lastName: string;
+    fullName: string;
     profileImgUrl: string;
   };
 }

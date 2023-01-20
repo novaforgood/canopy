@@ -144,7 +144,10 @@ async function getSenderReceiverAndSpace(props: {
   const sender = senderResponse?.data?.profile_by_pk ?? null;
   const receiver = receiverResponse.data?.profile_by_pk ?? null;
 
-  if (!receiver) {
+  if (!sender?.user) {
+    throw makeApiFail("Sender not found");
+  }
+  if (!receiver || !receiver.user) {
     throw makeApiFail("No receiver for email");
   }
 

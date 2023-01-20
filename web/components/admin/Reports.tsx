@@ -11,6 +11,7 @@ import { format } from "date-fns";
 
 import { useReportsInSpaceQuery } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { getFullNameOfUser } from "../../lib/user";
 import { Button, Text } from "../atomic";
 import { ProfileImage } from "../common/ProfileImage";
 import { Table } from "../common/Table";
@@ -49,8 +50,7 @@ function ImagesList(props: ImagesListProps) {
 }
 
 type Profile = {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   profileImageUrl?: string;
 };
 interface ReportTableEntry {
@@ -77,16 +77,14 @@ export function Reports() {
         description: report.body,
         imageUrls: report.report_to_images.map((image) => image.image.url),
         subjectProfile: {
-          firstName: report.subject_profile.user.first_name ?? "",
-          lastName: report.subject_profile.user.last_name ?? "",
+          fullName: getFullNameOfUser(report.subject_profile.user),
           profileImageUrl:
             report.subject_profile.profile_listing?.profile_listing_image?.image
               .url,
         },
         reporterProfile: report.reporter_profile
           ? {
-              firstName: report.reporter_profile.user.first_name ?? "",
-              lastName: report.reporter_profile.user.last_name ?? "",
+              fullName: getFullNameOfUser(report.reporter_profile.user),
               profileImageUrl:
                 report.reporter_profile.profile_listing?.profile_listing_image
                   ?.image.url,
@@ -103,12 +101,11 @@ export function Reports() {
         header: () => <span>reported profile</span>,
         accessorFn: (row) => row.subjectProfile,
         cell: (info) => {
-          const { firstName, lastName, profileImageUrl } =
-            info.getValue() as Profile;
+          const { fullName, profileImageUrl } = info.getValue() as Profile;
           return (
             <div className="flex items-center">
               <ProfileImage className="mr-2 h-6 w-6" src={profileImageUrl} />
-              {firstName} {lastName}
+              {fullName}
             </div>
           );
         },
@@ -121,12 +118,11 @@ export function Reports() {
           if (!info.getValue()) {
             return <Text className="text-gray-600">Anonymous</Text>;
           }
-          const { firstName, lastName, profileImageUrl } =
-            info.getValue() as Profile;
+          const { fullName, profileImageUrl } = info.getValue() as Profile;
           return (
             <div className="flex items-center">
               <ProfileImage className="mr-2 h-6 w-6" src={profileImageUrl} />
-              {firstName} {lastName}
+              {fullName}
             </div>
           );
         },

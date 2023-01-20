@@ -15,6 +15,7 @@ import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { apiClient } from "../../../../lib/apiClient";
 import { uploadImage } from "../../../../lib/image";
+import { getFullNameOfUser } from "../../../../lib/user";
 import { CustomPage } from "../../../../types";
 
 interface ReportProfileProps {
@@ -86,13 +87,10 @@ function ReportProfile(props: ReportProfileProps) {
     return null;
   }
 
-  const { first_name, last_name } = profileData.profile_by_pk.user;
-
+  const fullName = getFullNameOfUser(profileData.profile_by_pk.user);
   return (
     <div className="w-full sm:w-120">
-      <Text variant="heading3">
-        Report {first_name} {last_name}
-      </Text>
+      <Text variant="heading3">Report {fullName}</Text>
       <div className="h-12"></div>
       <label className="mb-1 block text-sm font-bold">You are reporting</label>
 
@@ -105,9 +103,7 @@ function ReportProfile(props: ReportProfileProps) {
           }
         />
 
-        <Text className="ml-2">
-          {first_name} {last_name}
-        </Text>
+        <Text className="ml-2">{fullName}</Text>
       </div>
       <div className="h-8"></div>
       <SimpleTextArea
@@ -117,7 +113,7 @@ function ReportProfile(props: ReportProfileProps) {
       />
       <Text variant="body2" className="text-gray-700">
         Please provide a detailed explanation for why you are reporting{" "}
-        {first_name} {last_name}.
+        {fullName}.
       </Text>
       <div className="h-8"></div>
       <label className="mb-1 block text-sm font-bold">Upload images</label>

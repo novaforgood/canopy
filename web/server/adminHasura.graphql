@@ -150,6 +150,9 @@ query GetUnreadMessagesCounts {
     where: { unread_messages_counts: { unread_messages_count: { _gt: 0 } } }
   ) {
     id
+    user {
+      id
+    }
     unread_messages_counts {
       unread_messages_count
       sender_profile {
