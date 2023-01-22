@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import { UserSettings } from "../components/account-settings/UserSettings";
-import { Text } from "../components/atomic";
+import { Button, Text } from "../components/atomic";
 import { SidePadding } from "../components/layout/SidePadding";
 import { Navbar } from "../components/navbar/Navbar";
 import { useUserData } from "../hooks/useUserData";
@@ -28,7 +28,15 @@ const SettingsPage: CustomPage = () => {
         <div className="h-8"></div>
 
         <UserSettings />
-
+        <div className="h-16"></div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            router.push("/delete-account");
+          }}
+        >
+          Delete Account
+        </Button>
         <div className="h-32"></div>
       </SidePadding>
     </div>

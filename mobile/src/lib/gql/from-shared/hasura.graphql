@@ -59,6 +59,7 @@ query AllProfilesOfUser($user_id: String!) {
     }
     space {
       id
+      owner_id
       name
       slug
       space_cover_image {
