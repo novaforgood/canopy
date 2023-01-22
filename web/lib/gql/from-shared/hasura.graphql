@@ -171,6 +171,7 @@ query ProfilesBySpaceId($space_id: uuid!) {
     id
     user {
       id
+      type
       first_name
       last_name
       email

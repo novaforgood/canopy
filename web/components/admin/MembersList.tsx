@@ -1,29 +1,23 @@
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   ColumnDef,
-  createColumnHelper,
-  flexRender,
   getCoreRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import classNames from "classnames";
 import toast from "react-hot-toast";
 
 import {
   ProfilesBySpaceIdQuery,
   Profile_Role_Enum,
   useProfilesBySpaceIdQuery,
+  User_Type_Enum,
   useUpdateProfileRoleMutation,
 } from "../../generated/graphql";
-import {
-  BxDownArrow,
-  BxSearch,
-  BxUpArrow,
-} from "../../generated/icons/regular";
-import { BxsDownArrow, BxsUpArrow } from "../../generated/icons/solid";
+import { BxSearch } from "../../generated/icons/regular";
+import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { getFullNameOfUser } from "../../lib/user";
 import { Button, Text } from "../atomic";
@@ -33,7 +27,6 @@ import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
 
 import { CopyText } from "./CopyText";
-import { MemberRow } from "./MemberRow";
 import { MAP_ROLE_TO_TITLE, ROLE_SELECT_OPTIONS } from "./roles";
 
 interface Member {
@@ -76,12 +69,14 @@ export function MembersList() {
 
   const members: Member[] = useMemo(
     () =>
-      profilesData?.profile.map((profile) => ({
-        name: getFullNameOfUser(profile.user),
-        email: profile.user?.email ?? "N/A",
-        role: profile.profile_roles[0].profile_role,
-        profile: profile,
-      })) ?? [],
+      profilesData?.profile
+        .filter((profile) => profile.user?.type === User_Type_Enum.User)
+        .map((profile) => ({
+          name: getFullNameOfUser(profile.user),
+          email: profile.user?.email ?? "N/A",
+          role: profile.profile_roles[0].profile_role,
+          profile: profile,
+        })) ?? [],
     [profilesData]
   );
 
@@ -130,8 +125,22 @@ export function MembersList() {
     () => [
       {
         id: "name",
-        accessorFn: (row) => row.name,
-        cell: (info) => info.getValue(),
+        accessorFn: (row) => ({
+          name: row.name,
+          userId: row.profile.user_id,
+        }),
+        cell: (info) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { name, userId } = info.getValue() as any;
+          return (
+            <div className="flex items-center">
+              <Text>{name}</Text>
+              {userId === currentSpace?.owner_id && (
+                <BxsCrown className="ml-1 h-4 w-4 text-gray-500" />
+              )}
+            </div>
+          );
+        },
         header: () => <span>Name</span>,
       },
       {
@@ -175,7 +184,7 @@ export function MembersList() {
         ),
       },
     ],
-    [updateProfileRole]
+    [currentSpace?.owner_id, updateProfileRole]
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
