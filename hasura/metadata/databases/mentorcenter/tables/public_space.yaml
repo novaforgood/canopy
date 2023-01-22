@@ -2,6 +2,9 @@ table:
   name: space
   schema: public
 object_relationships:
+  - name: owner
+    using:
+      foreign_key_constraint_on: owner_id
   - name: space_cover_image
     using:
       foreign_key_constraint_on:
@@ -64,10 +67,13 @@ select_permissions:
         - created_at
         - id
       filter:
-        _or:
-          - attributes:
-              _contains:
-                public: true
+        _and:
+          - deleted:
+              _eq: false
+          - _or:
+              - attributes:
+                  _contains:
+                    public: true
   - role: user
     permission:
       columns:
@@ -79,10 +85,13 @@ select_permissions:
         - owner_id
         - slug
       filter:
-        _or:
-          - profiles:
-              user_id:
-                _eq: X-Hasura-User-Id
+        _and:
+          - deleted:
+              _eq: false
+          - _or:
+              - profiles:
+                  user_id:
+                    _eq: X-Hasura-User-Id
 update_permissions:
   - role: user
     permission:
