@@ -76,7 +76,7 @@ export function MembersList() {
   const members: Member[] = useMemo(
     () =>
       profilesData?.profile
-        .filter((profile) => profile.user?.type === User_Type_Enum.User)
+        .filter((profile) => profile.user?.type !== User_Type_Enum.Bot)
         .map((profile) => ({
           name: getFullNameOfUser(profile.user),
           email: profile.user?.email ?? "N/A",
@@ -239,7 +239,7 @@ export function MembersList() {
       },
     ],
     [
-      currentSpace.id,
+      currentSpace?.id,
       currentSpace?.owner_id,
       refetchCurrentSpace,
       updateProfileRole,

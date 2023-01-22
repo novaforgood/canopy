@@ -246,7 +246,7 @@ mutation InsertReport($data: report_insert_input!) {
 }
 
 mutation DeleteProfileListingsWithProfileId($profile_id: uuid!) {
-  delete_profile_listing(where: { profile_id: { _eq: "" } }) {
+  delete_profile_listing(where: { profile_id: { _eq: $profile_id } }) {
     affected_rows
     returning {
       id

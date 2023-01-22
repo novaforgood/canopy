@@ -155,7 +155,7 @@ export function ChatRoomList() {
           }
 
           const otherHumans = getChatParticipants(room.profile_to_chat_rooms)
-            .filter((h) => h.userType === User_Type_Enum.User)
+            .filter((h) => h.userType !== User_Type_Enum.Bot)
             .filter((h) => h.profileId !== currentProfile?.id);
 
           // Determine chat title

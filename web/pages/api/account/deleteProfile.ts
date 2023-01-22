@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import {
   executeDeleteProfileListingsWithProfileIdMutation,
   executeGetSpaceQuery,
@@ -10,14 +12,23 @@ import {
   makeApiSuccess,
 } from "../../../server/response";
 
+const requestSchema = z.object({
+  profileId: z.string(),
+});
+
 /**
- * Delete profile specified by JWT
+ * Delete specified profile.
  */
 export default applyMiddleware({
   authenticated: true,
+  validationSchema: requestSchema,
 }).post(async (req, res) => {
+  const { profileId: intendedProfileId } = req.body;
   if (!req.callerProfile) {
     throw makeApiFail("No caller profile");
+  }
+  if (req.callerProfile.id !== intendedProfileId) {
+    throw makeApiFail("Only the profile owner can delete their profile");
   }
 
   const spaceId = req.callerProfile.space.id;
@@ -64,7 +75,7 @@ export default applyMiddleware({
     throw makeApiError(updateProfileError.message);
   }
   if (!updateProfileData?.update_profile_by_pk?.id) {
-    throw makeApiError("Failed to transfer ownership");
+    throw makeApiError("Failed to delete profile");
   }
 
   const response = makeApiSuccess({

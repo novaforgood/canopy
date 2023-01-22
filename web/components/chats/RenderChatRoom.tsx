@@ -46,7 +46,7 @@ export function RenderChatRoom() {
   // Chat topbar
   const allHumans = getChatParticipants(
     chatRoom?.profile_to_chat_rooms ?? []
-  ).filter((p) => p.userType === User_Type_Enum.User);
+  ).filter((p) => p.userType !== User_Type_Enum.Bot);
   const otherHumans = allHumans.filter(
     (p) => p.profileId !== currentProfile?.id
   );

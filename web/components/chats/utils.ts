@@ -39,7 +39,7 @@ export function getChatParticipants(
 
 export function getChatRoomTitle(chatRoom: ChatRoom, currentProfileId: string) {
   const otherHumans = getChatParticipants(chatRoom.profile_to_chat_rooms)
-    .filter((h) => h.userType === User_Type_Enum.User)
+    .filter((h) => h.userType !== User_Type_Enum.Bot)
     .filter((h) => h.profileId !== currentProfileId);
 
   const chatTitle = otherHumans.map((h) => h.fullName).join(", ");
@@ -52,7 +52,7 @@ export function getChatRoomSubtitle(
   currentProfileId: string
 ) {
   const otherHumans = getChatParticipants(chatRoom.profile_to_chat_rooms)
-    .filter((h) => h.userType === User_Type_Enum.User)
+    .filter((h) => h.userType !== User_Type_Enum.Bot)
     .filter((h) => h.profileId !== currentProfileId);
 
   if (chatRoom.chat_intro_id) {

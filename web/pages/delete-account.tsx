@@ -57,7 +57,7 @@ const DebugPage: CustomPage = () => {
                     </Text>
                   </div>
                   {isOwner ? (
-                    <Link href="/reset-password">
+                    <Link href={`/space/${profile.space.slug}/admin`}>
                       <a>
                         <Text
                           variant="body2"
@@ -68,7 +68,9 @@ const DebugPage: CustomPage = () => {
                       </a>
                     </Link>
                   ) : (
-                    <Link href="/reset-password">
+                    <Link
+                      href={`/space/${profile.space.slug}/account/settings`}
+                    >
                       <a>
                         <Text
                           variant="body2"
