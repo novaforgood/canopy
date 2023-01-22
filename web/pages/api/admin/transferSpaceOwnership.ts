@@ -14,18 +14,18 @@ import {
 } from "../../../server/response";
 
 const requestSchema = z.object({
-  toProfileId: z.string(),
+  toUserId: z.string(),
   spaceId: z.string(),
 });
 
 /**
- * Transfer [spaceId] ownership to [toProfileId]
+ * Transfer [spaceId] ownership to [toUserId]
  */
 export default applyMiddleware({
   authenticated: true,
   validationSchema: requestSchema,
 }).post(async (req, res) => {
-  const { toProfileId, spaceId } = req.body;
+  const { toUserId, spaceId } = req.body;
 
   const { data: spaceData, error: spaceError } = await executeGetSpaceQuery({
     space_id: spaceId,
@@ -43,7 +43,8 @@ export default applyMiddleware({
   // Verify that the user is a member of the space.
   const { data: toProfileData } = await executeGetProfilesQuery({
     where: {
-      id: { _eq: toProfileId },
+      user_id: { _eq: toUserId },
+      space_id: { _eq: spaceId },
     },
   });
   const toProfile = toProfileData?.profile[0];
@@ -53,10 +54,8 @@ export default applyMiddleware({
   const roles = toProfile.flattened_profile_roles.map(
     (item) => item.profile_role
   );
-  if (!roles.includes(Profile_Role_Enum.Member)) {
-    throw makeApiFail(
-      "Only members of this space can have ownership transferred to."
-    );
+  if (!roles.includes(Profile_Role_Enum.Admin)) {
+    throw makeApiFail("Only admins can be made owners.");
   }
 
   // Transfer ownership
@@ -64,7 +63,7 @@ export default applyMiddleware({
     await executeUpdateSpaceMutation({
       space_id: spaceId,
       changes: {
-        owner_id: toProfileId,
+        owner_id: toUserId,
       },
     });
   if (updateSpaceError) {
@@ -77,7 +76,7 @@ export default applyMiddleware({
   const response = makeApiSuccess({
     detail: "Success",
     spaceId: updateSpaceData.update_space_by_pk.id,
-    newOwnerID: toProfileId,
+    newOwnerID: toUserId,
   });
   res.status(response.code).json(response);
 });

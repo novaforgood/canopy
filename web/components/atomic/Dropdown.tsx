@@ -11,6 +11,7 @@ interface DropdownProps {
     icon?: ReactNode;
     renderItem?: (props: { active: boolean; disabled: boolean }) => ReactNode;
     onClick: () => void;
+    hide?: boolean;
   }[];
 
   renderButton: (props: { dropdownOpen: boolean }) => ReactNode;
@@ -39,7 +40,9 @@ export const Dropdown = (props: DropdownProps) => {
             >
               <Menu.Items className="bg-red-500 absolute right-0 top-full z-10 origin-top-right divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {items.map((item, idx) => {
-                  const { label, icon, renderItem, onClick } = item;
+                  const { label, icon, renderItem, onClick, hide } = item;
+
+                  if (hide) return null;
 
                   return (
                     <Menu.Item key={idx}>

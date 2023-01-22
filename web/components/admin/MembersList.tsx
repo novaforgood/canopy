@@ -16,12 +16,18 @@ import {
   User_Type_Enum,
   useUpdateProfileRoleMutation,
 } from "../../generated/graphql";
-import { BxSearch } from "../../generated/icons/regular";
+import {
+  BxDotsHorizontalRounded,
+  BxSearch,
+} from "../../generated/icons/regular";
 import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { apiClient } from "../../lib/apiClient";
 import { getFullNameOfUser } from "../../lib/user";
 import { Button, Text } from "../atomic";
+import { Dropdown } from "../atomic/Dropdown";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
+import { IconButton } from "../buttons/IconButton";
 import { Table } from "../common/Table";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
@@ -60,9 +66,9 @@ const options = {
 };
 
 export function MembersList() {
-  const { currentSpace } = useCurrentSpace();
+  const { currentSpace, refetchCurrentSpace } = useCurrentSpace();
 
-  const [{ data: profilesData }] = useProfilesBySpaceIdQuery({
+  const [{ data: profilesData }, refetchProfiles] = useProfilesBySpaceIdQuery({
     variables: { space_id: currentSpace?.id ?? "" },
   });
   const [_, updateProfileRole] = useUpdateProfileRoleMutation();
@@ -130,12 +136,11 @@ export function MembersList() {
           userId: row.profile.user_id,
         }),
         cell: (info) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const { name, userId } = info.getValue() as any;
+          const { name, profile } = info.row.original;
           return (
             <div className="flex items-center">
               <Text>{name}</Text>
-              {userId === currentSpace?.owner_id && (
+              {profile.user_id === currentSpace?.owner_id && (
                 <BxsCrown className="ml-1 h-4 w-4 text-gray-500" />
               )}
             </div>
@@ -183,8 +188,62 @@ export function MembersList() {
           />
         ),
       },
+      {
+        id: "actions",
+        header: () => <span>Actions</span>,
+        accessorFn: (row) => row.profile,
+        sort: false,
+        cell: (info) => {
+          const { profile } = info.row.original;
+          return (
+            <Dropdown
+              renderButton={() => {
+                return (
+                  <IconButton
+                    icon={
+                      <BxDotsHorizontalRounded className="h-4 w-4 text-gray-700" />
+                    }
+                    className="rounded-full"
+                  />
+                );
+              }}
+              items={[
+                {
+                  label: "Make owner",
+                  hide: profile.user_id === currentSpace?.owner_id,
+                  onClick: () => {
+                    if (!currentSpace?.id || !profile.user_id) {
+                      return;
+                    }
+                    toast.promise(
+                      apiClient
+                        .post("/api/admin/transferSpaceOwnership", {
+                          spaceId: currentSpace.id,
+                          toUserId: profile.user_id,
+                        })
+                        .then(refetchCurrentSpace),
+                      {
+                        loading: "Loading",
+                        success: `Made ${info.row.original.name} the owner`,
+                        error: (err) => {
+                          return err.message;
+                        },
+                      }
+                    );
+                  },
+                },
+              ]}
+            />
+          );
+        },
+      },
     ],
-    [currentSpace?.owner_id, updateProfileRole]
+    [
+      currentSpace.id,
+      currentSpace?.owner_id,
+      refetchCurrentSpace,
+      updateProfileRole,
+    ]
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
