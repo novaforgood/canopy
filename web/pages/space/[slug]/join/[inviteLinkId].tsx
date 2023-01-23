@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../../../../components/atomic";
+import { PageNotFound } from "../../../../components/error-screens/PageNotFound";
 import { TwoThirdsPageLayout } from "../../../../components/layout/TwoThirdsPageLayout";
 import {
   InviteLinksQuery,
@@ -22,7 +23,7 @@ function AlreadyPartOfSpace() {
 
   return (
     <TwoThirdsPageLayout>
-      <div className="h-screen flex flex-col items-start justify-center px-16 max-w-2xl">
+      <div className="flex h-screen max-w-2xl flex-col items-start justify-center px-16">
         <Text variant="heading2">You are already a part of this space.</Text>
 
         <div className="h-16"></div>
@@ -79,9 +80,13 @@ function JoinSpace() {
       });
   }, [inviteLinkId]);
 
+  if (!publicSpace) {
+    return <PageNotFound />;
+  }
+
   return (
     <TwoThirdsPageLayout>
-      <div className="h-screen flex flex-col items-start justify-center px-16 max-w-2xl">
+      <div className="flex h-screen max-w-2xl flex-col items-start justify-center px-16">
         <Text variant="heading2">
           You have been invited to <b>{publicSpace?.name}</b>!
         </Text>

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
+import { Dangerzone } from "../../../../components/admin/DangerZone";
 import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
 import { EditProfileTags } from "../../../../components/admin/edit-profile-tags/EditProfileTags";
 import { EditHomepage } from "../../../../components/admin/EditHomepage";
@@ -29,6 +30,7 @@ enum ManageSpaceTabs {
   EditProfileFormat = "Edit Profile Format",
   EditProfileTags = "Edit Tags",
   EditHomepage = "Edit Homepage",
+  DangerZone = "Danger Zone",
 }
 
 const MAP_TAB_TO_COMPONENT = {
@@ -38,6 +40,7 @@ const MAP_TAB_TO_COMPONENT = {
   [ManageSpaceTabs.EditProfileFormat]: EditProfileFormat,
   [ManageSpaceTabs.EditProfileTags]: EditProfileTags,
   [ManageSpaceTabs.EditHomepage]: EditHomepage,
+  [ManageSpaceTabs.DangerZone]: Dangerzone,
 };
 
 const MAP_TAB_TO_TITLE = {
@@ -47,6 +50,7 @@ const MAP_TAB_TO_TITLE = {
   [ManageSpaceTabs.EditProfileFormat]: "Edit Profile Format",
   [ManageSpaceTabs.EditProfileTags]: "Edit Profile Tags",
   [ManageSpaceTabs.EditHomepage]: "Edit Homepage",
+  [ManageSpaceTabs.DangerZone]: "Danger Zone",
 };
 
 const ALL_TABS = Object.values(ManageSpaceTabs);

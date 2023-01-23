@@ -54,7 +54,9 @@ async function handleCronJob(cronJobType: CronJobType) {
         throw makeApiError(error.message);
       }
 
-      const recipientProfiles = data?.profile;
+      const recipientProfiles = data?.profile.filter(
+        (profile) => !!profile.user // Filter out profiles without users
+      );
 
       const promises =
         recipientProfiles?.map((recipientProfile) => {
@@ -68,16 +70,21 @@ async function handleCronJob(cronJobType: CronJobType) {
             templateId: TemplateId.DailyChatMessageNotification,
             dynamicTemplateData: ({ space }) => {
               const senderProfiles: SendgridProfile[] =
-                recipientProfile.unread_messages_counts.map((item) => ({
-                  firstName: item.sender_profile?.user.first_name ?? "",
-                  lastName: item.sender_profile?.user.last_name ?? "",
-                  profilePicUrl:
-                    item.sender_profile?.profile_listing?.profile_listing_image
-                      ?.image.url ?? PLACEHOLDER_IMAGE_URL,
-                  email: item.sender_profile?.user.email ?? "",
-                  headline:
-                    item.sender_profile?.profile_listing?.headline ?? "",
-                }));
+                recipientProfile.unread_messages_counts
+                  .filter((item) => !!item.sender_profile?.user) // Filter out profiles without users
+                  .map((item) => {
+                    return {
+                      firstName: item.sender_profile?.user?.first_name ?? "",
+                      lastName: item.sender_profile?.user?.last_name ?? "",
+                      profilePicUrl:
+                        item.sender_profile?.profile_listing
+                          ?.profile_listing_image?.image.url ??
+                        PLACEHOLDER_IMAGE_URL,
+                      email: item.sender_profile?.user?.email ?? "",
+                      headline:
+                        item.sender_profile?.profile_listing?.headline ?? "",
+                    };
+                  });
 
               // Concat first names into list sentence (e.g. "NameA, NameB, and NameC")
               const firstNames = senderProfiles.map((item) => item.firstName);

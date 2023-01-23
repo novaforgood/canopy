@@ -10,6 +10,7 @@ import {
 import { BxX } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { getFullNameOfUser } from "../../lib/user";
 import { Text } from "../atomic";
 import { ProfileImage } from "../common/ProfileImage";
 import { Tag } from "../common/Tag";
@@ -19,7 +20,7 @@ function mapQueryToSelectedProfile(
 ): SelectedProfile {
   return {
     profileId: profile.id,
-    name: `${profile.user.first_name} ${profile.user.last_name}`,
+    name: getFullNameOfUser(profile.user),
     profilePicUrl:
       profile.profile_listing?.profile_listing_image?.image.url ?? "",
   };

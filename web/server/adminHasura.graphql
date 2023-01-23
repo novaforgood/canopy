@@ -8,6 +8,21 @@ query GetInviteLink($invite_link_id: uuid!) {
   }
 }
 
+query GetSpace($space_id: uuid!) {
+  space_by_pk(id: $space_id) {
+    id
+    owner_id
+    name
+  }
+}
+
+mutation UpdateSpace($space_id: uuid!, $changes: space_set_input!) {
+  update_space_by_pk(pk_columns: { id: $space_id }, _set: $changes) {
+    id
+    name
+  }
+}
+
 mutation UpsertUser(
   $id: String!
   $email: String!
@@ -33,11 +48,28 @@ mutation UpsertUser(
   }
 }
 
+mutation UpdateUser($user_id: String!, $changes: user_set_input!) {
+  update_user_by_pk(pk_columns: { id: $user_id }, _set: $changes) {
+    id
+    email
+    first_name
+    last_name
+  }
+}
+
 mutation InsertProfile(
   $data: profile_insert_input!
   $on_conflict: profile_on_conflict
 ) {
   insert_profile_one(object: $data, on_conflict: $on_conflict) {
+    id
+    user_id
+    space_id
+  }
+}
+
+mutation UpdateProfile($profile_id: uuid!, $changes: profile_set_input!) {
+  update_profile_by_pk(pk_columns: { id: $profile_id }, _set: $changes) {
     id
     user_id
     space_id
@@ -150,6 +182,9 @@ query GetUnreadMessagesCounts {
     where: { unread_messages_counts: { unread_messages_count: { _gt: 0 } } }
   ) {
     id
+    user {
+      id
+    }
     unread_messages_counts {
       unread_messages_count
       sender_profile {
@@ -216,5 +251,14 @@ query EmailsBySpaceId($_user_attr_filter: jsonb!, $_space_id: uuid!) {
 mutation InsertReport($data: report_insert_input!) {
   insert_report_one(object: $data) {
     id
+  }
+}
+
+mutation DeleteProfileListingsWithProfileId($profile_id: uuid!) {
+  delete_profile_listing(where: { profile_id: { _eq: $profile_id } }) {
+    affected_rows
+    returning {
+      id
+    }
   }
 }

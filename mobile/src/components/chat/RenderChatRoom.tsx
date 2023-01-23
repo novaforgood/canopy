@@ -1,20 +1,11 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 
-import { Link, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
-import { Button, Keyboard, ScrollView, TouchableOpacity } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView, TouchableOpacity } from "react-native";
 
-import {
-  useMessagesQuery,
-  useUpdateLatestReadMessageMutation,
-  useMessagesStreamSubscription,
-  useSendMessageMutation,
-  ChatRoomQuery,
-  MessagesQuery,
-  User_Type_Enum,
-} from "../../generated/graphql";
-import { BxChevronLeft, BxSend } from "../../generated/icons/regular";
+import { MessagesQuery, User_Type_Enum } from "../../generated/graphql";
+import { BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePrevious } from "../../hooks/usePrevious";
@@ -29,8 +20,6 @@ import { ProfileImage } from "../ProfileImage";
 
 import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
-import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "./constants";
-import { ChatRoom } from "./types";
 import { useChatRoom } from "./useChatRoom";
 import { useMessages } from "./useMessages";
 import { getChatParticipants, getChatRoomSubtitle } from "./utils";
@@ -107,7 +96,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
     noMoreMessages,
   } = useMessages(chatRoomId ?? "");
 
-  const lastMessageIdByOther: number = useMemo(() => {
+  const lastMessageIdByOther: number | null = useMemo(() => {
     return (
       messagesList.find(
         (m) => currentProfile && m.sender_profile_id !== currentProfile.id

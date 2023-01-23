@@ -35,6 +35,7 @@ import {
   searchQueryAtom,
   selectedTagIdsAtom,
 } from "../../../lib/jotai";
+import { getFirstNameOfUser } from "../../../lib/user";
 import { NavigationProp } from "../../../navigation/types";
 
 import { FilterBar } from "./FilterBar";
@@ -157,7 +158,7 @@ export function ProfilesList() {
             </Text>
           )}
           {filteredProfileListings.map((listing, idx) => {
-            const { first_name, last_name } = listing.profile.user;
+            const fullName = getFirstNameOfUser(listing.profile.user);
 
             const tagNames =
               listing.profile_listing_to_space_tags?.map(
@@ -176,7 +177,7 @@ export function ProfilesList() {
                     profileId: listing.profile.id,
                   });
                 }}
-                name={`${first_name} ${last_name}`}
+                name={fullName}
                 imageUrl={listing.profile_listing_image?.image.url}
                 subtitle={listing.headline}
                 descriptionTitle={"Topics"}

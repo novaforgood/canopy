@@ -10,6 +10,11 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import {
+  getFirstNameOfUser,
+  getFullNameOfUser,
+  getLastNameOfUser,
+} from "../../lib/user";
 import { Button, Text } from "../atomic";
 
 import { Announcement, AnnouncementDisplay } from "./AnnouncementDisplay";
@@ -30,8 +35,9 @@ function mapQueryDataToObjects(
         timeCreated: new Date(entry.created_at),
         author: {
           profileId: entry.author_profile.id,
-          firstName: entry.author_profile.user.first_name,
-          lastName: entry.author_profile.user.last_name,
+          fullName: getFullNameOfUser(entry.author_profile.user),
+          firstName: getFirstNameOfUser(entry.author_profile.user),
+          lastName: getLastNameOfUser(entry.author_profile.user),
           profileImgUrl:
             entry.author_profile.profile_listing?.profile_listing_image?.image
               .url,
