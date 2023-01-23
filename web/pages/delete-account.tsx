@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
 import { SpaceCoverPhoto } from "../components/common/SpaceCoverPhoto";
@@ -10,6 +11,8 @@ import { SidePadding } from "../components/layout/SidePadding";
 import { Navbar } from "../components/navbar/Navbar";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { useUserData } from "../hooks/useUserData";
+import { apiClient } from "../lib/apiClient";
+import { signOut } from "../lib/firebase";
 import { CustomPage } from "../types";
 
 const DebugPage: CustomPage = () => {
@@ -100,7 +103,32 @@ const DebugPage: CustomPage = () => {
         <Button
           disabled={!!profileData?.profile.length}
           onClick={() => {
-            router.push("/delete-account");
+            if (!userData) {
+              toast.error("You must be logged in to delete your account.");
+              return;
+            }
+            const response = window.prompt(
+              "Are you sure you want to delete your account? You will immediately be logged out and will not be able to log back in. Type 'DELETE' to confirm."
+            );
+            if (response !== "DELETE") {
+              toast.error("Incorrect response. Account not deleted.");
+              return;
+            }
+
+            toast.promise(
+              apiClient.post("/api/account/deleteUser", {
+                userId: userData.id,
+              }),
+              {
+                loading: "Deleting account...",
+                success: () => {
+                  signOut();
+                  router.push("/");
+                  return "Account deleted.";
+                },
+                error: (err) => err.message,
+              }
+            );
           }}
         >
           Delete Account

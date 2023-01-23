@@ -48,6 +48,15 @@ mutation UpsertUser(
   }
 }
 
+mutation UpdateUser($user_id: String!, $changes: user_set_input!) {
+  update_user_by_pk(pk_columns: { id: $user_id }, _set: $changes) {
+    id
+    email
+    first_name
+    last_name
+  }
+}
+
 mutation InsertProfile(
   $data: profile_insert_input!
   $on_conflict: profile_on_conflict
