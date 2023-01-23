@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { addDays, addMonths, addYears, format } from "date-fns";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { useAdminDashDirectoryOverviewQuery } from "../../generated/graphql";
@@ -14,7 +15,7 @@ import { Responsive } from "../layout/Responsive";
 
 export function Dangerzone() {
   const { currentSpace } = useCurrentSpace();
-  const { currentProfile } = useCurrentProfile();
+  const router = useRouter();
 
   return (
     <>
@@ -27,18 +28,27 @@ export function Dangerzone() {
           const response = window.prompt(
             `Are you sure you want to delete "${currentSpace.name}"? This action cannot be undone. Type the name of the space to confirm.`
           );
-          if (response === currentSpace.name) {
-            toast.promise(
-              apiClient.post("/api/admin/deleteSpace", {
-                spaceId: currentSpace.id,
-              }),
-              {
-                loading: "Deleting space...",
-                success: `Space "${currentSpace.name}" deleted`,
-                error: (err) => err.message,
-              }
+
+          if (response !== currentSpace.name) {
+            toast.error(
+              "You must type the name of the space to confirm deletion."
             );
+            return;
           }
+
+          toast.promise(
+            apiClient.post("/api/admin/deleteSpace", {
+              spaceId: currentSpace.id,
+            }),
+            {
+              loading: "Deleting space...",
+              success: () => {
+                router.push("/");
+                return `Space "${currentSpace.name}" deleted!`;
+              },
+              error: (err) => err.message,
+            }
+          );
         }}
       >
         Delete Space

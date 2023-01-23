@@ -45142,6 +45142,18 @@
         "description": "columns and relationships of \"public_space\"",
         "fields": [
           {
+            "name": "deleted",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "args": [],
@@ -45373,6 +45385,18 @@
             "deprecationReason": null
           },
           {
+            "name": "deleted",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Boolean_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -45419,6 +45443,18 @@
         "description": "input type for inserting data into table \"public_space\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "deleted",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "id",
             "description": null,
@@ -45612,6 +45648,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "deleted",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -45661,6 +45709,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "deleted",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": "column name",
             "isDeprecated": false,
@@ -45687,6 +45741,18 @@
         "description": "input type for updating data in table \"public_space\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "deleted",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "id",
             "description": null,
@@ -45773,6 +45839,18 @@
         "description": "Initial value of the column from where the streaming should start",
         "fields": null,
         "inputFields": [
+          {
+            "name": "deleted",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "id",
             "description": null,

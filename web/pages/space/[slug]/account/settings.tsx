@@ -76,7 +76,7 @@ const SettingsPage: CustomPage = () => {
             );
           }}
         >
-          Leave space
+          Leave space (Delete profile)
         </Button>
 
         <div className="h-32"></div>

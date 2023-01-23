@@ -42,7 +42,7 @@ type CustomAppProps = AppProps & {
 
 function useNumberOfNotifications() {
   const { currentProfile } = useCurrentProfile();
-  const [{ data, fetching }] = useAllChatRoomsSubscription({
+  const [{ data, fetching, error }] = useAllChatRoomsSubscription({
     variables: { profile_id: currentProfile?.id ?? "" },
     pause: !currentProfile,
   });

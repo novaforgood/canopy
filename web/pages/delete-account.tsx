@@ -38,13 +38,22 @@ const DebugPage: CustomPage = () => {
           directories. If you are a directory owner, you must first transfer
           ownership to another user or delete the directory.
         </Text>
-        <div className="h-4"></div>
+        <div className="h-8"></div>
         <Text variant="subheading1">Directories to leave:</Text>
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="h-4"></div>
+        <div className="grid gap-2 lg:grid-cols-2">
+          {profileData?.profile.length === 0 && (
+            <Text variant="body1" className="text-gray-700">
+              You have left all directories and may now delete your account.
+            </Text>
+          )}
           {profileData?.profile.map((profile) => {
             const isOwner = profile.space.owner_id === userData?.id;
             return (
-              <div className="flex shadow-md" key={profile.id}>
+              <div
+                className="flex rounded-md border border-green-700"
+                key={profile.id}
+              >
                 {/* <SpaceCoverPhoto
                   src={profile.space.space_cover_image?.image.url}
                   className="h-14"
@@ -89,6 +98,7 @@ const DebugPage: CustomPage = () => {
 
         <div className="h-16"></div>
         <Button
+          disabled={!!profileData?.profile.length}
           onClick={() => {
             router.push("/delete-account");
           }}
