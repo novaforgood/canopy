@@ -68,11 +68,16 @@ export function SignInScreen({
 
     return signInWithCredential(credential).then(async (userCred) => {
       const idToken = await userCred.user.getIdToken();
+      const shouldUpdateName = !!getAdditionalUserInfo(userCred)?.isNewUser;
       return fetch(`${HOST_URL}/api/auth/upsertUserData`, {
         method: "POST",
         headers: {
+          ["Content-Type"]: "application/json",
           authorization: `Bearer ${idToken}`,
         },
+        body: JSON.stringify({
+          updateName: shouldUpdateName,
+        }),
       });
     });
   }, []);
@@ -127,11 +132,16 @@ export function SignInScreen({
         });
         return signInWithCredential(credential).then(async (userCred) => {
           const idToken = await userCred.user.getIdToken();
+          const shouldUpdateName = !!getAdditionalUserInfo(userCred)?.isNewUser;
           return fetch(`${HOST_URL}/api/auth/upsertUserData`, {
             method: "POST",
             headers: {
+              ["Content-Type"]: "application/json",
               authorization: `Bearer ${idToken}`,
             },
+            body: JSON.stringify({
+              updateName: shouldUpdateName,
+            }),
           });
         });
       })
@@ -158,6 +168,7 @@ export function SignInScreen({
             method: "POST",
             headers: {
               authorization: `Bearer ${tokenResult.token}`,
+              ["Content-Type"]: "application/json",
             },
           });
           // await redirectUsingQueryParam("/");

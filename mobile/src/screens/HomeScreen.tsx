@@ -1,11 +1,18 @@
-import { ScrollView, TouchableOpacity, SafeAreaView } from "react-native";
+import {
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Linking,
+} from "react-native";
 
 import { Box } from "../components/atomic/Box";
+import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
 import { SpaceCoverPhoto } from "../components/SpaceCoverPhoto";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { BxsGroup } from "../generated/icons/solid";
 import { useUserData } from "../hooks/useUserData";
+import { HOST_URL } from "../lib/url";
 import { RootStackParamList } from "../navigation/types";
 
 import type { StackScreenProps } from "@react-navigation/stack";
@@ -17,6 +24,8 @@ export function HomeScreen({
   const [{ data: profileData }] = useAllProfilesOfUserQuery({
     variables: { user_id: userData?.id ?? "" },
   });
+
+  console.log("profileData", profileData);
 
   return (
     <SafeAreaView>
@@ -31,7 +40,16 @@ export function HomeScreen({
               see inside.
             </Text>
           </Box>
+
           <Box mt={4} flexWrap="wrap" flexDirection="row">
+            {profileData?.profile.length === 0 && (
+              <Box>
+                <Text color="gray700">
+                  You are not a part of any communities yet. Join or create a
+                  directory to see it here.
+                </Text>
+              </Box>
+            )}
             {profileData?.profile.map((profile) => {
               return (
                 <Box
@@ -70,6 +88,16 @@ export function HomeScreen({
               );
             })}
           </Box>
+          <Button
+            variant="outline"
+            mt={12}
+            onPress={() => {
+              const url = `${HOST_URL}/create`;
+              Linking.openURL(url);
+            }}
+          >
+            Create a new directory
+          </Button>
         </Box>
       </ScrollView>
     </SafeAreaView>
