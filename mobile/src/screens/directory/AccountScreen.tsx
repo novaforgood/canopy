@@ -85,6 +85,17 @@ export function AccountScreen() {
           >
             Sign out
           </Button>
+
+          <Button
+            mt={8}
+            variant="secondary"
+            onPress={() => {
+              const url = `${HOST_URL}/delete-account`;
+              Linking.openURL(url);
+            }}
+          >
+            Delete Account
+          </Button>
         </Box>
       </ScrollView>
     </SafeAreaView>
