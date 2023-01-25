@@ -74,11 +74,15 @@ select_permissions:
         - id
         - space_id
       filter:
-        _or:
+        _and:
           - space:
-              attributes:
-                _contains:
-                  public: true
+              deleted:
+                _eq: false
+          - _or:
+              - space:
+                  attributes:
+                    _contains:
+                      public: true
   - role: user
     permission:
       columns:
@@ -89,11 +93,15 @@ select_permissions:
         - space_id
         - user_id
       filter:
-        _or:
+        _and:
           - space:
-              profiles:
-                user_id:
-                  _eq: X-Hasura-User-Id
+              deleted:
+                _eq: false
+          - _or:
+              - space:
+                  profiles:
+                    user_id:
+                      _eq: X-Hasura-User-Id
       allow_aggregations: true
 update_permissions:
   - role: user

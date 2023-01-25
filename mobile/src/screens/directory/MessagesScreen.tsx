@@ -136,10 +136,6 @@ export function MessagesScreen() {
               return null;
             }
 
-            const { first_name, last_name } = otherProfileEntry.profile.user;
-            const image =
-              otherProfileEntry.profile.profile_listing?.profile_listing_image
-                ?.image;
             const latestMessage = room.latest_chat_message[0];
 
             const shouldNotHighlight =

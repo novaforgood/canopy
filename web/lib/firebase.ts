@@ -12,6 +12,7 @@ import {
   User,
   ErrorFn,
   CompleteFn,
+  OAuthProvider,
 } from "firebase/auth";
 
 import { requireEnv } from "./env";
@@ -49,6 +50,12 @@ export const onAuthStateChanged = (
 const googleOauthProvider = new GoogleAuthProvider();
 export const signInWithGoogle = () =>
   signInWithPopup(auth, googleOauthProvider);
+
+// Sign in with Apple
+const appleOauthProvider = new OAuthProvider("apple.com");
+appleOauthProvider.addScope("email");
+appleOauthProvider.addScope("name");
+export const signInWithApple = () => signInWithPopup(auth, appleOauthProvider);
 
 // Sign out
 export const signOut = () => firebaseSignOut(auth);

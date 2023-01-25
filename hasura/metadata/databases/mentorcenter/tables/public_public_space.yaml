@@ -8,11 +8,15 @@ select_permissions:
         - name
         - slug
         - id
-      filter: {}
+      filter:
+        deleted:
+          _eq: false
   - role: user
     permission:
       columns:
         - name
         - slug
         - id
-      filter: {}
+      filter:
+        deleted:
+          _eq: false

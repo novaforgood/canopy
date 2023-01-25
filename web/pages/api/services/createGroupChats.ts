@@ -95,7 +95,8 @@ export default applyMiddleware({
   if (profilesError || !profilesData?.profile) {
     throw makeApiError(profilesError?.message ?? "Profiles query error");
   }
-  const allProfiles = profilesData.profile;
+  const allProfiles = profilesData.profile.filter((profile) => !!profile.user);
+
   if (allProfiles.length < groupSize) {
     throw makeApiFail(
       `Need at least ${groupSize} available members to create groups of size ${groupSize}`
@@ -124,7 +125,7 @@ export default applyMiddleware({
   }
 
   const promises = profileGroups.map(async (group) => {
-    const names = group.map((profile) => `${profile.user.first_name}`);
+    const names = group.map((profile) => `${profile.user?.first_name}`);
     const conversationStarter =
       CONVERSATION_STARTERS[
         Math.floor(Math.random() * CONVERSATION_STARTERS.length)
@@ -160,7 +161,7 @@ export default applyMiddleware({
     return group.map(async (profile) => {
       const otherMembers = group.filter((p) => p.id !== profile.id);
       const otherMemberNames = makeListSentence(
-        otherMembers.map((p) => `${p.user.first_name}`)
+        otherMembers.map((p) => `${p.user?.first_name}`)
       );
 
       await sendEmail({
@@ -169,14 +170,18 @@ export default applyMiddleware({
         dynamicTemplateData({ space }) {
           return {
             groupMemberNames: otherMemberNames,
-            groupMemberProfiles: otherMembers.map((p) => ({
-              firstName: p.user.first_name ?? "",
-              lastName: p.user.last_name ?? "",
-              email: p.user.email,
-              headline: p.profile_listing?.headline ?? "",
-              profilePicUrl:
-                p.profile_listing?.profile_listing_image?.image.url ?? "",
-            })),
+            groupMemberProfiles: otherMembers.map((p) => {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              const user = p.user!; // Guaranteed to exist by the query
+              return {
+                firstName: user.first_name ?? "",
+                lastName: user.last_name ?? "",
+                email: user.email,
+                headline: p.profile_listing?.headline ?? "",
+                profilePicUrl:
+                  p.profile_listing?.profile_listing_image?.image.url ?? "",
+              };
+            }),
 
             viewGroupChatUrl: `${HOST_URL}/space/${space.slug}/chat/${data?.insert_chat_room_one?.id}`,
           };

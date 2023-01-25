@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   ColumnDef,
@@ -15,18 +15,11 @@ import {
   useAggregateProfilesQuery,
   useChatIntroDataQuery,
   useChatIntrosQuery,
-  useUpdateSpaceAttributesMutation,
-  useUpdateSpaceMutation,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import {
-  PrivacySettings,
-  usePrivacySettings,
-} from "../../hooks/usePrivacySettings";
-import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { getCurrentUser } from "../../lib/firebase";
+import { getFullNameOfUser } from "../../lib/user";
 import { Button, Select, Text } from "../atomic";
-import { CheckBox } from "../atomic/CheckBox";
 import { Table } from "../common/Table";
 
 type ChatIntro = ChatIntrosQuery["chat_intro"][number];
@@ -76,8 +69,7 @@ export function ChatIntroductions() {
       },
       {
         id: "created_by",
-        accessorFn: (row) =>
-          `${row.creator_profile.user.first_name} ${row.creator_profile.user.last_name}`,
+        accessorFn: (row) => getFullNameOfUser(row.creator_profile.user),
         cell: (info) => info.getValue(),
         header: () => <span>created by</span>,
       },

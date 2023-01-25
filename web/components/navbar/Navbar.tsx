@@ -235,12 +235,14 @@ function DesktopNavbar() {
           {fetchingCurrentProfile ? (
             <LoadingPlaceholderRect className="h-10 w-64" />
           ) : !isMember ? (
-            <img
-              src={"/assets/canopy_logo.svg"}
-              className="h-10"
-              alt="Canopy Logo"
-              draggable={false}
-            />
+            <Link href="/" passHref>
+              <img
+                src={"/assets/canopy_logo.svg"}
+                className="h-10 cursor-pointer"
+                alt="Canopy Logo"
+                draggable={false}
+              />
+            </Link>
           ) : (
             // <SpaceDropdown />
             <Text variant="heading4">{currentSpace?.name}</Text>

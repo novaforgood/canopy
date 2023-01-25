@@ -1,6 +1,7 @@
 src/generated
 .env
 dist
+*.tsbuildinfo
 
 # OSX
 #

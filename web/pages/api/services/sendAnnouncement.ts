@@ -55,8 +55,10 @@ export default applyMiddleware({
     _user_attr_filter: { disableEmailNotifications: true },
   });
   const emails = emailQueryData?.profile
-    .filter((profile) => profile.user.type == User_Type_Enum.User)
-    .map((profile) => profile.user.email);
+    // Filter out deleted profiles
+    .filter((profile) => !!profile.user)
+    .filter((profile) => profile.user?.type == User_Type_Enum.User)
+    .map((profile) => profile.user?.email) as string[]; // Email field is guaranteed to be present
 
   const emailTemplateParams = {
     space_slug: space?.slug,

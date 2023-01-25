@@ -12,13 +12,14 @@ import { TextInput } from "../components/inputs/TextInput";
 import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
 import { useUserQuery } from "../generated/graphql";
-import { BxlGoogle } from "../generated/icons/logos";
+import { BxlApple, BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { useUserData } from "../hooks/useUserData";
 import { queryToString } from "../lib";
 import { handleError } from "../lib/error";
 import {
+  signInWithApple,
   signInWithEmailAndPassword,
   signInWithGoogle,
   signOut,
@@ -28,6 +29,7 @@ import { CustomPage } from "../types";
 const LoginPage: CustomPage = () => {
   const [signingIn, setSigningIn] = useState(false);
   const [signingInWithGoogle, setSigningInWithGoogle] = useState(false);
+  const [signingInWithApple, setSigningInWithApple] = useState(false);
 
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
@@ -50,26 +52,15 @@ const LoginPage: CustomPage = () => {
     setSigningInWithGoogle(true);
     signInWithGoogle()
       .then(async (userCred) => {
-        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
-
-        if (isNewUser) {
-          // User has never signed in before
-          await userCred.user.delete();
-          toast.error("Account not created yet. Please sign up first!");
-        } else if (!userCred.user.emailVerified) {
-          // User has signed in before but has not verified email
-          router.push({ pathname: "/verify", query: router.query });
-        } else {
-          const idToken = await userCred.user.getIdToken();
-          await fetch(`/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${idToken}`,
-              "Content-Type": "application/json",
-            },
-          });
-          await redirectUsingQueryParam("/");
-        }
+        const idToken = await userCred.user.getIdToken();
+        await fetch(`/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        await redirectUsingQueryParam("/");
       })
       .catch((e) => {
         toast.error(e.message);
@@ -77,6 +68,30 @@ const LoginPage: CustomPage = () => {
       })
       .finally(() => {
         setSigningInWithGoogle(false);
+      });
+  };
+
+  const appleSignIn = async () => {
+    // sign in with apple and upsert data to our DB
+    setSigningInWithApple(true);
+    signInWithApple()
+      .then(async (userCred) => {
+        const idToken = await userCred.user.getIdToken();
+        await fetch(`/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        await redirectUsingQueryParam("/");
+      })
+      .catch((e) => {
+        toast.error(e.message);
+        handleError(e);
+      })
+      .finally(() => {
+        setSigningInWithApple(false);
       });
   };
 
@@ -110,7 +125,7 @@ const LoginPage: CustomPage = () => {
 
   return (
     <div className="h-screen">
-      {signingIn || signingInWithGoogle ? (
+      {signingIn || signingInWithGoogle || signingInWithApple ? (
         <TwoThirdsPageLayout>
           <div className="flex h-screen flex-col items-start justify-center px-16">
             <Text variant="heading1">Signing in...</Text>
@@ -119,6 +134,14 @@ const LoginPage: CustomPage = () => {
                 <div className="h-8"></div>
                 <Text>
                   Sign in to your Google account on the popup to complete login.
+                </Text>
+              </>
+            )}
+            {signingInWithApple && (
+              <>
+                <div className="h-8"></div>
+                <Text>
+                  Sign in to your Apple account on the popup to complete login.
                 </Text>
               </>
             )}
@@ -156,6 +179,14 @@ const LoginPage: CustomPage = () => {
               <BxlGoogle className="h-6 w-6" />
               Continue with Google
             </button>
+            {/* <div className="h-4"></div>
+            <button
+              className="flex w-full items-center justify-center gap-4 rounded-md border py-2 transition hover:bg-gray-50 active:translate-y-px sm:w-96"
+              onClick={appleSignIn}
+            >
+              <BxlApple className="h-6 w-6" />
+              Continue with Apple
+            </button> */}
 
             <div className="h-8"></div>
             <div className="flex w-full select-none items-center gap-4 sm:w-96">

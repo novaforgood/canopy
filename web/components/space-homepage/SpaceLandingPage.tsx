@@ -22,6 +22,7 @@ import {
   selectedTagIdsAtom,
   TagSelection,
 } from "../../lib/jotai";
+import { getFullNameOfUser } from "../../lib/user";
 import { Button, Text } from "../atomic";
 import { ProfileCard } from "../ProfileCard";
 
@@ -180,7 +181,7 @@ export function SpaceLandingPage() {
               strategy={rectSortingStrategy}
             >
               {filteredProfileListings.map((listing, idx) => {
-                const { first_name, last_name } = listing.profile.user;
+                const fullName = getFullNameOfUser(listing.profile.user);
 
                 const sortedTags = listing.profile_listing_to_space_tags
                   .map((tag) => tag.space_tag)
@@ -203,7 +204,7 @@ export function SpaceLandingPage() {
                         `${router.asPath}/profile/${listing.profile.id}`
                       );
                     }}
-                    name={`${first_name} ${last_name}`}
+                    name={fullName}
                     imageUrl={listing.profile_listing_image?.image.url}
                     subtitle={listing.headline}
                     descriptionTitle={"Topics"}

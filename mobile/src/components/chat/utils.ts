@@ -1,4 +1,9 @@
 import { User_Type_Enum } from "../../generated/graphql";
+import {
+  getFullNameOfUser,
+  getFirstNameOfUser,
+  getLastNameOfUser,
+} from "../../lib/user";
 
 import { ChatRoom, ProfileToChatRoom } from "./types";
 
@@ -6,7 +11,7 @@ export type ChatParticipant = {
   fullName: string;
   firstName: string;
   lastName: string;
-  userType: User_Type_Enum;
+  userType: User_Type_Enum | null;
   headline?: string;
   profileImage?: {
     url: string;
@@ -20,14 +25,14 @@ export function getChatParticipants(
   ptcrs: ProfileToChatRoom[]
 ): ChatParticipant[] {
   return ptcrs.map((ptcr) => ({
-    fullName: `${ptcr.profile.user.first_name} ${ptcr.profile.user.last_name}`,
-    firstName: ptcr.profile.user.first_name ?? "",
-    lastName: ptcr.profile.user.last_name ?? "",
-    userType: ptcr.profile.user.type,
+    fullName: getFullNameOfUser(ptcr.profile.user),
+    firstName: getFirstNameOfUser(ptcr.profile.user),
+    lastName: getLastNameOfUser(ptcr.profile.user),
+    userType: ptcr.profile.user?.type ?? null,
     headline: ptcr.profile.profile_listing?.headline ?? undefined,
     profileImage: ptcr.profile.profile_listing?.profile_listing_image?.image,
     profileId: ptcr.profile.id,
-    latestReadMessageId: ptcr.latest_read_chat_message_id,
+    latestReadMessageId: ptcr.latest_read_chat_message_id ?? null,
     id: ptcr.id,
   }));
 }

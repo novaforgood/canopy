@@ -15,6 +15,7 @@ import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useUserData } from "../hooks/useUserData";
 import { apiClient } from "../lib/apiClient";
+import { getFirstNameOfUser } from "../lib/user";
 import { NavigationProp } from "../navigation/types";
 
 export const defaultTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -103,6 +104,8 @@ export function MessageModal(props: MessageModalProps) {
     return null;
   }
 
+  const firstName = getFirstNameOfUser(profileData.profile_by_pk.user);
+
   return (
     <>
       <Modal
@@ -116,9 +119,7 @@ export function MessageModal(props: MessageModalProps) {
         <Box px={4} pt={8} width="100%">
           <Box flexDirection="column" alignItems="center">
             <Text variant="heading4">
-              {createdChatRoomId
-                ? "Message sent!"
-                : `Message ${profileData.profile_by_pk.user.first_name}`}
+              {createdChatRoomId ? "Message sent!" : `Message ${firstName}`}
             </Text>
 
             <Box mt={8}></Box>
@@ -126,8 +127,8 @@ export function MessageModal(props: MessageModalProps) {
             <Box flexDirection="column" width="100%">
               {createdChatRoomId ? (
                 <Text>
-                  {profileData.profile_by_pk.user.first_name} will receive a
-                  notification of your message request.
+                  {firstName} will receive a notification of your message
+                  request.
                 </Text>
               ) : (
                 <TextInput

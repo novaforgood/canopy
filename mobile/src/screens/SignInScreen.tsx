@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 
+import {
+  AppleAuthenticationScope,
+  signInAsync,
+} from "expo-apple-authentication";
 import { AuthSessionResult } from "expo-auth-session";
 import { useIdTokenAuthRequest } from "expo-auth-session/providers/google";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
-import { getAdditionalUserInfo, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAdditionalUserInfo,
+  GoogleAuthProvider,
+  OAuthProvider,
+} from "firebase/auth";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -22,7 +30,7 @@ import { TextInput } from "../components/atomic/TextInput";
 import { CustomKeyboardAvoidingView } from "../components/CustomKeyboardAvoidingView";
 import { toast } from "../components/CustomToast";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-import { BxlGoogle } from "../generated/icons/logos";
+import { BxlApple, BxlGoogle } from "../generated/icons/logos";
 import {
   signInWithCredential,
   signInWithEmailAndPassword,
@@ -59,26 +67,13 @@ export function SignInScreen({
     );
 
     return signInWithCredential(credential).then(async (userCred) => {
-      const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
-
-      if (isNewUser) {
-        // User has never signed in before
-        await userCred.user.delete();
-        throw new Error("Account not created yet. Please sign up first!");
-      } else if (!userCred.user.emailVerified) {
-        // User has signed in before but has not verified email
-        throw new Error("Please verify your email before signing in!");
-      } else {
-        const idToken = await userCred.user.getIdToken();
-        return fetch(`${HOST_URL}/api/auth/upsertUserData`, {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${idToken}`,
-          },
-        });
-
-        // await redirectUsingQueryParam("/");
-      }
+      const idToken = await userCred.user.getIdToken();
+      return fetch(`${HOST_URL}/api/auth/upsertUserData`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${idToken}`,
+        },
+      });
     });
   }, []);
 
@@ -102,6 +97,43 @@ export function SignInScreen({
         } else {
           throw new Error("Google sign in failed");
         }
+      })
+      .catch((e) => {
+        toast.error(e.message);
+        signOut();
+        setSigningIn(false);
+      });
+  };
+
+  const appleSignIn = async () => {
+    setSigningIn(true);
+    const nonce = Math.random().toString(36).substring(2, 10);
+    await signInAsync({
+      requestedScopes: [
+        AppleAuthenticationScope.FULL_NAME,
+        AppleAuthenticationScope.EMAIL,
+      ],
+    })
+      .then((appleCredential) => {
+        const { identityToken } = appleCredential;
+        const provider = new OAuthProvider("apple.com");
+
+        if (!identityToken) {
+          throw new Error("Missing `identityToken`");
+        }
+        const credential = provider.credential({
+          idToken: identityToken,
+          rawNonce: nonce,
+        });
+        return signInWithCredential(credential).then(async (userCred) => {
+          const idToken = await userCred.user.getIdToken();
+          return fetch(`${HOST_URL}/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${idToken}`,
+            },
+          });
+        });
       })
       .catch((e) => {
         toast.error(e.message);
@@ -189,6 +221,25 @@ export function SignInScreen({
                 </Text>
               </Box>
             </TouchableOpacity>
+
+            <Box mt={4} />
+            <TouchableOpacity onPress={appleSignIn}>
+              <Box
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="center"
+                py={2}
+                borderRadius="md"
+                borderWidth={1}
+                borderColor="black"
+              >
+                <BxlApple color="black" height={24} width={24} />
+                <Text variant="body1" ml={2}>
+                  Sign in with Apple
+                </Text>
+              </Box>
+            </TouchableOpacity>
+
             <Box
               my={8}
               flexDirection="row"
