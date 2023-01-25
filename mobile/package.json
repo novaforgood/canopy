@@ -51,7 +51,8 @@
     "react-native-svg": "^12.3.0",
     "react-native-toast-message": "^2.1.5",
     "react-native-web": "~0.18.7",
-    "urql": "^3.0.3"
+    "urql": "^3.0.3",
+    "expo-apple-authentication": "~4.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
