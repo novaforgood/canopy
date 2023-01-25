@@ -179,14 +179,14 @@ const LoginPage: CustomPage = () => {
               <BxlGoogle className="h-6 w-6" />
               Continue with Google
             </button>
-            <div className="h-4"></div>
+            {/* <div className="h-4"></div>
             <button
               className="flex w-full items-center justify-center gap-4 rounded-md border py-2 transition hover:bg-gray-50 active:translate-y-px sm:w-96"
               onClick={appleSignIn}
             >
               <BxlApple className="h-6 w-6" />
               Continue with Apple
-            </button>
+            </button> */}
 
             <div className="h-8"></div>
             <div className="flex w-full select-none items-center gap-4 sm:w-96">
