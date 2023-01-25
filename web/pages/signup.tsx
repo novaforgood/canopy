@@ -10,13 +10,14 @@ import { Button, Input, Text } from "../components/atomic";
 import { TextInput } from "../components/inputs/TextInput";
 import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
-import { BxlGoogle } from "../generated/icons/logos";
+import { BxlApple, BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import { queryToString } from "../lib";
 import { handleError } from "../lib/error";
 import {
   createUserWithEmailAndPassword,
+  signInWithApple,
   signInWithGoogle,
   signOut,
 } from "../lib/firebase";
@@ -34,8 +35,57 @@ const SignUpPage: CustomPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [signingInWithGoogle, setSigningInWithGoogle] = useState(false);
+  const [signingInWithApple, setSigningInWithApple] = useState(false);
 
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
+
+  const googleSignIn = async () => {
+    // sign in with google and upsert data to our DB
+    setSigningInWithGoogle(true);
+    signInWithGoogle()
+      .then(async (userCred) => {
+        const idToken = await userCred.user.getIdToken();
+        await fetch(`/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        await redirectUsingQueryParam("/");
+      })
+      .catch((e) => {
+        toast.error(e.message);
+        handleError(e);
+      })
+      .finally(() => {
+        setSigningInWithGoogle(false);
+      });
+  };
+
+  const appleSignIn = async () => {
+    // sign in with apple and upsert data to our DB
+    setSigningInWithApple(true);
+    signInWithApple()
+      .then(async (userCred) => {
+        const idToken = await userCred.user.getIdToken();
+        await fetch(`/api/auth/upsertUserData`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        await redirectUsingQueryParam("/");
+      })
+      .catch((e) => {
+        toast.error(e.message);
+        handleError(e);
+      })
+      .finally(() => {
+        setSigningInWithApple(false);
+      });
+  };
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -137,44 +187,18 @@ const SignUpPage: CustomPage = () => {
             <div className="h-8"></div>
             <button
               className="flex w-full items-center justify-center gap-4 rounded-md border py-2 transition hover:bg-gray-50 active:translate-y-px sm:w-96"
-              onClick={() => {
-                setSigningInWithGoogle(true);
-                signInWithGoogle()
-                  .then(async (userCred) => {
-                    const isNewUser =
-                      getAdditionalUserInfo(userCred)?.isNewUser;
-
-                    if (isNewUser) {
-                      const idToken = await userCred.user.getIdToken();
-                      fetch(`/api/auth/upsertUserData`, {
-                        method: "POST",
-                        headers: {
-                          authorization: `Bearer ${idToken}`,
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ updateName: true }),
-                      }).then(() => {
-                        redirectUsingQueryParam("/");
-                      });
-                    } else {
-                      // User already has an account
-                      toast.error(
-                        "An account with this email already exists. Please log in."
-                      );
-                      signOut();
-                    }
-                  })
-                  .catch((e) => {
-                    toast.error(e.message);
-                    handleError(e);
-                  })
-                  .finally(() => {
-                    setSigningInWithGoogle(false);
-                  });
-              }}
+              onClick={googleSignIn}
             >
               <BxlGoogle className="h-6 w-6" />
               Continue with Google
+            </button>
+            <div className="h-4"></div>
+            <button
+              className="flex w-full items-center justify-center gap-4 rounded-md border py-2 transition hover:bg-gray-50 active:translate-y-px sm:w-96"
+              onClick={appleSignIn}
+            >
+              <BxlApple className="h-6 w-6" />
+              Continue with Apple
             </button>
 
             <div className="h-8"></div>
