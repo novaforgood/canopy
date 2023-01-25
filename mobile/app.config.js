@@ -1,7 +1,7 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
-const runtimeVersion = 5; // Increase by 1 every time your update requires a new native build
+const runtimeVersion = 6; // Increase by 1 every time your update requires a new native build
 const version = `1.0.${runtimeVersion}`; // Version that the user sees
 const config = {
   name: process.env.APP_NAME,
@@ -55,6 +55,7 @@ export default {
       image: "./assets/images/splash.png",
       backgroundColor: "#D8DF7B",
     },
+    plugins: ["expo-apple-authentication"],
     ios: {
       bundleIdentifier: config.appId,
       buildNumber: runtimeVersion.toString(),
