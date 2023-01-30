@@ -46,7 +46,7 @@ WebBrowser.maybeCompleteAuthSession();
 
 export function SignUpScreen({
   navigation,
-}: StackScreenProps<RootStackParamList, "SignIn">) {
+}: StackScreenProps<RootStackParamList, "SignUp">) {
   const [signingUp, setSigningUp] = useState(false);
 
   const [request, response, promptAsync] = useIdTokenAuthRequest({

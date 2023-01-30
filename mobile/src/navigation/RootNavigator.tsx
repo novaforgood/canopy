@@ -19,6 +19,7 @@ import {
   showNavDrawerAtom,
 } from "../lib/jotai";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
+import { AccountSettingsScreen } from "../screens/AccountSettingsScreen";
 import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LoadingScreen } from "../screens/LoadingScreen";
@@ -154,12 +155,18 @@ export function RootNavigator() {
                   component={HomeScreen}
                   options={{ title: "Canopy Home" }}
                 />
+
                 <RootStack.Screen
                   name="SpaceHome"
                   component={SpaceNavigator}
                   options={({ route }) => ({
                     header: () => null,
                   })}
+                />
+                <RootStack.Screen
+                  name="AccountSettings"
+                  component={AccountSettingsScreen}
+                  options={{ title: "Account Settings" }}
                 />
               </>
             )}

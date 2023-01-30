@@ -11,6 +11,7 @@ export type RootStackParamList = {
   SignUp: undefined;
   VerifyEmail: undefined;
   Home: undefined;
+  AccountSettings: undefined;
   SpaceHome: {
     spaceSlug: string;
   };

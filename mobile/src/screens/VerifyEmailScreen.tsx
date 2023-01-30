@@ -23,7 +23,7 @@ const sleep = async (ms: number) =>
 
 export function VerifyEmailScreen({
   navigation,
-}: StackScreenProps<RootStackParamList, "SignIn">) {
+}: StackScreenProps<RootStackParamList, "VerifyEmail">) {
   const [loadingResendVerification, setLoadingResendVerification] =
     useState(false);
 
