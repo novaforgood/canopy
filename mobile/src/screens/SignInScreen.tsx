@@ -157,10 +157,15 @@ export function SignInScreen({
     setSigningIn(true);
     signInWithEmailAndPassword(email, password)
       .then(async (userCred) => {
+        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
+        if (isNewUser) {
+          throw new Error("Please sign up first!");
+        }
         if (!userCred.user.emailVerified) {
           // router.push({ pathname: "/verify", query: router.query });
           // Linking.openURL(`${HOST_URL}/verify`)
-          throw new Error("Please verify your email first!");
+          // throw new Error("Please verify your email first!");
+          toast.error("Please verify your email first!");
         } else {
           const tokenResult = await userCred.user.getIdTokenResult();
 
@@ -171,7 +176,6 @@ export function SignInScreen({
               ["Content-Type"]: "application/json",
             },
           });
-          // await redirectUsingQueryParam("/");
         }
       })
       .catch((e) => {

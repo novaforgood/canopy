@@ -85,6 +85,9 @@ export function RootNavigator() {
               borderBottomWidth={1}
             />
           ),
+          contentStyle: {
+            // backgroundColor: theme.colors.olive100,
+          },
           headerTintColor: theme.colors.green800,
           headerRight: () => (
             <>
@@ -131,28 +134,30 @@ export function RootNavigator() {
           </>
         ) : (
           <>
-            {!emailVerified && (
+            {!emailVerified ? (
               <RootStack.Screen
                 name="VerifyEmail"
                 options={{
                   title: "Verify Email",
-                  headerRight: undefined,
                 }}
                 component={VerifyEmailScreen}
               />
+            ) : (
+              <>
+                <RootStack.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{ title: "Canopy Home" }}
+                />
+                <RootStack.Screen
+                  name="SpaceHome"
+                  component={SpaceNavigator}
+                  options={({ route }) => ({
+                    header: () => null,
+                  })}
+                />
+              </>
             )}
-            <RootStack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{ title: "Canopy Home" }}
-            />
-            <RootStack.Screen
-              name="SpaceHome"
-              component={SpaceNavigator}
-              options={({ route }) => ({
-                header: () => null,
-              })}
-            />
           </>
         )}
       </RootStack.Navigator>

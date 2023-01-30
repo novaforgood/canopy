@@ -35,7 +35,6 @@ import { BxlApple, BxlGoogle } from "../generated/icons/logos";
 import {
   createUserWithEmailAndPassword,
   signInWithCredential,
-  signInWithEmailAndPassword,
   signOut,
 } from "../lib/firebase";
 import { HOST_URL } from "../lib/url";
@@ -179,21 +178,14 @@ export function SignUpScreen({
             displayName: name,
           });
 
-          if (userCred.user.emailVerified) {
-            await fetch(`/api/auth/upsertUserData`, {
-              method: "POST",
-              headers: {
-                authorization: `Bearer ${tokenResult.token}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ updateName: true }),
-            }).then(() => {
-              // return redirectUsingQueryParam("/");
-            });
-          } else {
-            // console.log(router.query);
-            // await router.push({ pathname: "/verify", query: router.query });
-          }
+          await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${tokenResult.token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ updateName: true }),
+          });
         }
       })
       .catch((e) => {
