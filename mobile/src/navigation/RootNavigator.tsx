@@ -13,7 +13,11 @@ import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-import { sessionAtom, showNavDrawerAtom } from "../lib/jotai";
+import {
+  forceRootNavRerenderAtom,
+  sessionAtom,
+  showNavDrawerAtom,
+} from "../lib/jotai";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
 import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { HomeScreen } from "../screens/HomeScreen";
@@ -32,6 +36,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
   const { refreshSession } = useRefreshSession();
+  const [rerenderHack] = useAtom(forceRootNavRerenderAtom);
 
   ///// Force update JWT if it will expire in 3 minutes /////
   const refreshSessionIfNeeded = useCallback(async () => {

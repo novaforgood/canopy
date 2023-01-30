@@ -12,7 +12,7 @@ import { toast } from "../components/CustomToast";
 import { BxRefresh } from "../generated/icons/regular";
 import { useForegroundEffect } from "../hooks/useForegroundEffect";
 import { getCurrentUser } from "../lib/firebase";
-import { sessionAtom } from "../lib/jotai";
+import { forceRootNavRerenderAtom, sessionAtom } from "../lib/jotai";
 import { HOST_URL } from "../lib/url";
 
 import type { RootStackParamList } from "../navigation/types";
@@ -31,7 +31,7 @@ export function VerifyEmailScreen({
 
   const currentUser = getCurrentUser();
 
-  const [session, setSession] = useAtom(sessionAtom);
+  const [_, setRootNavRerenderNonce] = useAtom(forceRootNavRerenderAtom);
 
   const navigateIfVerified = async () => {
     const currentUser = getCurrentUser();
@@ -45,7 +45,7 @@ export function VerifyEmailScreen({
         await sleep(500);
         // TODO: Make this less hacky?
         // This is a hack to force the app to re-render the RootNavigator
-        setSession((prev) => prev);
+        setRootNavRerenderNonce((nonce) => nonce + 1);
       }
     }
   };
