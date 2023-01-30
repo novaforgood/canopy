@@ -20,6 +20,8 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { LoadingScreen } from "../screens/LoadingScreen";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { SignInScreen } from "../screens/SignInScreen";
+import { SignUpScreen } from "../screens/SignUpScreen";
+import { VerifyEmailScreen } from "../screens/VerifyEmailScreen";
 import { Theme } from "../theme";
 
 import { SpaceBottomTabNavigator } from "./SpaceBottomTabNavigator";
@@ -61,6 +63,9 @@ export function RootNavigator() {
   const isLoggedIn = useIsLoggedIn();
 
   const theme = useTheme<Theme>();
+
+  const currentUser = getCurrentUser();
+  const emailVerified = currentUser?.emailVerified ?? false;
 
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
 
@@ -106,16 +111,36 @@ export function RootNavigator() {
             options={{ headerShown: false, animation: "fade" }}
           />
         ) : !isLoggedIn ? (
-          <RootStack.Screen
-            name="SignIn"
-            options={{
-              title: "Sign in",
-              headerRight: undefined,
-            }}
-            component={SignInScreen}
-          />
+          <>
+            <RootStack.Screen
+              name="SignIn"
+              options={{
+                title: "Sign in",
+                headerRight: undefined,
+              }}
+              component={SignInScreen}
+            />
+            <RootStack.Screen
+              name="SignUp"
+              options={{
+                title: "Sign up",
+                headerRight: undefined,
+              }}
+              component={SignUpScreen}
+            />
+          </>
         ) : (
           <>
+            {!emailVerified && (
+              <RootStack.Screen
+                name="VerifyEmail"
+                options={{
+                  title: "Verify Email",
+                  headerRight: undefined,
+                }}
+                component={VerifyEmailScreen}
+              />
+            )}
             <RootStack.Screen
               name="Home"
               component={HomeScreen}

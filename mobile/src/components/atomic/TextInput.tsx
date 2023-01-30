@@ -90,6 +90,7 @@ function extractProps(originalProps: TextInputProps) {
     top,
     bottom,
     alignSelf,
+    flex,
     ...textInputProps
   } = rest;
 
@@ -109,6 +110,7 @@ function extractProps(originalProps: TextInputProps) {
     top,
     bottom,
     alignSelf,
+    flex,
   } as const;
 
   return { textInputProps, otherProps, containerProps } as const;

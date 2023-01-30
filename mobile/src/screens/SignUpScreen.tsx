@@ -12,6 +12,7 @@ import {
   getAdditionalUserInfo,
   GoogleAuthProvider,
   OAuthProvider,
+  updateProfile,
 } from "firebase/auth";
 import {
   Keyboard,
@@ -32,9 +33,9 @@ import { toast } from "../components/CustomToast";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { BxlApple, BxlGoogle } from "../generated/icons/logos";
 import {
+  createUserWithEmailAndPassword,
   signInWithCredential,
   signInWithEmailAndPassword,
-  signInWithGoogle,
   signOut,
 } from "../lib/firebase";
 import { HOST_URL } from "../lib/url";
@@ -44,10 +45,10 @@ import type { StackScreenProps } from "@react-navigation/stack";
 
 WebBrowser.maybeCompleteAuthSession();
 
-export function SignInScreen({
+export function SignUpScreen({
   navigation,
 }: StackScreenProps<RootStackParamList, "SignIn">) {
-  const [signingIn, setSigningIn] = useState(false);
+  const [signingUp, setSigningUp] = useState(false);
 
   const [request, response, promptAsync] = useIdTokenAuthRequest({
     iosClientId: Constants.expoConfig?.extra?.["FIREBASE_IOS_CLIENT_ID"] ?? "",
@@ -86,7 +87,7 @@ export function SignInScreen({
     if (response) {
       processResponse(response).catch((e) => {
         toast.error(e.message);
-        setSigningIn(false);
+        setSigningUp(false);
         signOut();
       });
     }
@@ -94,7 +95,7 @@ export function SignInScreen({
 
   const googleSignIn = async () => {
     // sign in with google and upsert data to our DB
-    setSigningIn(true);
+    setSigningUp(true);
     await promptAsync()
       .then((response) => {
         if (response.type === "success") {
@@ -106,12 +107,12 @@ export function SignInScreen({
       .catch((e) => {
         toast.error(e.message);
         signOut();
-        setSigningIn(false);
+        setSigningUp(false);
       });
   };
 
   const appleSignIn = async () => {
-    setSigningIn(true);
+    setSigningUp(true);
     const nonce = Math.random().toString(36).substring(2, 10);
     await signInAsync({
       requestedScopes: [
@@ -148,44 +149,73 @@ export function SignInScreen({
       .catch((e) => {
         toast.error(e.message);
         signOut();
-        setSigningIn(false);
+        setSigningUp(false);
       });
   };
 
-  const signInManually = async (email: string, password: string) => {
+  const signInManually = async (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ) => {
     // sign in using firebase auth and upsert to our DB
-    setSigningIn(true);
-    signInWithEmailAndPassword(email, password)
+    setSigningUp(true);
+    createUserWithEmailAndPassword(email, password)
       .then(async (userCred) => {
-        if (!userCred.user.emailVerified) {
-          // router.push({ pathname: "/verify", query: router.query });
-          // Linking.openURL(`${HOST_URL}/verify`)
-          throw new Error("Please verify your email first!");
-        } else {
-          const tokenResult = await userCred.user.getIdTokenResult();
+        const isNewUser = getAdditionalUserInfo(userCred)?.isNewUser;
 
-          await fetch(`${HOST_URL}/api/auth/upsertUserData`, {
-            method: "POST",
-            headers: {
-              authorization: `Bearer ${tokenResult.token}`,
-              ["Content-Type"]: "application/json",
-            },
+        if (!isNewUser) {
+          // If not a new user, sign them out and tell them to log in
+          toast.error(
+            "Account already exists under this email. Please log in."
+          );
+          await signOut();
+        } else {
+          const user = userCred.user;
+          const tokenResult = await user.getIdTokenResult();
+          const name = `${firstName} ${lastName}`;
+          await updateProfile(user, {
+            displayName: name,
           });
-          // await redirectUsingQueryParam("/");
+
+          if (userCred.user.emailVerified) {
+            await fetch(`/api/auth/upsertUserData`, {
+              method: "POST",
+              headers: {
+                authorization: `Bearer ${tokenResult.token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ updateName: true }),
+            }).then(() => {
+              // return redirectUsingQueryParam("/");
+            });
+          } else {
+            // console.log(router.query);
+            // await router.push({ pathname: "/verify", query: router.query });
+          }
         }
       })
       .catch((e) => {
-        toast.error(e.message);
+        if (e.message.includes("already-in-use")) {
+          toast.error(
+            "Account already exists under this email. Please log in."
+          );
+        } else {
+          toast.error(e.message);
+        }
         signOut();
       })
       .finally(() => {
-        setSigningIn(false);
+        setSigningUp(false);
       });
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
-  if (signingIn) {
+  if (signingUp) {
     return (
       <SafeAreaView>
         <Box
@@ -197,7 +227,7 @@ export function SignInScreen({
           <Box mb={4} height={40}>
             <LoadingSpinner />
           </Box>
-          <Text variant="body1">Signing in...</Text>
+          <Text variant="body1">Signing up...</Text>
         </Box>
       </SafeAreaView>
     );
@@ -213,7 +243,7 @@ export function SignInScreen({
             justifyContent="flex-end"
           >
             <Box mt={16}>
-              <Text variant="heading3">Sign in to Canopy</Text>
+              <Text variant="heading3">Sign up for Canopy</Text>
             </Box>
             <Box mt={8} />
             <TouchableOpacity onPress={googleSignIn}>
@@ -263,7 +293,24 @@ export function SignInScreen({
               </Text>
               <Box height={1} backgroundColor="gray600" flex={1}></Box>
             </Box>
+            <Box flexDirection="row" width="100%">
+              <TextInput
+                flex={1}
+                label="First Name"
+                value={firstName}
+                onChangeText={setFirstName}
+              />
+              <TextInput
+                ml={4}
+                flex={1}
+                label="Last Name"
+                value={lastName}
+                onChangeText={setLastName}
+              />
+            </Box>
+
             <TextInput
+              mt={4}
               label="Email"
               value={email}
               onChangeText={setEmail}
@@ -279,26 +326,12 @@ export function SignInScreen({
             <Button
               mt={8}
               onPress={() => {
-                signInManually(email, password);
+                signInManually(email, password, firstName, lastName);
               }}
             >
               Sign in
             </Button>
-            <Box mt={2}>
-              <Text variant="body1" color="gray800" mt={4}>
-                Don't have an account?{" "}
-                <Text
-                  variant="body1Medium"
-                  color="green700"
-                  textDecorationLine="underline"
-                  onPress={() => {
-                    navigation.navigate("SignUp");
-                  }}
-                >
-                  Sign up
-                </Text>
-              </Text>
-            </Box>
+
             <Box flex={1} />
           </Box>
         </TouchableWithoutFeedback>
