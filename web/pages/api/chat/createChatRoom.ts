@@ -13,6 +13,7 @@ import { sendEmail } from "../../../server/sendgrid";
 import { TemplateId } from "./../../../server/sendgrid";
 
 const HOST_URL = requireServerEnv("HOST_URL");
+const MOBILE_APP_SCHEME = requireServerEnv("MOBILE_APP_SCHEME");
 
 const createChatRoomSchema = z.object({
   receiverProfileIds: z.array(z.string()).min(1).max(5),
@@ -89,7 +90,7 @@ export default applyMiddleware({
         receiverProfileId: receiverProfileId,
         templateId: TemplateId.FirstChatRoomMessage,
         dynamicTemplateData: ({ space }) => ({
-          replyUrl: `${HOST_URL}/space/${space.slug}/chat/${chatRoomId}`,
+          replyUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat/${chatRoomId}`,
           message: firstMessage,
           spaceName: space.name,
         }),

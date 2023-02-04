@@ -4,7 +4,7 @@ const nextConfig = {
   redirects() {
     return [
       {
-        source: "/go/:path*",
+        source: "/go/:scheme/:path*",
         destination: "/:path*",
         permanent: false,
       },

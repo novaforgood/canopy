@@ -24,6 +24,7 @@ import {
 import { sendEmail, TemplateId } from "../../../server/sendgrid";
 
 const HOST_URL = requireServerEnv("HOST_URL");
+const MOBILE_APP_SCHEME = requireServerEnv("MOBILE_APP_SCHEME");
 
 const CONVERSATION_STARTERS = [
   "If you had to give a TED talk, what topic would it be on?",
@@ -184,7 +185,7 @@ export default applyMiddleware({
               };
             }),
 
-            viewGroupChatUrl: `${HOST_URL}/space/${space.slug}/chat/${data?.insert_chat_room_one?.id}`,
+            viewGroupChatUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat/${data?.insert_chat_room_one?.id}`,
           };
         },
       });
