@@ -2,6 +2,7 @@ import { ImgHTMLAttributes, SVGProps } from "react";
 
 import { useTheme } from "@shopify/restyle";
 import { Image, TouchableOpacity } from "react-native";
+import { ImageSourcePropType } from "react-native";
 import Lightbox from "react-native-lightbox";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, SvgProps } from "react-native-svg";
@@ -33,6 +34,7 @@ function UserSvg(props: SvgProps) {
 }
 
 export type ProfileImageProps = BoxProps & {
+  source?: ImageSourcePropType; // If provided, will override src
   src?: string | null;
   alt?: string;
   rounded?: boolean;
@@ -43,6 +45,7 @@ export type ProfileImageProps = BoxProps & {
 
 export function ProfileImage(props: ProfileImageProps) {
   const {
+    source,
     src,
     alt = "Profile",
     rounded = true,
@@ -55,13 +58,15 @@ export function ProfileImage(props: ProfileImageProps) {
   const theme = useTheme<Theme>();
 
   let image = null;
-  if (src) {
+  if (source || src) {
     image = (
       <Image
         style={{ width: "100%", height: "100%" }}
-        source={{
-          uri: src,
-        }}
+        source={
+          source ?? {
+            uri: src ?? "",
+          }
+        }
       />
     );
   } else {
@@ -82,7 +87,7 @@ export function ProfileImage(props: ProfileImageProps) {
   }
 
   let inside = null;
-  if (showLightbox && src) {
+  if (showLightbox && (src || source)) {
     inside = (
       <Lightbox
         renderHeader={(close: () => void) => (
@@ -99,9 +104,11 @@ export function ProfileImage(props: ProfileImageProps) {
               aspectRatio: 1,
               borderRadius: rounded ? theme.borderRadii.full : undefined,
             }}
-            source={{
-              uri: src,
-            }}
+            source={
+              source ?? {
+                uri: src ?? "",
+              }
+            }
           />
         )}
       >

@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 
 import { useDisclosure } from "@mantine/hooks";
+import { useRouter } from "next/router";
 
 import {
   useUpdateLatestReadAnnouncementMutation,
@@ -10,6 +11,7 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import {
   getFirstNameOfUser,
   getFullNameOfUser,
@@ -94,6 +96,18 @@ const AnnouncementList = () => {
 
   // "Create Announcement" Modal
   const [modalOpen, modalHandlers] = useDisclosure(false);
+
+  const router = useRouter();
+  const template = useQueryParam("template", "string");
+  const spaceSlug = useQueryParam("slug", "string");
+  useEffect(() => {
+    if (template === "chat-intros" && !modalOpen) {
+      modalHandlers.open();
+      router.replace(`/space/${spaceSlug}/announcements`, undefined, {
+        shallow: true,
+      });
+    }
+  }, [template, modalHandlers, router, modalOpen, spaceSlug]);
 
   return (
     <div>

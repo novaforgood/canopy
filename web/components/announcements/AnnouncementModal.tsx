@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import toast from "react-hot-toast";
 
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import { apiClient } from "../../lib/apiClient";
 import { Text } from "../atomic";
 import { RichTextInput } from "../inputs/RichTextInput";
@@ -21,6 +22,24 @@ export const AnnouncementModal = (props: AnnouncementModalProps) => {
 
   // rich text editor content
   const [announcementHTML, setAnnouncementHTML] = useState("");
+
+  const template = useQueryParam("template", "string");
+
+  useEffect(() => {
+    console.log(announcementHTML);
+  }, [announcementHTML]);
+  useEffect(() => {
+    if (!currentSpace) return;
+
+    if (template === "chat-intros") {
+      const settingsUrl = `${window.location.origin}/space/${currentSpace?.slug}/account/settings`;
+      // Announcement should say the admin plans to set up chat intros soon, explain what a chat intro is, and urge people to opt in through the settings.
+      // A chat intro essentially matches people into group chats with a conversation starter to get the conversation going.
+      setAnnouncementHTML(
+        `<p>Hi everyone,</p><p>I'm excited to announce that we're going to be setting up chat intros soon. Chat intros are a way to match people into group chats with a conversation starter to get the conversation going.</p><p>Chat intros are a great way to get to know people in the community and make new friends. If you're interested in participating, you can opt in through your account settings:</p><p><a href=${settingsUrl}>${settingsUrl}</a></p>`
+      );
+    }
+  }, [currentSpace, template]);
 
   return (
     <ActionModal

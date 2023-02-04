@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 
+import { Disclosure } from "@headlessui/react";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -7,6 +8,8 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import {
@@ -16,7 +19,9 @@ import {
   useChatIntroDataQuery,
   useChatIntrosQuery,
 } from "../../generated/graphql";
+import { BxChevronDown, BxChevronRight } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { useQueryParam } from "../../hooks/useQueryParam";
 import { getCurrentUser } from "../../lib/firebase";
 import { getFullNameOfUser } from "../../lib/user";
 import { Button, Select, Text } from "../atomic";
@@ -26,6 +31,8 @@ type ChatIntro = ChatIntrosQuery["chat_intro"][number];
 type ChatIntroData = ChatIntroDataQuery["chat_intro_data"][number];
 
 export function ChatIntroductions() {
+  const router = useRouter();
+  const spaceSlug = useQueryParam("slug", "string");
   const { currentSpace } = useCurrentSpace();
   const [{ data: profileAggregateData }] = useAggregateProfilesQuery({
     variables: {
@@ -64,8 +71,9 @@ export function ChatIntroductions() {
       {
         id: "created_at",
         accessorFn: (row) => row.created_at,
-        cell: (info) => new Date(info.getValue() as string).toLocaleString(),
-        header: () => <span>time sent</span>,
+        cell: (info) =>
+          format(new Date(info.getValue() as string), "MMM d, yyyy"),
+        header: () => <span>date</span>,
       },
       {
         id: "created_by",
@@ -75,7 +83,7 @@ export function ChatIntroductions() {
       },
       {
         id: "num_people_matched",
-        header: () => <span># people matched</span>,
+        header: () => <span># matched</span>,
         accessorFn: (row) => row.num_people_matched,
         cell: (info) => info.getValue(),
       },
@@ -93,10 +101,11 @@ export function ChatIntroductions() {
       },
       {
         id: "num_groups_with_msgs",
-        header: () => <span># groups w/msgs</span>,
-        accessorFn: (row) =>
-          chatIntrosDataMap[row.id]?.num_rooms_with_replies ?? 0,
-        cell: (info) => info.getValue(),
+        header: () => <span>reply rate</span>,
+        cell: (info) =>
+          `${
+            chatIntrosDataMap[info.row.original.id]?.num_rooms_with_replies ?? 0
+          }/${info.row.original.num_groups_created}`,
       },
     ],
     [chatIntrosDataMap]
@@ -124,28 +133,57 @@ export function ChatIntroductions() {
     groupSize !== null &&
     availableMembers >= groupSize;
 
+  const settingsUrl = `${window.location.origin}/space/${currentSpace?.slug}/account/settings`;
+
   return (
     <div className="">
-      <div className="py-4">
-        <Text>(UI/UX is a WIP pls forgive)</Text>
+      <div>
+        <Text variant="subheading2" medium>
+          Step 1: Invite members to opt in
+        </Text>
+        <div className="h-2"></div>
       </div>
+      <Text>
+        In order to be matched, members must first <Text bold>opt in</Text> in
+        their account settings. You can <Text bold>send an announcement</Text>{" "}
+        to invite members to opt in. Click below to access a pre-made template.
+      </Text>
+      <div className="h-2"></div>
+      <Button
+        variant="cta"
+        onClick={() => {
+          router.push(`/space/${spaceSlug}/announcements?template=chat-intros`);
+        }}
+      >
+        See announcement template
+      </Button>
+      <div className="h-4"></div>
       <div className="bg-lime-100 p-4">
         <Text variant="subheading2">
-          # available members: <b>{availableMembers ?? "--"}</b>
+          # opted-in members: <b>{availableMembers ?? "--"}</b>
         </Text>
         <div></div>
         <Text className="text-gray-700" variant="body2">
-          Members can opt in to intros in their profile settings.
+          Members can opt in to intros in their account settings at{" "}
+          <a href={settingsUrl} className="text-gray-700 hover:underline">
+            {settingsUrl}
+          </a>
         </Text>
       </div>
-      <div className="h-4"></div>
+      <div className="h-8"></div>
+      <div>
+        <Text variant="subheading2" medium>
+          Step 2: Create group chats
+        </Text>
+        <div className="h-2"></div>
+      </div>
       <Text>
         Select a group size, then click <b>Send Intros</b> to automatically
         create group chats and notify members that they have been matched. Each
         chat will begin with a conversation starter to help introduce members.
       </Text>
       <div className="h-4"></div>
-      <div className="flex items-center">
+      <div className="flex flex-wrap items-center">
         <Text>
           Match <b>{availableMembers ?? "--"}</b> members into{" "}
         </Text>
@@ -155,7 +193,7 @@ export function ChatIntroductions() {
           placeholder="Select group size..."
           options={[
             { label: "groups of 2", value: 2 },
-            { label: "group of 3", value: 3 },
+            { label: "groups of 3", value: 3 },
           ]}
           className="ml-2 w-56"
         ></Select>
@@ -201,9 +239,25 @@ export function ChatIntroductions() {
         </div>
       )}
       <div className="h-8"></div>
-      <Text variant="subheading1">Sent Intros</Text>
+      <div>
+        <Text variant="subheading2" medium>
+          Step 3: See results
+        </Text>
+        <div className="h-2"></div>
+      </div>
+      <Text>Once you send intros, you can see the results here.</Text>
       <div className="h-2"></div>
-      <Table table={table} />
+      <Disclosure>
+        <Disclosure.Button className="flex w-full items-center rounded-md bg-gray-100 p-2 py-2">
+          <Text variant="subheading1">View Sent Intros</Text>
+          <BxChevronDown className="ui-open:rotate-90 ui-open:transform h-6 w-6" />
+        </Disclosure.Button>
+        <Disclosure.Panel>
+          <div className="h-2"></div>
+          <Table table={table} />
+        </Disclosure.Panel>
+      </Disclosure>
+
       {chatIntros?.chat_intro.length === 0 && (
         <div className="p-2">
           <Text className="text-gray-700">
