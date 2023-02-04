@@ -13,13 +13,20 @@ import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-import { sessionAtom, showNavDrawerAtom } from "../lib/jotai";
+import {
+  forceRootNavRerenderAtom,
+  sessionAtom,
+  showNavDrawerAtom,
+} from "../lib/jotai";
 import { SecureStore, SecureStoreKey } from "../lib/secureStore";
+import { AccountSettingsScreen } from "../screens/AccountSettingsScreen";
 import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LoadingScreen } from "../screens/LoadingScreen";
 import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { SignInScreen } from "../screens/SignInScreen";
+import { SignUpScreen } from "../screens/SignUpScreen";
+import { VerifyEmailScreen } from "../screens/VerifyEmailScreen";
 import { Theme } from "../theme";
 
 import { SpaceBottomTabNavigator } from "./SpaceBottomTabNavigator";
@@ -30,6 +37,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
   const { refreshSession } = useRefreshSession();
+  const [rerenderHack] = useAtom(forceRootNavRerenderAtom);
 
   ///// Force update JWT if it will expire in 3 minutes /////
   const refreshSessionIfNeeded = useCallback(async () => {
@@ -62,6 +70,9 @@ export function RootNavigator() {
 
   const theme = useTheme<Theme>();
 
+  const currentUser = getCurrentUser();
+  const emailVerified = currentUser?.emailVerified ?? false;
+
   const [showDrawer, setShowDrawer] = useAtom(showNavDrawerAtom);
 
   const { updateChecked } = useExpoUpdate();
@@ -80,6 +91,9 @@ export function RootNavigator() {
               borderBottomWidth={1}
             />
           ),
+          contentStyle: {
+            // backgroundColor: theme.colors.olive100,
+          },
           headerTintColor: theme.colors.green800,
           headerRight: () => (
             <>
@@ -106,28 +120,56 @@ export function RootNavigator() {
             options={{ headerShown: false, animation: "fade" }}
           />
         ) : !isLoggedIn ? (
-          <RootStack.Screen
-            name="SignIn"
-            options={{
-              title: "Sign in",
-              headerRight: undefined,
-            }}
-            component={SignInScreen}
-          />
-        ) : (
           <>
             <RootStack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{ title: "Canopy Home" }}
+              name="SignIn"
+              options={{
+                title: "Sign in",
+                headerRight: undefined,
+              }}
+              component={SignInScreen}
             />
             <RootStack.Screen
-              name="SpaceHome"
-              component={SpaceNavigator}
-              options={({ route }) => ({
-                header: () => null,
-              })}
+              name="SignUp"
+              options={{
+                title: "Sign up",
+                headerRight: undefined,
+              }}
+              component={SignUpScreen}
             />
+          </>
+        ) : (
+          <>
+            {!emailVerified ? (
+              <RootStack.Screen
+                name="VerifyEmail"
+                options={{
+                  title: "Verify Email",
+                }}
+                component={VerifyEmailScreen}
+              />
+            ) : (
+              <>
+                <RootStack.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{ title: "Canopy Home" }}
+                />
+
+                <RootStack.Screen
+                  name="SpaceHome"
+                  component={SpaceNavigator}
+                  options={({ route }) => ({
+                    header: () => null,
+                  })}
+                />
+                <RootStack.Screen
+                  name="AccountSettings"
+                  component={AccountSettingsScreen}
+                  options={{ title: "Account Settings" }}
+                />
+              </>
+            )}
           </>
         )}
       </RootStack.Navigator>

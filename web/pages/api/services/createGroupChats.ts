@@ -106,6 +106,7 @@ export default applyMiddleware({
   // At this point, we have decided to proceed with creating the group chats.
   const profileGroups = groupIntoGroupsOfN(allProfiles, groupSize);
 
+  console.log(profileGroups);
   const { data: chatIntroData, error: insertChatIntroError } =
     await executeInsertChatIntroMutation({
       data: {

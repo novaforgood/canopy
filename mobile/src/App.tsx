@@ -127,7 +127,6 @@ function App() {
       // Whenever auth state changes, we no longer know what the session is.
       // We must wait for this handler to run to completion, resolving
       // the session to either authenticated or null.
-      setSession(undefined);
       refreshSession();
     });
 

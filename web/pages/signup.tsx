@@ -45,12 +45,14 @@ const SignUpPage: CustomPage = () => {
     signInWithGoogle()
       .then(async (userCred) => {
         const idToken = await userCred.user.getIdToken();
+        const shouldUpdateName = !!getAdditionalUserInfo(userCred)?.isNewUser;
         await fetch(`/api/auth/upsertUserData`, {
           method: "POST",
           headers: {
             authorization: `Bearer ${idToken}`,
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ updateName: shouldUpdateName }),
         });
         await redirectUsingQueryParam("/");
       })
@@ -69,12 +71,14 @@ const SignUpPage: CustomPage = () => {
     signInWithApple()
       .then(async (userCred) => {
         const idToken = await userCred.user.getIdToken();
+        const shouldUpdateName = !!getAdditionalUserInfo(userCred)?.isNewUser;
         await fetch(`/api/auth/upsertUserData`, {
           method: "POST",
           headers: {
             authorization: `Bearer ${idToken}`,
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ updateName: shouldUpdateName }),
         });
         await redirectUsingQueryParam("/");
       })

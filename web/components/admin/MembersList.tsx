@@ -210,7 +210,9 @@ export function MembersList() {
               items={[
                 {
                   label: "Make owner",
-                  hide: profile.user_id === currentSpace?.owner_id,
+                  hide:
+                    profile.user_id === currentSpace?.owner_id ||
+                    !profile.user_id,
                   onClick: () => {
                     if (!currentSpace?.id || !profile.user_id) {
                       return;

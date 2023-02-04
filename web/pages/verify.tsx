@@ -17,8 +17,6 @@ const sleep = async (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 function VerifyYourEmail() {
-  const router = useRouter();
-
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
 
   const [verified, setVerified] = useState(false);

@@ -111,6 +111,11 @@ export function InviteLinksList() {
         })}
       </div>
       <div className="h-8"></div>
+      <Text>
+        Select a link type, then choose to create a temporary or permanent
+        invite link.
+      </Text>
+      <div className="h-2"></div>
       <div className="flex flex-wrap items-center gap-2 sm:gap-4">
         <Select
           placeholder="Select link type"
@@ -144,7 +149,7 @@ export function InviteLinksList() {
             }
           }}
         >
-          Create Invite Link
+          Create Temporary Link
         </Button>
         <Button
           variant="cta"

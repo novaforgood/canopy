@@ -144,18 +144,15 @@ async function getSenderReceiverAndSpace(props: {
   const sender = senderResponse?.data?.profile_by_pk ?? null;
   const receiver = receiverResponse.data?.profile_by_pk ?? null;
 
-  if (!sender?.user) {
-    throw makeApiFail("Sender not found");
-  }
   if (!receiver || !receiver.user) {
     throw makeApiFail("No receiver for email");
   }
 
   const senderObject: SendgridProfile | null = sender
     ? {
-        firstName: sender.user.first_name ?? "",
-        lastName: sender.user.last_name ?? "",
-        email: sender.user.email ?? "",
+        firstName: sender.user?.first_name ?? "",
+        lastName: sender.user?.last_name ?? "",
+        email: sender.user?.email ?? "",
         headline: sender.profile_listing?.headline ?? "",
         profilePicUrl:
           sender.profile_listing?.profile_listing_image?.image.url ??
