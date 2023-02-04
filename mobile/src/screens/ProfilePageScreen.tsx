@@ -95,24 +95,17 @@ export function ProfilePageScreen({
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
-        <Box flexDirection="column" width="100%" backgroundColor="white">
-          <Box
-            backgroundColor="white"
-            px={4}
-            pt={8}
-            pb={8}
-            borderBottomWidth={1}
-            borderColor="green700"
-          >
-            <Box flexDirection="row" alignItems="center" mb={6}>
+        <Box flexDirection="column" width="100%">
+          <Box backgroundColor="gray50" px={4} pt={8} pb={8}>
+            <Box flexDirection="column" alignItems="center" mb={6}>
               <ProfileImage
                 showLightbox
                 src={listing?.profile_listing_image?.image.url}
                 alt={`${first_name} ${last_name}`}
-                height={120}
-                width={120}
+                height={150}
+                width={150}
               />
-              <Box mt={4} ml={6} flexDirection="column">
+              <Box mt={2} flexDirection="column" alignItems="center">
                 <Text
                   variant="heading4"
                   color="black"
@@ -128,7 +121,7 @@ export function ProfilePageScreen({
                   loading={fetchingProfileData}
                   loadingWidth={120}
                 >
-                  {listing?.headline}
+                  {listing?.headline ?? "‎"}
                 </Text>
               </Box>
             </Box>
@@ -137,7 +130,7 @@ export function ProfilePageScreen({
                 onPress={() => {
                   globalNavigation.navigate("Account");
                 }}
-                variant="outline"
+                variant="cta"
               >
                 Edit profile
               </Button>
@@ -159,7 +152,7 @@ export function ProfilePageScreen({
                   }
                 }}
                 disabled={isMyProfile}
-                variant="outline"
+                variant="cta"
               >
                 <Box flexDirection="row">
                   <Text variant="body1">Message</Text>
@@ -182,10 +175,9 @@ export function ProfilePageScreen({
             flexDirection="row"
             justifyContent="space-between"
             px={4}
-            py={4}
-            backgroundColor="green300"
-            borderBottomWidth={1}
-            borderBottomColor="green700"
+            pb={8}
+            pt={4}
+            backgroundColor="gray50"
           >
             <TouchableOpacity
               hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
@@ -194,7 +186,7 @@ export function ProfilePageScreen({
               }}
               disabled={prevDisabled}
             >
-              <Text color={prevDisabled ? "green500" : "green800"}>
+              <Text color={prevDisabled ? "gray500" : "black"}>
                 {"<"} Previous
               </Text>
             </TouchableOpacity>
@@ -206,85 +198,101 @@ export function ProfilePageScreen({
               }}
               disabled={nextDisabled}
             >
-              <Text color={nextDisabled ? "green500" : "green800"}>
-                Next {">"}
-              </Text>
+              <Text color={nextDisabled ? "gray500" : "black"}>Next {">"}</Text>
             </TouchableOpacity>
           </Box>
 
-          <Box
-            px={4}
-            pb={8}
-            flexDirection="column"
-            borderBottomWidth={1}
-            backgroundColor="lime100"
-            borderBottomColor="green700"
-          >
-            {listing?.profile_listing_responses.map((response) => {
-              return (
-                <Box key={response.id} mt={8}>
-                  <Text mb={1} variant="heading4" color="green800">
-                    {response.space_listing_question.title}
-                  </Text>
-                  <HtmlDisplay html={response.response_html} />
-                </Box>
-              );
-            })}
-          </Box>
-
-          <Box
-            flexDirection="column"
-            px={4}
-            pb={8}
-            borderBottomWidth={1}
-            borderBottomColor="green700"
-            backgroundColor="gray100"
-          >
-            {currentSpace?.space_tag_categories?.map((category) => {
-              const tags = category.space_tags.filter((tag) =>
-                profileTagIds.has(tag.id)
-              );
-              return (
-                <Box key={category.id} mt={8}>
-                  <Text variant="heading4" color="green800">
-                    {category.title}
-                  </Text>
-
-                  <Box mt={4} flexWrap="wrap" flexDirection="row">
-                    {tags.length > 0 ? (
-                      tags.map((tag) => {
-                        return (
-                          <Box mb={1} mr={1} key={tag.id}>
-                            <Tag text={tag.label ?? ""} />
-                          </Box>
-                        );
-                      })
-                    ) : (
-                      <Text variant="body1Italic" color="gray700">
-                        No tags
-                      </Text>
-                    )}
+          <Box backgroundColor="gray50">
+            <Box
+              m={4}
+              shadowColor="black"
+              shadowOffset={{ width: 0, height: 1 }}
+              shadowOpacity={0.1}
+              shadowRadius={2}
+              elevation={1}
+              borderRadius="md"
+              px={4}
+              pb={8}
+              flexDirection="column"
+              backgroundColor="white"
+            >
+              {listing?.profile_listing_responses.map((response) => {
+                return (
+                  <Box key={response.id} mt={8}>
+                    <Text mb={1} variant="heading4" color="green800">
+                      {response.space_listing_question.title}
+                    </Text>
+                    <HtmlDisplay html={response.response_html} />
                   </Box>
-                </Box>
-              );
-            })}
-          </Box>
-          <Box
-            mt={8}
-            pb={16}
-            px={4}
-            borderBottomWidth={1}
-            borderBottomColor="green700"
-          >
-            <Text variant="heading4" color="green800">
-              Profiles
-            </Text>
-            <Text my={4}>{email}</Text>
+                );
+              })}
+            </Box>
 
-            <ProfileSocialsDisplay
-              profileListingId={listing?.id ?? ""}
-              email={email}
-            />
+            <Box
+              m={4}
+              shadowColor="black"
+              shadowOffset={{ width: 0, height: 1 }}
+              shadowOpacity={0.1}
+              shadowRadius={2}
+              elevation={1}
+              borderRadius="md"
+              px={4}
+              pb={8}
+              flexDirection="column"
+              backgroundColor="white"
+            >
+              {currentSpace?.space_tag_categories?.map((category) => {
+                const tags = category.space_tags.filter((tag) =>
+                  profileTagIds.has(tag.id)
+                );
+                return (
+                  <Box key={category.id} mt={8}>
+                    <Text variant="heading4" color="green800">
+                      {category.title}
+                    </Text>
+
+                    <Box mt={4} flexWrap="wrap" flexDirection="row">
+                      {tags.length > 0 ? (
+                        tags.map((tag) => {
+                          return (
+                            <Box mb={1} mr={1} key={tag.id}>
+                              <Tag text={tag.label ?? ""} />
+                            </Box>
+                          );
+                        })
+                      ) : (
+                        <Text variant="body1Italic" color="gray700">
+                          No tags
+                        </Text>
+                      )}
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+            <Box
+              m={4}
+              shadowColor="black"
+              shadowOffset={{ width: 0, height: 1 }}
+              shadowOpacity={0.1}
+              shadowRadius={2}
+              elevation={1}
+              borderRadius="md"
+              px={4}
+              py={8}
+              flexDirection="column"
+              backgroundColor="white"
+            >
+              <Text variant="heading4" color="green800">
+                Profiles
+              </Text>
+              <Text my={4}>{email}</Text>
+
+              <ProfileSocialsDisplay
+                profileListingId={listing?.id ?? ""}
+                email={email}
+              />
+            </Box>
           </Box>
         </Box>
       </ScrollView>

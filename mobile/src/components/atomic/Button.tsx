@@ -18,7 +18,7 @@ import { Text, TextProps } from "./Text";
 
 const ButtonBase = createBox<Theme, TouchableOpacityProps>(TouchableOpacity);
 
-type ButtonVariant = "primary" | "outline" | "secondary";
+type ButtonVariant = "primary" | "outline" | "secondary" | "cta";
 
 type ButtonProps = React.ComponentPropsWithRef<typeof ButtonBase> & {
   variant?: ButtonVariant;
@@ -60,6 +60,22 @@ const VARIANT_STYLES: Record<
     disabledButtonProps: {
       borderColor: "gray600",
       backgroundColor: "transparent",
+    },
+    textProps: {
+      color: "green900",
+    },
+    disabledTextProps: {
+      color: "gray400",
+    },
+  },
+  cta: {
+    buttonProps: {
+      borderColor: "green900",
+      backgroundColor: "lime500",
+    },
+    disabledButtonProps: {
+      borderColor: "gray600",
+      backgroundColor: "lime200",
     },
     textProps: {
       color: "green900",

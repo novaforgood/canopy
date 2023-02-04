@@ -25,8 +25,6 @@ export function HomeScreen({
     variables: { user_id: userData?.id ?? "" },
   });
 
-  console.log("profileData", profileData);
-
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
