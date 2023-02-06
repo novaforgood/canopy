@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { useRouter } from "next/router";
 
 import { useQueryParam } from "../../../hooks/useQueryParam";
@@ -8,13 +10,17 @@ const GoPage: CustomPage = () => {
   const scheme = useQueryParam("scheme", "string");
   const route = router.query.route;
 
+  useEffect(() => {
+    // Redirect from /go/[scheme]/path to /path
+    if (scheme && route) {
+      router.replace(`/${route}`);
+    }
+  }, [route, router, scheme]);
+
   const processedRoute = Array.isArray(route) ? route.join("/") : route;
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center p-4">
-      <div className="text-center">You landed here. Scheme: {scheme}</div>
-      <div className="text-center">Route: {processedRoute}</div>
-    </div>
+    <div className="flex h-screen flex-col items-center justify-center p-4"></div>
   );
 };
 
