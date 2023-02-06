@@ -133,6 +133,7 @@ export default applyMiddleware({
   }
   console.log("Added chat intro to DB");
 
+  const emailPromises: Promise<void>[] = [];
   const promises = profileGroups.map(async (group) => {
     const names = group.map((profile) => `${profile.user?.first_name}`);
     const conversationStarter =
@@ -169,46 +170,47 @@ export default applyMiddleware({
     console.log("Created chat room for group:", data?.insert_chat_room_one?.id);
 
     // Send email to each user in the group
-    await Promise.all(
-      group.map(async (profile) => {
-        const otherMembers = group.filter((p) => p.id !== profile.id);
-        const otherMemberNames = makeListSentence(
-          otherMembers.map((p) => `${p.user?.first_name}`)
-        );
+    group.forEach((profile) => {
+      const otherMembers = group.filter((p) => p.id !== profile.id);
+      const otherMemberNames = makeListSentence(
+        otherMembers.map((p) => `${p.user?.first_name}`)
+      );
 
-        await sendEmail({
-          templateId: TemplateId.ChatIntroNotification,
-          receiverProfileId: profile.id,
-          dynamicTemplateData({ space }) {
-            return {
-              groupMemberNames: otherMemberNames,
-              groupMemberProfiles: otherMembers.map((p) => {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const user = p.user; // Guaranteed to exist by the query
-                return {
-                  firstName: user?.first_name ?? "",
-                  lastName: user?.last_name ?? "",
-                  email: user?.email ?? "",
-                  headline: p.profile_listing?.headline ?? "",
-                  profilePicUrl:
-                    p.profile_listing?.profile_listing_image?.image.url ?? "",
-                };
-              }),
+      const emailPromise = sendEmail({
+        templateId: TemplateId.ChatIntroNotification,
+        receiverProfileId: profile.id,
+        dynamicTemplateData({ space }) {
+          return {
+            groupMemberNames: otherMemberNames,
+            groupMemberProfiles: otherMembers.map((p) => {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              const user = p.user; // Guaranteed to exist by the query
+              return {
+                firstName: user?.first_name ?? "",
+                lastName: user?.last_name ?? "",
+                email: user?.email ?? "",
+                headline: p.profile_listing?.headline ?? "",
+                profilePicUrl:
+                  p.profile_listing?.profile_listing_image?.image.url ?? "",
+              };
+            }),
 
-              viewGroupChatUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat/${data?.insert_chat_room_one?.id}`,
-            };
-          },
-        }).then((result) => {
-          console.log("Sent email to", profile.user?.email, result);
-        });
-      })
-    );
+            viewGroupChatUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat/${data?.insert_chat_room_one?.id}`,
+          };
+        },
+      }).then((result) => {
+        console.log("Sent email to", profile.user?.email);
+      });
+
+      emailPromises.push(emailPromise);
+    });
 
     return;
   });
 
-  await Promise.all(promises).catch((err) => {
-    console.error(err);
+  await Promise.all(promises);
+  await Promise.all(emailPromises).catch((error) => {
+    console.error("Error sending email", error);
   });
 
   const response = makeApiSuccess({ detail: "Success" });
