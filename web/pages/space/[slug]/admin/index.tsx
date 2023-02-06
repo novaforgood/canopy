@@ -183,11 +183,11 @@ export default function AdminPage() {
         <RoundedCard className="w-full">
           <div className="flex items-center gap-2">
             <BxTransfer className="h-7 w-7" />
-            <Text variant="heading4">Introduce Members</Text>
+            <Text variant="heading4">Intros</Text>
           </div>
           <div className="h-2"></div>
           <Text className="text-green-700" medium>
-            Match members into group chats to help them get to know each other!
+            Match members into chats to help them get to know each other!
           </Text>
           <div className="h-6"></div>
           <ChatIntroductions />

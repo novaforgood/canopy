@@ -68,7 +68,12 @@ export default applyMiddleware({
   validationSchema: createGroupChatsSchema,
 }).post(async (req, res) => {
   const { callerProfile } = req;
-  const spaceId = callerProfile?.space.id;
+
+  if (!callerProfile) {
+    throw makeApiFail("Missing caller profile");
+  }
+
+  const spaceId = callerProfile.space.id;
   const { groupSize } = req.body;
 
   if (!spaceId) {
@@ -96,6 +101,7 @@ export default applyMiddleware({
   if (profilesError || !profilesData?.profile) {
     throw makeApiError(profilesError?.message ?? "Profiles query error");
   }
+  console.log("Got profiles");
   const allProfiles = profilesData.profile.filter((profile) => !!profile.user);
 
   if (allProfiles.length < groupSize) {
@@ -106,14 +112,14 @@ export default applyMiddleware({
 
   // At this point, we have decided to proceed with creating the group chats.
   const profileGroups = groupIntoGroupsOfN(allProfiles, groupSize);
+  console.log("Grouped profiles");
 
-  console.log(profileGroups);
   const { data: chatIntroData, error: insertChatIntroError } =
     await executeInsertChatIntroMutation({
       data: {
         group_size: groupSize,
         space_id: spaceId,
-        creator_profile_id: callerProfile?.id,
+        creator_profile_id: callerProfile.id,
         num_groups_created: profileGroups.length,
         num_people_matched: allProfiles.length,
       },
@@ -125,6 +131,7 @@ export default applyMiddleware({
   if (!chatIntroId) {
     throw makeApiFail("No chat intro ID returned");
   }
+  console.log("Added chat intro to DB");
 
   const promises = profileGroups.map(async (group) => {
     const names = group.map((profile) => `${profile.user?.first_name}`);
@@ -159,6 +166,8 @@ export default applyMiddleware({
       throw makeApiError(error.message);
     }
 
+    console.log("Created chat room for group:", data?.insert_chat_room_one?.id);
+
     // Send email to each user in the group
     return group.map(async (profile) => {
       const otherMembers = group.filter((p) => p.id !== profile.id);
@@ -174,11 +183,11 @@ export default applyMiddleware({
             groupMemberNames: otherMemberNames,
             groupMemberProfiles: otherMembers.map((p) => {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const user = p.user!; // Guaranteed to exist by the query
+              const user = p.user; // Guaranteed to exist by the query
               return {
-                firstName: user.first_name ?? "",
-                lastName: user.last_name ?? "",
-                email: user.email,
+                firstName: user?.first_name ?? "",
+                lastName: user?.last_name ?? "",
+                email: user?.email ?? "",
                 headline: p.profile_listing?.headline ?? "",
                 profilePicUrl:
                   p.profile_listing?.profile_listing_image?.image.url ?? "",
@@ -188,6 +197,8 @@ export default applyMiddleware({
             viewGroupChatUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat/${data?.insert_chat_room_one?.id}`,
           };
         },
+      }).then((result) => {
+        console.log("Sent email to", profile.user?.email, result);
       });
     });
   });
