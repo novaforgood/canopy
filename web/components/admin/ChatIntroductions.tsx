@@ -139,7 +139,7 @@ export function ChatIntroductions() {
     <div className="">
       <div>
         <Text variant="subheading2" medium>
-          Step 1: Invite members to opt in
+          Step 1: Invite Members to Opt In
         </Text>
         <div className="h-2"></div>
       </div>
@@ -173,14 +173,14 @@ export function ChatIntroductions() {
       <div className="h-8"></div>
       <div>
         <Text variant="subheading2" medium>
-          Step 2: Create group chats
+          Step 2: Create Intros
         </Text>
         <div className="h-2"></div>
       </div>
       <Text>
         Select a group size, then click <b>Send Intros</b> to automatically
         create group chats and notify members that they have been matched. Each
-        chat will begin with a conversation starter to help introduce members.
+        chat will have a question to help start the conversation.
       </Text>
       <div className="h-4"></div>
       <div className="flex flex-wrap items-center">
@@ -241,7 +241,7 @@ export function ChatIntroductions() {
       <div className="h-8"></div>
       <div>
         <Text variant="subheading2" medium>
-          Step 3: See results
+          Step 3: View Results
         </Text>
         <div className="h-2"></div>
       </div>
