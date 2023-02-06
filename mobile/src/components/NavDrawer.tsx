@@ -111,6 +111,17 @@ export function NavDrawer() {
                 Sign out
               </Button>
             </Box>
+            <Box px={4} pt={4}>
+              <Button
+                variant="outline"
+                onPress={() => {
+                  navigation.navigate("AccountSettings");
+                  setShowDrawer(false);
+                }}
+              >
+                Account settings
+              </Button>
+            </Box>
           </SafeAreaView>
         </Box>
       </OutsidePressHandler>

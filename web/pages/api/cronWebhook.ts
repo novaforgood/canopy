@@ -14,6 +14,7 @@ import { sendEmail, SendgridProfile, TemplateId } from "../../server/sendgrid";
 
 const CRON_CLIENT_KEY = requireServerEnv("CRON_CLIENT_KEY");
 const HOST_URL = requireServerEnv("HOST_URL");
+const MOBILE_APP_SCHEME = requireServerEnv("MOBILE_APP_SCHEME");
 
 enum WebhookType {
   CronJob = "CronJob",
@@ -90,7 +91,7 @@ async function handleCronJob(cronJobType: CronJobType) {
               const firstNames = senderProfiles.map((item) => item.firstName);
               const firstNamesSentence = makeListSentence(firstNames);
               return {
-                viewChatsUrl: `${HOST_URL}/space/${space.slug}/chat`,
+                viewChatsUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat`,
                 totalUnreadMessagesCount,
                 senderProfiles: senderProfiles,
                 messagesSenders: firstNamesSentence,

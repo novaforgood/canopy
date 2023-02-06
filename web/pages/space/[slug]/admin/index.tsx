@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 
+import { ChatIntroductions } from "../../../../components/admin/ChatIntroductions";
 import { Dangerzone } from "../../../../components/admin/DangerZone";
 import { DirectoryOverview } from "../../../../components/admin/DirectoryOverview";
 import { EditProfileTags } from "../../../../components/admin/edit-profile-tags/EditProfileTags";
@@ -17,7 +18,11 @@ import { RoundedCard } from "../../../../components/common/RoundedCard";
 import { Responsive } from "../../../../components/layout/Responsive";
 import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
-import { BxLink, BxRightArrowAlt } from "../../../../generated/icons/regular";
+import {
+  BxLink,
+  BxRightArrowAlt,
+  BxTransfer,
+} from "../../../../generated/icons/regular";
 import { BxsCog } from "../../../../generated/icons/solid";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
@@ -167,17 +172,27 @@ export default function AdminPage() {
             <BxLink className="h-7 w-7" />
             <Text variant="heading4">Invite Members</Text>
           </div>
+          <div className="h-2"></div>
+          <Text className="text-green-700" medium>
+            Invite members to your space by sharing an invite link.
+          </Text>
+          <div className="h-6"></div>
           <InviteLinksList />
         </RoundedCard>
         <div className="h-10"></div>
-        {/* <RoundedCard className="w-full">
+        <RoundedCard className="w-full">
           <div className="flex items-center gap-2">
             <BxTransfer className="h-7 w-7" />
-            <Text variant="heading4">Chat Introductions</Text>
+            <Text variant="heading4">Intros</Text>
           </div>
+          <div className="h-2"></div>
+          <Text className="text-green-700" medium>
+            Match members into chats to help them get to know each other!
+          </Text>
+          <div className="h-6"></div>
           <ChatIntroductions />
         </RoundedCard>
-        <div className="h-10"></div> */}
+        <div className="h-10"></div>
         <ManageSpace />
         <div className="h-16"></div>
       </SidePadding>

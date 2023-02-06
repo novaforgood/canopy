@@ -18,6 +18,7 @@ import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { ProfileImage } from "../ProfileImage";
 
+import { ChatProfileImage } from "./ChatProfileImage";
 import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
 import { useChatRoom } from "./useChatRoom";
@@ -287,7 +288,8 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                               width={36}
                               flexShrink={0}
                             >
-                              <ProfileImage
+                              <ChatProfileImage
+                                userType={senderProfile?.userType ?? null}
                                 src={senderProfile?.profileImage?.url}
                                 height={36}
                                 width={36}

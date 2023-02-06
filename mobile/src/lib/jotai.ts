@@ -9,6 +9,9 @@ type Session = {
 
 export const sessionAtom = atom<Session | undefined>(undefined);
 
+// This is a hack to force the root navigator to rerender.
+export const forceRootNavRerenderAtom = atom<number>(1);
+
 type Space = {
   slug: string;
   name: string;

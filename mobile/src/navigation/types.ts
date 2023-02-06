@@ -8,7 +8,10 @@ import { StackNavigationProp } from "@react-navigation/stack";
 export type RootStackParamList = {
   Loading: undefined;
   SignIn: undefined;
+  SignUp: undefined;
+  VerifyEmail: undefined;
   Home: undefined;
+  AccountSettings: undefined;
   SpaceHome: {
     spaceSlug: string;
   };
