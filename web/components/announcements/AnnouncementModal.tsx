@@ -36,7 +36,7 @@ export const AnnouncementModal = (props: AnnouncementModalProps) => {
       // Announcement should say the admin plans to set up chat intros soon, explain what a chat intro is, and urge people to opt in through the settings.
       // A chat intro essentially matches people into group chats with a conversation starter to get the conversation going.
       setAnnouncementHTML(
-        `<p>Hi everyone,</p><p>I'm excited to announce that we're going to be setting up chat intros soon. Chat intros are a way to match people into group chats with a conversation starter to get the conversation going.</p><p>Chat intros are a great way to get to know people in the community and make new friends. If you're interested in participating, you can opt in through your account settings:</p><p><a href=${settingsUrl}>${settingsUrl}</a></p>`
+        `<p>Hi everyone,</p><p>I'm excited to announce that we're going to be setting up Canopy Intros soon. This is a great way to get to know people in the community and make new friends!</p><p>Intros will match interested members into small group chats with a question to get the conversation going. If you're interested in participating, you can opt in through your account settings:</p><p><a href=${settingsUrl}>${settingsUrl}</a></p>`
       );
     }
   }, [currentSpace, template]);
