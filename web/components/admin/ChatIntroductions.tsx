@@ -194,6 +194,8 @@ export function ChatIntroductions() {
           options={[
             { label: "groups of 2", value: 2 },
             { label: "groups of 3", value: 3 },
+            { label: "groups of 4", value: 4 },
+            { label: "groups of 5", value: 5 },
           ]}
           className="ml-2 w-56"
         ></Select>
