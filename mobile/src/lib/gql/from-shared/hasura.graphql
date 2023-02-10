@@ -51,6 +51,17 @@ query AllProfilesOfUser($user_id: String!) {
           label
         }
       }
+      profile_listing_responses(
+        where: { space_listing_question: { deleted: { _eq: false } } }
+      ) {
+        id
+        response_html
+        space_listing_question {
+          id
+          title
+          description
+        }
+      }
     }
     flattened_profile_roles {
       id
