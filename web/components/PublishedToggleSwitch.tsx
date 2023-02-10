@@ -1,8 +1,14 @@
+import { useCallback } from "react";
+
 import { Switch } from "@headlessui/react";
-import toast from "react-hot-toast";
+import toast, { ErrorIcon } from "react-hot-toast";
+import { useClient } from "urql";
 
 import { Text } from "../components/atomic";
 import {
+  AllProfilesOfUserDocument,
+  AllProfilesOfUserQuery,
+  AllProfilesOfUserQueryVariables,
   Profile_Listing_Update_Column,
   useProfileListingQuery,
   useUpsertProfileListingMutation,
@@ -10,6 +16,7 @@ import {
 import { BxsHide, BxsShow } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { useUserData } from "../hooks/useUserData";
 
 interface PublishedToggleSwitchProps {
   profileListingId: string;
@@ -19,8 +26,11 @@ export default function PublishedToggleSwitch(
 ) {
   const { profileListingId } = props;
 
+  const { userData } = useUserData();
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
+
+  const client = useClient();
 
   const [{ data: profileListingData, fetching }] = useProfileListingQuery({
     variables: { profile_listing_id: profileListingId },
@@ -31,6 +41,64 @@ export default function PublishedToggleSwitch(
   const profileIsPublic =
     profileListingData?.profile_listing_by_pk?.public ?? false;
 
+  const attemptSetPublicity = useCallback(
+    async (newVal: boolean) => {
+      if (!currentProfile) {
+        throw new Error("No current profile");
+      }
+
+      if (newVal === true) {
+        const { data, error } = await client
+          .query<AllProfilesOfUserQuery, AllProfilesOfUserQueryVariables>(
+            AllProfilesOfUserDocument,
+            { user_id: userData?.id ?? "" }
+          )
+          .toPromise();
+        console.log(data, error);
+        const myProfile = data?.profile.find((p) => p.id === currentProfile.id);
+        if (!myProfile) {
+          throw new Error("No profile found");
+        }
+        if (!myProfile.profile_listing?.headline) {
+          throw new Error(
+            "Please set a headline before publishing your profile"
+          );
+        }
+        if (!myProfile.profile_listing?.profile_listing_image?.image) {
+          throw new Error(
+            "Please set a profile image before publishing your profile"
+          );
+        }
+
+        const questions = currentSpace?.space_listing_questions.filter(
+          (q) => q.deleted === false
+        );
+
+        for (const question of questions ?? []) {
+          const answer =
+            myProfile.profile_listing?.profile_listing_responses.find(
+              (r) => r.space_listing_question.id === question.id
+            );
+
+          if (!answer?.response_html || answer?.response_html === "<p></p>") {
+            throw new Error(
+              `Please answer the question "${question.title}" before publishing your profile`
+            );
+          }
+        }
+      }
+
+      return upsertProfileListing({
+        profile_listing: {
+          public: newVal,
+          profile_id: currentProfile.id,
+        },
+        update_columns: [Profile_Listing_Update_Column.Public],
+      });
+    },
+    [currentProfile, currentSpace, upsertProfileListing, client]
+  );
+
   if (fetching) return null;
 
   return (
@@ -38,29 +106,22 @@ export default function PublishedToggleSwitch(
       <Switch
         checked={profileIsPublic}
         onChange={async (newVal: boolean) => {
-          if (!currentProfile) {
-            toast.error("No current profile");
-            return;
-          }
           toast.promise(
-            upsertProfileListing({
-              profile_listing: {
-                public: newVal,
-                profile_id: currentProfile.id,
-              },
-              update_columns: [Profile_Listing_Update_Column.Public],
-            }),
+            attemptSetPublicity(newVal),
+
             {
               loading: "Loading",
               success: `Profile is now ${newVal ? "published" : "private"}`,
-              error: "Error when setting profile public status",
+              error: (err) => err.message,
             },
             {
-              icon: newVal ? (
-                <BxsShow className="h-6 w-6" />
-              ) : (
-                <BxsHide className="h-6 w-6" />
-              ),
+              success: {
+                icon: newVal ? (
+                  <BxsShow className="h-6 w-6" />
+                ) : (
+                  <BxsHide className="h-6 w-6" />
+                ),
+              },
             }
           );
         }}
