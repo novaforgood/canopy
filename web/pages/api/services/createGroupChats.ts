@@ -198,7 +198,7 @@ export default applyMiddleware({
           };
         },
       }).then((result) => {
-        console.log("Sent email to", profile.user?.email);
+        // console.log("Sent email to", profile.user?.email);
       });
 
       emailPromises.push(emailPromise);

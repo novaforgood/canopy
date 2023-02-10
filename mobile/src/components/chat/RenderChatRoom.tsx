@@ -1,23 +1,26 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 
+import { useDisclosure } from "@mantine/hooks";
 import { useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 import { ScrollView, TouchableOpacity } from "react-native";
 
 import { MessagesQuery, User_Type_Enum } from "../../generated/graphql";
-import { BxSend } from "../../generated/icons/regular";
+import { BxInfoCircle, BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePrevious } from "../../hooks/usePrevious";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { NavigationProp } from "../../navigation/types";
 import { Box } from "../atomic/Box";
+import { Modal } from "../atomic/Modal";
 import { Text } from "../atomic/Text";
 import { TextInput } from "../atomic/TextInput";
 import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { ProfileImage } from "../ProfileImage";
 
+import { ChatParticipantsModalButton } from "./ChatParticipantsModalButton";
 import { ChatProfileImage } from "./ChatProfileImage";
 import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
@@ -131,9 +134,12 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   }
 
   const chatSubtitle = getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "");
-  const otherHumans = getChatParticipants(chatRoom?.profile_to_chat_rooms ?? [])
-    .filter((p) => p.userType === User_Type_Enum.User)
-    .filter((p) => p.profileId !== currentProfile?.id);
+  const allHumans = getChatParticipants(
+    chatRoom?.profile_to_chat_rooms ?? []
+  ).filter((p) => p.userType === User_Type_Enum.User);
+  const otherHumans = allHumans.filter(
+    (p) => p.profileId !== currentProfile?.id
+  );
   return (
     <CustomKeyboardAvoidingView>
       <Box
@@ -141,8 +147,10 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
         overflow="hidden"
         borderRadius="md"
         height="100%"
+        width="100%"
       >
         <Box
+          width="100%"
           flexDirection="row"
           alignItems="center"
           backgroundColor="olive100"
@@ -170,7 +178,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             mr={4}
           />
 
-          <Box>
+          <Box flex={1}>
             <ChatTitle chatRoom={chatRoom} />
 
             {chatSubtitle && (
@@ -179,6 +187,8 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
               </Text>
             )}
           </Box>
+
+          <ChatParticipantsModalButton chatParticipants={allHumans} />
         </Box>
 
         <ScrollView
