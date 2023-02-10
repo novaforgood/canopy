@@ -6,7 +6,6 @@ import {
   executeGetProfilesQuery,
   executeInsertChatIntroMutation,
   executeInsertChatRoomOneMutation,
-  executeInsertImageMutation,
   executeInsertProfileMutation,
   Profile_Constraint,
   Profile_Role_Enum,
@@ -52,7 +51,7 @@ const CONVERSATION_STARTERS = [
 ];
 
 const createGroupChatsSchema = z.object({
-  groupSize: z.number().min(2).max(3),
+  groupSize: z.number().min(2).max(5),
 });
 
 enum ChatBotIds {
