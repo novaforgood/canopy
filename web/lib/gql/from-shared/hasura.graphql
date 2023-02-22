@@ -10,11 +10,8 @@ query User($id: String!) {
   }
 }
 
-mutation UpdateUser($id: String!, $first_name: String!, $last_name: String!) {
-  update_user_by_pk(
-    pk_columns: { id: $id }
-    _set: { first_name: $first_name, last_name: $last_name }
-  ) {
+mutation UpdateUser($id: String!, $changes: user_set_input!) {
+  update_user_by_pk(pk_columns: { id: $id }, _set: $changes) {
     id
     first_name
     last_name

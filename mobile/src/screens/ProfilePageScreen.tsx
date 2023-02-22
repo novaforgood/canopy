@@ -19,7 +19,7 @@ import { BxSend } from "../generated/icons/regular";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
-import { useProfileViewTracker } from "../hooks/useProfileViewTracker";
+import { useProfileViewTracker } from "../hooks/analytics/useProfileViewTracker";
 import { useUserData } from "../hooks/useUserData";
 import { filteredProfileIdsAtom } from "../lib/jotai";
 import {

@@ -49265,6 +49265,18 @@
             "deprecationReason": null
           },
           {
+            "name": "last_active_at",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "timestamptz",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "last_name",
             "description": null,
             "type": {

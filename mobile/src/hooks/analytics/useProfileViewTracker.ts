@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 
-import { useInsertProfileViewEventMutation } from "../generated/graphql";
-import { SecureStore, SecureStoreKey } from "../lib/secureStore";
+import { useInsertProfileViewEventMutation } from "../../generated/graphql";
+import { SecureStore, SecureStoreKey } from "../../lib/secureStore";
 
 /**
  * Backend only accepts one instance of [viewerProfileId, viewedProfileId] per 15 minutes

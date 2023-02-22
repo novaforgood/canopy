@@ -48,13 +48,12 @@ export default function PublishedToggleSwitch(
       }
 
       if (newVal === true) {
-        const { data, error } = await client
+        const { data } = await client
           .query<AllProfilesOfUserQuery, AllProfilesOfUserQueryVariables>(
             AllProfilesOfUserDocument,
             { user_id: userData?.id ?? "" }
           )
           .toPromise();
-        console.log(data, error);
         const myProfile = data?.profile.find((p) => p.id === currentProfile.id);
         if (!myProfile) {
           throw new Error("No profile found");

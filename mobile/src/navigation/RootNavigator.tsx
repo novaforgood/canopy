@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useTheme } from "@shopify/restyle";
@@ -6,30 +6,21 @@ import { useAtom } from "jotai";
 import { TouchableOpacity } from "react-native";
 
 import { Box } from "../components/atomic/Box";
-import { useSpaceBySlugQuery } from "../generated/graphql";
 import { BxMenu } from "../generated/icons/regular";
+import { useLastActiveTracker } from "../hooks/analytics/useLastActiveTracker";
 import { useExpoUpdate } from "../hooks/useExpoUpdate";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
-import { usePrevious } from "../hooks/usePrevious";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-import {
-  forceRootNavRerenderAtom,
-  sessionAtom,
-  showNavDrawerAtom,
-} from "../lib/jotai";
-import { SecureStore, SecureStoreKey } from "../lib/secureStore";
+import { forceRootNavRerenderAtom, showNavDrawerAtom } from "../lib/jotai";
 import { AccountSettingsScreen } from "../screens/AccountSettingsScreen";
-import { ChatRoomScreen } from "../screens/ChatRoomScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LoadingScreen } from "../screens/LoadingScreen";
-import { ProfilePageScreen } from "../screens/ProfilePageScreen";
 import { SignInScreen } from "../screens/SignInScreen";
 import { SignUpScreen } from "../screens/SignUpScreen";
 import { VerifyEmailScreen } from "../screens/VerifyEmailScreen";
 import { Theme } from "../theme";
 
-import { SpaceBottomTabNavigator } from "./SpaceBottomTabNavigator";
 import { SpaceNavigator } from "./SpaceNavigator";
 import { RootStackParamList } from "./types";
 
@@ -38,6 +29,8 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 export function RootNavigator() {
   const { refreshSession } = useRefreshSession();
   const [rerenderHack] = useAtom(forceRootNavRerenderAtom);
+
+  useLastActiveTracker();
 
   ///// Force update JWT if it will expire in 3 minutes /////
   const refreshSessionIfNeeded = useCallback(async () => {

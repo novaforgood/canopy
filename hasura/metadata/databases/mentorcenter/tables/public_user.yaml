@@ -66,6 +66,7 @@ update_permissions:
       columns:
         - attributes
         - first_name
+        - last_active_at
         - last_name
       filter:
         _and:
