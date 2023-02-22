@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 
 import { useUpdateUserMutation } from "../../generated/graphql";
 import { SecureStore, SecureStoreKey } from "../../lib/secureStore";
+import { useForegroundEffect } from "../useForegroundEffect";
 import { useUserData } from "../useUserData";
 
 export function useLastActiveTracker() {
@@ -15,10 +16,6 @@ export function useLastActiveTracker() {
   // Also, we don't want to spam the backend with requests, so we
   // only update the last active time if it has been more than 5
   // minutes since the last update.
-
-  // We also want to update the last active time when the user
-  // navigates away from the page, so we use the beforeunload event
-  // to trigger the update.
 
   const attemptTrackLastActive = useCallback(() => {
     if (!userData) return;
@@ -47,10 +44,5 @@ export function useLastActiveTracker() {
     attemptTrackLastActive();
   }, [attemptTrackLastActive]);
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", attemptTrackLastActive);
-    return () => {
-      window.removeEventListener("beforeunload", attemptTrackLastActive);
-    };
-  }, [attemptTrackLastActive]);
+  useForegroundEffect(attemptTrackLastActive);
 }
