@@ -13,6 +13,7 @@ import {
   useAnnouncementsBySpaceIdQuery,
   useSpaceBySlugQuery,
 } from "../generated/graphql";
+import { useLastActiveTracker } from "../hooks/analytics/useLastActiveTracker";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { usePrevious } from "../hooks/usePrevious";
@@ -109,6 +110,7 @@ function useNumberOfAnnouncementNotifications() {
 function App({ Component, pageProps }: CustomAppProps) {
   useNumberOfNotifications();
   useNumberOfAnnouncementNotifications();
+  useLastActiveTracker();
 
   const { refreshSession } = useRefreshSession();
 

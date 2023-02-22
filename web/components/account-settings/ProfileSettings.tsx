@@ -1,8 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
+import { useClient } from "urql";
 
+import {
+  AllProfilesOfUserQuery,
+  AllProfilesOfUserQueryVariables,
+  AllProfilesOfUserDocument,
+  ProfileListingDocument,
+  ProfileListingQuery,
+  ProfileListingQueryVariables,
+} from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useSaveChangesState } from "../../hooks/useSaveChangesState";
@@ -12,7 +21,8 @@ import { Button, Text } from "../atomic";
 import { CheckBox } from "../atomic/CheckBox";
 
 export function ProfileSettings() {
-  const { profileAttributes, updateProfileAttributes } = useCurrentProfile();
+  const { currentProfile, profileAttributes, updateProfileAttributes } =
+    useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
 
   const { userData } = useUserData();
@@ -26,6 +36,25 @@ export function ProfileSettings() {
   }, [profileAttributes]);
 
   const [loading, setLoading] = useState(false);
+  const client = useClient();
+
+  const isProfileListingPublic = useCallback(async () => {
+    if (!currentProfile?.profile_listing) {
+      return false;
+    }
+    const { data } = await client
+      .query<ProfileListingQuery, ProfileListingQueryVariables>(
+        ProfileListingDocument,
+        { profile_listing_id: currentProfile.profile_listing.id }
+      )
+      .toPromise();
+    if (!data?.profile_listing_by_pk || !data.profile_listing_by_pk.public) {
+      return false;
+    }
+    return true;
+  }, [client, currentProfile?.profile_listing]);
+
+  console.log(settings);
 
   return (
     <>
@@ -38,10 +67,22 @@ export function ProfileSettings() {
 
       <div className="h-12"></div>
       <CheckBox
-        label={`Opt in to matching (admins can periodically match you with other members in a group chat)`}
+        label={`Opt in to intros (admins can randomly match you with other members in a group chat)`}
         checked={settings?.enableChatIntros ?? false}
-        onChange={(newVal) => {
+        onChange={async (newVal) => {
           setMustSave(true);
+
+          if (newVal) {
+            const isPublic = await isProfileListingPublic();
+            console.log(isPublic);
+            if (!isPublic) {
+              toast.error(
+                "You must make your profile public to opt in to intros"
+              );
+              return;
+            }
+          }
+
           setSettings((prev) => ({
             ...prev,
             enableChatIntros: newVal,

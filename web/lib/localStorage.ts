@@ -8,6 +8,9 @@ export enum LocalStorageKey {
   // [profileId] => Time after which we can send another tracking event [number]
   ProfileLastViewedCooldown = "ProfileLastViewedCooldown",
 
+  // Time after which we can send another tracking event for last active
+  LastActiveCooldown = "LastActiveCooldown",
+
   SpaceHomepageBannerClosed = "SpaceHomepageBannerClosed",
 }
 

@@ -2,19 +2,10 @@ import React, { useState } from "react";
 
 import toast from "react-hot-toast";
 
-import {
-  Profile_Listing_Constraint,
-  Profile_Listing_Update_Column,
-  Space_Listing_Question,
-  useUpdateUserMutation,
-  useUpsertProfileListingMutation,
-} from "../../generated/graphql";
-import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useUpdateUserMutation } from "../../generated/graphql";
 import { useUserData } from "../../hooks/useUserData";
-import { Input, Text } from "../atomic";
+import { Text } from "../atomic";
 import { EditButton } from "../common/EditButton";
-import { HtmlDisplay } from "../HtmlDisplay";
-import { SimpleTextArea } from "../inputs/SimpleTextArea";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
 
@@ -47,8 +38,10 @@ export function EditName() {
 
           await updateUser({
             id: userData.id,
-            first_name: firstNameInputValue,
-            last_name: lastNameInputValue,
+            changes: {
+              first_name: firstNameInputValue,
+              last_name: lastNameInputValue,
+            },
           })
             .then((res) => {
               if (res.error) {
