@@ -17,6 +17,8 @@ import {
   AuthCredential,
 } from "firebase/auth";
 
+import { SecureStore } from "./secureStore";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -57,7 +59,10 @@ export const signInWithCredential = (credential: AuthCredential) =>
   firebaseSignInWithCredential(auth, credential);
 
 // Sign out
-export const signOut = () => firebaseSignOut(auth);
+export const signOut = async () => {
+  await firebaseSignOut(auth);
+  await SecureStore.clear();
+};
 
 // Create user with email and password
 export const createUserWithEmailAndPassword = (

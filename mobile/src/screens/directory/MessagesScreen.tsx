@@ -3,9 +3,15 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useNavigation } from "@react-navigation/native";
 import { formatDistanceStrict } from "date-fns";
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
+import Animated, {
+  FadeIn,
+  SlideInUp,
+  SlideOutDown,
+} from "react-native-reanimated";
 
 import { Box } from "../../components/atomic/Box";
 import { Button } from "../../components/atomic/Button";
+import { Modal } from "../../components/atomic/Modal";
 import { Text } from "../../components/atomic/Text";
 import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
 import { ChatTitle } from "../../components/chat/ChatTitle";
@@ -19,7 +25,10 @@ import {
 import { BxChevronRight } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { usePushNotifications } from "../../hooks/usePushNotifications";
 import { NavigationProp } from "../../navigation/types";
+
+const AnimatedBox = Animated.createAnimatedComponent(Box);
 
 function useTimeFormatter() {
   const [timeNow, setTimeNow] = useState(new Date());
@@ -65,7 +74,13 @@ export function MessagesScreen() {
   const { formatTimeSuperConcise } = useTimeFormatter();
 
   const { currentProfile } = useCurrentProfile();
-  const { currentSpace } = useCurrentSpace();
+
+  const {
+    attemptRegisterPushNotifications,
+    declineRegisterPushNotifications,
+    shouldShowPushNotificationPermissionPrompt,
+  } = usePushNotifications();
+
   const [{ data, fetching, error }, refetchChatRooms] =
     useAllChatRoomsSubscription({
       variables: { profile_id: currentProfile?.id ?? "" },
@@ -75,33 +90,29 @@ export function MessagesScreen() {
 
   const chatRooms = data?.chat_room ?? [];
 
-  if (fetching) {
-    return <LoadingSpinner />;
-  }
-  if (error) {
-    return (
-      <Box p={4}>
-        <Text variant="body1" textAlign="center" mt={4}>
-          Could not load messages.
-        </Text>
-        <Button
-          variant="outline"
-          size="sm"
-          mt={4}
-          onPress={() => {
-            refetchChatRooms();
-          }}
-        >
-          Retry
-        </Button>
-      </Box>
-    );
-  }
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ position: "relative" }}>
       <ScrollView style={{ height: "100%" }}>
         <Box minHeight="100%" mt={2}>
-          {chatRooms.length === 0 && (
+          {fetching ? (
+            <LoadingSpinner />
+          ) : error ? (
+            <Box p={4}>
+              <Text variant="body1" textAlign="center" mt={4}>
+                Could not load messages.
+              </Text>
+              <Button
+                variant="outline"
+                size="sm"
+                mt={4}
+                onPress={() => {
+                  refetchChatRooms();
+                }}
+              >
+                Retry
+              </Button>
+            </Box>
+          ) : chatRooms.length === 0 ? (
             <Box
               p={4}
               height="100%"
@@ -123,101 +134,141 @@ export function MessagesScreen() {
                 View profiles
               </Button>
             </Box>
-          )}
-          {chatRooms.map((room) => {
-            const otherProfileEntry = room.profile_to_chat_rooms.find(
-              (p) => p.profile.id !== currentProfile?.id
-            );
-            const myProfileEntry = room.profile_to_chat_rooms.find(
-              (p) => p.profile.id === currentProfile?.id
-            );
+          ) : (
+            chatRooms.map((room) => {
+              const otherProfileEntry = room.profile_to_chat_rooms.find(
+                (p) => p.profile.id !== currentProfile?.id
+              );
+              const myProfileEntry = room.profile_to_chat_rooms.find(
+                (p) => p.profile.id === currentProfile?.id
+              );
 
-            if (!otherProfileEntry || !myProfileEntry) {
-              return null;
-            }
+              if (!otherProfileEntry || !myProfileEntry) {
+                return null;
+              }
 
-            const latestMessage = room.latest_chat_message[0];
+              const latestMessage = room.latest_chat_message[0];
 
-            const shouldNotHighlight =
-              // Latest message was sent by me
-              latestMessage.sender_profile_id === myProfileEntry.profile.id ||
-              // Latest message sent by the other guy was read
-              (myProfileEntry.latest_read_chat_message_id &&
-                latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
+              const shouldNotHighlight =
+                // Latest message was sent by me
+                latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+                // Latest message sent by the other guy was read
+                (myProfileEntry.latest_read_chat_message_id &&
+                  latestMessage.id <=
+                    myProfileEntry.latest_read_chat_message_id);
 
-            const otherHumans = getChatParticipants(room.profile_to_chat_rooms)
-              .filter((h) => h.userType === User_Type_Enum.User)
-              .filter((h) => h.profileId !== currentProfile?.id);
+              const otherHumans = getChatParticipants(
+                room.profile_to_chat_rooms
+              )
+                .filter((h) => h.userType === User_Type_Enum.User)
+                .filter((h) => h.profileId !== currentProfile?.id);
 
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  // nav
-                  navigation.navigate("ChatRoom", {
-                    chatRoomId: room.id,
-                  });
-                }}
-                key={room.id}
-                // href={`/space/${currentSpace?.slug}/chat/${room.id}`}
-              >
-                <Box
-                  flexDirection="row"
-                  alignItems="center"
-                  borderRadius="md"
-                  px={4}
-                  py={2}
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    // nav
+                    navigation.navigate("ChatRoom", {
+                      chatRoomId: room.id,
+                    });
+                  }}
+                  key={room.id}
+                  // href={`/space/${currentSpace?.slug}/chat/${room.id}`}
                 >
-                  <ChatRoomImage
-                    height={60}
-                    width={60}
-                    profiles={otherHumans.map((p) => ({
-                      imageUrl: p.profileImage?.url,
-                    }))}
-                  />
-
-                  <Box ml={3} flexDirection="column" flex={1}>
-                    <ChatTitle
-                      chatRoom={room}
-                      highlight={!shouldNotHighlight}
+                  <Box
+                    flexDirection="row"
+                    alignItems="center"
+                    borderRadius="md"
+                    px={4}
+                    py={2}
+                  >
+                    <ChatRoomImage
+                      height={60}
+                      width={60}
+                      profiles={otherHumans.map((p) => ({
+                        imageUrl: p.profileImage?.url,
+                      }))}
                     />
 
-                    <Box
-                      mt={1}
-                      flexDirection="row"
-                      alignItems="center"
-                      width="100%"
-                    >
-                      <Text
-                        color={shouldNotHighlight ? "gray800" : "black"}
-                        variant={shouldNotHighlight ? "body2" : "body2Medium"}
-                        numberOfLines={1}
+                    <Box ml={3} flexDirection="column" flex={1}>
+                      <ChatTitle
+                        chatRoom={room}
+                        highlight={!shouldNotHighlight}
+                      />
+
+                      <Box
+                        mt={1}
+                        flexDirection="row"
+                        alignItems="center"
+                        width="100%"
                       >
-                        {latestMessage?.sender_profile_id === currentProfile?.id
-                          ? "You: "
-                          : ""}
-                        {latestMessage?.text}
-                      </Text>
-                      <Text
-                        variant="body2"
-                        color="gray500"
-                        textAlign="right"
-                        ml={3}
-                      >
-                        {formatTimeSuperConcise(
-                          new Date(latestMessage?.created_at ?? "")
-                        )}
-                      </Text>
+                        <Text
+                          color={shouldNotHighlight ? "gray800" : "black"}
+                          variant={shouldNotHighlight ? "body2" : "body2Medium"}
+                          numberOfLines={1}
+                        >
+                          {latestMessage?.sender_profile_id ===
+                          currentProfile?.id
+                            ? "You: "
+                            : ""}
+                          {latestMessage?.text}
+                        </Text>
+                        <Text
+                          variant="body2"
+                          color="gray500"
+                          textAlign="right"
+                          ml={3}
+                        >
+                          {formatTimeSuperConcise(
+                            new Date(latestMessage?.created_at ?? "")
+                          )}
+                        </Text>
+                      </Box>
+                    </Box>
+                    <Box flexDirection="row" justifyContent="flex-end">
+                      <BxChevronRight height={28} width={28} color="gray700" />
                     </Box>
                   </Box>
-                  <Box flexDirection="row" justifyContent="flex-end">
-                    <BxChevronRight height={28} width={28} color="gray700" />
-                  </Box>
-                </Box>
-              </TouchableOpacity>
-            );
-          })}
+                </TouchableOpacity>
+              );
+            })
+          )}
         </Box>
       </ScrollView>
+      <Modal
+        isVisible={shouldShowPushNotificationPermissionPrompt}
+        onCloseButtonPress={() => {
+          declineRegisterPushNotifications();
+        }}
+      >
+        <Box
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          py={8}
+        >
+          <Text variant="body1" textAlign="center">
+            Allow push notifications to be notified of incoming messages!
+          </Text>
+          <Button
+            variant="cta"
+            mt={8}
+            onPress={() => {
+              attemptRegisterPushNotifications();
+            }}
+          >
+            Allow
+          </Button>
+          <Button
+            variant="secondary"
+            mt={2}
+            onPress={() => {
+              declineRegisterPushNotifications();
+            }}
+          >
+            No thanks
+          </Button>
+        </Box>
+      </Modal>
     </SafeAreaView>
   );
 }

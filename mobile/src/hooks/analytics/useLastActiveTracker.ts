@@ -17,10 +17,10 @@ export function useLastActiveTracker() {
   // only update the last active time if it has been more than 5
   // minutes since the last update.
 
-  const attemptTrackLastActive = useCallback(() => {
+  const attemptTrackLastActive = useCallback(async () => {
     if (!userData) return;
 
-    const lastTimeTrackedRaw = SecureStore.get(
+    const lastTimeTrackedRaw = await SecureStore.get(
       SecureStoreKey.LastActiveCooldown
     );
 
@@ -30,13 +30,13 @@ export function useLastActiveTracker() {
     const now = Date.now();
 
     if (!lastTimeTracked || now - lastTimeTracked > 1000 * 60 * 5) {
+      await SecureStore.set(SecureStoreKey.LastActiveCooldown, now);
       updateUser({
         id: userData.id,
         changes: {
           last_active_at: new Date().toISOString(),
         },
       });
-      SecureStore.set(SecureStoreKey.LastActiveCooldown, now);
     }
   }, [updateUser, userData]);
 
@@ -44,5 +44,7 @@ export function useLastActiveTracker() {
     attemptTrackLastActive();
   }, [attemptTrackLastActive]);
 
-  useForegroundEffect(attemptTrackLastActive);
+  useForegroundEffect(() => {
+    attemptTrackLastActive();
+  });
 }
