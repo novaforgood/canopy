@@ -30,7 +30,7 @@ export function RootNavigator() {
   const { refreshSession } = useRefreshSession();
   const [rerenderHack] = useAtom(forceRootNavRerenderAtom);
 
-  useLastActiveTracker();
+  // useLastActiveTracker();
 
   ///// Force update JWT if it will expire in 3 minutes /////
   const refreshSessionIfNeeded = useCallback(async () => {
