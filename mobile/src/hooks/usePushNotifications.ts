@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import Device from "expo-device";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
+import { toast } from "../components/CustomToast";
 import { useUpdateUserMutation } from "../generated/graphql";
 import { handleError } from "../lib/error";
 
@@ -12,13 +14,6 @@ import { useUserData } from "./useUserData";
 // HACK: shim all `expo-notification` calls as it breaks development for iOS.
 // https://github.com/expo/expo/issues/15788
 const IOS_NOTIFICATION_ISSUE = Platform.OS === "ios" && __DEV__;
-
-export const setNotificationHandler = (...args: any[]) => null;
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Notifications = IOS_NOTIFICATION_ISSUE
-  ? null
-  : require("expo-notifications");
 
 if (!IOS_NOTIFICATION_ISSUE) {
   Notifications.setNotificationHandler({
@@ -39,9 +34,16 @@ export async function getDevicePushTokenAsync() {
 }
 
 async function registerForPushNotificationsAsync() {
-  if (IOS_NOTIFICATION_ISSUE) return;
+  if (IOS_NOTIFICATION_ISSUE) {
+    toast.success(
+      "Notifications disabled on iOS in dev to prevent fast-reload crash"
+    );
+    return;
+  }
 
   let token;
+
+  toast.success("Device.isDevice: " + Device.isDevice + "");
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
@@ -50,6 +52,8 @@ async function registerForPushNotificationsAsync() {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
+    toast.success("finalStatus: " + finalStatus + "");
+    toast.success("existingStatus: " + existingStatus + "");
     if (finalStatus !== "granted") {
       // alert('Failed to get push token for push notification!');
       return;
@@ -75,25 +79,30 @@ export function usePushNotifications() {
 
   const [_, updateUser] = useUpdateUserMutation();
 
-  const [showedPrompt, setShowedPrompt] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      const showed = await SecureStore.get(
+      const alreadyShown = await SecureStore.get(
         SecureStoreKey.ShowedPushNotificationPermissionPrompt
       );
-      setShowedPrompt(typeof showed === "boolean" ? showed : false);
+      setShowPrompt(typeof alreadyShown === "boolean" ? !alreadyShown : true);
     };
     init();
   }, []);
 
-  const declineRegisterPushNotifications = useCallback(async () => {
-    await SecureStore.set(
-      SecureStoreKey.ShowedPushNotificationPermissionPrompt,
-      true
-    );
-    setShowedPrompt(true);
-  }, []);
+  const declineRegisterPushNotifications = useCallback(
+    async (neverShowAgain?: boolean) => {
+      if (neverShowAgain) {
+        await SecureStore.set(
+          SecureStoreKey.ShowedPushNotificationPermissionPrompt,
+          true
+        );
+      }
+      setShowPrompt(false);
+    },
+    []
+  );
 
   const attemptRegisterPushNotifications = useCallback(async () => {
     if (!userData?.id) return;
@@ -115,7 +124,10 @@ export function usePushNotifications() {
           expo_push_token: token,
         },
       });
-    } catch (e) {
+    } catch (e: any) {
+      toast.error(
+        "Error registering for push notifications" + e.message || e.toString()
+      );
       handleError(e);
     }
   }, [updateUser, userData?.id]);
@@ -125,12 +137,12 @@ export function usePushNotifications() {
       attemptRegisterPushNotifications,
       declineRegisterPushNotifications,
       shouldShowPushNotificationPermissionPrompt:
-        !userData?.expo_push_token && !showedPrompt,
+        !userData?.expo_push_token && showPrompt,
     };
   }, [
     attemptRegisterPushNotifications,
     declineRegisterPushNotifications,
-    showedPrompt,
+    showPrompt,
     userData?.expo_push_token,
   ]);
 }

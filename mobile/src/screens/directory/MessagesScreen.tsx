@@ -16,6 +16,7 @@ import { Text } from "../../components/atomic/Text";
 import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
 import { ChatTitle } from "../../components/chat/ChatTitle";
 import { getChatParticipants } from "../../components/chat/utils";
+import { toast } from "../../components/CustomToast";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { ProfileImage } from "../../components/ProfileImage";
 import {
@@ -26,6 +27,7 @@ import { BxChevronRight } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
+import { SecureStore, SecureStoreKey } from "../../lib/secureStore";
 import { NavigationProp } from "../../navigation/types";
 
 const AnimatedBox = Animated.createAnimatedComponent(Box);
@@ -93,6 +95,15 @@ export function MessagesScreen() {
   return (
     <SafeAreaView style={{ position: "relative" }}>
       <ScrollView style={{ height: "100%" }}>
+        <Button
+          onPress={() => {
+            SecureStore.delete(
+              SecureStoreKey.ShowedPushNotificationPermissionPrompt
+            );
+          }}
+        >
+          Clear that thing
+        </Button>
         <Box minHeight="100%" mt={2}>
           {fetching ? (
             <LoadingSpinner />
@@ -253,6 +264,9 @@ export function MessagesScreen() {
             variant="cta"
             mt={8}
             onPress={() => {
+              toast.success(
+                "Push notifications enabled! or at least trying to"
+              );
               attemptRegisterPushNotifications();
             }}
           >
@@ -262,10 +276,10 @@ export function MessagesScreen() {
             variant="secondary"
             mt={2}
             onPress={() => {
-              declineRegisterPushNotifications();
+              declineRegisterPushNotifications(true);
             }}
           >
-            No thanks
+            Don't show again
           </Button>
         </Box>
       </Modal>
