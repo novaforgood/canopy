@@ -7,6 +7,9 @@ export enum SecureStoreKey {
   SpaceHomepageBannerClosed = "SpaceHomepageBannerClosed",
   ProfileLastViewedCooldown = "ProfileLastViewedCooldown",
   LastActiveCooldown = "LastActiveCooldown",
+
+  // One-time flags
+  ShowedPushNotificationPermissionPrompt = "ShowedPushNotificationPermissionPrompt",
 }
 
 export const SecureStore = {
@@ -20,5 +23,12 @@ export const SecureStore = {
   },
   delete: (key: SecureStoreKey) => {
     return SecureStoreLib.deleteItemAsync(key);
+  },
+  clear: () => {
+    return Promise.all(
+      Object.values(SecureStoreKey).map((key) =>
+        SecureStoreLib.deleteItemAsync(key)
+      )
+    );
   },
 };
