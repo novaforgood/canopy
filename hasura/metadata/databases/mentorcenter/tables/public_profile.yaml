@@ -25,6 +25,15 @@ array_relationships:
         remote_table:
           name: profile_to_profile_role_flattened
           schema: public
+  - name: past_hour_unread_messages_counts
+    using:
+      manual_configuration:
+        column_mapping:
+          id: receiver_profile_id
+        insertion_order: null
+        remote_table:
+          name: past_hour_unread_messages_count
+          schema: public
   - name: profile_roles
     using:
       foreign_key_constraint_on:

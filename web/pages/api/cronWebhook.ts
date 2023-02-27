@@ -62,7 +62,7 @@ async function handleCronJob(cronJobType: CronJobType) {
       const promises =
         recipientProfiles?.map((recipientProfile) => {
           const totalUnreadMessagesCount =
-            recipientProfile.unread_messages_counts.reduce(
+            recipientProfile.past_hour_unread_messages_counts.reduce(
               (acc, curr) => acc + curr.unread_messages_count,
               0
             );
@@ -71,7 +71,7 @@ async function handleCronJob(cronJobType: CronJobType) {
             templateId: TemplateId.DailyChatMessageNotification,
             dynamicTemplateData: ({ space }) => {
               const senderProfiles: SendgridProfile[] =
-                recipientProfile.unread_messages_counts
+                recipientProfile.past_hour_unread_messages_counts
                   .filter((item) => !!item.sender_profile?.user) // Filter out profiles without users
                   .map((item) => {
                     return {
