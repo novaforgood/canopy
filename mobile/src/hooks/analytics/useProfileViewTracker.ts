@@ -46,6 +46,14 @@ async function markTrackingAttempt(viewedProfileId: string, cooldown: number) {
   )) || {}) as Record<string, number>;
 
   nextTrackTimes[viewedProfileId] = Date.now() + cooldown;
+
+  // Delete old entries
+  Object.keys(nextTrackTimes).forEach((key) => {
+    if (nextTrackTimes[key] < Date.now()) {
+      delete nextTrackTimes[key];
+    }
+  });
+
   SecureStore.set(SecureStoreKey.ProfileLastViewedCooldown, nextTrackTimes);
 }
 

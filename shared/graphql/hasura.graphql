@@ -7,6 +7,7 @@ query User($id: String!) {
     first_name
     last_name
     attributes
+    expo_push_token
   }
 }
 

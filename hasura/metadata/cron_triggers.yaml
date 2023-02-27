@@ -1,6 +1,6 @@
 - name: send_chat_message_notification
   webhook: '{{CANOPY_CRON_WEBHOOK_URL}}'
-  schedule: 0 19 * * *
+  schedule: 0 * * * *
   include_in_metadata: true
   payload:
     cronJobType: SendChatMessageNotification

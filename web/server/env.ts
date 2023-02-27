@@ -10,6 +10,8 @@ const SERVER_PROCESS_ENV = {
   HOST_URL: process.env.HOST_URL ?? process.env.VERCEL_URL,
   MOBILE_APP_SCHEME: process.env.MOBILE_APP_SCHEME,
   CRON_CLIENT_KEY: process.env.CRON_CLIENT_KEY,
+  EVENT_CLIENT_KEY: process.env.EVENT_CLIENT_KEY,
+  EXPO_ACCESS_TOKEN: process.env.EXPO_ACCESS_TOKEN,
 } as const;
 
 type ServerEnvVarKey = keyof typeof SERVER_PROCESS_ENV;

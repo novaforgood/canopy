@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useTheme } from "@shopify/restyle";
@@ -6,13 +6,19 @@ import { useAtom } from "jotai";
 import { TouchableOpacity } from "react-native";
 
 import { Box } from "../components/atomic/Box";
+import { useAllChatRoomsSubscription } from "../generated/graphql";
 import { BxMenu } from "../generated/icons/regular";
 import { useLastActiveTracker } from "../hooks/analytics/useLastActiveTracker";
+import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useExpoUpdate } from "../hooks/useExpoUpdate";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
-import { forceRootNavRerenderAtom, showNavDrawerAtom } from "../lib/jotai";
+import {
+  forceRootNavRerenderAtom,
+  notificationsCountAtom,
+  showNavDrawerAtom,
+} from "../lib/jotai";
 import { AccountSettingsScreen } from "../screens/AccountSettingsScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LoadingScreen } from "../screens/LoadingScreen";
@@ -24,6 +30,45 @@ import { Theme } from "../theme";
 import { SpaceNavigator } from "./SpaceNavigator";
 import { RootStackParamList } from "./types";
 
+function useNumberOfNotifications() {
+  const { currentProfile } = useCurrentProfile();
+  const [{ data, fetching, error }] = useAllChatRoomsSubscription({
+    variables: { profile_id: currentProfile?.id ?? "" },
+    pause: !currentProfile,
+  });
+
+  const numUnreadMessages = useMemo(
+    () =>
+      data?.chat_room.reduce((acc, room) => {
+        const myProfileEntry = room.profile_to_chat_rooms.find(
+          (entry) => entry.profile.id === currentProfile?.id
+        );
+        if (!myProfileEntry) return acc;
+        const latestMessage = room.latest_chat_message[0];
+        if (!latestMessage) return acc;
+
+        const shouldNotHighlight =
+          // Latest message was sent by me
+          latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+          // Latest message sent by the other guy was read
+          (myProfileEntry.latest_read_chat_message_id &&
+            latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
+
+        if (shouldNotHighlight) {
+          return acc;
+        } else {
+          return acc + 1;
+        }
+      }, 0),
+    [data, currentProfile?.id]
+  );
+
+  const [_, setNotificationsCount] = useAtom(notificationsCountAtom);
+  useEffect(() => {
+    setNotificationsCount(numUnreadMessages ?? 0);
+  }, [numUnreadMessages, setNotificationsCount]);
+}
+
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
@@ -31,6 +76,7 @@ export function RootNavigator() {
   const [rerenderHack] = useAtom(forceRootNavRerenderAtom);
 
   useLastActiveTracker();
+  useNumberOfNotifications();
 
   ///// Force update JWT if it will expire in 3 minutes /////
   const refreshSessionIfNeeded = useCallback(async () => {

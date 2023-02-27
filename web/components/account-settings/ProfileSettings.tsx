@@ -14,6 +14,7 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
+import { usePrevious } from "../../hooks/usePrevious";
 import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { useUserData } from "../../hooks/useUserData";
 import { ProfileAttributes } from "../../lib/profileAttributes";
@@ -29,11 +30,14 @@ export function ProfileSettings() {
   const [settings, setSettings] = useState<ProfileAttributes>();
   const { localMustSave, setMustSave } = useSaveChangesState();
 
+  const prevAttrs = usePrevious(profileAttributes);
   useEffect(() => {
-    if (profileAttributes) {
+    const prevJson = JSON.stringify(prevAttrs);
+    const newJson = JSON.stringify(profileAttributes);
+    if (profileAttributes && prevJson !== newJson) {
       setSettings(profileAttributes);
     }
-  }, [profileAttributes]);
+  }, [prevAttrs, profileAttributes]);
 
   const [loading, setLoading] = useState(false);
   const client = useClient();

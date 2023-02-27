@@ -24,7 +24,7 @@ enum CronJobType {
   SendChatMessageNotification = "SendChatMessageNotification",
 }
 
-const middlewareSchema = z.object({
+const cronSchema = z.object({
   payload: z.object({
     cronJobType: z.literal(CronJobType.SendChatMessageNotification),
   }),
@@ -32,7 +32,7 @@ const middlewareSchema = z.object({
 
 export default applyMiddleware({
   authenticated: false,
-  validationSchema: middlewareSchema,
+  validationSchema: cronSchema,
 }).post(async (req, res) => {
   const cronClientKey = req.headers["x-canopy-cron-client-key"];
   if (cronClientKey !== CRON_CLIENT_KEY) {
