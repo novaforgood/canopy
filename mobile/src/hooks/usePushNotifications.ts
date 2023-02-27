@@ -15,18 +15,6 @@ import { useUserData } from "./useUserData";
 // https://github.com/expo/expo/issues/15788
 const IOS_NOTIFICATION_ISSUE = Platform.OS === "ios" && __DEV__;
 
-if (!IOS_NOTIFICATION_ISSUE) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const Notifications = require("expo-notifications");
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
-}
-
 export async function getDevicePushTokenAsync() {
   if (IOS_NOTIFICATION_ISSUE)
     throw new Error(
