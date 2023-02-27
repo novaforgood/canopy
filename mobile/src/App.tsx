@@ -34,15 +34,10 @@ import splashImage from "../assets/images/splash.png";
 
 import { CustomToast } from "./components/CustomToast";
 import { NavDrawer } from "./components/NavDrawer";
-import { useExpoUpdate } from "./hooks/useExpoUpdate";
-import { useForegroundEffect } from "./hooks/useForegroundEffect";
-import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import { onAuthStateChanged } from "./lib/firebase";
 import { sessionAtom } from "./lib/jotai";
-import { HOST_URL } from "./lib/url";
 import { RootNavigator } from "./navigation/RootNavigator";
-import { RootStackParamList } from "./navigation/types";
 import { UrqlProvider } from "./providers/UrqlProvider";
 import { theme } from "./theme";
 
@@ -143,22 +138,22 @@ function App() {
   const sessionLoaded = session !== undefined;
   const appIsReady = fontsLoaded && sessionLoaded;
 
-  useEffect(() => {
-    const initNotifications = async () => {
-      if (!IOS_NOTIFICATION_ISSUE) {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const Notifications = require("expo-notifications");
-        Notifications.setNotificationHandler({
-          handleNotification: async () => ({
-            shouldShowAlert: true,
-            shouldPlaySound: false,
-            shouldSetBadge: false,
-          }),
-        });
-      }
-    };
-    initNotifications();
-  });
+  // useEffect(() => {
+  //   const initNotifications = async () => {
+  //     if (!IOS_NOTIFICATION_ISSUE) {
+  //       // eslint-disable-next-line @typescript-eslint/no-var-requires
+  //       const Notifications = await import("expo-notifications");
+  //       Notifications.setNotificationHandler({
+  //         handleNotification: async () => ({
+  //           shouldShowAlert: true,
+  //           shouldPlaySound: false,
+  //           shouldSetBadge: false,
+  //         }),
+  //       });
+  //     }
+  //   };
+  //   initNotifications();
+  // });
 
   return (
     <AnimatedAppLoader
