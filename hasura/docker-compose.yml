@@ -36,5 +36,10 @@ services:
       CANOPY_CRON_WEBHOOK_URL: "${CANOPY_CRON_WEBHOOK_URL}"
       ## CRON Client Key
       CANOPY_CRON_CLIENT_KEY: "${CANOPY_CRON_CLIENT_KEY}"
+
+      ## Event Webhook URL
+      CANOPY_EVENT_WEBHOOK_URL: "${CANOPY_EVENT_WEBHOOK_URL}"
+      ## Event Client Key
+      CANOPY_EVENT_CLIENT_KEY: "${CANOPY_EVENT_CLIENT_KEY}"
 volumes:
   db_data:

@@ -16,6 +16,7 @@ import { Text } from "../../components/atomic/Text";
 import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
 import { ChatTitle } from "../../components/chat/ChatTitle";
 import { getChatParticipants } from "../../components/chat/utils";
+import { toast } from "../../components/CustomToast";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { ProfileImage } from "../../components/ProfileImage";
 import {
@@ -26,6 +27,7 @@ import { BxChevronRight } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
+import { SecureStore, SecureStoreKey } from "../../lib/secureStore";
 import { NavigationProp } from "../../navigation/types";
 
 const AnimatedBox = Animated.createAnimatedComponent(Box);
@@ -244,28 +246,28 @@ export function MessagesScreen() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          py={8}
+          pt={12}
+          pb={6}
         >
           <Text variant="body1" textAlign="center">
             Allow push notifications to be notified of incoming messages!
           </Text>
           <Button
             variant="cta"
-            mt={8}
+            mt={12}
             onPress={() => {
               attemptRegisterPushNotifications();
             }}
           >
-            Allow
+            Allow push notifications
           </Button>
           <Button
             variant="secondary"
-            mt={2}
             onPress={() => {
-              declineRegisterPushNotifications();
+              declineRegisterPushNotifications(true);
             }}
           >
-            No thanks
+            Don't show again
           </Button>
         </Box>
       </Modal>
