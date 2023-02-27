@@ -23,3 +23,5 @@ export const selectedTagIdsAtom = atom<Set<string>>(new Set<string>());
 export const filteredProfileIdsAtom = atom<string[]>([]);
 
 export const showNavDrawerAtom = atom<boolean>(false);
+
+export const notificationsCountAtom = atom<number>(0);

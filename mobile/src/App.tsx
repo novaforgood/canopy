@@ -20,7 +20,7 @@ import { useFonts } from "expo-font";
 import * as Linking from "expo-linking";
 import * as SplashScreen from "expo-splash-screen";
 import { useAtom } from "jotai";
-import { Alert, Image, StatusBar, View } from "react-native";
+import { Alert, Image, Platform, StatusBar, View } from "react-native";
 import { setJSExceptionHandler } from "react-native-exception-handler";
 import { EventProvider } from "react-native-outside-press";
 import Animated, {
@@ -35,6 +35,7 @@ import splashImage from "../assets/images/splash.png";
 import { CustomToast } from "./components/CustomToast";
 import { NavDrawer } from "./components/NavDrawer";
 import { useExpoUpdate } from "./hooks/useExpoUpdate";
+import { useForegroundEffect } from "./hooks/useForegroundEffect";
 import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 import { useRefreshSession } from "./hooks/useRefreshSession";
 import { onAuthStateChanged } from "./lib/firebase";
@@ -44,6 +45,10 @@ import { RootNavigator } from "./navigation/RootNavigator";
 import { RootStackParamList } from "./navigation/types";
 import { UrqlProvider } from "./providers/UrqlProvider";
 import { theme } from "./theme";
+
+// HACK: shim all `expo-notification` calls as it breaks development for iOS.
+// https://github.com/expo/expo/issues/15788
+const IOS_NOTIFICATION_ISSUE = Platform.OS === "ios" && __DEV__;
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -137,6 +142,23 @@ function App() {
 
   const sessionLoaded = session !== undefined;
   const appIsReady = fontsLoaded && sessionLoaded;
+
+  useEffect(() => {
+    const initNotifications = async () => {
+      if (!IOS_NOTIFICATION_ISSUE) {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const Notifications = await import("expo-notifications");
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          }),
+        });
+      }
+    };
+    initNotifications();
+  }, []);
 
   return (
     <AnimatedAppLoader
