@@ -185,7 +185,7 @@ query GetUnreadMessagesCounts {
     user {
       id
     }
-    unread_messages_counts {
+    past_hour_unread_messages_counts {
       unread_messages_count
       sender_profile {
         id

@@ -9,6 +9,7 @@
 - "!include public_event_profile_view.yaml"
 - "!include public_image.yaml"
 - "!include public_past_day_unread_messages_count.yaml"
+- "!include public_past_hour_unread_messages_count.yaml"
 - "!include public_profile.yaml"
 - "!include public_profile_listing.yaml"
 - "!include public_profile_listing_image.yaml"
