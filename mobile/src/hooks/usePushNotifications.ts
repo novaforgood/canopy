@@ -177,6 +177,7 @@ export function usePushNotifications() {
       calculateIfShouldShowPrompt();
 
       if (!token) return;
+
       updateUser({
         id: userData?.id,
         changes: {
