@@ -95,15 +95,6 @@ export function MessagesScreen() {
   return (
     <SafeAreaView style={{ position: "relative" }}>
       <ScrollView style={{ height: "100%" }}>
-        <Button
-          onPress={() => {
-            SecureStore.delete(
-              SecureStoreKey.ShowedPushNotificationPermissionPrompt
-            );
-          }}
-        >
-          Clear that thing
-        </Button>
         <Box minHeight="100%" mt={2}>
           {fetching ? (
             <LoadingSpinner />
@@ -255,26 +246,23 @@ export function MessagesScreen() {
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          py={8}
+          pt={12}
+          pb={6}
         >
           <Text variant="body1" textAlign="center">
             Allow push notifications to be notified of incoming messages!
           </Text>
           <Button
             variant="cta"
-            mt={8}
+            mt={12}
             onPress={() => {
-              toast.success(
-                "Push notifications enabled! or at least trying to"
-              );
               attemptRegisterPushNotifications();
             }}
           >
-            Allow
+            Allow push notifications
           </Button>
           <Button
             variant="secondary"
-            mt={2}
             onPress={() => {
               declineRegisterPushNotifications(true);
             }}

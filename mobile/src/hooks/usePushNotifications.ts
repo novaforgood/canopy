@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
+import { PermissionStatus } from "expo-modules-core";
 import { Platform } from "react-native";
 
 import { toast } from "../components/CustomToast";
@@ -16,6 +16,8 @@ import { useUserData } from "./useUserData";
 const IOS_NOTIFICATION_ISSUE = Platform.OS === "ios" && __DEV__;
 
 if (!IOS_NOTIFICATION_ISSUE) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const Notifications = require("expo-notifications");
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -30,38 +32,42 @@ export async function getDevicePushTokenAsync() {
     throw new Error(
       "Notifications disabled on iOS in dev to prevent fast-reload crash"
     );
+  const Notifications = await import("expo-notifications");
   return Notifications.getDevicePushTokenAsync();
 }
 
+/**
+ *
+ * If the user has not yet registered for push notifications, this will register them.
+ * @returns the token if the user was registered, or null if they were already registered.
+ */
 async function registerForPushNotificationsAsync() {
   if (IOS_NOTIFICATION_ISSUE) {
-    toast.success(
+    toast.error(
       "Notifications disabled on iOS in dev to prevent fast-reload crash"
     );
-    return;
+    return null;
   }
 
   let token;
 
-  toast.success("Device.isDevice: " + Device.isDevice + "");
+  const Notifications = await import("expo-notifications");
+
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
+    if (existingStatus !== PermissionStatus.GRANTED) {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-    toast.success("finalStatus: " + finalStatus + "");
-    toast.success("existingStatus: " + existingStatus + "");
-    if (finalStatus !== "granted") {
-      // alert('Failed to get push token for push notification!');
-      return;
+
+    if (finalStatus !== PermissionStatus.GRANTED) {
+      return null;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log("expo push token", token);
   } else {
-    alert("Must use physical device for Push Notifications");
+    return null;
   }
 
   if (Platform.OS === "android") {
@@ -75,21 +81,77 @@ async function registerForPushNotificationsAsync() {
 }
 
 export function usePushNotifications() {
-  const { userData } = useUserData();
+  const { userData, fetchingUserData } = useUserData();
 
   const [_, updateUser] = useUpdateUserMutation();
 
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      const alreadyShown = await SecureStore.get(
-        SecureStoreKey.ShowedPushNotificationPermissionPrompt
-      );
-      setShowPrompt(typeof alreadyShown === "boolean" ? !alreadyShown : true);
+    // If the user has already registered for push notifications, but we don't have their token,
+    // then update our database with their token.
+
+    // If fetching user data, or if we already have a token, then don't do anything.
+    if (fetchingUserData) return;
+    if (userData?.expo_push_token) return;
+
+    const attemptPostMissingToken = async () => {
+      // If the user hasn't registered for push notifications, then don't do anything.
+
+      if (IOS_NOTIFICATION_ISSUE) return;
+      const Notifications = await import("expo-notifications");
+
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      if (existingStatus !== PermissionStatus.GRANTED) return;
+
+      const token = (await Notifications.getExpoPushTokenAsync()).data;
+
+      if (!token) return;
+      if (!userData?.id) return;
+
+      try {
+        await updateUser({
+          id: userData.id,
+          changes: {
+            expo_push_token: token,
+          },
+        });
+      } catch (error) {
+        handleError(error);
+      }
     };
-    init();
+    attemptPostMissingToken();
+  }, [userData, fetchingUserData, updateUser]);
+
+  const calculateIfShouldShowPrompt = useCallback(async () => {
+    if (IOS_NOTIFICATION_ISSUE) return;
+    const Notifications = await import("expo-notifications");
+
+    // Calculate if we have shown the modal before.
+    const modalAlreadyShownRaw = await SecureStore.get(
+      SecureStoreKey.ShowedPushNotificationPermissionPrompt
+    );
+    const modalAlreadyShown =
+      typeof modalAlreadyShownRaw === "boolean" ? modalAlreadyShownRaw : false;
+
+    // Calculate if we have shown the native notification prompt before. (e.g. the user clicked "allow" on the modal)
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    const promptHasBeenShown = existingStatus !== PermissionStatus.UNDETERMINED;
+
+    const shouldShowPrompt = !modalAlreadyShown && !promptHasBeenShown;
+
+    setShowPrompt(shouldShowPrompt);
   }, []);
+
+  useEffect(() => {
+    // Wait a second before calculating if we should show the prompt.
+
+    setTimeout(() => {
+      calculateIfShouldShowPrompt();
+    }, 1000);
+  }, [calculateIfShouldShowPrompt]);
 
   const declineRegisterPushNotifications = useCallback(
     async (neverShowAgain?: boolean) => {
@@ -98,10 +160,12 @@ export function usePushNotifications() {
           SecureStoreKey.ShowedPushNotificationPermissionPrompt,
           true
         );
+        calculateIfShouldShowPrompt();
+      } else {
+        setShowPrompt(false);
       }
-      setShowPrompt(false);
     },
-    []
+    [calculateIfShouldShowPrompt]
   );
 
   const attemptRegisterPushNotifications = useCallback(async () => {
@@ -110,12 +174,7 @@ export function usePushNotifications() {
     try {
       const token = await registerForPushNotificationsAsync();
 
-      // At this point, we've shown the prompt, so we don't need to show it again.
-      // await SecureStore.set(
-      //   SecureStoreKey.ShowedPushNotificationPermissionPrompt,
-      //   true
-      // );
-      // setShowedPrompt(true);
+      calculateIfShouldShowPrompt();
 
       if (!token) return;
       updateUser({
@@ -124,13 +183,10 @@ export function usePushNotifications() {
           expo_push_token: token,
         },
       });
-    } catch (e: any) {
-      toast.error(
-        "Error registering for push notifications" + e.message || e.toString()
-      );
+    } catch (e) {
       handleError(e);
     }
-  }, [updateUser, userData?.id]);
+  }, [calculateIfShouldShowPrompt, updateUser, userData?.id]);
 
   return useMemo(() => {
     return {
