@@ -77,11 +77,11 @@ export function MessagesScreen() {
 
   const { currentProfile } = useCurrentProfile();
 
-  const {
-    attemptRegisterPushNotifications,
-    declineRegisterPushNotifications,
-    shouldShowPushNotificationPermissionPrompt,
-  } = usePushNotifications();
+  // const {
+  //   attemptRegisterPushNotifications,
+  //   declineRegisterPushNotifications,
+  //   shouldShowPushNotificationPermissionPrompt,
+  // } = usePushNotifications();
 
   const [{ data, fetching, error }, refetchChatRooms] =
     useAllChatRoomsSubscription({
@@ -236,7 +236,7 @@ export function MessagesScreen() {
           )}
         </Box>
       </ScrollView>
-      <Modal
+      {/* <Modal
         isVisible={shouldShowPushNotificationPermissionPrompt}
         onCloseButtonPress={() => {
           declineRegisterPushNotifications();
@@ -270,7 +270,7 @@ export function MessagesScreen() {
             Don't show again
           </Button>
         </Box>
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   );
 }
