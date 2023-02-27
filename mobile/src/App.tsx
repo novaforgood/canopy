@@ -147,7 +147,7 @@ function App() {
     const initNotifications = async () => {
       if (!IOS_NOTIFICATION_ISSUE) {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const Notifications = await import("expo-notifications");
+        const Notifications = require("expo-notifications");
         Notifications.setNotificationHandler({
           handleNotification: async () => ({
             shouldShowAlert: true,
@@ -158,7 +158,7 @@ function App() {
       }
     };
     initNotifications();
-  }, []);
+  });
 
   return (
     <AnimatedAppLoader

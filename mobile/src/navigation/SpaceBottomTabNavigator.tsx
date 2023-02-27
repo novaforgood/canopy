@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import {
   BottomTabBarProps,
@@ -12,12 +12,15 @@ import { SvgProps } from "react-native-svg";
 import { Box } from "../components/atomic/Box";
 import { Text } from "../components/atomic/Text";
 import { Navbar } from "../components/Navbar";
+import { useAllChatRoomsSubscription } from "../generated/graphql";
 import {
   BxGroup,
   BxHome,
   BxMessageAltDetail,
   BxUser,
 } from "../generated/icons/regular";
+import { useCurrentProfile } from "../hooks/useCurrentProfile";
+import { notificationsCountAtom } from "../lib/jotai";
 import { AccountScreen } from "../screens/directory/AccountScreen";
 import { MessagesScreen } from "../screens/directory/MessagesScreen";
 import { ProfilesList } from "../screens/directory/profiles/ProfilesList";
@@ -52,6 +55,8 @@ export function SpaceBottomTabNavigator({
 }
 
 function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  // const [numNotifs] = useAtom(notificationsCountAtom);
+  // const showRedDot = numNotifs > 0;
   return (
     <Box borderTopColor="green700" borderTopWidth={1}>
       <SafeAreaView style={{ flexDirection: "row" }}>
@@ -97,20 +102,52 @@ function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               onLongPress={onLongPress}
               style={{ flex: 1 }}
             >
-              <Box flexDirection="column" alignItems="center" pt={2}>
-                <Icon
-                  color={isFocused ? "black" : "gray500"}
-                  height={24}
-                  width={24}
-                />
-                <Text color={isFocused ? "black" : "gray500"} mt={1}>
-                  {title}
-                </Text>
+              <Box>
+                <Box
+                  flexDirection="column"
+                  alignItems="center"
+                  pt={2}
+                  position="relative"
+                >
+                  <Box
+                    position="relative"
+                    flexDirection="column"
+                    alignItems="center"
+                  >
+                    <Icon
+                      color={isFocused ? "black" : "gray500"}
+                      height={24}
+                      width={24}
+                    />
+                    <Text color={isFocused ? "black" : "gray500"} mt={1}>
+                      {title}
+                    </Text>
+                    {title === "Chats" && <RedDot />}
+                  </Box>
+                </Box>
               </Box>
             </TouchableOpacity>
           );
         })}
       </SafeAreaView>
     </Box>
+  );
+}
+
+function RedDot() {
+  const [numNotifs] = useAtom(notificationsCountAtom);
+  const showRedDot = numNotifs > 0;
+
+  if (!showRedDot) return null;
+  return (
+    <Box
+      position="absolute"
+      height={8}
+      width={8}
+      backgroundColor="systemError"
+      borderRadius="full"
+      top={-2}
+      right={6}
+    ></Box>
   );
 }
