@@ -138,22 +138,22 @@ function App() {
   const sessionLoaded = session !== undefined;
   const appIsReady = fontsLoaded && sessionLoaded;
 
-  // useEffect(() => {
-  //   const initNotifications = async () => {
-  //     if (!IOS_NOTIFICATION_ISSUE) {
-  //       // eslint-disable-next-line @typescript-eslint/no-var-requires
-  //       const Notifications = await import("expo-notifications");
-  //       Notifications.setNotificationHandler({
-  //         handleNotification: async () => ({
-  //           shouldShowAlert: true,
-  //           shouldPlaySound: false,
-  //           shouldSetBadge: false,
-  //         }),
-  //       });
-  //     }
-  //   };
-  //   initNotifications();
-  // });
+  useEffect(() => {
+    const initNotifications = async () => {
+      if (!IOS_NOTIFICATION_ISSUE) {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const Notifications = await import("expo-notifications");
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          }),
+        });
+      }
+    };
+    initNotifications();
+  });
 
   return (
     <AnimatedAppLoader
