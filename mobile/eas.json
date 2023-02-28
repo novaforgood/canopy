@@ -15,7 +15,7 @@
       }
     },
     "production": {
-      "channel": "production",
+      "channel": "production-1.1",
       "env": {
         "APP_NAME": "Canopy",
         "APP_ID": "com.joincanopy.app",
