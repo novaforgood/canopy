@@ -1,13 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { Link, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { formatDistanceStrict } from "date-fns";
-import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
-import Animated, {
-  FadeIn,
-  SlideInUp,
-  SlideOutDown,
-} from "react-native-reanimated";
+import { SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
+import Animated from "react-native-reanimated";
 
 import { Box } from "../../components/atomic/Box";
 import { Button } from "../../components/atomic/Button";
@@ -16,18 +12,14 @@ import { Text } from "../../components/atomic/Text";
 import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
 import { ChatTitle } from "../../components/chat/ChatTitle";
 import { getChatParticipants } from "../../components/chat/utils";
-import { toast } from "../../components/CustomToast";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { ProfileImage } from "../../components/ProfileImage";
 import {
   useAllChatRoomsSubscription,
   User_Type_Enum,
 } from "../../generated/graphql";
 import { BxChevronRight } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
-import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
-import { SecureStore, SecureStoreKey } from "../../lib/secureStore";
 import { NavigationProp } from "../../navigation/types";
 
 const AnimatedBox = Animated.createAnimatedComponent(Box);
@@ -77,11 +69,11 @@ export function MessagesScreen() {
 
   const { currentProfile } = useCurrentProfile();
 
-  // const {
-  //   attemptRegisterPushNotifications,
-  //   declineRegisterPushNotifications,
-  //   shouldShowPushNotificationPermissionPrompt,
-  // } = usePushNotifications();
+  const {
+    attemptRegisterPushNotifications,
+    declineRegisterPushNotifications,
+    shouldShowPushNotificationPermissionPrompt,
+  } = usePushNotifications();
 
   const [{ data, fetching, error }, refetchChatRooms] =
     useAllChatRoomsSubscription({
@@ -236,7 +228,7 @@ export function MessagesScreen() {
           )}
         </Box>
       </ScrollView>
-      {/* <Modal
+      <Modal
         isVisible={shouldShowPushNotificationPermissionPrompt}
         onCloseButtonPress={() => {
           declineRegisterPushNotifications();
@@ -270,7 +262,7 @@ export function MessagesScreen() {
             Don't show again
           </Button>
         </Box>
-      </Modal> */}
+      </Modal>
     </SafeAreaView>
   );
 }

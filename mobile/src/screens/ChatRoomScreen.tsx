@@ -17,40 +17,40 @@ export function ChatRoomScreen({
 }: StackScreenProps<SpaceStackParamList, "ChatRoom">) {
   const chatRoomId = route.params.chatRoomId;
 
-  // useEffect(() => {
-  //   const disableNotificationsForThisChatRoom = async () => {
-  //     if (!IOS_NOTIFICATION_ISSUE) {
-  //       // eslint-disable-next-line @typescript-eslint/no-var-requires
-  //       const Notifications = await import("expo-notifications");
-  //       Notifications.setNotificationHandler({
-  //         handleNotification: async (notification) => ({
-  //           shouldShowAlert:
-  //             notification.request.content.data?.chatRoomId !== chatRoomId,
-  //           shouldPlaySound: false,
-  //           shouldSetBadge: false,
-  //         }),
-  //       });
-  //     }
-  //   };
-  //   disableNotificationsForThisChatRoom();
+  useEffect(() => {
+    const disableNotificationsForThisChatRoom = async () => {
+      if (!IOS_NOTIFICATION_ISSUE) {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const Notifications = await import("expo-notifications");
+        Notifications.setNotificationHandler({
+          handleNotification: async (notification) => ({
+            shouldShowAlert:
+              notification.request.content.data?.chatRoomId !== chatRoomId,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          }),
+        });
+      }
+    };
+    disableNotificationsForThisChatRoom();
 
-  //   return () => {
-  //     const reenableNotifs = async () => {
-  //       if (!IOS_NOTIFICATION_ISSUE) {
-  //         // eslint-disable-next-line @typescript-eslint/no-var-requires
-  //         const Notifications = await import("expo-notifications");
-  //         Notifications.setNotificationHandler({
-  //           handleNotification: async () => ({
-  //             shouldShowAlert: true,
-  //             shouldPlaySound: false,
-  //             shouldSetBadge: false,
-  //           }),
-  //         });
-  //       }
-  //     };
-  //     reenableNotifs();
-  //   };
-  // }, [chatRoomId]);
+    return () => {
+      const reenableNotifs = async () => {
+        if (!IOS_NOTIFICATION_ISSUE) {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const Notifications = await import("expo-notifications");
+          Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+              shouldShowAlert: true,
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+            }),
+          });
+        }
+      };
+      reenableNotifs();
+    };
+  }, [chatRoomId]);
 
   return (
     <SafeAreaView>
