@@ -66,6 +66,9 @@ async function handleCronJob(cronJobType: CronJobType) {
               (acc, curr) => acc + curr.unread_messages_count,
               0
             );
+          if (totalUnreadMessagesCount === 0) {
+            return;
+          }
           return sendEmail({
             receiverProfileId: recipientProfile.id,
             templateId: TemplateId.DailyChatMessageNotification,
