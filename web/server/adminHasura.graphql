@@ -179,7 +179,9 @@ query GetProfiles($where: profile_bool_exp) {
 
 query GetUnreadMessagesCounts {
   profile(
-    where: { unread_messages_counts: { unread_messages_count: { _gt: 0 } } }
+    where: {
+      past_hour_unread_messages_counts: { unread_messages_count: { _gt: 0 } }
+    }
   ) {
     id
     user {
