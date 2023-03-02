@@ -181,13 +181,11 @@ export function usePushNotifications() {
     return {
       attemptRegisterPushNotifications,
       declineRegisterPushNotifications,
-      shouldShowPushNotificationPermissionPrompt:
-        !userData?.expo_push_token && showPrompt,
+      shouldShowPushNotificationPermissionPrompt: showPrompt,
     };
   }, [
     attemptRegisterPushNotifications,
     declineRegisterPushNotifications,
     showPrompt,
-    userData?.expo_push_token,
   ]);
 }
