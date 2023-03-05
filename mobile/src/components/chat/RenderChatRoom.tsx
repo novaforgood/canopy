@@ -26,7 +26,11 @@ import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
 import { useChatRoom } from "./useChatRoom";
 import { useMessages } from "./useMessages";
-import { getChatParticipants, getChatRoomSubtitle } from "./utils";
+import {
+  getChatParticipants,
+  getChatRoomSubtitle,
+  makeListSentence,
+} from "./utils";
 
 type ChatMessage = MessagesQuery["chat_message"][number];
 
@@ -90,6 +94,8 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const [newMessage, setNewMessage] = useState("");
   const { chatRoom, chatParticipants } = useChatRoom(chatRoomId ?? "");
 
+  const isIntro = !!chatRoom?.chat_intro_id;
+
   const { currentProfile } = useCurrentProfile();
   const {
     messagesList,
@@ -140,6 +146,12 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const otherHumans = allHumans.filter(
     (p) => p.profileId !== currentProfile?.id
   );
+
+  const otherHumanNames =
+    otherHumans.length <= 2
+      ? makeListSentence(otherHumans.map((p) => p.firstName))
+      : "the others";
+
   return (
     <CustomKeyboardAvoidingView>
       <Box
@@ -205,6 +217,21 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             flexDirection="column-reverse"
             style={{ transform: [{ scaleY: -1 }] }}
           >
+            {isIntro && (
+              <Box
+                mb={2}
+                width="100%"
+                alignItems="center"
+                flexDirection="column"
+              >
+                <Text color="gray400" variant="body3">
+                  Introduce yourself to {otherHumanNames}!
+                </Text>
+                <Text color="gray400" variant="body3">
+                  Remember: Everyone on Canopy is here to meet people.
+                </Text>
+              </Box>
+            )}
             {currentProfile &&
               messagesList.map((message, idx) => {
                 // Note: Messages are ordered by created_at DESC
@@ -375,6 +402,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             )}
           </Box>
         </ScrollView>
+
         <Box
           height={1}
           width="100%"
