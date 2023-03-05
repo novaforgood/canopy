@@ -75,8 +75,7 @@ export function shouldHighlightChatRoom(
     return false;
   }
 
-  if (latestMessage.sender_profile_id === myProfileEntry.profile.id)
-    return false;
+  if (latestMessage.sender_ptcr?.id === myProfileEntry.profile.id) return false;
 
   if (chatRoom.id === chatRoomId) return false;
 

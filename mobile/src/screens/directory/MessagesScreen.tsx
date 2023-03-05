@@ -145,7 +145,8 @@ export function MessagesScreen() {
 
               const shouldNotHighlight =
                 // Latest message was sent by me
-                latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+                latestMessage.sender_ptcr?.profile_id ===
+                  myProfileEntry.profile.id ||
                 // Latest message sent by the other guy was read
                 (myProfileEntry.latest_read_chat_message_id &&
                   latestMessage.id <=
@@ -200,7 +201,7 @@ export function MessagesScreen() {
                           variant={shouldNotHighlight ? "body2" : "body2Medium"}
                           numberOfLines={1}
                         >
-                          {latestMessage?.sender_profile_id ===
+                          {latestMessage?.sender_ptcr?.profile_id ===
                           currentProfile?.id
                             ? "You: "
                             : ""}

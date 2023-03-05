@@ -1,24 +1,21 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 
-import { useDisclosure } from "@mantine/hooks";
 import { useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 import { ScrollView, TouchableOpacity } from "react-native";
 
 import { MessagesQuery, User_Type_Enum } from "../../generated/graphql";
-import { BxInfoCircle, BxSend } from "../../generated/icons/regular";
+import { BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePrevious } from "../../hooks/usePrevious";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { NavigationProp } from "../../navigation/types";
 import { Box } from "../atomic/Box";
-import { Modal } from "../atomic/Modal";
 import { Text } from "../atomic/Text";
 import { TextInput } from "../atomic/TextInput";
 import { CustomKeyboardAvoidingView } from "../CustomKeyboardAvoidingView";
 import { LoadingSpinner } from "../LoadingSpinner";
-import { ProfileImage } from "../ProfileImage";
 
 import { ChatParticipantsModalButton } from "./ChatParticipantsModalButton";
 import { ChatProfileImage } from "./ChatProfileImage";
@@ -73,7 +70,7 @@ function shouldBreak(
   if (!message1 || !message2) {
     return true;
   }
-  if (message1.sender_profile_id !== message2.sender_profile_id) {
+  if (message1.sender_ptcr?.id !== message2.sender_ptcr?.id) {
     return true;
   }
   return shouldTimeBreak(message1, message2);
@@ -109,7 +106,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const lastMessageIdByOther: number | null = useMemo(() => {
     return (
       messagesList.find(
-        (m) => currentProfile && m.sender_profile_id !== currentProfile.id
+        (m) => currentProfile && m.sender_ptcr?.profile_id !== currentProfile.id
       )?.id ?? null
     );
   }, [messagesList, currentProfile]);
@@ -243,10 +240,10 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                 const breakAfter = shouldBreak(message, nextMessage);
 
                 const nextMessageIsFromDifferentSender =
-                  nextMessage?.sender_profile_id !== message.sender_profile_id;
+                  nextMessage?.sender_ptcr?.id !== message.sender_ptcr?.id;
 
                 let messageJsxElement = null;
-                if (message.sender_profile_id === currentProfile.id) {
+                if (message.sender_ptcr?.profile_id === currentProfile.id) {
                   // Sent by me. Render chat bubble with my profile image on the right.
                   const isPending = typeof message.id === "string";
 
@@ -254,7 +251,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                   let nextMessageSentByMe = null;
                   for (let j = idx - 1; j >= 0; j--) {
                     const msg = messagesList[j];
-                    if (msg.sender_profile_id === currentProfile.id) {
+                    if (msg.sender_ptcr?.profile_id === currentProfile.id) {
                       nextMessageSentByMe = msg;
                       break;
                     }
@@ -306,7 +303,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
                   const senderProfile =
                     chatParticipants.find(
-                      (p) => p.profileId === message.sender_profile_id
+                      (p) => p.profileId === message.sender_ptcr?.profile_id
                     ) ?? null;
 
                   messageJsxElement = (

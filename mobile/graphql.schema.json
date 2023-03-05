@@ -5343,33 +5343,25 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile",
+            "name": "sender_ptcr",
             "description": "An object relationship",
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "profile",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "profile_to_chat_room",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "uuid",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "uuid",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -5426,19 +5418,19 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile",
+            "name": "sender_ptcr",
             "description": "An object relationship",
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "profile",
+              "name": "profile_to_chat_room",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "args": [],
             "type": {
@@ -5788,11 +5780,11 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile",
+            "name": "sender_ptcr",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "profile_bool_exp",
+              "name": "profile_to_chat_room_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -5800,7 +5792,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -5846,7 +5838,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "args": [],
             "type": {
@@ -5893,7 +5885,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "args": [],
             "type": {
@@ -5941,11 +5933,11 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile",
+            "name": "sender_ptcr",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "profile_order_by",
+              "name": "profile_to_chat_room_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -5953,7 +5945,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -5990,7 +5982,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -6137,7 +6129,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -6530,11 +6522,11 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile",
+            "name": "sender_ptcr",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "profile_bool_exp",
+              "name": "profile_to_chat_room_bool_exp",
               "ofType": null
             },
             "defaultValue": null,
@@ -6542,7 +6534,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -6630,19 +6622,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "profile_obj_rel_insert_input",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -6713,7 +6693,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -6784,7 +6764,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -6993,11 +6973,11 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile",
+            "name": "sender_ptcr",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "profile_order_by",
+              "name": "profile_to_chat_room_order_by",
               "ofType": null
             },
             "defaultValue": null,
@@ -7005,7 +6985,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -7093,7 +7073,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -7293,7 +7273,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sender_profile_id",
+            "name": "sender_ptcr_id",
             "description": null,
             "type": {
               "kind": "SCALAR",

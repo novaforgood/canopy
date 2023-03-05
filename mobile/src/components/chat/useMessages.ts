@@ -14,7 +14,7 @@ import { toast } from "../CustomToast";
 import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "./constants";
 import { useChatRoom } from "./useChatRoom";
 
-type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
+type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_ptcr">;
 
 const promiseQueue = new PromiseQueue();
 
@@ -129,10 +129,20 @@ export function useMessages(chatRoomId: string) {
         toast.error("No current profile");
         return;
       }
+
+      const myPtcrId = chatParticipants.find(
+        (p) => p.profileId === currentProfile.id
+      )?.id;
+
+      if (!myPtcrId) {
+        toast.error("No participant id");
+        return;
+      }
+
       const promise = sendMessage({
         input: {
           chat_room_id: chatRoom.id,
-          sender_profile_id: currentProfile.id,
+          sender_ptcr_id: myPtcrId,
           text: processedMessage,
         },
       })
@@ -148,13 +158,13 @@ export function useMessages(chatRoomId: string) {
 
       promiseQueue.enqueue(promise);
     },
-    [chatRoom?.id, currentProfile, sendMessage]
+    [chatParticipants, chatRoom?.id, currentProfile, sendMessage]
   );
 
   const markLatestMessageAsRead = useCallback(async () => {
     if (!myProfileEntry) return;
     const latestMessageByOther = messagesList.find(
-      (m) => m.sender_profile_id !== myProfileEntry.profileId
+      (m) => m.sender_ptcr?.profile_id !== myProfileEntry.profileId
     );
     if (latestMessageByOther) {
       promiseQueue.enqueue(markMessageAsRead(latestMessageByOther));

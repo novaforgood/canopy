@@ -49,7 +49,7 @@ function useNumberOfNotifications() {
 
         const shouldNotHighlight =
           // Latest message was sent by me
-          latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+          latestMessage.sender_ptcr?.profile_id === myProfileEntry.profile.id ||
           // Latest message sent by the other guy was read
           (myProfileEntry.latest_read_chat_message_id &&
             latestMessage.id <= myProfileEntry.latest_read_chat_message_id);
