@@ -5,9 +5,15 @@ object_relationships:
   - name: chat_room
     using:
       foreign_key_constraint_on: chat_room_id
-  - name: sender_profile
+  - name: sender_ptcr
     using:
-      foreign_key_constraint_on: sender_profile_id
+      manual_configuration:
+        column_mapping:
+          sender_ptcr_id: id
+        insertion_order: null
+        remote_table:
+          name: profile_to_chat_room
+          schema: public
 insert_permissions:
   - role: user
     permission:
@@ -19,25 +25,26 @@ insert_permissions:
                     profile:
                       user_id:
                         _eq: X-Hasura-User-Id
-              - sender_profile:
-                  user_id:
-                    _eq: X-Hasura-User-Id
+              - sender_ptcr:
+                  profile:
+                    user_id:
+                      _eq: X-Hasura-User-Id
       columns:
         - chat_room_id
         - deleted
         - id
-        - sender_profile_id
+        - sender_ptcr_id
         - text
 select_permissions:
   - role: user
     permission:
       columns:
-        - id
         - chat_room_id
-        - sender_profile_id
-        - text
         - created_at
         - deleted
+        - id
+        - sender_ptcr_id
+        - text
       filter:
         _or:
           - chat_room:
@@ -51,9 +58,10 @@ update_permissions:
       columns:
         - deleted
       filter:
-        sender_profile:
-          user_id:
-            _eq: X-Hasura-User-Id
+        sender_ptcr:
+          profile:
+            user_id:
+              _eq: X-Hasura-User-Id
       check: null
 event_triggers:
   - name: on_chat_message_insert

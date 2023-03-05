@@ -2,7 +2,6 @@
 - "!include public_chat_intro.yaml"
 - "!include public_chat_intro_data.yaml"
 - "!include public_chat_message.yaml"
-- "!include public_chat_message_admin_view.yaml"
 - "!include public_chat_room.yaml"
 - "!include public_connection_request.yaml"
 - "!include public_connection_request_status.yaml"
