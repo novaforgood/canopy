@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
-import { ChatRoomQuery, useChatRoomQuery } from "../../generated/graphql";
-import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useChatRoomQuery } from "../../generated/graphql";
 
 import { getChatParticipants } from "./utils";
 

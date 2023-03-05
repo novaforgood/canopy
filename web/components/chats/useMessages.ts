@@ -17,7 +17,7 @@ import { PromiseQueue } from "../../lib/PromiseQueue";
 import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "./constants";
 import { useChatRoom } from "./useChatRoom";
 
-type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
+type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_ptcr">;
 
 const promiseQueue = new PromiseQueue();
 
@@ -118,7 +118,7 @@ export function useMessages(chatRoomId: string) {
   const markLatestMessageAsRead = useCallback(async () => {
     if (!myProfileEntry) return;
     const latestMessageByOther = messagesList.find(
-      (m) => m.sender_profile_id !== myProfileEntry.profileId
+      (m) => m.sender_ptcr?.profile_id !== myProfileEntry.profileId
     );
     if (latestMessageByOther) {
       promiseQueue.enqueue(markMessageAsRead(latestMessageByOther));

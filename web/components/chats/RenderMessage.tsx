@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import {
   Chat_Message,
+  Profile_To_Chat_Room,
   useUpdateChatMessageMutation,
 } from "../../generated/graphql";
 import { BxDotsVerticalRounded, BxTrash } from "../../generated/icons/regular";
@@ -19,7 +20,12 @@ import { Tooltip } from "../tooltips";
 import { ChatProfileImage } from "./ChatProfileImage";
 import { ChatParticipant } from "./utils";
 
-type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
+type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_ptcr"> & {
+  sender_ptcr?: Omit<
+    Profile_To_Chat_Room,
+    "chat_room" | "profile" | "chat_room_id"
+  > | null;
+};
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
@@ -58,7 +64,7 @@ function shouldBreak(
   if (!message1 || !message2) {
     return true;
   }
-  if (message1.sender_profile_id !== message2.sender_profile_id) {
+  if (message1.sender_ptcr_id !== message2.sender_ptcr_id) {
     return true;
   }
   return shouldTimeBreak(message1, message2);
@@ -149,10 +155,10 @@ export function RenderMessage(props: RenderMessageProps) {
   const breakAfter = shouldBreak(message, nextMessage);
 
   const nextMessageIsFromDifferentSender =
-    nextMessage?.sender_profile_id !== message.sender_profile_id;
+    nextMessage?.sender_ptcr_id !== message.sender_ptcr_id;
 
   let messageJsxElement = null;
-  if (message.sender_profile_id === currentProfile?.id) {
+  if (message.sender_ptcr?.profile_id === currentProfile?.id) {
     // Sent by me. Render chat bubble with my profile image on the right.
     const isPending = typeof message.id === "string";
 
@@ -212,8 +218,9 @@ export function RenderMessage(props: RenderMessageProps) {
     const isLastMessage = breakAfter || nextMessageIsFromDifferentSender;
 
     const senderProfile =
-      chatParticipants.find((p) => p.profileId === message.sender_profile_id) ??
-      null;
+      chatParticipants.find(
+        (p) => p.profileId === message.sender_ptcr?.profile_id
+      ) ?? null;
 
     if (!senderProfile) return null;
 

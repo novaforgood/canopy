@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireServerEnv } from "../../../server/env";
 import {
   executeGetChatRoomQuery,
+  executeInsertChatMessageOneMutation,
   executeInsertChatRoomOneMutation,
   Profile_Role_Enum,
 } from "../../../server/generated/serverGraphql";
@@ -63,14 +64,6 @@ export default applyMiddleware({
 
   const { error, data } = await executeInsertChatRoomOneMutation({
     data: {
-      chat_messages: {
-        data: [
-          {
-            text: firstMessage,
-            sender_profile_id: senderProfileId,
-          },
-        ],
-      },
       profile_to_chat_rooms: {
         data: allProfileIds.map((profileId) => ({
           profile_id: profileId,
@@ -81,6 +74,24 @@ export default applyMiddleware({
   const chatRoomId = data?.insert_chat_room_one?.id;
   if (error || !chatRoomId) {
     throw makeApiFail(error?.message ?? "Chat room creation error");
+  }
+
+  const myPtcrId = data?.insert_chat_room_one?.profile_to_chat_rooms.find(
+    (ptcr) => ptcr.profile.id === senderProfileId
+  )?.id;
+  if (!myPtcrId) {
+    throw makeApiFail("Could not find my ptcr id. This should never happen.");
+  }
+
+  const { error: messageError } = await executeInsertChatMessageOneMutation({
+    data: {
+      text: firstMessage,
+      sender_ptcr_id: myPtcrId,
+      chat_room_id: chatRoomId,
+    },
+  });
+  if (messageError) {
+    throw makeApiFail(messageError?.message ?? "Chat message creation error");
   }
 
   await Promise.all(

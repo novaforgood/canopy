@@ -27,7 +27,7 @@ query AdminDashDirectoryOverview($space_id: uuid!, $after: timestamptz!) {
   }
   chat_messages_count: chat_message_admin_view_aggregate(
     where: {
-      sender_profile: { space_id: { _eq: $space_id } }
+      sender_ptcr: { profile: { space_id: { _eq: $space_id } } }
       created_at: { _gte: $after }
     }
   ) {

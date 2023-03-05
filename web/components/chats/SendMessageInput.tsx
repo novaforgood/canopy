@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import classNames from "classnames";
 import { useRouter } from "next/router";
@@ -12,6 +12,8 @@ import { PromiseQueue } from "../../lib/PromiseQueue";
 import { Textarea } from "../atomic";
 import { IconButton } from "../buttons/IconButton";
 
+import { useChatRoom } from "./useChatRoom";
+
 const promiseQueue = new PromiseQueue();
 
 interface SendMessageInputProps {
@@ -23,12 +25,18 @@ interface SendMessageInputProps {
 export function SendMessageInput(props: SendMessageInputProps) {
   const { chatRoomId, className, onSubmit } = props;
 
+  const { chatParticipants } = useChatRoom(chatRoomId ?? "");
+
   const [value, setValue] = useState<string>("");
 
   const chatRoomIdFromQuery = useQueryParam("chatRoomId", "string");
   const spaceSlug = useQueryParam("slug", "string");
 
   const { currentProfile } = useCurrentProfile();
+  const myParticipant = useMemo(
+    () => chatParticipants.find((p) => p.profileId === currentProfile?.id),
+    [chatParticipants, currentProfile]
+  );
 
   const router = useRouter();
   // Submitting a new message
@@ -44,7 +52,7 @@ export function SendMessageInput(props: SendMessageInputProps) {
       if (onSubmit) {
         onSubmit(processedMessage);
       } else if (chatRoomId) {
-        if (!currentProfile) {
+        if (!myParticipant) {
           toast.error("No current profile");
           return;
         }
@@ -52,7 +60,7 @@ export function SendMessageInput(props: SendMessageInputProps) {
         const promise = sendMessage({
           input: {
             chat_room_id: chatRoomId,
-            sender_profile_id: currentProfile.id,
+            sender_ptcr_id: myParticipant.id,
             text: processedMessage,
           },
         })
@@ -78,7 +86,7 @@ export function SendMessageInput(props: SendMessageInputProps) {
     [
       chatRoomId,
       chatRoomIdFromQuery,
-      currentProfile,
+      myParticipant,
       onSubmit,
       router,
       sendMessage,

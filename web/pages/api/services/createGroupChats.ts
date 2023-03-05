@@ -5,6 +5,7 @@ import { requireServerEnv } from "../../../server/env";
 import {
   executeGetProfilesQuery,
   executeInsertChatIntroMutation,
+  executeInsertChatMessageOneMutation,
   executeInsertChatRoomOneMutation,
   executeInsertProfileMutation,
   Profile_Constraint,
@@ -134,24 +135,8 @@ export default applyMiddleware({
 
   const emailPromises: Promise<void>[] = [];
   const promises = profileGroups.map(async (group) => {
-    const names = group.map((profile) => `${profile.user?.first_name}`);
-    const conversationStarter =
-      CONVERSATION_STARTERS[
-        Math.floor(Math.random() * CONVERSATION_STARTERS.length)
-      ];
-
     const { error, data } = await executeInsertChatRoomOneMutation({
       data: {
-        chat_messages: {
-          data: [
-            {
-              text: `Hello ${makeListSentence(
-                names
-              )},\n\nYou have been matched into a group! Next steps:\n\n1. Introduce yourselves! Feel free to start by answering the following: ${conversationStarter}\n2. Suggest some times to meet up! This can be person or over a video call.`,
-              sender_profile_id: canopyBotProfileId,
-            },
-          ],
-        },
         chat_intro_id: chatIntroId,
         profile_to_chat_rooms: {
           data: [
@@ -164,6 +149,36 @@ export default applyMiddleware({
 
     if (error) {
       throw makeApiError(error.message);
+    }
+
+    const botPtcrId = data?.insert_chat_room_one?.profile_to_chat_rooms.find(
+      (ptcr) => ptcr.profile.id === canopyBotProfileId
+    )?.id;
+    if (!botPtcrId || !data?.insert_chat_room_one?.id) {
+      throw makeApiFail(
+        "Could not find Canopy Bot's ptcr id, or the chat room id. This should never happen."
+      );
+    }
+
+    const names = group.map((profile) => `${profile.user?.first_name}`);
+    const conversationStarter =
+      CONVERSATION_STARTERS[
+        Math.floor(Math.random() * CONVERSATION_STARTERS.length)
+      ];
+
+    const firstMessage = `Hello ${makeListSentence(
+      names
+    )},\n\nYou have been matched into a group! Next steps:\n\n1. Introduce yourselves! Feel free to start by answering the following: ${conversationStarter}\n2. Suggest some times to meet up! This can be person or over a video call.`;
+
+    const { error: messageError } = await executeInsertChatMessageOneMutation({
+      data: {
+        text: firstMessage,
+        sender_ptcr_id: botPtcrId,
+        chat_room_id: data.insert_chat_room_one.id,
+      },
+    });
+    if (messageError) {
+      throw makeApiFail(messageError?.message ?? "Chat message creation error");
     }
 
     console.log("Created chat room for group:", data?.insert_chat_room_one?.id);

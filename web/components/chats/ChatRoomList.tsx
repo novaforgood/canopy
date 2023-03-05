@@ -19,11 +19,7 @@ import { IconButton } from "../buttons/IconButton";
 
 import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
-import {
-  shouldHighlightChatRoom,
-  getChatParticipants,
-  getChatRoomTitle,
-} from "./utils";
+import { shouldHighlightChatRoom, getChatParticipants } from "./utils";
 
 function useTimeFormatter() {
   const [timeNow, setTimeNow] = useState(new Date());
@@ -205,7 +201,8 @@ export function ChatRoomList() {
                         variant="body3"
                         bold={!shouldNotHighlight}
                       >
-                        {latestMessage?.sender_profile_id === currentProfile?.id
+                        {latestMessage?.sender_ptcr?.profile_id ===
+                        currentProfile?.id
                           ? "You: "
                           : ""}
                         {latestMessage?.text}

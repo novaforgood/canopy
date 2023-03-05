@@ -1,9 +1,7 @@
 import { ReactNode, Suspense, useCallback, useEffect, useMemo } from "react";
 
 import { useAtom } from "jotai";
-import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
-import { useClient } from "urql";
 
 import { Footer } from "../components/Footer";
 import { Metadata } from "../components/Metadata";
@@ -28,7 +26,6 @@ import {
   selectedTagIdsAtom,
   sessionAtom,
 } from "../lib/jotai";
-import { LocalStorage, LocalStorageKey } from "../lib/localStorage";
 import { AuthProvider } from "../providers/AuthProvider";
 import { UrqlProvider } from "../providers/UrqlProvider";
 import { CustomPage } from "../types";
@@ -60,7 +57,7 @@ function useNumberOfNotifications() {
 
         const shouldNotHighlight =
           // Latest message was sent by me
-          latestMessage.sender_profile_id === myProfileEntry.profile.id ||
+          latestMessage.sender_ptcr?.profile_id === myProfileEntry.profile.id ||
           // Latest message sent by the other guy was read
           (myProfileEntry.latest_read_chat_message_id &&
             latestMessage.id <= myProfileEntry.latest_read_chat_message_id);

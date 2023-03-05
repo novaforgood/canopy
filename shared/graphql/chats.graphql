@@ -29,13 +29,19 @@ fragment ChatRoomFragment on chat_room {
   latest_chat_message: chat_messages(limit: 1, order_by: { id: desc }) {
     id
     text
-    sender_profile_id
+    sender_ptcr {
+      id
+      profile_id
+    }
     created_at
   }
   first_chat_message: chat_messages(limit: 1, order_by: { id: asc }) {
     id
     text
-    sender_profile_id
+    sender_ptcr {
+      id
+      profile_id
+    }
     created_at
   }
 }
@@ -69,7 +75,10 @@ subscription MessagesStream($chat_room_id: uuid!, $after: timestamptz!) {
     id
     deleted
     chat_room_id
-    sender_profile_id
+    sender_ptcr {
+      id
+      profile_id
+    }
     text
     created_at
   }
@@ -84,7 +93,10 @@ query Messages($chat_room_id: uuid!, $limit: Int!, $id_cap: bigint!) {
     id
     deleted
     chat_room_id
-    sender_profile_id
+    sender_ptcr {
+      id
+      profile_id
+    }
     text
     created_at
   }
@@ -99,7 +111,7 @@ mutation SendMessage($input: chat_message_insert_input!) {
     created_at
     chat_room_id
     text
-    sender_profile_id
+    sender_ptcr_id
   }
 }
 
@@ -130,7 +142,7 @@ mutation updateChatMessage(
     created_at
     chat_room_id
     text
-    sender_profile_id
+    sender_ptcr_id
   }
 }
 

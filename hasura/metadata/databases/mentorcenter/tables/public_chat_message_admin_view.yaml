@@ -2,28 +2,29 @@ table:
   name: chat_message_admin_view
   schema: public
 object_relationships:
-  - name: sender_profile
+  - name: sender_ptcr
     using:
       manual_configuration:
         column_mapping:
-          sender_profile_id: id
+          sender_ptcr_id: id
         insertion_order: null
         remote_table:
-          name: profile
+          name: profile_to_chat_room
           schema: public
 select_permissions:
   - role: user
     permission:
       columns:
-        - id
-        - sender_profile_id
         - created_at
+        - id
+        - sender_ptcr_id
       filter:
         _or:
           - _and:
-              - sender_profile:
-                  space_id:
-                    _eq: X-Hasura-Space-Id
+              - sender_ptcr:
+                  profile:
+                    space_id:
+                      _eq: X-Hasura-Space-Id
               - _exists:
                   _table:
                     name: profile_to_profile_role_flattened

@@ -2,18 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 
 import { makeListSentence } from "../../common/lib/words";
 import { User_Type_Enum } from "../../generated/graphql";
-import { BxSend } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { usePrevious } from "../../hooks/usePrevious";
 import { Button, Text, Textarea } from "../atomic";
-import { IconButton } from "../buttons/IconButton";
-import { ProfileImage } from "../common/ProfileImage";
 
 import { RenderMessage } from "./RenderMessage";
-import { SendMessageInput } from "./SendMessageInput";
 import { useChatRoom } from "./useChatRoom";
 import { useMessages } from "./useMessages";
-import { getChatParticipants } from "./utils";
 
 interface RenderChatRoomMessagesProps {
   chatRoomId: string;
@@ -42,8 +37,8 @@ export function RenderChatRoomMessages(props: RenderChatRoomMessagesProps) {
       messagesList.find(
         (m) =>
           currentProfile &&
-          m.sender_profile_id &&
-          m.sender_profile_id !== currentProfile.id
+          m.sender_ptcr &&
+          m.sender_ptcr.profile_id !== currentProfile.id
       )?.id ?? null
     );
   }, [messagesList, currentProfile]);
@@ -106,7 +101,7 @@ export function RenderChatRoomMessages(props: RenderChatRoomMessagesProps) {
             let nextMessageSentByMe = null;
             for (let j = idx - 1; j >= 0; j--) {
               const msg = messagesList[j];
-              if (msg.sender_profile_id === currentProfile.id) {
+              if (msg.sender_ptcr?.profile_id === currentProfile.id) {
                 nextMessageSentByMe = msg;
                 break;
               }

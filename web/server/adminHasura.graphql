@@ -134,6 +134,14 @@ mutation InsertChatRoomOne($data: chat_room_insert_input!) {
   }
 }
 
+mutation InsertChatMessageOne($data: chat_message_insert_input!) {
+  insert_chat_message_one(object: $data) {
+    id
+    sender_ptcr_id
+    chat_room_id
+  }
+}
+
 mutation InsertConnectionRequest($data: connection_request_insert_input!) {
   insert_connection_request_one(object: $data) {
     id
