@@ -95,7 +95,13 @@ export default function PublishedToggleSwitch(
         update_columns: [Profile_Listing_Update_Column.Public],
       });
     },
-    [currentProfile, currentSpace, upsertProfileListing, client]
+    [
+      currentProfile,
+      upsertProfileListing,
+      client,
+      userData?.id,
+      currentSpace?.space_listing_questions,
+    ]
   );
 
   if (fetching) return null;
