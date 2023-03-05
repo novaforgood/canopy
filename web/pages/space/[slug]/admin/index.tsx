@@ -55,7 +55,7 @@ const MAP_TAB_TO_TITLE = {
   [ManageSpaceTabs.EditProfileFormat]: "Edit Profile Format",
   [ManageSpaceTabs.EditProfileTags]: "Edit Profile Tags",
   [ManageSpaceTabs.EditHomepage]: "Edit Homepage",
-  [ManageSpaceTabs.DangerZone]: "Danger Zone",
+  [ManageSpaceTabs.DangerZone]: "Delete Space",
 };
 
 const ALL_TABS = Object.values(ManageSpaceTabs);
