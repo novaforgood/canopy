@@ -10,13 +10,19 @@ import {
   User_Type_Enum,
   useSendMessageMutation,
 } from "../../generated/graphql";
-import { BxChevronLeft } from "../../generated/icons/regular";
+import {
+  BxChevronLeft,
+  BxDotsHorizontalRounded,
+  BxDotsVerticalRounded,
+} from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { getFirstNameOfUser } from "../../lib/user";
 import { Text } from "../atomic";
+import { Dropdown } from "../atomic/Dropdown";
+import { IconButton } from "../buttons/IconButton";
 import { ProfileImage } from "../common/ProfileImage";
 
 import { ChatParticipantsModalButton } from "./ChatParticipantsModalButton";
@@ -109,8 +115,31 @@ export function RenderChatRoom() {
               </>
             )}
           </div>
-          <div className="mr-2">
+          <div className="mr-2 flex items-center">
             <ChatParticipantsModalButton chatParticipants={allHumans} />
+            <Dropdown
+              items={[
+                {
+                  label: "Leave chat",
+                  onClick: () => {
+                    const confirmed = window.confirm(
+                      `Are you sure you want to leave this chat?`
+                    );
+                    if (!confirmed) return;
+                  },
+                },
+              ]}
+              renderButton={() => {
+                return (
+                  <IconButton
+                    icon={
+                      <BxDotsHorizontalRounded className="h-4 w-4 text-gray-700" />
+                    }
+                    className="rounded-full"
+                  />
+                );
+              }}
+            />
           </div>
         </div>
       </div>

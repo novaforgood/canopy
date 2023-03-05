@@ -4,6 +4,7 @@ import { BxInfoCircle } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { Text } from "../atomic";
+import { IconButton } from "../buttons/IconButton";
 import { ProfileImage } from "../common/ProfileImage";
 import { ActionModal } from "../modals/ActionModal";
 
@@ -24,9 +25,10 @@ export function ChatParticipantsModalButton(
 
   return (
     <>
-      <BxInfoCircle
-        className="h-5 w-5 cursor-pointer text-gray-500"
+      <IconButton
+        icon={<BxInfoCircle className="h-5 w-5 cursor-pointer text-gray-500" />}
         onClick={handlers.open}
+        className="rounded-full"
       />
 
       <ActionModal
