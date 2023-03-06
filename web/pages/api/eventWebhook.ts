@@ -53,7 +53,6 @@ export default applyMiddleware({
   validationSchema: eventTriggerSchema,
 }).post(async (req, res) => {
   const eventClientKey = req.headers["x-canopy-event-client-key"];
-  console.log("eventClientKey", eventClientKey);
   if (eventClientKey !== EVENT_CLIENT_KEY) {
     throw makeApiFail("Invalid cron client key");
   }
