@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 
-import { useDisclosure } from "@mantine/hooks";
 import { useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 import { ScrollView, TouchableOpacity } from "react-native";
@@ -148,7 +147,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   );
 
   const otherHumanNames =
-    otherHumans.length <= 2
+    otherHumans.length <= 2 && otherHumans.length > 0
       ? makeListSentence(otherHumans.map((p) => p.firstName))
       : "the others";
 
@@ -279,7 +278,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                           borderTopLeftRadius="lg"
                           borderBottomLeftRadius="lg"
                           px={4}
-                          py={1.5}
+                          py={2}
                           backgroundColor={isPending ? "lime300" : "lime400"}
                           borderTopRightRadius={breakBefore ? "lg" : undefined}
                           borderBottomRightRadius={
@@ -308,6 +307,21 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                     chatParticipants.find(
                       (p) => p.profileId === message.sender_profile_id
                     ) ?? null;
+
+                  if (!senderProfile) {
+                    if (message.is_system_message) {
+                      return (
+                        <Text
+                          variant="body2"
+                          color="gray700"
+                          textAlign="center"
+                          mb={4}
+                        >
+                          {message.text}
+                        </Text>
+                      );
+                    }
+                  }
 
                   messageJsxElement = (
                     <Box flexDirection="row" alignItems="flex-end">
@@ -344,7 +358,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                             borderBottomRightRadius="lg"
                             backgroundColor="gray200"
                             px={4}
-                            py={1.5}
+                            py={2}
                             borderTopLeftRadius={breakBefore ? "lg" : undefined}
                             borderBottomLeftRadius={
                               breakAfter ? "lg" : undefined

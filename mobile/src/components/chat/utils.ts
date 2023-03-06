@@ -42,6 +42,10 @@ export function getChatRoomTitle(chatRoom: ChatRoom, currentProfileId: string) {
     .filter((h) => h.userType === User_Type_Enum.User)
     .filter((h) => h.profileId !== currentProfileId);
 
+  if (otherHumans.length === 0) {
+    return "No Participants";
+  }
+
   const chatTitle = otherHumans.map((h) => h.fullName).join(", ");
 
   return chatTitle;

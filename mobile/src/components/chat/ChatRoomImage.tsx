@@ -23,7 +23,7 @@ export function ChatRoomImage(props: ChatRoomImageProps) {
   });
 
   if (sortedProfiles.length === 0) {
-    return null;
+    return <ProfileImage {...boxProps} src={null} />;
   }
 
   if (sortedProfiles.length === 1) {
