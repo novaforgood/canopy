@@ -9,6 +9,7 @@ import {
   useUpsertProfileListingMutation,
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useValidateProfileCompletion } from "../../hooks/useValidateProfileCompletion";
 import { EditProfileListing } from "../EditProfileListing";
 
 import { StageDisplayWrapper } from "./StageDisplayWrapper";
@@ -24,7 +25,7 @@ export function Review(props: ReviewProps) {
   const { currentProfile } = useCurrentProfile();
 
   const [_, upsertProfileListing] = useUpsertProfileListingMutation();
-
+  const { validateProfileCompletion } = useValidateProfileCompletion();
   const [publishModalOpened, publishModalHandlers] = useDisclosure(false);
   const [loadingPublish, setLoadingPublish] = useState(false);
 
@@ -37,7 +38,7 @@ export function Review(props: ReviewProps) {
     >
       <div className="flex flex-col items-start">
         <div className="h-8"></div>
-        <div className="w-full sm:w-160 flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4 sm:w-160">
           <StepDisplay
             stepNumber={1}
             title="Review your profile below"
@@ -71,6 +72,13 @@ export function Review(props: ReviewProps) {
                 toast.error("No current profile");
                 return;
               }
+
+              const response = await validateProfileCompletion();
+              if (response.valid === false) {
+                toast.error(response.error);
+                return;
+              }
+
               setLoadingPublish(true);
               await upsertProfileListing({
                 profile_listing: {
@@ -102,8 +110,8 @@ export function Review(props: ReviewProps) {
         </div>
 
         <Modal isOpen={publishModalOpened} onClose={() => {}}>
-          <div className="bg-white px-12 pt-16 pb-8 rounded-md">
-            <div className="w-56 flex flex-col items-center">
+          <div className="rounded-md bg-white px-12 pt-16 pb-8">
+            <div className="flex w-56 flex-col items-center">
               <Text variant="heading4">Your profile is live!</Text>
               <div className="h-8"></div>
               <Text>Check out the homepage to see your published profile.</Text>
@@ -121,8 +129,8 @@ export function Review(props: ReviewProps) {
         </Modal>
 
         <Modal isOpen={savedModalOpened} onClose={() => {}}>
-          <div className="bg-white px-12 py-16 rounded-md">
-            <div className="w-56 flex flex-col items-center">
+          <div className="rounded-md bg-white px-12 py-16">
+            <div className="flex w-56 flex-col items-center">
               <Text variant="heading4">Profile saved!</Text>
               <div className="h-8"></div>
               <Text>
