@@ -12,7 +12,6 @@ import { Text } from "../../components/atomic/Text";
 import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
 import { ChatTitle } from "../../components/chat/ChatTitle";
 import { getChatParticipants } from "../../components/chat/utils";
-import { toast } from "../../components/CustomToast";
 import { LoadingSkeleton } from "../../components/LoadingSkeleton";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import {
@@ -85,8 +84,6 @@ export function MessagesScreen() {
   // const chatRoomId = useQueryParam("chatRoomId", "string");
 
   const chatRooms = data?.chat_room ?? [];
-
-  console.log(error);
 
   return (
     <SafeAreaView style={{ position: "relative" }}>
