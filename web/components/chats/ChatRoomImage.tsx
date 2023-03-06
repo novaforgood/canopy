@@ -27,7 +27,12 @@ export function ChatRoomImage(props: ChatRoomImageProps) {
   });
 
   if (sortedProfiles.length === 0) {
-    return null;
+    return (
+      <ProfileImage
+        className={classNames("cursor-pointer", className)}
+        src={undefined}
+      />
+    );
   }
 
   if (sortedProfiles.length === 1) {

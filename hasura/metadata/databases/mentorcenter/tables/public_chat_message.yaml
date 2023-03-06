@@ -32,12 +32,13 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - id
         - chat_room_id
-        - sender_profile_id
-        - text
         - created_at
         - deleted
+        - id
+        - is_system_message
+        - sender_profile_id
+        - text
       filter:
         _or:
           - chat_room:

@@ -11,6 +11,7 @@ import { BxMenu } from "../generated/icons/regular";
 import { useLastActiveTracker } from "../hooks/analytics/useLastActiveTracker";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useExpoUpdate } from "../hooks/useExpoUpdate";
+import { useForegroundEffect } from "../hooks/useForegroundEffect";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRefreshSession } from "../hooks/useRefreshSession";
 import { getCurrentUser } from "../lib/firebase";
@@ -104,6 +105,9 @@ export function RootNavigator() {
       clearInterval(interval);
     };
   }, [refreshSessionIfNeeded]);
+  useForegroundEffect(() => {
+    refreshSessionIfNeeded();
+  });
 
   const isLoggedIn = useIsLoggedIn();
 

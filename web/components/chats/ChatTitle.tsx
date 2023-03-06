@@ -17,9 +17,7 @@ export function ChatTitle(props: ChatTitleProps) {
 
   return (
     <Text className="truncate" bold={highlight}>
-      {chatRoom.chat_intro_id && (
-        <Text className="text-lime-700">[Intro] </Text>
-      )}
+      {chatRoom.chat_intro_id && <Text className="text-lime-700">Intro: </Text>}
       {chatTitle}
     </Text>
   );
