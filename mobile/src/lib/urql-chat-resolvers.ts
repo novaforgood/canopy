@@ -254,6 +254,7 @@ export const optimisticInsertChatMessageResolver: OptimisticMutationResolver = (
     id: nanoid(),
     created_at: new Date().toISOString(),
     sender_profile_id: (args as any).object.sender_profile_id,
+    is_system_message: (args as any).object.is_system_message ?? false,
     chat_room_id: (args as any).object.chat_room_id,
     text: (args as any).object.text,
     deleted: false,
