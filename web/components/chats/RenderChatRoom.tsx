@@ -7,16 +7,23 @@ import toast from "react-hot-toast";
 import { makeListSentence } from "../../common/lib/words";
 import {
   Chat_Message,
+  useDeletePtcrMutation,
   User_Type_Enum,
   useSendMessageMutation,
 } from "../../generated/graphql";
-import { BxChevronLeft } from "../../generated/icons/regular";
+import {
+  BxChevronLeft,
+  BxDotsHorizontalRounded,
+  BxExit,
+} from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { PromiseQueue } from "../../lib/PromiseQueue";
 import { getFirstNameOfUser } from "../../lib/user";
 import { Text } from "../atomic";
+import { Dropdown } from "../atomic/Dropdown";
+import { IconButton } from "../buttons/IconButton";
 import { ProfileImage } from "../common/ProfileImage";
 
 import { ChatParticipantsModalButton } from "./ChatParticipantsModalButton";
@@ -43,6 +50,8 @@ export function RenderChatRoom() {
   const { chatRoom } = useChatRoom(chatRoomId ?? "");
 
   const { currentProfile } = useCurrentProfile();
+
+  const [_, deletePtcr] = useDeletePtcrMutation();
 
   // Chat topbar
   const allHumans = getChatParticipants(
@@ -109,8 +118,43 @@ export function RenderChatRoom() {
               </>
             )}
           </div>
-          <div className="mr-2">
+          <div className="mr-2 flex">
             <ChatParticipantsModalButton chatParticipants={allHumans} />
+            <Dropdown
+              renderButton={() => {
+                return (
+                  <IconButton
+                    icon={
+                      <BxDotsHorizontalRounded className="h-5 w-5 cursor-pointer text-gray-500" />
+                    }
+                  />
+                );
+              }}
+              items={[
+                {
+                  label: "Leave chat",
+                  onClick: () => {
+                    const confirm = window.confirm(
+                      "Are you sure you want to leave this chat? You will no longer be able to see it in your chat list."
+                    );
+                    if (!confirm) return;
+
+                    const myPtcr = allHumans.find(
+                      (p) => p.profileId === currentProfile?.id
+                    );
+                    if (!myPtcr) return;
+
+                    const ptcrId = myPtcr.id;
+                    deletePtcr({
+                      id: ptcrId,
+                    }).then(() => {
+                      // Redirect to chat list
+                      router.push(baseRoute);
+                    });
+                  },
+                },
+              ]}
+            />
           </div>
         </div>
       </div>

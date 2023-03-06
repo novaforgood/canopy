@@ -281,3 +281,9 @@ query GetChatParticipants($chat_room_id: uuid!) {
     }
   }
 }
+
+mutation InsertChatMessage($data: chat_message_insert_input!) {
+  insert_chat_message_one(object: $data) {
+    id
+  }
+}

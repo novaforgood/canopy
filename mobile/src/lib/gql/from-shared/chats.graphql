@@ -69,6 +69,7 @@ subscription MessagesStream($chat_room_id: uuid!, $after: timestamptz!) {
     id
     deleted
     chat_room_id
+    is_system_message
     sender_profile_id
     text
     created_at
@@ -84,6 +85,7 @@ query Messages($chat_room_id: uuid!, $limit: Int!, $id_cap: bigint!) {
     id
     deleted
     chat_room_id
+    is_system_message
     sender_profile_id
     text
     created_at
@@ -117,7 +119,7 @@ mutation UpdateLatestReadMessage(
   }
 }
 
-mutation updateChatMessage(
+mutation UpdateChatMessage(
   $chat_message_id: bigint!
   $changes: chat_message_set_input!
 ) {
@@ -134,7 +136,7 @@ mutation updateChatMessage(
   }
 }
 
-query searchProfilesInSpace(
+query SearchProfilesInSpace(
   $search: String!
   $space_id: uuid!
   $my_profile_id: uuid!
@@ -174,7 +176,7 @@ query searchProfilesInSpace(
   }
 }
 
-query findChatRooms($where: chat_room_bool_exp) {
+query FindChatRooms($where: chat_room_bool_exp) {
   chat_room(where: $where) {
     id
     created_at
@@ -182,5 +184,11 @@ query findChatRooms($where: chat_room_bool_exp) {
     profile_to_chat_rooms {
       id
     }
+  }
+}
+
+mutation DeletePtcr($id: uuid!) {
+  delete_profile_to_chat_room_by_pk(id: $id) {
+    id
   }
 }

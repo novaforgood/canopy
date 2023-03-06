@@ -215,7 +215,19 @@ export function RenderMessage(props: RenderMessageProps) {
       chatParticipants.find((p) => p.profileId === message.sender_profile_id) ??
       null;
 
-    if (!senderProfile) return null;
+    if (!senderProfile) {
+      if (message.is_system_message) {
+        return (
+          <div className="mx-auto mb-4">
+            <Text variant="body2" className="text-gray-700">
+              {message.text}
+            </Text>
+          </div>
+        );
+      } else {
+        return null;
+      }
+    }
 
     const firstName = senderProfile.firstName;
     const lastName = senderProfile.lastName;

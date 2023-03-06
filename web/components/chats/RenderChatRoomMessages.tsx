@@ -61,7 +61,7 @@ export function RenderChatRoomMessages(props: RenderChatRoomMessagesProps) {
   );
 
   const otherHumanNames =
-    otherHumans.length <= 2
+    otherHumans.length <= 2 && otherHumans.length > 0
       ? makeListSentence(otherHumans.map((p) => p.firstName))
       : "the others";
 
