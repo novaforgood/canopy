@@ -41,6 +41,9 @@ const eventTriggerSchema = z
   })
   .passthrough();
 
+type RequestBody = z.infer<typeof eventTriggerSchema>;
+type Event = RequestBody["event"];
+
 export default applyMiddleware({
   authenticated: false,
   validationSchema: eventTriggerSchema,
@@ -49,81 +52,98 @@ export default applyMiddleware({
   console.log("eventClientKey", eventClientKey);
   if (eventClientKey !== EVENT_CLIENT_KEY) {
     throw makeApiFail("Invalid cron client key");
-    /**
-     * "chat_room_id": "9238e32b-e853-474d-8c48-c057dd11a899",
-                    "created_at": "2023-02-27T11:10:17.359937+00:00",
-                    "deleted": false,
-                    "id": 601,
-                    "sender_profile_id": "b87892d4-13e3-4c53-8ac9-238522276d50",
-                    "text": "asdf",
-                    "updated_at": "2023-02-27T11:10:17.359937+00:00"
-     */
   }
 
   const { trigger } = req.body;
 
   switch (trigger.name) {
     case "on_chat_message_insert": {
-      const newMessage = req.body.event.data.new;
-
-      if (!newMessage) {
-        throw makeApiError("No new message");
-      }
-
-      const { data, error } = await executeGetChatParticipantsQuery({
-        chat_room_id: newMessage.chat_room_id,
-      });
-      if (error) {
-        throw makeApiError(error.message);
-      }
-      if (!data) {
-        throw makeApiError("No data");
-      }
-
-      const senderProfile = data.profile_to_chat_room.find(
-        (ptcr) => ptcr.profile.id === newMessage.sender_profile_id
-      )?.profile;
-      if (!senderProfile) {
-        throw makeApiError("No sender profile");
-      }
-
-      const messages: ExpoPushMessage[] = [];
-      data.profile_to_chat_room.forEach((ptcr) => {
-        // Don't send a notification to the sender
-        if (ptcr.profile.id === newMessage.sender_profile_id) {
-          return;
-        }
-
-        const token = ptcr.profile.user?.expo_push_token;
-        if (token) {
-          // Check that all your push tokens appear to be valid Expo push tokens
-          if (!Expo.isExpoPushToken(token)) {
-            console.error(`Push token ${token} is not a valid Expo push token`);
-          } else {
-            // Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
-            messages.push({
-              to: token,
-              sound: "default",
-              title: `${senderProfile.user?.first_name} ${senderProfile.user?.last_name}`,
-              body: newMessage.text,
-              data: {
-                chatRoomId: newMessage.chat_room_id,
-                spaceId: senderProfile.space_id,
-              },
-            });
-          }
-        }
-      });
-
-      const chunks = expo.chunkPushNotifications(messages);
-      await Promise.all(
-        chunks.map((chunk) => expo.sendPushNotificationsAsync(chunk))
-      ).catch((error) => {
-        throw makeApiError(error.message);
-      });
+      await handleChatMessageInsert(req.body.event);
+      break;
+    }
+    case "on_ptcr_update": {
+      await handlePtcrUpdate(req.body.event);
+      break;
     }
   }
 
   const response = makeApiSuccess({ detail: "Success" });
   res.status(response.code).json(response);
 });
+
+async function handlePtcrUpdate(event: Event) {
+  console.log(event);
+
+  const oldPtcr = event.data.old;
+  const newPtcr = event.data.new;
+}
+
+/** newMessage schema
+ *  "chat_room_id": "9238e32b-e853-474d-8c48-c057dd11a899",
+    "created_at": "2023-02-27T11:10:17.359937+00:00",
+    "deleted": false,
+    "id": 601,
+    "sender_profile_id": "b87892d4-13e3-4c53-8ac9-238522276d50",
+    "text": "asdf",
+    "updated_at": "2023-02-27T11:10:17.359937+00:00"
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function handleChatMessageInsert(event: Event) {
+  const newMessage = event.data.new;
+
+  if (!newMessage) {
+    throw makeApiError("No new message");
+  }
+
+  const { data, error } = await executeGetChatParticipantsQuery({
+    chat_room_id: newMessage.chat_room_id,
+  });
+  if (error) {
+    throw makeApiError(error.message);
+  }
+  if (!data) {
+    throw makeApiError("No data");
+  }
+
+  const senderProfile = data.profile_to_chat_room.find(
+    (ptcr) => ptcr.profile.id === newMessage.sender_profile_id
+  )?.profile;
+  if (!senderProfile) {
+    throw makeApiError("No sender profile");
+  }
+
+  const messages: ExpoPushMessage[] = [];
+  data.profile_to_chat_room.forEach((ptcr) => {
+    // Don't send a notification to the sender
+    if (ptcr.profile.id === newMessage.sender_profile_id) {
+      return;
+    }
+
+    const token = ptcr.profile.user?.expo_push_token;
+    if (token) {
+      // Check that all your push tokens appear to be valid Expo push tokens
+      if (!Expo.isExpoPushToken(token)) {
+        console.error(`Push token ${token} is not a valid Expo push token`);
+      } else {
+        // Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
+        messages.push({
+          to: token,
+          sound: "default",
+          title: `${senderProfile.user?.first_name} ${senderProfile.user?.last_name}`,
+          body: newMessage.text,
+          data: {
+            chatRoomId: newMessage.chat_room_id,
+            spaceId: senderProfile.space_id,
+          },
+        });
+      }
+    }
+  });
+
+  const chunks = expo.chunkPushNotifications(messages);
+  await Promise.all(
+    chunks.map((chunk) => expo.sendPushNotificationsAsync(chunk))
+  ).catch((error) => {
+    throw makeApiError(error.message);
+  });
+}
