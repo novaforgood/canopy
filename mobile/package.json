@@ -93,7 +93,7 @@
     "eas:update:staging": "eas update --branch staging",
     "eas:build:staging": "eas build --profile staging",
     "eas:submit:staging": "eas submit --profile staging",
-    "eas:update:production": "eas update --branch production",
+    "eas:update:production": "eas update --branch production-1.1",
     "eas:build:production": "eas build --profile production",
     "eas:submit:production": "eas submit --profile production"
   }

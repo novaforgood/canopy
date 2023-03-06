@@ -17,7 +17,11 @@ import { BxsHide, BxsShow } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
 import { useUserData } from "../hooks/useUserData";
+import { useValidateProfileCompletion } from "../hooks/useValidateProfileCompletion";
 
+/**
+ * A toggle switch that allows the user to publish/unpublish their profile.
+ */
 interface PublishedToggleSwitchProps {
   profileListingId: string;
 }
@@ -30,7 +34,7 @@ export default function PublishedToggleSwitch(
   const { currentSpace } = useCurrentSpace();
   const { currentProfile } = useCurrentProfile();
 
-  const client = useClient();
+  const { validateProfileCompletion } = useValidateProfileCompletion();
 
   const [{ data: profileListingData, fetching }] = useProfileListingQuery({
     variables: { profile_listing_id: profileListingId },
@@ -48,42 +52,9 @@ export default function PublishedToggleSwitch(
       }
 
       if (newVal === true) {
-        const { data } = await client
-          .query<AllProfilesOfUserQuery, AllProfilesOfUserQueryVariables>(
-            AllProfilesOfUserDocument,
-            { user_id: userData?.id ?? "" }
-          )
-          .toPromise();
-        const myProfile = data?.profile.find((p) => p.id === currentProfile.id);
-        if (!myProfile) {
-          throw new Error("No profile found");
-        }
-        if (!myProfile.profile_listing?.headline) {
-          throw new Error(
-            "Please set a headline before publishing your profile"
-          );
-        }
-        if (!myProfile.profile_listing?.profile_listing_image?.image) {
-          throw new Error(
-            "Please set a profile image before publishing your profile"
-          );
-        }
-
-        const questions = currentSpace?.space_listing_questions.filter(
-          (q) => q.deleted === false
-        );
-
-        for (const question of questions ?? []) {
-          const answer =
-            myProfile.profile_listing?.profile_listing_responses.find(
-              (r) => r.space_listing_question.id === question.id
-            );
-
-          if (!answer?.response_html || answer?.response_html === "<p></p>") {
-            throw new Error(
-              `Please answer the question "${question.title}" before publishing your profile`
-            );
-          }
+        const response = await validateProfileCompletion();
+        if (response.valid === false) {
+          throw new Error(response.error);
         }
       }
 
@@ -95,7 +66,7 @@ export default function PublishedToggleSwitch(
         update_columns: [Profile_Listing_Update_Column.Public],
       });
     },
-    [currentProfile, currentSpace, upsertProfileListing, client]
+    [currentProfile, upsertProfileListing, validateProfileCompletion]
   );
 
   if (fetching) return null;

@@ -26,7 +26,6 @@ export function ProfileSettings() {
     useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
 
-  const { userData } = useUserData();
   const [settings, setSettings] = useState<ProfileAttributes>();
   const { localMustSave, setMustSave } = useSaveChangesState();
 

@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 
-import { useDisclosure } from "@mantine/hooks";
 import { useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 import { ScrollView, TouchableOpacity } from "react-native";
@@ -26,7 +25,11 @@ import { ChatRoomImage } from "./ChatRoomImage";
 import { ChatTitle } from "./ChatTitle";
 import { useChatRoom } from "./useChatRoom";
 import { useMessages } from "./useMessages";
-import { getChatParticipants, getChatRoomSubtitle } from "./utils";
+import {
+  getChatParticipants,
+  getChatRoomSubtitle,
+  makeListSentence,
+} from "./utils";
 
 type ChatMessage = MessagesQuery["chat_message"][number];
 
@@ -88,7 +91,11 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const spaceSlug = currentSpace?.slug ?? "";
 
   const [newMessage, setNewMessage] = useState("");
-  const { chatRoom, chatParticipants } = useChatRoom(chatRoomId ?? "");
+  const { chatRoom, chatParticipants, fetchingChatRoom } = useChatRoom(
+    chatRoomId ?? ""
+  );
+
+  const isIntro = !!chatRoom?.chat_intro_id;
 
   const { currentProfile } = useCurrentProfile();
   const {
@@ -129,17 +136,21 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
-  if (fetchingMessages || !chatRoom) {
-    return <LoadingSpinner />;
-  }
-
-  const chatSubtitle = getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "");
+  const chatSubtitle = chatRoom
+    ? getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "")
+    : "";
   const allHumans = getChatParticipants(
     chatRoom?.profile_to_chat_rooms ?? []
   ).filter((p) => p.userType === User_Type_Enum.User);
   const otherHumans = allHumans.filter(
     (p) => p.profileId !== currentProfile?.id
   );
+
+  const otherHumanNames =
+    otherHumans.length <= 2 && otherHumans.length > 0
+      ? makeListSentence(otherHumans.map((p) => p.firstName))
+      : "the others";
+
   return (
     <CustomKeyboardAvoidingView>
       <Box
@@ -182,7 +193,12 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             <ChatTitle chatRoom={chatRoom} />
 
             {chatSubtitle && (
-              <Text variant="body2" color="gray700">
+              <Text
+                variant="body2"
+                color="gray700"
+                loading={fetchingChatRoom}
+                loadingWidth={20}
+              >
                 {chatSubtitle}
               </Text>
             )}
@@ -205,6 +221,21 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             flexDirection="column-reverse"
             style={{ transform: [{ scaleY: -1 }] }}
           >
+            {isIntro && (
+              <Box
+                mb={2}
+                width="100%"
+                alignItems="center"
+                flexDirection="column"
+              >
+                <Text color="gray400" variant="body3">
+                  Introduce yourself to {otherHumanNames}!
+                </Text>
+                <Text color="gray400" variant="body3">
+                  Remember: Everyone on Canopy is here to meet people.
+                </Text>
+              </Box>
+            )}
             {currentProfile &&
               messagesList.map((message, idx) => {
                 // Note: Messages are ordered by created_at DESC
@@ -252,7 +283,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                           borderTopLeftRadius="lg"
                           borderBottomLeftRadius="lg"
                           px={4}
-                          py={1.5}
+                          py={2}
                           backgroundColor={isPending ? "lime300" : "lime400"}
                           borderTopRightRadius={breakBefore ? "lg" : undefined}
                           borderBottomRightRadius={
@@ -281,6 +312,21 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                     chatParticipants.find(
                       (p) => p.profileId === message.sender_profile_id
                     ) ?? null;
+
+                  if (!senderProfile) {
+                    if (message.is_system_message) {
+                      return (
+                        <Text
+                          variant="body2"
+                          color="gray700"
+                          textAlign="center"
+                          mb={4}
+                        >
+                          {message.text}
+                        </Text>
+                      );
+                    }
+                  }
 
                   messageJsxElement = (
                     <Box flexDirection="row" alignItems="flex-end">
@@ -317,7 +363,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
                             borderBottomRightRadius="lg"
                             backgroundColor="gray200"
                             px={4}
-                            py={1.5}
+                            py={2}
                             borderTopLeftRadius={breakBefore ? "lg" : undefined}
                             borderBottomLeftRadius={
                               breakAfter ? "lg" : undefined
@@ -375,6 +421,7 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             )}
           </Box>
         </ScrollView>
+
         <Box
           height={1}
           width="100%"

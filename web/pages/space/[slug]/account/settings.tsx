@@ -39,7 +39,7 @@ const SettingsPage: CustomPage = () => {
         <div className="h-20"></div>
         <UserSettings />
         <div className="h-20"></div>
-        <Text variant="heading3">Danger Zone</Text>
+        <Text variant="heading3">Leave Space</Text>
         <div className="h-4"></div>
         <Button
           variant="outline"

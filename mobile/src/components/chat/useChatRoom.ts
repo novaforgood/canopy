@@ -6,10 +6,12 @@ import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { getChatParticipants } from "./utils";
 
 export function useChatRoom(chatRoomId: string) {
-  const [{ data: chatRoomData }] = useChatRoomQuery({
-    pause: !chatRoomId,
-    variables: { chat_room_id: chatRoomId ?? "" },
-  });
+  const [{ data: chatRoomData, fetching: fetchingChatRoom }] = useChatRoomQuery(
+    {
+      pause: !chatRoomId,
+      variables: { chat_room_id: chatRoomId ?? "" },
+    }
+  );
   const chatRoom = chatRoomData?.chat_room_by_pk;
 
   return useMemo(
@@ -17,8 +19,9 @@ export function useChatRoom(chatRoomId: string) {
       chatParticipants: getChatParticipants(
         chatRoom?.profile_to_chat_rooms ?? []
       ),
+      fetchingChatRoom,
       chatRoom,
     }),
-    [chatRoom]
+    [chatRoom, fetchingChatRoom]
   );
 }
