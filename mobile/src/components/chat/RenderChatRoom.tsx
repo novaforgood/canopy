@@ -91,7 +91,9 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
   const spaceSlug = currentSpace?.slug ?? "";
 
   const [newMessage, setNewMessage] = useState("");
-  const { chatRoom, chatParticipants } = useChatRoom(chatRoomId ?? "");
+  const { chatRoom, chatParticipants, fetchingChatRoom } = useChatRoom(
+    chatRoomId ?? ""
+  );
 
   const isIntro = !!chatRoom?.chat_intro_id;
 
@@ -134,11 +136,9 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
-  if (fetchingMessages || !chatRoom) {
-    return <LoadingSpinner />;
-  }
-
-  const chatSubtitle = getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "");
+  const chatSubtitle = chatRoom
+    ? getChatRoomSubtitle(chatRoom, currentProfile?.id ?? "")
+    : "";
   const allHumans = getChatParticipants(
     chatRoom?.profile_to_chat_rooms ?? []
   ).filter((p) => p.userType === User_Type_Enum.User);
@@ -193,7 +193,12 @@ export function RenderChatRoom(props: RenderChatRoomProps) {
             <ChatTitle chatRoom={chatRoom} />
 
             {chatSubtitle && (
-              <Text variant="body2" color="gray700">
+              <Text
+                variant="body2"
+                color="gray700"
+                loading={fetchingChatRoom}
+                loadingWidth={20}
+              >
                 {chatSubtitle}
               </Text>
             )}

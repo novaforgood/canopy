@@ -18,10 +18,13 @@ export const Text = forwardRef<typeof TextBase, TextProps>((props, ref) => {
   const { children, loading, loadingWidth = 12, ...rest } = props;
   return (
     <TextBase {...props} ref={ref}>
-      {loading ? "‎" : children}
-      {loading && (
+      {loading ? (
         // <Box backgroundColor="black" height="100%" width={20}></Box>
-        <LoadingSkeleton width={loadingWidth} height="100%" />
+        <LoadingSkeleton width={loadingWidth}>
+          <TextBase {...props}>‎</TextBase>
+        </LoadingSkeleton>
+      ) : (
+        children
       )}
     </TextBase>
   );

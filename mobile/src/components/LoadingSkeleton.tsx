@@ -17,7 +17,6 @@ const AnimatedBox = Animated.createAnimatedComponent(Box);
 
 export function LoadingSkeleton(props: BoxProps) {
   const opacity = useSharedValue(0.5);
-  const theme = useTheme<Theme>();
 
   useEffect(() => {
     opacity.value = withRepeat(withTiming(1, { duration: 500 }), -1, true);

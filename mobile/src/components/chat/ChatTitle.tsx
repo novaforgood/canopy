@@ -5,7 +5,7 @@ import { ChatRoom } from "./types";
 import { getChatRoomTitle } from "./utils";
 
 interface ChatTitleProps {
-  chatRoom: ChatRoom;
+  chatRoom?: ChatRoom | null;
   highlight?: boolean;
 }
 export function ChatTitle(props: ChatTitleProps) {
@@ -13,11 +13,17 @@ export function ChatTitle(props: ChatTitleProps) {
 
   const { currentProfile } = useCurrentProfile();
 
-  const chatTitle = getChatRoomTitle(chatRoom, currentProfile?.id ?? "");
+  const chatTitle = chatRoom
+    ? getChatRoomTitle(chatRoom, currentProfile?.id ?? "")
+    : "";
 
   return (
-    <Text variant={highlight ? "subheading2Bold" : "subheading2"}>
-      {chatRoom.chat_intro_id && <Text color="lime700">Intro: </Text>}
+    <Text
+      variant={highlight ? "subheading2Bold" : "subheading2"}
+      loading={!chatRoom}
+      loadingWidth={100}
+    >
+      {chatRoom?.chat_intro_id && <Text color="lime700">Intro: </Text>}
       {chatTitle}
     </Text>
   );
