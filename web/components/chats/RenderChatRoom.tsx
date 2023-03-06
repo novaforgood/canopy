@@ -120,41 +120,43 @@ export function RenderChatRoom() {
           </div>
           <div className="mr-2 flex">
             <ChatParticipantsModalButton chatParticipants={allHumans} />
-            <Dropdown
-              renderButton={() => {
-                return (
-                  <IconButton
-                    icon={
-                      <BxDotsHorizontalRounded className="h-5 w-5 cursor-pointer text-gray-500" />
-                    }
-                  />
-                );
-              }}
-              items={[
-                {
-                  label: "Leave chat",
-                  onClick: () => {
-                    const confirm = window.confirm(
-                      "Are you sure you want to leave this chat? You will no longer be able to see it in your chat list."
-                    );
-                    if (!confirm) return;
+            {chatRoom.chat_intro_id && (
+              <Dropdown
+                renderButton={() => {
+                  return (
+                    <IconButton
+                      icon={
+                        <BxDotsHorizontalRounded className="h-5 w-5 cursor-pointer text-gray-500" />
+                      }
+                    />
+                  );
+                }}
+                items={[
+                  {
+                    label: "Leave chat",
+                    onClick: () => {
+                      const confirm = window.confirm(
+                        "Are you sure you want to leave this chat? You will no longer be able to see it in your chat list."
+                      );
+                      if (!confirm) return;
 
-                    const myPtcr = allHumans.find(
-                      (p) => p.profileId === currentProfile?.id
-                    );
-                    if (!myPtcr) return;
+                      const myPtcr = allHumans.find(
+                        (p) => p.profileId === currentProfile?.id
+                      );
+                      if (!myPtcr) return;
 
-                    const ptcrId = myPtcr.id;
-                    deletePtcr({
-                      id: ptcrId,
-                    }).then(() => {
-                      // Redirect to chat list
-                      router.push(baseRoute);
-                    });
+                      const ptcrId = myPtcr.id;
+                      deletePtcr({
+                        id: ptcrId,
+                      }).then(() => {
+                        // Redirect to chat list
+                        router.push(baseRoute);
+                      });
+                    },
                   },
-                },
-              ]}
-            />
+                ]}
+              />
+            )}
           </div>
         </div>
       </div>
