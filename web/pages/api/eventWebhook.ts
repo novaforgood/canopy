@@ -127,6 +127,11 @@ async function handleChatMessageInsert(event: Event) {
     throw makeApiError("No new message");
   }
 
+  if (newMessage.is_system_message) {
+    // Ignore system messages
+    return;
+  }
+
   const { data, error } = await executeGetChatParticipantsQuery({
     chat_room_id: newMessage.chat_room_id,
   });
