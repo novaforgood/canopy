@@ -12,6 +12,7 @@ import { Text } from "../../components/atomic/Text";
 import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
 import { ChatTitle } from "../../components/chat/ChatTitle";
 import { getChatParticipants } from "../../components/chat/utils";
+import { LoadingSkeleton } from "../../components/LoadingSkeleton";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import {
   useAllChatRoomsSubscription,
@@ -89,7 +90,22 @@ export function MessagesScreen() {
       <ScrollView style={{ height: "100%" }}>
         <Box minHeight="100%" mt={2}>
           {fetching ? (
-            <LoadingSpinner />
+            <>
+              <Box flexDirection="row" px={4} py={2}>
+                <LoadingSkeleton borderRadius="full" height={60} width={60} />
+                <Box flex={1}>
+                  <LoadingSkeleton height={16} mt={3} ml={3} mr={12} />
+                  <LoadingSkeleton height={14} mt={1} ml={3} mr={20} />
+                </Box>
+              </Box>
+              <Box flexDirection="row" px={4} py={2}>
+                <LoadingSkeleton borderRadius="full" height={60} width={60} />
+                <Box flex={1}>
+                  <LoadingSkeleton height={16} mt={3} ml={3} mr={12} />
+                  <LoadingSkeleton height={14} mt={1} ml={3} mr={20} />
+                </Box>
+              </Box>
+            </>
           ) : error ? (
             <Box p={4}>
               <Text variant="body1" textAlign="center" mt={4}>

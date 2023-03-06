@@ -8,6 +8,7 @@ import {
 import { Box } from "../components/atomic/Box";
 import { Button } from "../components/atomic/Button";
 import { Text } from "../components/atomic/Text";
+import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { SpaceCoverPhoto } from "../components/SpaceCoverPhoto";
 import { useAllProfilesOfUserQuery } from "../generated/graphql";
 import { BxsGroup } from "../generated/icons/solid";
@@ -21,7 +22,7 @@ export function HomeScreen({
   navigation,
 }: StackScreenProps<RootStackParamList, "Home">) {
   const { userData } = useUserData();
-  const [{ data: profileData }] = useAllProfilesOfUserQuery({
+  const [{ data: profileData, fetching }] = useAllProfilesOfUserQuery({
     variables: { user_id: userData?.id ?? "" },
   });
 
@@ -40,51 +41,63 @@ export function HomeScreen({
           </Box>
 
           <Box mt={4} flexWrap="wrap" flexDirection="row">
-            {profileData?.profile.length === 0 && (
+            {fetching ? (
+              <>
+                <LoadingSkeleton
+                  mt={2}
+                  mr={2}
+                  borderRadius="sm"
+                  overflow="hidden"
+                  height={120}
+                  width="47%"
+                ></LoadingSkeleton>
+              </>
+            ) : profileData?.profile.length === 0 ? (
               <Box>
                 <Text color="gray700">
                   You are not a part of any communities yet. Join or create a
                   directory to see it here.
                 </Text>
               </Box>
-            )}
-            {profileData?.profile.map((profile) => {
-              return (
-                <Box
-                  mt={2}
-                  mr={2}
-                  borderRadius="sm"
-                  overflow="hidden"
-                  width="47%"
-                  key={profile.id}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("SpaceHome", {
-                        spaceSlug: profile.space.slug,
-                      });
-                    }}
+            ) : (
+              profileData?.profile.map((profile) => {
+                return (
+                  <Box
+                    mt={2}
+                    mr={2}
+                    borderRadius="sm"
+                    overflow="hidden"
+                    width="47%"
+                    key={profile.id}
                   >
-                    <Box>
-                      <SpaceCoverPhoto
-                        src={profile.space.space_cover_image?.image.url}
-                      />
-                      <Box
-                        padding={2}
-                        flexDirection="row"
-                        alignItems="center"
-                        backgroundColor="white"
-                      >
-                        <BxsGroup height={16} width={16} color="black" />
-                        <Text variant="body1" ml={2}>
-                          {profile.space.name}
-                        </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("SpaceHome", {
+                          spaceSlug: profile.space.slug,
+                        });
+                      }}
+                    >
+                      <Box>
+                        <SpaceCoverPhoto
+                          src={profile.space.space_cover_image?.image.url}
+                        />
+                        <Box
+                          padding={2}
+                          flexDirection="row"
+                          alignItems="center"
+                          backgroundColor="white"
+                        >
+                          <BxsGroup height={16} width={16} color="black" />
+                          <Text variant="body1" ml={2}>
+                            {profile.space.name}
+                          </Text>
+                        </Box>
                       </Box>
-                    </Box>
-                  </TouchableOpacity>
-                </Box>
-              );
-            })}
+                    </TouchableOpacity>
+                  </Box>
+                );
+              })
+            )}
           </Box>
           <Button
             variant="outline"
