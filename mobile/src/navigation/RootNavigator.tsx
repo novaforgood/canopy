@@ -105,9 +105,6 @@ export function RootNavigator() {
       clearInterval(interval);
     };
   }, [refreshSessionIfNeeded]);
-  useForegroundEffect(() => {
-    refreshSessionIfNeeded();
-  });
 
   const isLoggedIn = useIsLoggedIn();
 
