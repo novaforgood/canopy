@@ -73,7 +73,7 @@ function ManageSpace() {
   const { validateChangesSaved } = useSaveChangesState();
 
   return (
-    <RoundedCard className="flex min-h-screen w-full flex-col overflow-x-auto">
+    <RoundedCard className="flex min-h-[calc(100dvh)] w-full flex-col overflow-x-auto">
       <div className="flex items-center gap-2">
         <BxsCog className="h-7 w-7" />
         <Text variant="heading4">Manage Space</Text>

@@ -12,7 +12,7 @@ function ListerWelcomePage() {
 
   return (
     <TwoThirdsPageLayout>
-      <div className="flex max-w-2xl flex-col items-start justify-start px-16 pt-12 sm:h-screen sm:pt-24">
+      <div className="flex max-w-2xl flex-col items-start justify-start px-16 pt-12 sm:h-[calc(100dvh)] sm:pt-24">
         <Text variant="heading2" mobileVariant="heading3">
           Welcome to {currentSpace?.name}!
         </Text>

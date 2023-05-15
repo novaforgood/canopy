@@ -225,8 +225,8 @@ const CreatePage: CustomPage = () => {
     return null;
   }
   return (
-    <div className="flex h-screen flex-col sm:flex-row">
-      <div className="flex-none bg-olive-100 p-6 sm:h-screen sm:p-12 sm:pt-40">
+    <div className="flex h-[calc(100dvh)] flex-col sm:flex-row">
+      <div className="flex-none bg-olive-100 p-6 sm:h-[calc(100dvh)] sm:p-12 sm:pt-40">
         <StageNavigator
           currentStage={currentStage}
           stages={ALL_CREATE_STAGES}
@@ -236,7 +236,7 @@ const CreatePage: CustomPage = () => {
           }}
         />
       </div>
-      <div className="flex h-screen w-full flex-col items-start overflow-y-auto bg-gray-50 px-16 py-20">
+      <div className="flex h-[calc(100dvh)] w-full flex-col items-start overflow-y-auto bg-gray-50 px-16 py-20">
         <BackButton
           onClick={() => {
             switch (currentStage) {
