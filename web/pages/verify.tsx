@@ -84,7 +84,7 @@ function VerifyYourEmail() {
         );
       }}
     >
-      <div className="flex h-screen max-w-2xl flex-col items-start justify-center px-16">
+      <div className="flex h-[calc(100dvh)] max-w-2xl flex-col items-start justify-center px-16">
         {verified ? (
           <>
             <Text variant="heading2">Email verified!</Text>

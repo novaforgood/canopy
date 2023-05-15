@@ -265,8 +265,21 @@ mutation DeleteProfileListingsWithProfileId($profile_id: uuid!) {
   }
 }
 
-query GetChatParticipants($chat_room_id: uuid!) {
-  profile_to_chat_room(where: { chat_room_id: { _eq: $chat_room_id } }) {
+query GetChatParticipants($chat_room_id: uuid!, $sender_profile_id: uuid!) {
+  profile_to_chat_room(
+    where: {
+      _and: {
+        chat_room_id: { _eq: $chat_room_id }
+        _not: {
+          profile: {
+            blocked_profiles: {
+              blocked_profile_id: { _eq: $sender_profile_id }
+            }
+          }
+        }
+      }
+    }
+  ) {
     id
     profile {
       id

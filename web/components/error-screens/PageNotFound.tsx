@@ -6,7 +6,7 @@ export function PageNotFound() {
   const router = useRouter();
   return (
     <TwoThirdsPageLayout>
-      <div className="h-screen flex flex-col items-start justify-center px-16">
+      <div className="flex h-[calc(100dvh)] flex-col items-start justify-center px-16">
         <Text variant="heading1">Page not found</Text>
         <div className="h-8"></div>
         <Button

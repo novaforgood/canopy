@@ -312,7 +312,7 @@ const ComponentsPage: CustomPage = () => {
   }, []);
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-[calc(100dvh)] w-full">
       <div className="h-full flex-none bg-gray-900 p-4 pr-16 text-white">
         <div className="mb-8 text-xl font-bold">Components</div>
         <div className="flex flex-col gap-1">
@@ -333,7 +333,7 @@ const ComponentsPage: CustomPage = () => {
           })}
         </div>
       </div>
-      <div className="flex h-screen flex-1 flex-col items-center overflow-y-auto p-4">
+      <div className="flex h-[calc(100dvh)] flex-1 flex-col items-center overflow-y-auto p-4">
         <div className="max-w-full xl:max-w-3xl">
           <SectionTitle title="Colors" />
           <ColorPaletteReference />

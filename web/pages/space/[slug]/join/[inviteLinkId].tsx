@@ -23,7 +23,7 @@ function AlreadyPartOfSpace() {
 
   return (
     <TwoThirdsPageLayout>
-      <div className="flex h-screen max-w-2xl flex-col items-start justify-center px-16">
+      <div className="flex h-[calc(100dvh)] max-w-2xl flex-col items-start justify-center px-16">
         <Text variant="heading2">You are already a part of this space.</Text>
 
         <div className="h-16"></div>
@@ -86,7 +86,7 @@ function JoinSpace() {
 
   return (
     <TwoThirdsPageLayout>
-      <div className="flex h-screen max-w-2xl flex-col items-start justify-center px-16">
+      <div className="flex h-[calc(100dvh)] max-w-2xl flex-col items-start justify-center px-16">
         <Text variant="heading2">
           You have been invited to <b>{publicSpace?.name}</b>!
         </Text>

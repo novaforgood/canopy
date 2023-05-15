@@ -7,8 +7,8 @@ import { CustomPage } from "../types";
 
 const PrivacyPage: CustomPage = () => {
   return (
-    <div className="flex h-screen flex-col">
-      <div className="h-screen w-full overflow-y-auto">
+    <div className="flex h-[calc(100dvh)] flex-col">
+      <div className="h-[calc(100dvh)] w-full overflow-y-auto">
         <SidePadding>
           <div className="h-16"></div>
           <Text variant="heading3">Contact Us</Text>

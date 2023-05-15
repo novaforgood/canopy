@@ -101,8 +101,8 @@ const ListerOnboardingPage: CustomPage = () => {
   }
 
   return (
-    <div className="flex flex-col sm:h-screen sm:flex-row">
-      <div className="flex shrink-0 flex-col items-start justify-between bg-olive-100 p-6 sm:h-screen sm:p-12 sm:pt-40">
+    <div className="flex flex-col sm:h-[calc(100dvh)] sm:flex-row">
+      <div className="flex shrink-0 flex-col items-start justify-between bg-olive-100 p-6 sm:h-[calc(100dvh)] sm:p-12 sm:pt-40">
         <div className="w-full">
           <StageNavigator
             currentStage={currentStage}

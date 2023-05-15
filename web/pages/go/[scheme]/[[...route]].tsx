@@ -20,7 +20,7 @@ const GoPage: CustomPage = () => {
   }, [processedRoute, router]);
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center p-4">
+    <div className="flex h-[calc(100dvh)] flex-col items-center justify-center p-4">
       <Text className="w-64 text-center">
         Download the Canopy app for a better mobile experience!
       </Text>

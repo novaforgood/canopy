@@ -235,7 +235,7 @@ const ProfilePage: CustomPage = () => {
   const lastName = profileData?.profile_by_pk?.user?.last_name;
 
   return (
-    <div className="relative flex h-screen flex-col">
+    <div className="relative flex h-[calc(100dvh)] flex-col">
       <div className="bg-gray-100">
         <Navbar />
       </div>

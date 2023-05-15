@@ -45,7 +45,10 @@ export const Modal = ({
         </Transition.Child>
 
         {/* This element is to trick the browser into centering the modal contents. */}
-        <span className="inline-block h-screen align-middle" aria-hidden="true">
+        <span
+          className="inline-block h-[calc(100dvh)] align-middle"
+          aria-hidden="true"
+        >
           &#8203;
         </span>
 

@@ -327,6 +327,7 @@ query ProfileById($profile_id: uuid!, $is_logged_in: Boolean!) {
   profile_by_pk(id: $profile_id) {
     id
     created_at
+    blocked_by_user
     profile_listing {
       id
       public

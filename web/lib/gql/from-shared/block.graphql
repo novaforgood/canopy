@@ -1,0 +1,27 @@
+mutation DeleteBlock($blocked_profile_id: uuid!, $blocker_profile_id: uuid!) {
+  delete_block(
+    where: {
+      blocked_profile_id: { _eq: $blocked_profile_id }
+      blocker_profile_id: { _eq: $blocker_profile_id }
+    }
+  ) {
+    returning {
+      id
+      blocker_profile_id
+      blocked_profile_id
+    }
+  }
+}
+
+mutation InsertBlock($blocked_profile_id: uuid!, $blocker_profile_id: uuid!) {
+  insert_block_one(
+    object: {
+      blocker_profile_id: $blocker_profile_id
+      blocked_profile_id: $blocked_profile_id
+    }
+  ) {
+    id
+    blocker_profile_id
+    blocked_profile_id
+  }
+}

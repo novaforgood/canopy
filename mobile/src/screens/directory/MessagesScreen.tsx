@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { formatDistanceStrict } from "date-fns";
 import { SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
@@ -12,6 +12,7 @@ import { Text } from "../../components/atomic/Text";
 import { ChatRoomImage } from "../../components/chat/ChatRoomImage";
 import { ChatTitle } from "../../components/chat/ChatTitle";
 import { getChatParticipants } from "../../components/chat/utils";
+import { toast } from "../../components/CustomToast";
 import { LoadingSkeleton } from "../../components/LoadingSkeleton";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import {
@@ -20,6 +21,7 @@ import {
 } from "../../generated/graphql";
 import { BxChevronRight } from "../../generated/icons/regular";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
+import { useForegroundEffect } from "../../hooks/useForegroundEffect";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
 import { NavigationProp } from "../../navigation/types";
 
@@ -65,6 +67,8 @@ function useTimeFormatter() {
 
 export function MessagesScreen() {
   const navigation = useNavigation<NavigationProp>();
+
+  const isFocused = useIsFocused();
 
   const { formatTimeSuperConcise } = useTimeFormatter();
 
