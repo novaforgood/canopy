@@ -16,6 +16,20 @@ object_relationships:
     using:
       foreign_key_constraint_on: user_id
 array_relationships:
+  - name: blocked_profiles
+    using:
+      foreign_key_constraint_on:
+        column: blocker_profile_id
+        table:
+          name: block
+          schema: public
+  - name: blocker_profiles
+    using:
+      foreign_key_constraint_on:
+        column: blocked_profile_id
+        table:
+          name: block
+          schema: public
   - name: flattened_profile_roles
     using:
       manual_configuration:
@@ -57,6 +71,14 @@ array_relationships:
         remote_table:
           name: past_day_unread_messages_count
           schema: public
+computed_fields:
+  - name: blocked_by_user
+    definition:
+      function:
+        name: profile_blocked_by_user
+        schema: public
+      session_argument: hasura_session
+    comment: Is the profile blocked by the user?
 insert_permissions:
   - role: user
     permission:
@@ -101,6 +123,8 @@ select_permissions:
         - last_read_announcement_id
         - space_id
         - user_id
+      computed_fields:
+        - blocked_by_user
       filter:
         _and:
           - space:

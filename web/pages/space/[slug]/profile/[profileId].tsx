@@ -5,6 +5,7 @@ import { useDisclosure } from "@mantine/hooks";
 import classNames from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import { Button, Text } from "../../../../components/atomic";
 import { IconButton } from "../../../../components/buttons/IconButton";
@@ -17,18 +18,24 @@ import { SidePadding } from "../../../../components/layout/SidePadding";
 import { Navbar } from "../../../../components/navbar/Navbar";
 import { PleaseLogInModal } from "../../../../components/PleaseLogInModal";
 import { MessageModal } from "../../../../components/profile-page/MessageModal";
-import { useProfileByIdQuery } from "../../../../generated/graphql";
+import {
+  useDeleteBlockMutation,
+  useInsertBlockMutation,
+  useProfileByIdQuery,
+} from "../../../../generated/graphql";
 import {
   BxDotsHorizontalRounded,
   BxEdit,
   BxFile,
   BxMessageDetail,
+  BxBlock,
 } from "../../../../generated/icons/regular";
 import { useProfileViewTracker } from "../../../../hooks/analytics/useProfileViewTracker";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
 import { useIsLoggedIn } from "../../../../hooks/useIsLoggedIn";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { handleError } from "../../../../lib/error";
 import { getFullNameOfUser } from "../../../../lib/user";
 import { CustomPage } from "../../../../types";
 
@@ -37,12 +44,18 @@ function ProfilePageDropdown() {
   const isLoggedIn = useIsLoggedIn();
   const spaceSlug = useQueryParam("slug", "string");
 
+  const { currentProfile } = useCurrentProfile();
+
+  const [, insertBlock] = useInsertBlockMutation();
+  const [, deleteBlock] = useDeleteBlockMutation();
+
   const [
     { data: profileData, fetching: fetchingProfileData },
     refetchProfileById,
   ] = useProfileByIdQuery({
     variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
   });
+  console.log(profileData);
 
   const router = useRouter();
 
@@ -93,6 +106,79 @@ function ProfilePageDropdown() {
                         <BxFile className="mr-2 h-5 w-5 flex-none" />
                         <Text variant="body2" className="whitespace-nowrap">
                           Report {fullName}
+                        </Text>
+                      </button>
+                    );
+                  }}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => {
+                    const styles = classNames({
+                      "group flex w-full items-center rounded-md px-4 py-3 text-sm":
+                        true,
+                      "bg-white": !active,
+                      "bg-gray-50": active,
+                    });
+                    return (
+                      <button
+                        className={styles}
+                        onClick={() => {
+                          if (!currentProfile) {
+                            return;
+                          }
+                          if (!profileId) {
+                            return;
+                          }
+                          if (profileData.profile_by_pk?.blocked_by_user) {
+                            toast
+                              .promise(
+                                deleteBlock({
+                                  blocked_profile_id: profileId,
+                                  blocker_profile_id: currentProfile.id,
+                                }),
+                                {
+                                  loading: "Deleting...",
+                                  success: "User unblocked",
+                                  error: "Failed to unblock user",
+                                }
+                              )
+                              .then(() => {
+                                refetchProfileById();
+                              })
+                              .catch(handleError);
+                          } else {
+                            const confirmed = window.confirm(
+                              "Are you sure you want to block this user? Chats from this user will no longer appear."
+                            );
+                            if (!confirmed) {
+                              return;
+                            } else {
+                              toast
+                                .promise(
+                                  insertBlock({
+                                    blocked_profile_id: profileId,
+                                    blocker_profile_id: currentProfile.id,
+                                  }),
+                                  {
+                                    loading: "Blocking...",
+                                    success: "User blocked",
+                                    error: "Failed to block user",
+                                  }
+                                )
+                                .then(() => {
+                                  refetchProfileById();
+                                })
+                                .catch(handleError);
+                            }
+                          }
+                        }}
+                      >
+                        <BxBlock className="mr-2 h-5 w-5 flex-none" />
+                        <Text variant="body2" className="whitespace-nowrap">
+                          {profileData.profile_by_pk?.blocked_by_user
+                            ? "Unblock"
+                            : "Block"}{" "}
+                          {fullName}
                         </Text>
                       </button>
                     );
