@@ -8,11 +8,11 @@ export interface TwoThirdsPageLayoutProps {
 export function TwoThirdsPageLayout(props: TwoThirdsPageLayoutProps) {
   const { children, renderLeft = () => null } = props;
   return (
-    <div className="h-screen flex">
-      <div className="hidden md:block w-1/3 h-full bg-olive-100">
+    <div className="flex h-[calc(100dvh)]">
+      <div className="hidden h-full w-1/3 bg-olive-100 md:block">
         {renderLeft()}
       </div>
-      <div className="w-full sm:w-2/3 sm:h-full">{children}</div>
+      <div className="w-full sm:h-full sm:w-2/3">{children}</div>
     </div>
   );
 }

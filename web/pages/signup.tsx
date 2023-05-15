@@ -167,7 +167,7 @@ const SignUpPage: CustomPage = () => {
     <div className="h-screen">
       {isLoggedIn ? (
         <TwoThirdsPageLayout>
-          <div className="flex h-screen flex-col items-start justify-center px-16">
+          <div className="flex h-[calc(100dvh)] flex-col items-start justify-center px-16">
             <Text variant="heading1">Redirecting...</Text>
             <div className="h-40"></div>
           </div>

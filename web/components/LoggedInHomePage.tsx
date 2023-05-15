@@ -22,7 +22,7 @@ export function LoggedInHomePage() {
       <div className="bg-gray-50">
         <Navbar />
       </div>
-      <SidePadding className="min-h-screen bg-gray-50">
+      <SidePadding className="min-h-[calc(100dvh)] bg-gray-50">
         <div className="h-16"></div>
         <Text variant="heading3" mobileVariant="heading4">
           Your Canopy Directories

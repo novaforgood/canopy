@@ -102,7 +102,7 @@ function MobileNavbar() {
         leave="transition-opacity ease-linear duration-150"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        className="absolute top-full h-screen w-full bg-white"
+        className="absolute top-full h-[calc(100dvh)] w-full bg-white"
       >
         <div className="px-8 pt-12">
           <div className="flex items-center gap-2">
