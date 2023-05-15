@@ -43,7 +43,12 @@ fragment ChatRoomFragment on chat_room {
 # Get all chats, including latest message of each chat
 subscription AllChatRooms($profile_id: uuid!) {
   chat_room(
-    where: { profile_to_chat_rooms: { profile_id: { _eq: $profile_id } } }
+    where: {
+      profile_to_chat_rooms: { profile_id: { _eq: $profile_id } }
+      _not: {
+        profile_to_chat_rooms: { profile: { blocked_by_user: { _eq: true } } }
+      }
+    }
     order_by: { chat_messages_aggregate: { max: { id: desc } } }
   ) {
     ...ChatRoomFragment
