@@ -131,8 +131,6 @@ async function handleChatMessageInsert(event: Event) {
     return;
   }
 
-  console.log(newMessage);
-
   const { data, error } = await executeGetChatParticipantsQuery({
     chat_room_id: newMessage.chat_room_id,
     sender_profile_id: newMessage.sender_profile_id,
