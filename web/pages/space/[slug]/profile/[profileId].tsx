@@ -148,7 +148,7 @@ function ProfilePageDropdown() {
                               .catch(handleError);
                           } else {
                             const confirmed = window.confirm(
-                              "Are you sure you want to block this user? Chats from this user will no longer appear."
+                              "Are you sure you want to block this user? They will not be able to see that you blocked them. Chats from this user will no longer appear."
                             );
                             if (!confirmed) {
                               return;
