@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import { useProfileByIdQuery } from "../../generated/graphql";
 import { useAllProfilesOfUserQuery } from "../../generated/graphql";
 import { useUserData } from "../../hooks/useUserData";
-import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 
 import {
   Profile_Role_Enum,
@@ -116,8 +115,8 @@ export function SpaceLandingPage() {
     () => profileListingData?.profile_listing ?? [],
     [profileListingData?.profile_listing]
   );
-  console.log(allProfileListings)
-  console.log(profileListingData)
+
+  
   const filteredProfileListings = useMemo(() => {
     if (searchQuery === "")
       return shuffleProfiles(allProfileListings, getDayOfYear(new Date()));
@@ -138,9 +137,7 @@ export function SpaceLandingPage() {
   const [{ data: profileData }] = useAllProfilesOfUserQuery({
     variables: { user_id: userData?.id ?? "" },
   });
-  console.log(userData?.id);
-
-  console.log(profileData);
+  
   
   
 
@@ -164,81 +161,32 @@ export function SpaceLandingPage() {
       // return -1 IF A should go before B
       // return 1 IF A should go after B
       // return 0 if NO PREFERENCE
-      console.log(a.profile.id);
-      console.log(b.profile.id);
+      
 
       // make use of filteredProfileListings so we can sort by number of fields filled!?
       
-      console.log(getFullNameOfUser(a.profile.user));
-      console.log(getFullNameOfUser(b.profile.user));
-
       
-      console.log("A information:")
-      console.log(a.__typename);
-      console.log(a.profile.__typename);
-      console.log(a.profile_listing_image?.__typename);
-      console.log(a.profile_listing_image == null);
-
-      console.log("B information:")
-      console.log(b.profile_listing_image?.__typename);
-      console.log(b.profile_listing_image == null);
-
-
-      console.log("Headlines")
-      console.log(a.headline);
-      console.log(b.headline);
-      
-      console.log();
 
       if(a.profile_listing_image != null && b.profile_listing_image != null){
         // refer to a's and b's headlines for next sort
-        console.log("Referring to headline length");
-        console.log(a.headline.length);
-        console.log(b.headline.length);
+      
 
-        if(a.headline.length < b.headline.length){
-          console.log("A is smaller!");
+        if(a.headline!.length < b.headline!.length){
+       
           return 1;
         } else {
-          console.log("B is smaller!");
+         
           return -1;
         }
         
       } else if(a.profile_listing_image != null){
-        console.log("A has a profile listing image, let's prioritize it");
+       
         return -1;
       } else {
-        console.log("B has profile listing image");
+       
         return 1;
       }
-
-      
-
-      // const [{ data: profileListingData, fetching }] = useProfileListingQuery({
-      //   variables: { profile_listing_id: profileListingId },
-      // });
-
-      // const listing = profileData?.profile_by_pk?.profile_listing;
-
-      /*
-        {listing?.profile_listing_responses.map((response) => {
-          return (
-            <Box key={response.id} mt={8}>
-              <Text mb={1} variant="heading4" color="green800">
-                {response.space_listing_question.title}
-              </Text>
-              <HtmlDisplay html={response.response_html} />
-            </Box>
-          );
-        })}
-      */
-
-      /*
-      const myProfile = data?.profile.find((p) => p.id === currentProfile.id);
-      */
-
-      
-      // return 1; // for now
+     
     }
   )
 
@@ -307,7 +255,7 @@ export function SpaceLandingPage() {
               {filteredProfileListings.map((listing, idx) => {
                 const fullName = getFullNameOfUser(listing.profile.user);
 
-                console.log(fullName);
+              
                 
                 // this sorts the tags for each user!
                 const sortedTags = listing.profile_listing_to_space_tags
@@ -324,12 +272,7 @@ export function SpaceLandingPage() {
 
                 const tagNames = sortedTags?.map((tag) => tag.label) ?? [];
                 
-                console.log("Sorted Tags: " , sortedTags);
-                console.log("PLTST: " , listing.profile_listing_to_space_tags);
-                console.log("Tag Names: " , tagNames);
-
-
-                // console.log(listing.headline);
+               
 
                 return (
                   <ProfileCard
