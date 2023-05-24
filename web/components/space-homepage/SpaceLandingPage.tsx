@@ -8,6 +8,11 @@ import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { useProfileByIdQuery } from "../../generated/graphql";
+import { useAllProfilesOfUserQuery } from "../../generated/graphql";
+import { useUserData } from "../../hooks/useUserData";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
+
 import {
   Profile_Role_Enum,
   useProfileListingsInSpaceQuery,
@@ -27,6 +32,8 @@ import { Button, Text } from "../atomic";
 import { ProfileCard } from "../ProfileCard";
 
 import { FilterBar } from "./FilterBar";
+import { boolean } from "zod";
+import { GetProfileDocument } from "../../server/generated/serverGraphql";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -75,7 +82,7 @@ export function SpaceLandingPage() {
   }, [selectedTagIds]);
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
-    useProfileListingsInSpaceQuery({
+    useProfileListingsInSpaceQuery({  
       pause: !currentSpace,
       variables: {
         where: {
@@ -109,16 +116,132 @@ export function SpaceLandingPage() {
     () => profileListingData?.profile_listing ?? [],
     [profileListingData?.profile_listing]
   );
-
+  console.log(allProfileListings)
+  console.log(profileListingData)
   const filteredProfileListings = useMemo(() => {
     if (searchQuery === "")
       return shuffleProfiles(allProfileListings, getDayOfYear(new Date()));
 
     const searchQueryLower = searchQuery.toLowerCase();
     const fuse = new Fuse(allProfileListings, FUSE_OPTIONS);
-
     return fuse.search(searchQueryLower).map((result) => result.item);
   }, [allProfileListings, searchQuery]);
+
+  // loop through filteredProfileListings!
+  
+  // idToProfileScore (user's id : how "filled out" their profile is!)
+  const ids = [];
+  const profileScores = [];
+  const idsToProfileScores = new Map();
+
+  const { userData } = useUserData();
+  const [{ data: profileData }] = useAllProfilesOfUserQuery({
+    variables: { user_id: userData?.id ?? "" },
+  });
+  console.log(userData?.id);
+
+  console.log(profileData);
+  
+  
+
+  for(let i = 0; i < filteredProfileListings.length; i++){
+    idsToProfileScores.set(filteredProfileListings[i].id, 0);
+  }
+
+  
+
+
+  // const [
+  //   { data: profileData, fetching: fetchingProfileData },
+  //   refetchProfileById,
+  // ] = useProfileByIdQuery({
+  //   variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
+  // });
+
+  {/* Find some way to sort filteredProfileListings here? That way, we can sort the profiles before we sort the tags of each profile? */}
+  const sortedProfileListings = filteredProfileListings.sort((a, b) =>
+    {
+      // return -1 IF A should go before B
+      // return 1 IF A should go after B
+      // return 0 if NO PREFERENCE
+      console.log(a.profile.id);
+      console.log(b.profile.id);
+
+      // make use of filteredProfileListings so we can sort by number of fields filled!?
+      
+      console.log(getFullNameOfUser(a.profile.user));
+      console.log(getFullNameOfUser(b.profile.user));
+
+      
+      console.log("A information:")
+      console.log(a.__typename);
+      console.log(a.profile.__typename);
+      console.log(a.profile_listing_image?.__typename);
+      console.log(a.profile_listing_image == null);
+
+      console.log("B information:")
+      console.log(b.profile_listing_image?.__typename);
+      console.log(b.profile_listing_image == null);
+
+
+      console.log("Headlines")
+      console.log(a.headline);
+      console.log(b.headline);
+      
+      console.log();
+
+      if(a.profile_listing_image != null && b.profile_listing_image != null){
+        // refer to a's and b's headlines for next sort
+        console.log("Referring to headline length");
+        console.log(a.headline.length);
+        console.log(b.headline.length);
+
+        if(a.headline.length < b.headline.length){
+          console.log("A is smaller!");
+          return 1;
+        } else {
+          console.log("B is smaller!");
+          return -1;
+        }
+        
+      } else if(a.profile_listing_image != null){
+        console.log("A has a profile listing image, let's prioritize it");
+        return -1;
+      } else {
+        console.log("B has profile listing image");
+        return 1;
+      }
+
+      
+
+      // const [{ data: profileListingData, fetching }] = useProfileListingQuery({
+      //   variables: { profile_listing_id: profileListingId },
+      // });
+
+      // const listing = profileData?.profile_by_pk?.profile_listing;
+
+      /*
+        {listing?.profile_listing_responses.map((response) => {
+          return (
+            <Box key={response.id} mt={8}>
+              <Text mb={1} variant="heading4" color="green800">
+                {response.space_listing_question.title}
+              </Text>
+              <HtmlDisplay html={response.response_html} />
+            </Box>
+          );
+        })}
+      */
+
+      /*
+      const myProfile = data?.profile.find((p) => p.id === currentProfile.id);
+      */
+
+      
+      // return 1; // for now
+    }
+  )
+
 
   const [adminBypass, setAdminBypass] = useAtom(adminBypassAtom);
 
@@ -180,20 +303,33 @@ export function SpaceLandingPage() {
               items={filteredProfileListings}
               strategy={rectSortingStrategy}
             >
+
               {filteredProfileListings.map((listing, idx) => {
                 const fullName = getFullNameOfUser(listing.profile.user);
 
+                console.log(fullName);
+                
+                // this sorts the tags for each user!
                 const sortedTags = listing.profile_listing_to_space_tags
                   .map((tag) => tag.space_tag)
                   .sort((a, b) => {
                     const aSelected = selectedTagIdsSet.has(a.id);
                     const bSelected = selectedTagIdsSet.has(b.id);
+                    
+                    // const aHasResponses = selectedTagIdsSet.has(a.profileListingImage);
                     if (aSelected && !bSelected) return -1;
                     if (!aSelected && bSelected) return 1;
                     return 0;
                   });
 
                 const tagNames = sortedTags?.map((tag) => tag.label) ?? [];
+                
+                console.log("Sorted Tags: " , sortedTags);
+                console.log("PLTST: " , listing.profile_listing_to_space_tags);
+                console.log("Tag Names: " , tagNames);
+
+
+                // console.log(listing.headline);
 
                 return (
                   <ProfileCard

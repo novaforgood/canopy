@@ -64,6 +64,7 @@ const FUSE_OPTIONS = {
 };
 
 export function ProfilesList() {
+  console.log("Beginning");
   const navigation = useNavigation<NavigationProp>();
   const { currentSpace } = useCurrentSpace();
   const { currentProfileHasRole, currentProfile } = useCurrentProfile();
@@ -164,6 +165,9 @@ export function ProfilesList() {
               listing.profile_listing_to_space_tags?.map(
                 (tag) => tag.space_tag.label
               ) ?? [];
+
+              console.log(tagNames);
+              console.log("HERE");
 
             return (
               <ProfileCard

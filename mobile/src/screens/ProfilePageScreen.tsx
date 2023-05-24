@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigation } from "@react-navigation/native";
@@ -66,7 +66,18 @@ export function ProfilePageScreen({
     // This should only run once per page load.
     attemptTrackView(profileId, currentProfile.id);
   }, [attemptTrackView, currentProfile?.id, profileId]);
+  //for testing
 
+  console.log("PROFILE DATA 0")
+  const [count, setCount] = useState(0);
+  useEffect(()=> {
+    console.log("PROFILE DATA 1")
+    setCount(count + 1);
+    if(profileData != null) {
+      console.log("PROFILE DATA")
+      console.log(profileData)
+    }
+  })
   const [filteredProfileIds] = useAtom(filteredProfileIdsAtom);
   const indexOfProfile = filteredProfileIds.indexOf(profileId);
   const nextDisabled = indexOfProfile === filteredProfileIds.length - 1;
@@ -91,7 +102,8 @@ export function ProfilePageScreen({
   const profileTagIds = new Set(
     listing?.profile_listing_to_space_tags.map((item) => item.space_tag_id)
   );
-
+  console.log("Hey!");
+  console.log(listing.__typename);
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "100%" }}>
@@ -217,6 +229,7 @@ export function ProfilePageScreen({
               backgroundColor="white"
             >
               {listing?.profile_listing_responses.map((response) => {
+                
                 return (
                   <Box key={response.id} mt={8}>
                     <Text mb={1} variant="heading4" color="green800">

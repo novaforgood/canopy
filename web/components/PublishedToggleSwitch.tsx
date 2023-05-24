@@ -79,6 +79,7 @@ export default function PublishedToggleSwitch(
             myProfile.profile_listing?.profile_listing_responses.find(
               (r) => r.space_listing_question.id === question.id
             );
+            
 
           if (!answer?.response_html || answer?.response_html === "<p></p>") {
             throw new Error(
