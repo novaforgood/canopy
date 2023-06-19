@@ -31,7 +31,7 @@ import { Button, Text } from "../atomic";
 import { ProfileCard } from "../ProfileCard";
 
 import { FilterBar } from "./FilterBar";
-import { boolean } from "zod";
+
 import { GetProfileDocument } from "../../server/generated/serverGraphql";
 
 const FUSE_OPTIONS = {
@@ -126,65 +126,64 @@ export function SpaceLandingPage() {
     return fuse.search(searchQueryLower).map((result) => result.item);
   }, [allProfileListings, searchQuery]);
 
-  // loop through filteredProfileListings!
-  
-  // idToProfileScore (user's id : how "filled out" their profile is!)
+ 
   const ids = [];
   const profileScores = [];
-  const idsToProfileScores = new Map();
+  
 
   const { userData } = useUserData();
   const [{ data: profileData }] = useAllProfilesOfUserQuery({
     variables: { user_id: userData?.id ?? "" },
   });
-  
-  
-  
-
-  for(let i = 0; i < filteredProfileListings.length; i++){
-    idsToProfileScores.set(filteredProfileListings[i].id, 0);
-  }
-
-  
 
 
-  // const [
-  //   { data: profileData, fetching: fetchingProfileData },
-  //   refetchProfileById,
-  // ] = useProfileByIdQuery({
-  //   variables: { profile_id: profileId ?? "", is_logged_in: isLoggedIn },
-  // });
 
-  {/* Find some way to sort filteredProfileListings here? That way, we can sort the profiles before we sort the tags of each profile? */}
+  const idsToProfileScores = useMemo(() => {
+    let tempCounter = 0;
+    let tempIdsToProfileScores = new Map();
+    
+    // loop through all profiles in directory
+    for(let i = 0; i < filteredProfileListings.length; i++){
+
+      const profileListing = filteredProfileListings[i]?.profile?.profile_listing;
+
+      if(profileListing && profileListing.profile_listing_responses){
+        for (let j = 0; j < profileListing.profile_listing_responses?.length; j++) {
+          const response = profileListing.profile_listing_responses[j];
+          if (response && response.response_html) {
+            tempCounter += response.response_html.length;
+          }
+        }
+      }
+
+      const profileHeadline = filteredProfileListings[i]?.headline;
+      if(profileHeadline && profileHeadline.length > 0){
+        console.log(profileHeadline.length);
+        tempCounter += profileHeadline.length; 
+      }
+
+      tempIdsToProfileScores.set(filteredProfileListings[i].id, tempCounter);
+      tempCounter = 0;
+    }
+    return tempIdsToProfileScores;
+  }, [filteredProfileListings]);
+
+
+
   const sortedProfileListings = filteredProfileListings.sort((a, b) =>
     {
-      // return -1 IF A should go before B
-      // return 1 IF A should go after B
-      // return 0 if NO PREFERENCE
-      
-
-      // make use of filteredProfileListings so we can sort by number of fields filled!?
-      
-      
-
       if(a.profile_listing_image != null && b.profile_listing_image != null){
-        // refer to a's and b's headlines for next sort
-      
-
-        if(a.headline!.length < b.headline!.length){
        
-          return 1;
-        } else {
-         
+        if(idsToProfileScores.get(a.id) > idsToProfileScores.get(b.id)){
           return -1;
+        } else {
+          return 1;
         }
         
       } else if(a.profile_listing_image != null){
-       
-        return -1;
+          return -1;
       } else {
-       
-        return 1;
+          return 1;
       }
      
     }
