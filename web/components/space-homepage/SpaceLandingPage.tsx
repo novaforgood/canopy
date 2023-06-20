@@ -127,8 +127,7 @@ export function SpaceLandingPage() {
   }, [allProfileListings, searchQuery]);
 
  
-  const ids = [];
-  const profileScores = [];
+  
   
 
   const { userData } = useUserData();
