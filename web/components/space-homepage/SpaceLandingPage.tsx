@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 
 import { useProfileByIdQuery } from "../../generated/graphql";
 import { useAllProfilesOfUserQuery } from "../../generated/graphql";
-import { useUserData } from "../../hooks/useUserData";
 
 import {
   Profile_Role_Enum,
@@ -20,6 +19,7 @@ import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePrivacySettings } from "../../hooks/usePrivacySettings";
 import { useQueryParam } from "../../hooks/useQueryParam";
+import { useUserData } from "../../hooks/useUserData";
 import {
   adminBypassAtom,
   searchQueryAtom,
@@ -31,8 +31,6 @@ import { Button, Text } from "../atomic";
 import { ProfileCard } from "../ProfileCard";
 
 import { FilterBar } from "./FilterBar";
-
-import { GetProfileDocument } from "../../server/generated/serverGraphql";
 
 const FUSE_OPTIONS = {
   // isCaseSensitive: false,
@@ -139,7 +137,7 @@ export function SpaceLandingPage() {
 
   const idsToProfileScores = useMemo(() => {
     let tempCounter = 0;
-    let tempIdsToProfileScores = new Map();
+    const tempIdsToProfileScores = new Map();
     
     // loop through all profiles in directory
     for(let i = 0; i < filteredProfileListings.length; i++){
