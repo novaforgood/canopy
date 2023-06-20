@@ -157,7 +157,7 @@ export function SpaceLandingPage() {
 
       const profileHeadline = filteredProfileListings[i]?.headline;
       if(profileHeadline && profileHeadline.length > 0){
-        console.log(profileHeadline.length);
+        
         tempCounter += profileHeadline.length; 
       }
 
