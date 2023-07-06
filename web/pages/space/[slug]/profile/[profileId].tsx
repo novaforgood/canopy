@@ -65,6 +65,10 @@ function ProfilePageDropdown() {
 
   const fullName = getFullNameOfUser(profileData.profile_by_pk.user);
 
+  if (!isLoggedIn) {
+    return null;
+  }
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       {({ open }) => {
