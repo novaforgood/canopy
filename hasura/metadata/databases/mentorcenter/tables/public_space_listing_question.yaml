@@ -37,12 +37,13 @@ select_permissions:
   - role: public
     permission:
       columns:
+        - char_count
+        - deleted
+        - description
         - id
+        - listing_order
         - space_id
         - title
-        - char_count
-        - listing_order
-        - deleted
         - updated_at
       filter:
         _or:

@@ -104,6 +104,8 @@ select_permissions:
         - created_at
         - id
         - space_id
+      computed_fields:
+        - blocked_by_user
       filter:
         _and:
           - space:
