@@ -51,7 +51,7 @@ function CollapsibleTipsBar() {
 
   return (
     <div className={styles}>
-      <div className="relative w-full border-b border-gray-600 bg-lime-100 py-8 text-green-800">
+      <div className="relative w-full border-b border-t border-gray-600 bg-lime-100 py-8 text-green-800">
         <SidePadding className="">
           <div className="grid-rows grid gap-4 sm:grid-cols-3 sm:gap-12">
             <IconTip
@@ -94,14 +94,14 @@ const SpaceHomepage: CustomPage = () => {
       <div className="bg-olive-100">
         <Navbar />
       </div>
-      <SidePadding className="flex flex-col items-center border-b border-gray-600 bg-olive-100">
-        <div className="sm:h-16"></div>
+      <SidePadding className="flex flex-col items-center bg-gray-50">
+        <div className="sm:h-8"></div>
         <SpaceSplashPage />
-        <div className="h-8 sm:hidden"></div>
+        <div className="h-4"></div>
       </SidePadding>
       <CollapsibleTipsBar />
       <SidePadding className="min-h-[calc(100dvh)] bg-gray-50">
-        <div className="h-16"></div>
+        <div className="h-4"></div>
         <SpaceLandingPage />
         <div className="h-16"></div>
       </SidePadding>

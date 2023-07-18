@@ -12,16 +12,17 @@ export function SpaceSplashPage() {
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
 
   return (
-    <div className="flex flex-col gap-8 sm:flex-row sm:items-center">
-      <div className="hidden flex-1 flex-col sm:flex">
+    <div className="flex flex-col gap-8 rounded-md border bg-white sm:flex-row sm:items-center">
+      <div className="hidden flex-1 flex-col px-8 sm:flex">
         <Text
-          variant="heading1"
+          variant="heading2"
+          medium
           className="text-gray-900"
           loading={!currentSpace?.name}
         >
           {currentSpace?.name}
         </Text>
-        <div className="h-12"></div>
+        <div className="h-4"></div>
         {!currentSpace ? (
           <LoadingPlaceholderRect className="h-12 w-64" />
         ) : (

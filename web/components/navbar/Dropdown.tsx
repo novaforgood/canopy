@@ -44,7 +44,7 @@ export function Dropdown() {
     <Menu as="div" className="relative inline-block text-left">
       {({ open }) => {
         const caretStyles = classNames({
-          "h-7 w-7 transition": true,
+          "h-4 w-4 transition text-gray-700": true,
           "rotate-180": open,
         });
 
@@ -191,16 +191,16 @@ export function Dropdown() {
               </Menu.Items>
             </Transition>
 
-            <div>
+            <div className="flex items-end">
               <Menu.Button className="focus:outline-none">
-                <div className="flex items-center gap-2">
-                  <Text className="mr-1">
+                <div className="flex items-start gap-0.5">
+                  {/* <Text className="mr-1" variant="body2">
                     {userData?.first_name} {userData?.last_name}
-                  </Text>
+                  </Text> */}
                   <ProfileImage
                     src={img}
                     alt="Profile image"
-                    className="h-10 w-10"
+                    className="h-7 w-7"
                   />
                   <BxCaretDown className={caretStyles} />
                 </div>
