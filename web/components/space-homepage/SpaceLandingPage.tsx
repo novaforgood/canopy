@@ -79,7 +79,7 @@ export function SpaceLandingPage() {
   }, [selectedTagIds]);
 
   const [{ data: profileListingData, fetching: fetchingProfileListings }] =
-    useProfileListingsInSpaceQuery({  
+    useProfileListingsInSpaceQuery({
       pause: !currentSpace,
       variables: {
         where: {
@@ -114,7 +114,6 @@ export function SpaceLandingPage() {
     [profileListingData?.profile_listing]
   );
 
-  
   const filteredProfileListings = useMemo(() => {
     if (searchQuery === "")
       return shuffleProfiles(allProfileListings, getDayOfYear(new Date()));
@@ -124,39 +123,56 @@ export function SpaceLandingPage() {
     return fuse.search(searchQueryLower).map((result) => result.item);
   }, [allProfileListings, searchQuery]);
 
- 
-  
-  
-
   const { userData } = useUserData();
   const [{ data: profileData }] = useAllProfilesOfUserQuery({
     variables: { user_id: userData?.id ?? "" },
   });
 
-
-
   const idsToProfileScores = useMemo(() => {
     let tempCounter = 0;
     const tempIdsToProfileScores = new Map();
+
     
-    // loop through all profiles in directory
-    for(let i = 0; i < filteredProfileListings.length; i++){
+    for (let i = 0; i < filteredProfileListings.length; i++) {
+      const profileListing =
+        filteredProfileListings[i]?.profile?.profile_listing;
 
-      const profileListing = filteredProfileListings[i]?.profile?.profile_listing;
-
-      if(profileListing && profileListing.profile_listing_responses){
-        for (let j = 0; j < profileListing.profile_listing_responses?.length; j++) {
+      if (profileListing && profileListing.profile_listing_responses) {
+        for (
+          let j = 0;
+          j < profileListing.profile_listing_responses?.length;
+          j++
+        ) {
           const response = profileListing.profile_listing_responses[j];
           if (response && response.response_html) {
-            tempCounter += response.response_html.length;
+            
+
+            let responseArray = response.response_html.split(" ");
+
+            if (responseArray.length >= 10) {
+              tempCounter += 4;
+            } else if (responseArray.length >= 1) {
+              tempCounter += 2;
+            }
           }
         }
       }
 
+      
       const profileHeadline = filteredProfileListings[i]?.headline;
-      if(profileHeadline && profileHeadline.length > 0){
-        
-        tempCounter += profileHeadline.length; 
+      if (profileHeadline && profileHeadline.length > 0) {
+        let headlineArray = profileHeadline.split(" ");
+
+        if (headlineArray.length >= 3) {
+          tempCounter += 5;
+        } else if (headlineArray.length >= 1) {
+          tempCounter += 3;
+        }
+      }
+
+      
+      if (filteredProfileListings[i].profile_listing_image != null) {
+        tempCounter += 10;
       }
 
       tempIdsToProfileScores.set(filteredProfileListings[i].id, tempCounter);
@@ -165,27 +181,15 @@ export function SpaceLandingPage() {
     return tempIdsToProfileScores;
   }, [filteredProfileListings]);
 
-
-
-  const sortedProfileListings = filteredProfileListings.sort((a, b) =>
-    {
-      if(a.profile_listing_image != null && b.profile_listing_image != null){
-       
-        if(idsToProfileScores.get(a.id) > idsToProfileScores.get(b.id)){
-          return -1;
-        } else {
-          return 1;
-        }
-        
-      } else if(a.profile_listing_image != null){
-          return -1;
-      } else {
-          return 1;
-      }
-     
+  const sortedProfileListings = filteredProfileListings.sort((a, b) => {
+    if (idsToProfileScores.get(a.id) > idsToProfileScores.get(b.id)) {
+      return -1;
+    } else {
+      return 1;
     }
-  )
+  });
 
+  console.log(idsToProfileScores);
 
   const [adminBypass, setAdminBypass] = useAtom(adminBypassAtom);
 
@@ -244,31 +248,26 @@ export function SpaceLandingPage() {
             }}
           >
             <SortableContext
-              items={filteredProfileListings}
+              items={sortedProfileListings}
               strategy={rectSortingStrategy}
             >
-
-              {filteredProfileListings.map((listing, idx) => {
+              {sortedProfileListings.map((listing, idx) => {
                 const fullName = getFullNameOfUser(listing.profile.user);
 
-              
                 
-                // this sorts the tags for each user!
                 const sortedTags = listing.profile_listing_to_space_tags
                   .map((tag) => tag.space_tag)
                   .sort((a, b) => {
                     const aSelected = selectedTagIdsSet.has(a.id);
                     const bSelected = selectedTagIdsSet.has(b.id);
+
                     
-                    // const aHasResponses = selectedTagIdsSet.has(a.profileListingImage);
                     if (aSelected && !bSelected) return -1;
                     if (!aSelected && bSelected) return 1;
                     return 0;
                   });
 
                 const tagNames = sortedTags?.map((tag) => tag.label) ?? [];
-                
-               
 
                 return (
                   <ProfileCard
