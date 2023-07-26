@@ -147,7 +147,7 @@ export function SpaceLandingPage() {
           if (response && response.response_html) {
             
 
-            let responseArray = response.response_html.split(" ");
+            const responseArray = response.response_html.split(" ");
 
             if (responseArray.length >= 10) {
               tempCounter += 4;
@@ -161,7 +161,7 @@ export function SpaceLandingPage() {
       
       const profileHeadline = filteredProfileListings[i]?.headline;
       if (profileHeadline && profileHeadline.length > 0) {
-        let headlineArray = profileHeadline.split(" ");
+        const headlineArray = profileHeadline.split(" ");
 
         if (headlineArray.length >= 3) {
           tempCounter += 5;
