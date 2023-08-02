@@ -289,6 +289,13 @@ query ProfileListingsInSpace($where: profile_listing_bool_exp) {
         first_name
         email
       }
+      profile_listing {
+        id
+        profile_listing_responses {
+          id
+          response_html
+        }
+      }
     }
   }
 }
