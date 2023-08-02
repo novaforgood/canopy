@@ -200,7 +200,7 @@ export function Dropdown() {
                   <ProfileImage
                     src={img}
                     alt="Profile image"
-                    className="h-7 w-7"
+                    className="h-8 w-8"
                   />
                   <BxCaretDown className={caretStyles} />
                 </div>

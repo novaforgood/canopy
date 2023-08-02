@@ -272,7 +272,9 @@ function DesktopNavbar() {
               </Link>
             ) : (
               // <SpaceDropdown />
-              <Text variant="body1">{currentSpace?.name}</Text>
+              <Text variant="subheading1" bold>
+                {currentSpace?.name}
+              </Text>
             )}
             {/* {!isHome && spaceSlug && (
               <Button
@@ -304,7 +306,7 @@ function DesktopNavbar() {
               <div className="flex gap-2">
                 <Tooltip
                   content="Profiles"
-                  delayMs={[500, 0]}
+                  // delayMs={[500, 0]}
                   placement="bottom"
                 >
                   <div>
@@ -312,7 +314,7 @@ function DesktopNavbar() {
                       <a className="relative">
                         <IconTab
                           selected={isHome}
-                          icon={<Community className="h-5 w-5" />}
+                          icon={<Community className="h-6 w-6" />}
                         />
                       </a>
                     </Link>
@@ -321,7 +323,7 @@ function DesktopNavbar() {
 
                 <Tooltip
                   content="Announcements"
-                  delayMs={[500, 0]}
+                  // delayMs={[500, 0]}
                   placement="bottom"
                 >
                   <div>
@@ -335,7 +337,7 @@ function DesktopNavbar() {
                         ) : null}
                         <IconTab
                           selected={isInAnnouncementsPage}
-                          icon={<Megaphone className="h-5 w-5" />}
+                          icon={<Megaphone className="h-6 w-6" />}
                         />
                       </a>
                     </Link>
@@ -343,7 +345,7 @@ function DesktopNavbar() {
                 </Tooltip>
                 <Tooltip
                   content="Messages"
-                  delayMs={[500, 0]}
+                  // delayMs={[500, 0]}
                   placement="bottom"
                 >
                   <div>
@@ -357,7 +359,7 @@ function DesktopNavbar() {
                         ) : null}
                         <IconTab
                           selected={isInChatPage}
-                          icon={<ChatBubble className="h-5 w-5" />}
+                          icon={<ChatBubble className="h-6 w-6" />}
                         />
                       </a>
                     </Link>
@@ -366,7 +368,7 @@ function DesktopNavbar() {
                 {isAdmin && (
                   <Tooltip
                     content="Admin Dashboard"
-                    delayMs={[500, 0]}
+                    // delayMs={[500, 0]}
                     placement="bottom"
                   >
                     <div>
@@ -380,7 +382,7 @@ function DesktopNavbar() {
                           ) : null}
                           <IconTab
                             selected={isInAdminDashboard}
-                            icon={<Settings className="h-5 w-5" />}
+                            icon={<Settings className="h-6 w-6" />}
                           />
                         </a>
                       </Link>

@@ -27,7 +27,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
   rounded?: boolean;
   floating?: boolean;
-  variant?: "cta" | "primary" | "outline" | "secondary";
+  variant?: "cta" | "primary" | "outline" | "secondary" | "lime";
   size?: "small" | "medium" | "auto";
 };
 
@@ -69,11 +69,18 @@ export const Button = ({
     ["text-gray-400"]: disabled,
   });
 
+  const limeStyles = classNames({
+    ["border border-lime-400"]: true,
+    ["bg-lime-500 hover:bg-lime-400 text-green-900"]: !disabled,
+    ["border-gray-500 text-gray-500 bg-lime-200"]: disabled,
+  });
+
   const styles = classNames({
     [ctaStyles]: variant === "cta",
     [primaryStyles]: variant === "primary",
     [outlineStyles]: variant === "outline",
     [secondaryStyles]: variant === "secondary",
+    [limeStyles]: variant === "lime",
     ["transition flex items-center whitespace-nowrap"]: true,
     ["px-8 py-2"]: size === "medium",
     ["px-6 py-1.5 text-sm"]: size === "small",
