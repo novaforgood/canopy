@@ -32,7 +32,6 @@ import { ProfileCard } from "../ProfileCard";
 import { FilterBar } from "./FilterBar";
 
 const todayDateString = format(addDays(new Date(), 4), "yyyy-MM-dd");
-console.log(todayDateString);
 
 class SeededRNG {
   seed: number;
@@ -221,8 +220,6 @@ export function SpaceLandingPage() {
       return 1;
     }
   });
-
-  console.log(idsToProfileScores);
 
   const [adminBypass, setAdminBypass] = useAtom(adminBypassAtom);
 
