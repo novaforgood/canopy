@@ -5,18 +5,18 @@ select_permissions:
   - role: public
     permission:
       columns:
+        - deleted
+        - domainWhitelist
         - name
         - slug
         - id
-      filter:
-        deleted:
-          _eq: false
+      filter: {}
   - role: user
     permission:
       columns:
+        - id
         - name
         - slug
-        - id
-      filter:
-        deleted:
-          _eq: false
+        - deleted
+        - domainWhitelist
+      filter: {}

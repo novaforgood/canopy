@@ -14,7 +14,9 @@ import {
 } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
+import { usePrivacySettings } from "../../../../hooks/usePrivacySettings";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
+import { useUserData } from "../../../../hooks/useUserData";
 import { apiClient } from "../../../../lib/apiClient";
 
 function AlreadyPartOfSpace() {
@@ -51,10 +53,18 @@ function JoinSpace() {
 
   const [loading, setLoading] = useState(false);
 
+  const { userData } = useUserData();
+
   const [{ data: publicSpaceData }] = usePublicSpaceBySlugQuery({
     variables: { slug: slug ?? "" },
   });
   const publicSpace = publicSpaceData?.public_space[0];
+
+  const domainWhiteList = publicSpace?.domainWhitelist;
+  const doesNotPassEmailFilter =
+    !!domainWhiteList &&
+    !!userData?.email &&
+    !userData.email.endsWith(domainWhiteList);
 
   const joinSpace = useCallback(async () => {
     if (!inviteLinkId) {
@@ -93,9 +103,20 @@ function JoinSpace() {
 
         <div className="h-16"></div>
 
+        {doesNotPassEmailFilter && (
+          <div>
+            <Text variant="body1">
+              You are not allowed to join this space because your email address
+              does not end with {domainWhiteList}.
+            </Text>
+            <div className="h-4"></div>
+          </div>
+        )}
+
         <div className="text-2xl"></div>
         <Button
           loading={loading}
+          disabled={doesNotPassEmailFilter}
           onClick={() => {
             setLoading(true);
             joinSpace()

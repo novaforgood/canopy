@@ -159,67 +159,68 @@ export function SpaceLandingPage() {
     variables: { user_id: userData?.id ?? "" },
   });
 
-  const idsToProfileScores = useMemo(() => {
-    let tempCounter = 0;
-    const tempIdsToProfileScores = new Map();
+  // const idsToProfileScores = useMemo(() => {
+  //   let tempCounter = 0;
+  //   const tempIdsToProfileScores = new Map();
 
-    for (let i = 0; i < filteredProfileListings.length; i++) {
-      const profileListing =
-        filteredProfileListings[i]?.profile?.profile_listing;
+  //   for (let i = 0; i < filteredProfileListings.length; i++) {
+  //     const profileListing =
+  //       filteredProfileListings[i]?.profile?.profile_listing;
 
-      if (profileListing && profileListing.profile_listing_responses) {
-        for (
-          let j = 0;
-          j < profileListing.profile_listing_responses?.length;
-          j++
-        ) {
-          const response = profileListing.profile_listing_responses[j];
-          if (response && response.response_html) {
-            const responseArray = response.response_html.split(" ");
+  //     if (profileListing && profileListing.profile_listing_responses) {
+  //       for (
+  //         let j = 0;
+  //         j < profileListing.profile_listing_responses?.length;
+  //         j++
+  //       ) {
+  //         const response = profileListing.profile_listing_responses[j];
+  //         if (response && response.response_html) {
+  //           const responseArray = response.response_html.split(" ");
 
-            if (responseArray.length >= 10) {
-              tempCounter += 4;
-            } else if (responseArray.length >= 1) {
-              tempCounter += 2;
-            }
-          }
-        }
-      }
+  //           if (responseArray.length >= 10) {
+  //             tempCounter += 4;
+  //           } else if (responseArray.length >= 1) {
+  //             tempCounter += 2;
+  //           }
+  //         }
+  //       }
+  //     }
 
-      const profileHeadline = filteredProfileListings[i]?.headline;
-      if (profileHeadline && profileHeadline.length > 0) {
-        const headlineArray = profileHeadline.split(" ");
+  //     const profileHeadline = filteredProfileListings[i]?.headline;
+  //     if (profileHeadline && profileHeadline.length > 0) {
+  //       const headlineArray = profileHeadline.split(" ");
 
-        if (headlineArray.length >= 3) {
-          tempCounter += 5;
-        } else if (headlineArray.length >= 1) {
-          tempCounter += 3;
-        }
-      }
+  //       if (headlineArray.length >= 3) {
+  //         tempCounter += 5;
+  //       } else if (headlineArray.length >= 1) {
+  //         tempCounter += 3;
+  //       }
+  //     }
 
-      if (filteredProfileListings[i].profile_listing_image != null) {
-        tempCounter += 10;
-      }
+  //     if (filteredProfileListings[i].profile_listing_image != null) {
+  //       tempCounter += 10;
+  //     }
 
-      tempCounter +=
-        15 *
-        generateRandomVal([
-          todayDateString,
-          filteredProfileListings[i]?.id ?? "",
-        ]);
-      tempIdsToProfileScores.set(filteredProfileListings[i].id, tempCounter);
-      tempCounter = 0;
-    }
-    return tempIdsToProfileScores;
-  }, [filteredProfileListings]);
+  //     tempCounter +=
+  //       15 *
+  //       generateRandomVal([
+  //         todayDateString,
+  //         filteredProfileListings[i]?.id ?? "",
+  //       ]);
+  //     tempIdsToProfileScores.set(filteredProfileListings[i].id, tempCounter);
+  //     tempCounter = 0;
+  //   }
+  //   return tempIdsToProfileScores;
+  // }, [filteredProfileListings]);
 
-  const sortedProfileListings = filteredProfileListings.sort((a, b) => {
-    if (idsToProfileScores.get(a.id) > idsToProfileScores.get(b.id)) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
+  // const sortedProfileListings = filteredProfileListings.sort((a, b) => {
+  //   if (idsToProfileScores.get(a.id) > idsToProfileScores.get(b.id)) {
+  //     return -1;
+  //   } else {
+  //     return 1;
+  //   }
+  // });
+  const sortedProfileListings = filteredProfileListings;
 
   const [adminBypass, setAdminBypass] = useAtom(adminBypassAtom);
 
