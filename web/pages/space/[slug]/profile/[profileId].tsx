@@ -245,12 +245,10 @@ const ProfilePage: CustomPage = () => {
   const isMyProfile = profileId === currentProfile?.id;
 
   if (!currentSpace && !fetchingCurrentSpace) {
-    console.log("no space");
     return <PageNotFound />;
   }
 
   if (!profileData?.profile_by_pk?.profile_listing && !fetchingProfileData) {
-    console.log("no profile listing");
     return <PageNotFound />;
   }
 
