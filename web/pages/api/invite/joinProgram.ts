@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   executeGetInviteLinkQuery,
+  executeGetSpaceQuery,
   executeInsertProfileMutation,
   Profile_Constraint,
   Profile_Role_Enum,
@@ -42,6 +43,28 @@ export default applyMiddleware({
 
   if (expireDate && expireDate < new Date()) {
     throw makeApiFail("Invite link has expired");
+  }
+
+  // Check if user's email matches the space's domain whitelist
+  const { data: spaceData, error: spaceError } = await executeGetSpaceQuery({
+    space_id: inviteLink.space_id,
+  });
+  if (spaceError) {
+    throw makeApiError(spaceError.message);
+  }
+  const space = spaceData?.space_by_pk;
+  if (!space) {
+    throw makeApiError("Space not found");
+  }
+  const { attributes } = space;
+
+  const { email } = req.token;
+
+  const domainWhitelist = attributes.domainWhitelist;
+  if (domainWhitelist && email) {
+    if (!email.endsWith(domainWhitelist)) {
+      throw makeApiFail(`Your email is not allowed to join this space`);
+    }
   }
 
   // If not expired, accept invite link and add user to program

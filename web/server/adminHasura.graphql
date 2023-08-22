@@ -13,6 +13,7 @@ query GetSpace($space_id: uuid!) {
     id
     owner_id
     name
+    attributes
   }
 }
 
@@ -20,6 +21,17 @@ mutation UpdateSpace($space_id: uuid!, $changes: space_set_input!) {
   update_space_by_pk(pk_columns: { id: $space_id }, _set: $changes) {
     id
     name
+  }
+}
+
+query GetUser($user_id: String!) {
+  user_by_pk(id: $user_id) {
+    id
+    email
+    first_name
+    last_name
+    last_active_at
+    attributes
   }
 }
 
