@@ -61,12 +61,6 @@ function ReportProfile(props: ReportProfileProps) {
       })
     );
 
-    console.log({
-      subjectProfileId: profileId,
-      body: reportBody,
-      imageIds,
-      anonymous,
-    });
     return apiClient.post<
       {
         subjectProfileId: string;
