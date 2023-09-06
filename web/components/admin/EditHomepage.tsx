@@ -142,7 +142,7 @@ export function EditHomepage() {
       <div className="w-96">
         <SimpleRichTextInput
           initContent={currentSpace?.description_html ?? undefined}
-          characterLimit={300}
+          characterLimit={750}
           onUpdate={({ editor }) => {
             setMustSave(true);
             setSpaceDescriptionHtml(editor.getHTML());
