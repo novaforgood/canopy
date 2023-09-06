@@ -8,7 +8,9 @@ import { useCurrentSpace } from "./useCurrentSpace";
 
 export type PrivacySettings = Pick<
   SpaceAttributes,
-  "public" | "allowOnlyPublicMembersToViewProfiles" | "domainWhitelist"
+  | "public"
+  | "allowOnlyPublicMembersToViewProfiles"
+  | "optUsersInToMatchesByDefault"
 >;
 
 export function usePrivacySettings(): {

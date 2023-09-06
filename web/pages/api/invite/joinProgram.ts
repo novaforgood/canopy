@@ -67,6 +67,8 @@ export default applyMiddleware({
     }
   }
 
+  const shouldEnableChatIntros = !!attributes.optUsersInToMatchesByDefault;
+
   // If not expired, accept invite link and add user to program
   const listingEnabled =
     inviteLink.type === Space_Invite_Link_Type_Enum.MemberListingEnabled
@@ -77,7 +79,9 @@ export default applyMiddleware({
       data: {
         user_id: req.token.uid,
         space_id: inviteLink.space_id,
-        attributes: {},
+        attributes: {
+          enableChatIntros: shouldEnableChatIntros,
+        },
         profile_roles: {
           data: [
             {

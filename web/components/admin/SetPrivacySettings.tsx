@@ -68,6 +68,19 @@ export function SetPrivacySettings() {
         }}
       />
 
+      <div className="h-4"></div>
+      <CheckBox
+        label={`Opt new users in to matches by default (when they join the space)`}
+        checked={settings.optUsersInToMatchesByDefault}
+        onChange={(newVal) => {
+          setMustSave(true);
+          setSettings({
+            ...settings,
+            optUsersInToMatchesByDefault: newVal,
+          });
+        }}
+      />
+
       <div className="h-8"></div>
       <Button
         disabled={!mustSave}
