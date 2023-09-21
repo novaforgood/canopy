@@ -1,0 +1,12 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- DROP VIEW "public"."public_space";
+--
+-- CREATE OR REPLACE VIEW "public"."public_space" AS
+--  SELECT space.id,
+--     space.name,
+--     space.slug,
+--     space.deleted,
+--     space.attributes->>'domainWhitelist' as "domainWhitelist",
+--     space.attributes->'domainWhitelists' as "domainWhitelists"
+--    FROM space;
