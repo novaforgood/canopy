@@ -6,6 +6,7 @@ select_permissions:
     permission:
       columns:
         - deleted
+        - domainWhitelists
         - domainWhitelist
         - name
         - slug
@@ -19,4 +20,5 @@ select_permissions:
         - slug
         - deleted
         - domainWhitelist
+        - domainWhitelists
       filter: {}

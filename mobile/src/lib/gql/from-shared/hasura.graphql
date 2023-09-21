@@ -664,6 +664,7 @@ query PublicSpaceBySlug($slug: String!) {
     id
     name
     domainWhitelist
+    domainWhitelists
     slug
   }
 }
