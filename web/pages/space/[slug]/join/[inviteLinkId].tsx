@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -60,11 +60,27 @@ function JoinSpace() {
   });
   const publicSpace = publicSpaceData?.public_space[0];
 
-  const domainWhiteList = publicSpace?.domainWhitelist;
-  const doesNotPassEmailFilter =
-    !!domainWhiteList &&
-    !!userData?.email &&
-    !userData.email.endsWith(domainWhiteList);
+  const domainWhiteList = publicSpace?.domainWhitelist as string | undefined;
+  const domainWhitelists = publicSpace?.domainWhitelists as
+    | string[]
+    | undefined;
+
+  const doesNotPassEmailFilter = useMemo(() => {
+    const email = userData?.email;
+    if (!email) {
+      return true;
+    }
+    if (
+      domainWhitelists &&
+      domainWhitelists.some((domain) => email.endsWith(domain))
+    ) {
+      return false;
+    }
+    if (domainWhiteList && email.endsWith(domainWhiteList)) {
+      return false;
+    }
+    return true;
+  }, [domainWhiteList, domainWhitelists, userData?.email]);
 
   const joinSpace = useCallback(async () => {
     if (!inviteLinkId) {
@@ -107,7 +123,11 @@ function JoinSpace() {
           <div>
             <Text variant="body1">
               You are not allowed to join this space because your email address
-              does not end with {domainWhiteList}.
+              does not end with one of:{" "}
+              {[domainWhiteList, ...(domainWhitelists ?? [])]
+                .filter(Boolean)
+                .join(", ")}
+              .
             </Text>
             <div className="h-4"></div>
           </div>
