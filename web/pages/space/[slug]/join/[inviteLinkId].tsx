@@ -65,20 +65,23 @@ function JoinSpace() {
     | string[]
     | undefined;
 
-  const doesNotPassEmailFilter = useMemo(() => {
+  const passesEmailFilter = useMemo(() => {
     const email = userData?.email;
     if (!email) {
-      return true;
+      return false;
     }
+
     if (
       domainWhitelists &&
-      domainWhitelists.some((domain) => email.endsWith(domain))
+      !domainWhitelists.some((domain) => email.endsWith(domain))
     ) {
       return false;
     }
-    if (domainWhiteList && email.endsWith(domainWhiteList)) {
+
+    if (domainWhiteList && !email.endsWith(domainWhiteList)) {
       return false;
     }
+
     return true;
   }, [domainWhiteList, domainWhitelists, userData?.email]);
 
@@ -119,7 +122,7 @@ function JoinSpace() {
 
         <div className="h-16"></div>
 
-        {doesNotPassEmailFilter && (
+        {!passesEmailFilter && (
           <div>
             <Text variant="body1">
               You are not allowed to join this space because your email address
@@ -136,7 +139,7 @@ function JoinSpace() {
         <div className="text-2xl"></div>
         <Button
           loading={loading}
-          disabled={doesNotPassEmailFilter}
+          disabled={!passesEmailFilter}
           onClick={() => {
             setLoading(true);
             joinSpace()
