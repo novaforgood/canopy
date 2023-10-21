@@ -9,7 +9,7 @@ export interface TagProps {
   text: string;
   onDeleteClick?: () => void;
   renderRightIcon?: () => React.ReactNode;
-  variant?: "primary" | "outline" | "olive";
+  variant?: "primary" | "outline" | "olive" | "light";
   className?: string;
   style?: React.CSSProperties;
 }
@@ -27,15 +27,17 @@ export function Tag(props: TagProps) {
     "rounded-full flex items-center px-3 py-1 overflow-hidden": true,
     "bg-lime-200": variant === "primary",
     "bg-olive-200": variant === "olive",
+    "bg-lime-100": variant === "light",
     "bg-white border border-lime-700": variant === "outline",
     [`${className}`]: true,
   });
 
   const tagStyles = classNames({
-    "whitespace-nowrap text-xs truncate": true,
+    "whitespace-nowrap text-sm truncate": true,
     "text-olive-700": variant === "primary",
     "text-olive-800": variant === "olive",
     "text-lime-700": variant === "outline",
+    "text-gray-600": variant === "light",
   });
 
   const [isOverflowed, setIsOverflow] = useState(false);
@@ -58,7 +60,7 @@ export function Tag(props: TagProps) {
       <div className={tagContainerStyles} style={style}>
         <div
           className={tagStyles}
-          style={{ fontWeight: 500 }}
+          // style={{ fontWeight: 500 }}
           ref={textElementRef}
         >
           {text}

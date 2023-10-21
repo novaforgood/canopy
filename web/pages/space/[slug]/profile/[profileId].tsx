@@ -260,7 +260,7 @@ const ProfilePage: CustomPage = () => {
     listing?.profile_listing_to_space_tags.map((item) => item.space_tag_id)
   );
 
-  router;
+  const fullName = getFullNameOfUser(profileData?.profile_by_pk?.user);
 
   return (
     <div>
@@ -279,64 +279,68 @@ const ProfilePage: CustomPage = () => {
         </button>
         <div className="h-8"></div>
 
-        <div className="flex w-full flex-col rounded-lg border border-black bg-white pb-12">
-          <div className="h-16 rounded-t-lg bg-olive-100 sm:h-32"></div>
-          <div className="-mt-4 px-4 sm:-mt-8 sm:px-20">
+        <div className="flex w-full flex-col rounded-lg border border-green-900 bg-white pb-12">
+          <div className="h-16 rounded-t-lg border-b border-green-900 bg-olive-100 sm:h-36"></div>
+          <div className="-mt-4 px-4 sm:-mt-24 sm:px-12">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-6 sm:gap-12">
+              <div className="flex items-start gap-6 sm:gap-12">
                 <ProfileImage
                   src={listing?.profile_listing_image?.image.url}
-                  alt={`${first_name} ${last_name}`}
-                  className="h-24 w-24 sm:h-48 sm:w-48"
+                  alt={fullName}
+                  className="h-24 w-24 sm:h-64 sm:w-64"
                 />
-                <div className="mt-4 flex flex-col">
+                <div className="mt-8 flex flex-col sm:mt-32">
                   <Text variant="heading3" mobileVariant="heading4">
-                    {first_name} {last_name}
+                    {fullName}
                   </Text>
-                  <div className="h-1"></div>
-                  <Text variant="body1">{listing?.headline}</Text>
+                  <div className="h-2"></div>
+                  <Text variant="subheading2">{listing?.headline}</Text>
                 </div>
               </div>
-              {isMyProfile ? (
-                <Link href={`/space/${spaceSlug}/account/profile`} passHref>
-                  <a>
-                    <Button rounded>
-                      <BxEdit className="-ml-2 mr-2 h-5 w-5" />
-                      Edit profile
-                    </Button>
-                  </a>
-                </Link>
-              ) : (
-                <div className="flex items-center">
-                  <Button
-                    rounded
-                    className="flex items-center"
-                    onClick={() => {
-                      if (isLoggedIn) {
-                        const dmChatRoomId =
-                          profileData?.profile_to_chat_room?.find(
-                            (room) =>
-                              room.chat_room.profile_to_chat_rooms.length === 2
-                          )?.chat_room_id;
-                        if (dmChatRoomId) {
-                          router.push(
-                            `/space/${spaceSlug}/chat/${dmChatRoomId}`
-                          );
+              <div className="mt-12">
+                {isMyProfile ? (
+                  <Link href={`/space/${spaceSlug}/account/profile`} passHref>
+                    <a>
+                      <Button rounded variant="lime">
+                        <BxEdit className="-ml-2 mr-2 h-5 w-5" />
+                        Edit profile
+                      </Button>
+                    </a>
+                  </Link>
+                ) : (
+                  <div className="flex items-center">
+                    <Button
+                      rounded
+                      variant="lime"
+                      className="flex items-center"
+                      onClick={() => {
+                        if (isLoggedIn) {
+                          const dmChatRoomId =
+                            profileData?.profile_to_chat_room?.find(
+                              (room) =>
+                                room.chat_room.profile_to_chat_rooms.length ===
+                                2
+                            )?.chat_room_id;
+                          if (dmChatRoomId) {
+                            router.push(
+                              `/space/${spaceSlug}/chat/${dmChatRoomId}`
+                            );
+                          } else {
+                            handlers.open();
+                          }
                         } else {
-                          handlers.open();
+                          loginModalHandlers.open();
                         }
-                      } else {
-                        loginModalHandlers.open();
-                      }
-                    }}
-                    disabled={isMyProfile}
-                  >
-                    <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
-                    Message
-                  </Button>
-                  <ProfilePageDropdown />
-                </div>
-              )}
+                      }}
+                      disabled={isMyProfile}
+                    >
+                      <BxMessageDetail className="-ml-2 mr-2 h-5 w-5" />
+                      Message
+                    </Button>
+                    <ProfilePageDropdown />
+                  </div>
+                )}
+              </div>
             </div>
             <div className="h-16"></div>
 
@@ -385,41 +389,50 @@ const ProfilePage: CustomPage = () => {
                 </div> */}
               </div>
               <div>
-                <div className="flex flex-col gap-8 rounded-md border-olive-700 sm:border sm:p-6">
-                  {currentSpace?.space_tag_categories.map((category) => {
-                    const tags = category.space_tags.filter((tag) =>
-                      profileTagIds.has(tag.id)
-                    );
-                    return (
-                      <div key={category.id}>
-                        <Text
-                          variant="heading4"
-                          mobileVariant="subheading1"
-                          className="text-green-800"
-                        >
-                          {category.title}
-                        </Text>
-                        <div className="h-4"></div>
-                        <div className="flex flex-wrap gap-2">
-                          {tags.length > 0 ? (
-                            tags.map((tag) => {
-                              return (
-                                <Tag key={tag.id} text={tag.label ?? ""} />
-                              );
-                            })
-                          ) : (
-                            <Text
-                              variant="body1"
-                              className="text-gray-700"
-                              italic
-                            >
-                              No tags
-                            </Text>
-                          )}
+                <div className=" rounded-md border-olive-700 sm:border sm:p-6">
+                  <Text
+                    variant="heading4"
+                    mobileVariant="subheading1"
+                    className="text-green-800"
+                  >
+                    Tags
+                  </Text>
+                  <div className="h-4"></div>
+                  <div className="flex flex-col gap-4">
+                    {currentSpace?.space_tag_categories.map((category) => {
+                      const tags = category.space_tags.filter((tag) =>
+                        profileTagIds.has(tag.id)
+                      );
+                      return (
+                        <div key={category.id} className="grid grid-cols-3">
+                          <Text
+                            variant="body1"
+                            mobileVariant="subheading2"
+                            className="text-green-500"
+                          >
+                            {category.title}
+                          </Text>
+                          <div className="col-span-2 flex flex-wrap items-start gap-1.5">
+                            {tags.length > 0 ? (
+                              tags.map((tag) => {
+                                return (
+                                  <Tag key={tag.id} text={tag.label ?? ""} />
+                                );
+                              })
+                            ) : (
+                              <Text
+                                variant="body1"
+                                className="text-gray-700"
+                                italic
+                              >
+                                No tags
+                              </Text>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className="h-8"></div>
                 <div className="rounded-md border-olive-700 sm:border sm:p-6">
@@ -431,14 +444,13 @@ const ProfilePage: CustomPage = () => {
                     Profiles
                   </Text>
                   <div className="h-4"></div>
-                  <Text>{email}</Text>
-                  <div className="h-4"></div>
 
                   <ProfileSocialsDisplay
                     profileListingId={listing?.id ?? ""}
                     email={email}
                   />
-
+                  <div className="h-4"></div>
+                  <Text>{email}</Text>
                   <div className="flex"></div>
                 </div>
               </div>

@@ -92,7 +92,7 @@ export function ProfileCard(props: ProfileCardProps) {
               <Tag
                 key={index}
                 text={tag}
-                variant="outline"
+                variant="primary"
                 // className="justify-self-stretch"
                 // style={{ maxWidth: "calc(50% - 0.125rem)" }}
               />

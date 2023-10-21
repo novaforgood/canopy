@@ -1,6 +1,8 @@
-import { SVGProps, useState } from "react";
+import { ButtonHTMLAttributes, SVGProps, useState } from "react";
 
 import { Transition } from "@headlessui/react";
+import classNames from "classnames";
+import { ChatBubble, Community, Megaphone, Settings } from "iconoir-react";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -210,6 +212,28 @@ function MobileNavbar() {
   );
 }
 
+type IconTabProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  icon?: React.ReactNode;
+  selected?: boolean;
+};
+
+function IconTab(props: IconTabProps) {
+  const { icon, children, selected, ...rest } = props;
+
+  return (
+    <button
+      className={classNames({
+        "border-b-2 px-3 py-2": true,
+        "border-green-700": selected,
+        "border-transparent": !selected,
+      })}
+      {...rest}
+    >
+      {icon}
+    </button>
+  );
+}
+
 function DesktopNavbar() {
   const router = useRouter();
   const { currentSpace, fetchingCurrentSpace } = useCurrentSpace();
@@ -219,9 +243,11 @@ function DesktopNavbar() {
   const isMember = currentProfileHasRole(Profile_Role_Enum.Member);
 
   const arr = router.asPath.split("/");
-  const isInAdminDashboard = arr.includes("admin");
+  const isInAdminDashboard = arr[3] === "admin";
   const spaceSlug = useQueryParam("slug", "string");
   const isHome = arr[arr.length - 1] === spaceSlug;
+  const isInChatPage = arr[3] === "chat";
+  const isInAnnouncementsPage = arr[3] === "announcements";
 
   const [notificationsCount] = useAtom(notificationsCountAtom);
   const [announcementNotificationsCount] = useAtom(
@@ -229,94 +255,149 @@ function DesktopNavbar() {
   );
 
   return (
-    <SidePadding>
-      <div className="flex items-center justify-between pt-12">
-        <div className="flex">
-          {fetchingCurrentProfile ? (
-            <LoadingPlaceholderRect className="h-10 w-64" />
-          ) : !isMember ? (
-            <Link href="/" passHref>
-              <img
-                src={"/assets/canopy_logo.svg"}
-                className="h-10 cursor-pointer"
-                alt="Canopy Logo"
-                draggable={false}
-              />
-            </Link>
-          ) : (
-            // <SpaceDropdown />
-            <Text variant="heading4">{currentSpace?.name}</Text>
-          )}
-          {!isHome && spaceSlug && (
-            <Button
-              size="small"
-              className={"ml-6 flex items-center"}
-              onClick={() => {
-                router.push(`/space/${spaceSlug}`);
-              }}
-            >
-              <BxsHome className="mr-2 h-5 w-5" />
-              <Text variant="body1">Directory Homepage</Text>
-            </Button>
-          )}
-          {isAdmin && isHome && (
-            <Button
-              size="small"
-              className={"ml-6 flex items-center"}
-              onClick={() => {
-                router.push(`/space/${spaceSlug}/admin`);
-              }}
-            >
-              <BxsCog className="mr-2 h-5 w-5" />
-              <Text variant="body1">Admin Dashboard</Text>
-            </Button>
-          )}
-        </div>
-        <div className="flex items-center gap-4">
-          {spaceSlug && (
-            <div className="flex gap-2">
-              <Tooltip content="Messages" delayMs={[500, 0]} placement="bottom">
-                <div>
-                  <Link href={`/space/${spaceSlug}/chat`} passHref>
-                    <a className="relative">
-                      {notificationsCount > 0 ? (
-                        <NumberBadge
-                          className="absolute -top-0.5 -right-1"
-                          number={notificationsCount}
-                        />
-                      ) : null}
-                      <IconButton
-                        icon={<BxMessageDetail className="h-6 w-6" />}
-                      />
-                    </a>
-                  </Link>
-                </div>
-              </Tooltip>
-              <Tooltip
-                content="Announcements"
-                delayMs={[500, 0]}
-                placement="bottom"
+    <div className="w-full border-b-2 bg-white ">
+      <SidePadding>
+        <div className="grid grid-cols-3 pt-6">
+          <div className="mb-2.5 flex items-end">
+            {fetchingCurrentProfile ? (
+              <LoadingPlaceholderRect className="h-10 w-64" />
+            ) : !isMember ? (
+              <Link href="/" passHref>
+                <img
+                  src={"/assets/canopy_logo.svg"}
+                  className="h-10 cursor-pointer"
+                  alt="Canopy Logo"
+                  draggable={false}
+                />
+              </Link>
+            ) : (
+              // <SpaceDropdown />
+              <Text variant="subheading1" bold>
+                {currentSpace?.name}
+              </Text>
+            )}
+            {/* {!isHome && spaceSlug && (
+              <Button
+                size="small"
+                className={"ml-6 flex items-center"}
+                onClick={() => {
+                  router.push(`/space/${spaceSlug}`);
+                }}
               >
-                <div>
-                  <Link href={`/space/${spaceSlug}/announcements`} passHref>
-                    <a className="relative">
-                      {announcementNotificationsCount > 0 ? (
-                        <NumberBadge
-                          number={announcementNotificationsCount}
-                          className="absolute -top-0.5 -right-1"
+                <BxsHome className="mr-2 h-5 w-5" />
+                <Text variant="body1">Directory Homepage</Text>
+              </Button>
+            )} */}
+            {/* {isAdmin && isHome && (
+              <Button
+                size="small"
+                className={"ml-6 flex items-center"}
+                onClick={() => {
+                  router.push(`/space/${spaceSlug}/admin`);
+                }}
+              >
+                <BxsCog className="mr-2 h-5 w-5" />
+                <Text variant="body1">Admin Dashboard</Text>
+              </Button>
+            )} */}
+          </div>
+          <div className="flex translate-y-px items-end justify-center gap-4">
+            {spaceSlug && (
+              <div className="flex gap-2">
+                <Tooltip
+                  content="Profiles"
+                  // delayMs={[500, 0]}
+                  placement="bottom"
+                >
+                  <div>
+                    <Link href={`/space/${spaceSlug}`} passHref>
+                      <a className="relative">
+                        <IconTab
+                          selected={isHome}
+                          icon={<Community className="h-6 w-6" />}
                         />
-                      ) : null}
-                      <IconButton icon={<BxMegaphone className="h-6 w-6" />} />
-                    </a>
-                  </Link>
-                </div>
-              </Tooltip>
-            </div>
-          )}
-          <Dropdown />
+                      </a>
+                    </Link>
+                  </div>
+                </Tooltip>
+
+                <Tooltip
+                  content="Announcements"
+                  // delayMs={[500, 0]}
+                  placement="bottom"
+                >
+                  <div>
+                    <Link href={`/space/${spaceSlug}/announcements`} passHref>
+                      <a className="relative">
+                        {announcementNotificationsCount > 0 ? (
+                          <NumberBadge
+                            number={announcementNotificationsCount}
+                            className="absolute -top-0.5 -right-1"
+                          />
+                        ) : null}
+                        <IconTab
+                          selected={isInAnnouncementsPage}
+                          icon={<Megaphone className="h-6 w-6" />}
+                        />
+                      </a>
+                    </Link>
+                  </div>
+                </Tooltip>
+                <Tooltip
+                  content="Messages"
+                  // delayMs={[500, 0]}
+                  placement="bottom"
+                >
+                  <div>
+                    <Link href={`/space/${spaceSlug}/chat`} passHref>
+                      <a className="relative">
+                        {notificationsCount > 0 ? (
+                          <NumberBadge
+                            className="absolute -top-0.5 -right-1"
+                            number={notificationsCount}
+                          />
+                        ) : null}
+                        <IconTab
+                          selected={isInChatPage}
+                          icon={<ChatBubble className="h-6 w-6" />}
+                        />
+                      </a>
+                    </Link>
+                  </div>
+                </Tooltip>
+                {isAdmin && (
+                  <Tooltip
+                    content="Admin Dashboard"
+                    // delayMs={[500, 0]}
+                    placement="bottom"
+                  >
+                    <div>
+                      <Link href={`/space/${spaceSlug}/admin`} passHref>
+                        <a className="relative">
+                          {notificationsCount > 0 ? (
+                            <NumberBadge
+                              className="absolute -top-0.5 -right-1"
+                              number={notificationsCount}
+                            />
+                          ) : null}
+                          <IconTab
+                            selected={isInAdminDashboard}
+                            icon={<Settings className="h-6 w-6" />}
+                          />
+                        </a>
+                      </Link>
+                    </div>
+                  </Tooltip>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="mb-2 flex items-end justify-end">
+            <Dropdown />
+          </div>
         </div>
-      </div>
-    </SidePadding>
+      </SidePadding>
+    </div>
   );
 }
 

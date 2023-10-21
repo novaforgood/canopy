@@ -4,11 +4,11 @@ import classNames from "classnames";
 
 import { BxCheck } from "../../generated/icons/regular";
 
-type EditButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: React.ReactNode;
 };
 
-export function IconButton(props: EditButtonProps) {
+export function IconButton(props: IconButtonProps) {
   const { className, icon } = props;
 
   const styles = classNames({

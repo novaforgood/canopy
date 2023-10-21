@@ -25,7 +25,7 @@ module.exports = {
         height: "height",
       },
       fontFamily: {
-        sans: ["Rubik", ...defaultTheme.fontFamily.sans],
+        sans: ["Open Sans", ...defaultTheme.fontFamily.sans],
       },
 
       spacing: {
