@@ -131,10 +131,7 @@ export function MembersList() {
     () => [
       {
         id: "name",
-        accessorFn: (row) => ({
-          name: row.name,
-          userId: row.profile.user_id,
-        }),
+        accessorFn: (row) => row.name,
         cell: (info) => {
           const { name, profile } = info.row.original;
           return (
@@ -191,7 +188,6 @@ export function MembersList() {
       {
         id: "actions",
         header: () => <span>Actions</span>,
-        accessorFn: (row) => row.profile,
         sort: false,
         cell: (info) => {
           const { profile } = info.row.original;

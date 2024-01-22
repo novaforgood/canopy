@@ -208,11 +208,14 @@ export function createSelectColumn<T>(): ColumnDef<T> {
   return {
     id: "select",
     header: ({ table }) => (
-      <CheckBox
-        id="select-all"
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-      />
+      <div className="flex items-center">
+        <div className="pointer-events-none w-0 opacity-0">dummy</div>
+        <CheckBox
+          id="select-all"
+          checked={table.getIsAllRowsSelected()}
+          onChange={table.getToggleAllRowsSelectedHandler()}
+        />
+      </div>
     ),
     cell: ({ row, table }) => (
       <CheckBox
