@@ -216,7 +216,7 @@ export function EditTagCategory(props: EditTagCategoryProps) {
           <CheckBox
             label={"Allow users to suggest their own tags"}
             checked={!rigidSelect}
-            onChange={(newVal) => {
+            onChange={(e) => {
               setRigidSelect((prev) => !prev);
             }}
           />

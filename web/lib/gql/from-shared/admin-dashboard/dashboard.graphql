@@ -103,3 +103,28 @@ mutation UpdateSpaceTagCategory(
     rigid_select
   }
 }
+
+query ChatStats(
+  $space_id: uuid
+  $after: timestamp
+  $order_by: [chat_stats_order_by!]
+) {
+  get_chat_stats(
+    args: { sp_id: $space_id, after: $after }
+    order_by: $order_by
+  ) {
+    profile_id
+    rooms_messaged
+    rooms_read
+    total_rooms
+    profile {
+      id
+      attributes
+      user {
+        id
+        full_name
+        email
+      }
+    }
+  }
+}

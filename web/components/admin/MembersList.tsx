@@ -131,10 +131,7 @@ export function MembersList() {
     () => [
       {
         id: "name",
-        accessorFn: (row) => ({
-          name: row.name,
-          userId: row.profile.user_id,
-        }),
+        accessorFn: (row) => row.name,
         cell: (info) => {
           const { name, profile } = info.row.original;
           return (
@@ -191,7 +188,6 @@ export function MembersList() {
       {
         id: "actions",
         header: () => <span>Actions</span>,
-        accessorFn: (row) => row.profile,
         sort: false,
         cell: (info) => {
           const { profile } = info.row.original;
@@ -266,7 +262,7 @@ export function MembersList() {
   }
 
   return (
-    <div className="">
+    <div className="flex h-full flex-col overflow-y-auto">
       <div className="">
         <Button
           size="small"
@@ -285,7 +281,7 @@ export function MembersList() {
           copy and paste into your email client.
         </Text>
       </div>
-      <div className="h-8"></div>
+      <div className="h-8 shrink-0"></div>
       <div className="flex w-full items-center gap-2">
         <TextInput
           value={search}
@@ -296,7 +292,7 @@ export function MembersList() {
             <BxSearch className="mr-1 h-5 w-5 text-gray-700" />
           )}
         />
-        <div className="w-80">
+        <div className="z-20 w-80">
           <SelectAutocomplete
             placeholder="Filter by role"
             value={roleFilter}
@@ -330,9 +326,11 @@ export function MembersList() {
           />
         </div>
       </div>
-      <div className="h-4"></div>
+      <div className="h-4 shrink-0"></div>
 
-      <Table table={table} />
+      <div className="flex-1 overflow-y-scroll">
+        <Table table={table} />
+      </div>
 
       <ActionModal
         isOpen={exportedEmailListModalOpen}

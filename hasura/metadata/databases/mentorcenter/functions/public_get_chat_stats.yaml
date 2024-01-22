@@ -1,0 +1,3 @@
+function:
+  name: get_chat_stats
+  schema: public

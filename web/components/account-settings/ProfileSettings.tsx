@@ -72,7 +72,8 @@ export function ProfileSettings() {
       <CheckBox
         label={`Opt in to intros (admins can randomly match you with other members in a group chat)`}
         checked={settings?.enableChatIntros ?? false}
-        onChange={async (newVal) => {
+        onChange={async (e) => {
+          const newVal = e.target?.checked ?? false;
           setMustSave(true);
 
           if (newVal) {
