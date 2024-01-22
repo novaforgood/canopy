@@ -5,6 +5,7 @@
 - "!include public_chat_message.yaml"
 - "!include public_chat_message_admin_view.yaml"
 - "!include public_chat_room.yaml"
+- "!include public_chat_stats.yaml"
 - "!include public_connection_request.yaml"
 - "!include public_connection_request_status.yaml"
 - "!include public_event_profile_view.yaml"

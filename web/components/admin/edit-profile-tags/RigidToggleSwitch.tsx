@@ -27,7 +27,9 @@ export default function RigidToggleSwitch(props: RigidToggleSwitchProps) {
     <div className="flex items-center gap-4">
       <CheckBox
         checked={!isRigid}
-        onChange={async (newVal) => {
+        onChange={async (e) => {
+          const newVal = e.target?.checked ?? false;
+
           toast.promise(
             updateSpaceTagCategory({
               space_tag_category_id: tagCategoryId,

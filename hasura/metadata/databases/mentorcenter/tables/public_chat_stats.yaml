@@ -1,0 +1,39 @@
+table:
+  name: chat_stats
+  schema: public
+object_relationships:
+  - name: profile
+    using:
+      manual_configuration:
+        column_mapping:
+          profile_id: id
+        insertion_order: null
+        remote_table:
+          name: profile
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - profile_id
+        - rooms_messaged
+        - rooms_read
+        - total_rooms
+      filter:
+        _or:
+          - _and:
+              - _exists:
+                  _table:
+                    name: profile_to_profile_role_flattened
+                    schema: public
+                  _where:
+                    _and:
+                      - user_id:
+                          _eq: X-Hasura-User-Id
+                      - space_id:
+                          _eq: X-Hasura-Space-Id
+                      - profile_role:
+                          _eq: Admin
+              - profile:
+                  space_id:
+                    _eq: X-Hasura-Space-Id

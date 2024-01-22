@@ -39,7 +39,9 @@ export function UserSettings() {
       <CheckBox
         label={`Disable email notifications`}
         checked={settings?.disableEmailNotifications ?? false}
-        onChange={(newVal) => {
+        onChange={(e) => {
+          const newVal = e.target?.checked ?? false;
+
           setMustSave(true);
           setSettings((prev) => ({
             ...prev,

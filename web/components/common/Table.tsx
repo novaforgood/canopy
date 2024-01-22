@@ -3,12 +3,16 @@ import { table } from "console";
 import { flexRender, Table } from "@tanstack/react-table";
 import classNames from "classnames";
 
-import { BxsUpArrow, BxsDownArrow } from "../../generated/icons/solid";
+import {
+  BxsUpArrow,
+  BxsDownArrow,
+  BxsSortAlt,
+} from "../../generated/icons/solid";
 
 export function Table<T>({ table }: { table: Table<T> }) {
   return (
     <table className="w-full min-w-[40rem]">
-      <thead>
+      <thead className="sticky top-0 z-10">
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
@@ -17,7 +21,8 @@ export function Table<T>({ table }: { table: Table<T> }) {
                   <div
                     {...{
                       className: classNames({
-                        "bg-gray-200 p-1 transition": true,
+                        "bg-gray-200 p-1 transition whitespace-nowrap flex items-center":
+                          true,
                         "cursor-pointer select-none hover:bg-gray-100":
                           header.column.getCanSort(),
                       }),
@@ -28,10 +33,16 @@ export function Table<T>({ table }: { table: Table<T> }) {
                       header.column.columnDef.header,
                       header.getContext()
                     )}
-                    {{
-                      asc: <BxsUpArrow className="ml-1 inline h-3 w-3" />,
-                      desc: <BxsDownArrow className="ml-1 inline h-3 w-3" />,
-                    }[header.column.getIsSorted() as string] ?? null}
+                    <div className="flex-1"></div>
+                    <div className="text-gray-700">
+                      {{
+                        asc: <BxsUpArrow className="ml-1 inline h-3 w-3" />,
+                        desc: <BxsDownArrow className="ml-1 inline h-3 w-3" />,
+                      }[header.column.getIsSorted() as string] ??
+                        (header.column.getCanSort() ? (
+                          <BxsSortAlt className="ml-1 inline h-3 w-3" />
+                        ) : null)}
+                    </div>
                   </div>
                 )}
               </th>
