@@ -26,6 +26,7 @@ import { getCurrentUser } from "../../lib/firebase";
 import { getFullNameOfUser } from "../../lib/user";
 import { Button, Select, Text } from "../atomic";
 import { Table } from "../common/Table";
+import { ChatIntroResults } from "./ChatIntroResults";
 
 type ChatIntro = ChatIntrosQuery["chat_intro"][number];
 type ChatIntroData = ChatIntroDataQuery["chat_intro_data"][number];
@@ -256,7 +257,20 @@ export function ChatIntroductions() {
         </Disclosure.Button>
         <Disclosure.Panel>
           <div className="h-2"></div>
-          <Table table={table} />
+          <div className="max-h-120 overflow-y-auto">
+            <Table table={table} />
+          </div>
+        </Disclosure.Panel>
+      </Disclosure>
+      <div className="h-4"></div>
+      <Disclosure>
+        <Disclosure.Button className="flex w-full items-center rounded-md bg-gray-100 p-2 py-2">
+          <Text variant="subheading1">View Member Activity</Text>
+          <BxChevronDown className="ui-open:rotate-90 ui-open:transform h-6 w-6" />
+        </Disclosure.Button>
+        <Disclosure.Panel>
+          <div className="h-2"></div>
+          <ChatIntroResults />
         </Disclosure.Panel>
       </Disclosure>
 

@@ -98,6 +98,7 @@ mutation InsertImage($data: image_insert_input!) {
 query GetProfile($profile_id: uuid!) {
   profile_by_pk(id: $profile_id) {
     id
+    attributes
     profile_listing {
       id
       headline
@@ -159,6 +160,7 @@ mutation InsertConnectionRequest($data: connection_request_insert_input!) {
 query GetProfiles($where: profile_bool_exp) {
   profile(where: $where) {
     id
+    attributes
     user {
       id
       first_name
@@ -310,5 +312,22 @@ query GetChatParticipants($chat_room_id: uuid!, $sender_profile_id: uuid!) {
 mutation InsertChatMessage($data: chat_message_insert_input!) {
   insert_chat_message_one(object: $data) {
     id
+  }
+}
+
+mutation UpdateProfile($profile_id: uuid!, $changes: profile_set_input!) {
+  update_profile_by_pk(pk_columns: { id: $profile_id }, _set: $changes) {
+    id
+    user_id
+    space_id
+  }
+}
+
+mutation UpdateProfiles(
+  $where: profile_bool_exp!
+  $changes: profile_set_input!
+) {
+  update_profile(where: $where, _set: $changes) {
+    affected_rows
   }
 }

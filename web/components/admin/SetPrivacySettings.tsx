@@ -49,7 +49,9 @@ export function SetPrivacySettings() {
       <CheckBox
         label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
         checked={settings.public}
-        onChange={(newVal) => {
+        onChange={(e) => {
+          const newVal = e.target?.checked ?? false;
+
           setMustSave(true);
           setSettings({ ...settings, public: newVal });
         }}
@@ -59,7 +61,8 @@ export function SetPrivacySettings() {
       <CheckBox
         label={`Only allow members with published profiles to view other profiles. (Admins will still be able to view all published profiles)`}
         checked={settings.allowOnlyPublicMembersToViewProfiles}
-        onChange={(newVal) => {
+        onChange={(e) => {
+          const newVal = e.target?.checked ?? false;
           setMustSave(true);
           setSettings({
             ...settings,
@@ -72,7 +75,9 @@ export function SetPrivacySettings() {
       <CheckBox
         label={`Opt new users in to matches by default (when they join the space)`}
         checked={settings.optUsersInToMatchesByDefault}
-        onChange={(newVal) => {
+        onChange={(e) => {
+          const newVal = e.target?.checked ?? false;
+
           setMustSave(true);
           setSettings({
             ...settings,
