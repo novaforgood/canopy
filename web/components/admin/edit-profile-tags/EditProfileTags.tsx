@@ -331,6 +331,7 @@ export function EditProfileTags() {
               >
                 Save changes
               </Button>
+              <div className="h-16 shrink-0"></div>
             </div>
           </div>
         ) : (

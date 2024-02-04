@@ -73,7 +73,7 @@ function ManageSpace() {
   const { validateChangesSaved } = useSaveChangesState();
 
   return (
-    <RoundedCard className="flex h-screen min-h-[calc(100dvh)] w-full flex-col overflow-x-auto overflow-y-hidden">
+    <RoundedCard className="flex min-h-[calc(100dvh)] w-full flex-col overflow-x-auto overflow-y-hidden">
       <div className="flex items-center gap-2">
         <BxsCog className="h-7 w-7" />
         <Text variant="heading4">Manage Space</Text>
@@ -130,11 +130,11 @@ function ManageSpace() {
           <div className="h-8"></div>
         </Responsive>
 
-        <div className="flex h-full flex-col overflow-y-auto sm:w-full">
+        <div className="flex h-full flex-col sm:w-full">
           <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-2 shrink-0"></div>
 
-          <div className="flex-1 shrink-0 overflow-y-auto">
+          <div className="flex-1 shrink-0 overflow-y-scroll">
             <div className="h-6 shrink-0"></div>
             <Component />
           </div>

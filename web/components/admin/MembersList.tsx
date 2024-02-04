@@ -331,7 +331,7 @@ export function MembersList() {
       </div>
       <div className="h-4 shrink-0"></div>
 
-      <div className="flex-1 overflow-y-scroll">
+      <div className="max-h-screen flex-1 overflow-y-scroll">
         <Table table={table} />
       </div>
 
