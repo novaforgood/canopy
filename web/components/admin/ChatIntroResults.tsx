@@ -9,6 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import classNames from "classnames";
+import { format } from "date-fns";
 import toast from "react-hot-toast";
 
 import {
@@ -17,26 +18,37 @@ import {
   useChatStatsQuery,
 } from "../../generated/graphql";
 import {
+  BxCaretDown,
+  BxChevronDown,
   BxDotsHorizontalRounded,
+  BxLinkExternal,
   BxSearch,
 } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { apiClient } from "../../lib/apiClient";
-import { Button } from "../atomic";
+import { Button, Text } from "../atomic";
+import { Calendar } from "../atomic/Calendar";
 import { CheckBox } from "../atomic/CheckBox";
 import { Dropdown } from "../atomic/Dropdown";
+import { Popover } from "../atomic/Popover";
 import { IconButton } from "../buttons/IconButton";
 import { Table } from "../common/Table";
 import { TextInput } from "../inputs/TextInput";
+import { ActionModal } from "../modals/ActionModal";
+
+import { CopyText } from "./CopyText";
 
 type ChatStats = ChatStatsQuery["get_chat_stats"][number];
 
 export function ChatIntroResults() {
   const { currentSpace } = useCurrentSpace();
 
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
   const [{ data }, refetchChatStats] = useChatStatsQuery({
     variables: {
       space_id: currentSpace?.id,
+      after: date?.toISOString(),
     },
     pause: !currentSpace,
   });
@@ -70,7 +82,34 @@ export function ChatIntroResults() {
       {
         id: "name",
         accessorFn: (row) => row.profile?.user?.full_name,
+        cell: (info) => {
+          const ogRow = info.row.original;
+          if (!ogRow.profile?.profile_listing?.public) {
+            return <span>{ogRow.profile?.user?.full_name}</span>;
+          } else return <span>{ogRow.profile?.user?.full_name}</span>;
+        },
         header: () => <span>name</span>,
+      },
+      {
+        id: "profile",
+        header: () => <span>profile</span>,
+        cell: (info) => {
+          const ogRow = info.row.original;
+          if (!ogRow.profile?.profile_listing?.public) {
+            return <span className="italic text-gray-400">private</span>;
+          } else {
+            return (
+              <a
+                className="hover:underline"
+                target="_blank"
+                rel="noreferrer noopener"
+                href={`/space/${currentSpace?.slug}/profile/${ogRow.profile_id}`}
+              >
+                <span>Link</span>
+              </a>
+            );
+          }
+        },
       },
       {
         id: "email",
@@ -79,7 +118,7 @@ export function ChatIntroResults() {
       },
       {
         id: "messaged",
-        header: () => <span># intros msged</span>,
+        header: () => <span># msged</span>,
         accessorFn: (row) => row.rooms_messaged,
         cell: (info) => (
           <span
@@ -93,7 +132,7 @@ export function ChatIntroResults() {
       },
       {
         id: "read",
-        header: () => <span># intros seen</span>,
+        header: () => <span># read</span>,
         accessorFn: (row) => row.rooms_read,
         cell: (info) => (
           <span
@@ -107,7 +146,7 @@ export function ChatIntroResults() {
       },
       {
         id: "total",
-        header: () => <span># total intros</span>,
+        header: () => <span># total</span>,
         accessorFn: (row) => row.total_rooms,
       },
       {
@@ -125,7 +164,7 @@ export function ChatIntroResults() {
         ),
       },
     ],
-    []
+    [currentSpace?.slug]
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -141,6 +180,12 @@ export function ChatIntroResults() {
     onSortingChange: setSorting,
   });
 
+  const [exportedEmailList, setExportedEmailList] = useState<string | null>(
+    null
+  );
+  const [exportedEmailListModalOpen, setExportedEmailListModalOpen] =
+    useState(false);
+
   return (
     <div>
       <div className="relative mb-2 flex w-full items-center gap-2">
@@ -153,7 +198,94 @@ export function ChatIntroResults() {
             <BxSearch className="mr-1 h-5 w-5 text-gray-700" />
           )}
         />
-        <Button
+        <Popover
+          renderButton={() => (
+            <button
+              className={classNames(
+                "w-36 shrink-0 justify-start text-right text-sm font-normal",
+                !date && "text-muted-foreground"
+              )}
+            >
+              {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
+              <span className="text-gray-400">Since:</span>{" "}
+              <span>
+                {date ? format(date, "MMM dd, yyyy") : <span>Pick a date</span>}
+              </span>
+            </button>
+          )}
+        >
+          <Calendar
+            mode="single"
+            toDate={new Date()}
+            selected={date}
+            onSelect={setDate}
+            initialFocus
+          />
+        </Popover>
+        <Dropdown
+          renderButton={({ dropdownOpen }) => (
+            <Button
+              disabled={
+                !table.getIsAllRowsSelected() && !table.getIsSomeRowsSelected()
+              }
+            >
+              {table.getSelectedRowModel().rows.length} selected
+              <BxCaretDown className="ml-2 h-5 w-5" />
+            </Button>
+          )}
+          items={[
+            {
+              label: "Opt out selected members",
+              onClick() {
+                const confirmed = confirm(
+                  "Are you sure you want to opt out all selected members? Admins can opt members out but cannot opt them back in."
+                );
+                if (!confirmed) {
+                  return;
+                }
+
+                const profileIds = table
+                  .getSelectedRowModel()
+                  .rows.map((row) => row.original.profile?.id)
+                  .filter(Boolean);
+
+                toast.promise(
+                  apiClient
+                    .post("/api/admin/disableChatIntroForProfiles", {
+                      profileIds,
+                    })
+                    .then(() => {
+                      table.resetRowSelection();
+                      return Promise.all([
+                        refetchChatStats(),
+                        refetchAggregateProfiles(),
+                      ]);
+                    }),
+                  {
+                    loading: "Loading",
+                    success: `Disabled chat intros for selected users`,
+                    error: (err) => {
+                      return err.message;
+                    },
+                  }
+                );
+              },
+            },
+            {
+              label: "Copy email addresses",
+              onClick() {
+                const emails = table
+                  .getSelectedRowModel()
+                  .rows.map((row) => row.original.profile?.user?.email)
+                  .filter(Boolean)
+                  .join("\n");
+                setExportedEmailList(emails);
+                setExportedEmailListModalOpen(true);
+              },
+            },
+          ]}
+        ></Dropdown>
+        {/* <Button
           disabled={
             !table.getIsAllRowsSelected() && !table.getIsSomeRowsSelected()
           }
@@ -193,11 +325,34 @@ export function ChatIntroResults() {
           }}
         >
           Opt out selected members
-        </Button>
+        </Button> */}
       </div>
       <div className="max-h-120 overflow-y-auto">
         <Table table={table} />
       </div>
+
+      <ActionModal
+        isOpen={exportedEmailListModalOpen}
+        onClose={() => {
+          setExportedEmailListModalOpen(false);
+        }}
+        onAction={() => {
+          setExportedEmailListModalOpen(false);
+        }}
+        actionText="Done"
+      >
+        <div className="h-full rounded-md bg-white px-4 py-16 sm:px-12">
+          <div className="flex flex-col items-center">
+            <Text variant="heading4">Export emails</Text>
+            <div className="h-8"></div>
+            <Text className="w-96 text-gray-700" variant="body2">
+              Copy this list of emails and paste it into your email client.
+            </Text>
+            <div className="h-4"></div>
+            <CopyText breakAll text={exportedEmailList ?? ""} />
+          </div>
+        </div>
+      </ActionModal>
     </div>
   );
 }
