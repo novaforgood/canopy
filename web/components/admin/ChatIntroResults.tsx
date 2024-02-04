@@ -9,6 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import classNames from "classnames";
+import { format } from "date-fns";
 import toast from "react-hot-toast";
 
 import {
@@ -26,12 +27,15 @@ import {
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { apiClient } from "../../lib/apiClient";
 import { Button, Text } from "../atomic";
+import { Calendar } from "../atomic/Calendar";
 import { CheckBox } from "../atomic/CheckBox";
 import { Dropdown } from "../atomic/Dropdown";
+import { Popover } from "../atomic/Popover";
 import { IconButton } from "../buttons/IconButton";
 import { Table } from "../common/Table";
 import { TextInput } from "../inputs/TextInput";
 import { ActionModal } from "../modals/ActionModal";
+
 import { CopyText } from "./CopyText";
 
 type ChatStats = ChatStatsQuery["get_chat_stats"][number];
@@ -39,9 +43,12 @@ type ChatStats = ChatStatsQuery["get_chat_stats"][number];
 export function ChatIntroResults() {
   const { currentSpace } = useCurrentSpace();
 
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
   const [{ data }, refetchChatStats] = useChatStatsQuery({
     variables: {
       space_id: currentSpace?.id,
+      after: date?.toISOString(),
     },
     pause: !currentSpace,
   });
@@ -157,7 +164,7 @@ export function ChatIntroResults() {
         ),
       },
     ],
-    []
+    [currentSpace?.slug]
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -191,6 +198,30 @@ export function ChatIntroResults() {
             <BxSearch className="mr-1 h-5 w-5 text-gray-700" />
           )}
         />
+        <Popover
+          renderButton={() => (
+            <button
+              className={classNames(
+                "w-36 shrink-0 justify-start text-right text-sm font-normal",
+                !date && "text-muted-foreground"
+              )}
+            >
+              {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
+              <span className="text-gray-400">Since:</span>{" "}
+              <span>
+                {date ? format(date, "MMM dd, yyyy") : <span>Pick a date</span>}
+              </span>
+            </button>
+          )}
+        >
+          <Calendar
+            mode="single"
+            toDate={new Date()}
+            selected={date}
+            onSelect={setDate}
+            initialFocus
+          />
+        </Popover>
         <Dropdown
           renderButton={({ dropdownOpen }) => (
             <Button
