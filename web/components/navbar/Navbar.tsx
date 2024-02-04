@@ -248,28 +248,20 @@ function DesktopNavbar() {
             <Text variant="heading4">{currentSpace?.name}</Text>
           )}
           {!isHome && spaceSlug && (
-            <Button
-              size="small"
-              className={"ml-6 flex items-center"}
-              onClick={() => {
-                router.push(`/space/${spaceSlug}`);
-              }}
-            >
-              <BxsHome className="mr-2 h-5 w-5" />
-              <Text variant="body1">Directory Homepage</Text>
-            </Button>
+            <a href={`/space/${spaceSlug}`}>
+              <Button size="small" className={"ml-6 flex items-center"}>
+                <BxsHome className="mr-2 h-5 w-5" />
+                <Text variant="body1">Directory Homepage</Text>
+              </Button>
+            </a>
           )}
           {isAdmin && isHome && (
-            <Button
-              size="small"
-              className={"ml-6 flex items-center"}
-              onClick={() => {
-                router.push(`/space/${spaceSlug}/admin`);
-              }}
-            >
-              <BxsCog className="mr-2 h-5 w-5" />
-              <Text variant="body1">Admin Dashboard</Text>
-            </Button>
+            <a href={`/space/${spaceSlug}/admin`}>
+              <Button size="small" className={"ml-6 flex items-center"}>
+                <BxsCog className="mr-2 h-5 w-5" />
+                <Text variant="body1">Admin Dashboard</Text>
+              </Button>
+            </a>
           )}
         </div>
         <div className="flex items-center gap-4">

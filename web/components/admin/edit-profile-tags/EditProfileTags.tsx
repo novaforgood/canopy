@@ -321,8 +321,9 @@ export function EditProfileTags() {
                 </div>
               </RoundedCard>
 
-              <div className="h-8"></div>
+              <div className="h-8 shrink-0"></div>
               <Button
+                className="shrink-0"
                 disabled={!mustSave}
                 rounded
                 onClick={saveChanges}
@@ -330,6 +331,7 @@ export function EditProfileTags() {
               >
                 Save changes
               </Button>
+              <div className="h-16 shrink-0"></div>
             </div>
           </div>
         ) : (

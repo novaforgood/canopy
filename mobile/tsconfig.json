@@ -16,7 +16,11 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../web/components/atomic/SelectDate.tsx"
+  ],
   "exclude": ["node_modules"],
   "extends": "expo/tsconfig.base"
 }
