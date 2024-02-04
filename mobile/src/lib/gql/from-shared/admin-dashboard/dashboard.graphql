@@ -125,6 +125,10 @@ query ChatStats(
         full_name
         email
       }
+      profile_listing {
+        id
+        public
+      }
     }
   }
 }

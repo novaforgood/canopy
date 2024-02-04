@@ -37,7 +37,7 @@ import { MAP_ROLE_TO_TITLE, ROLE_SELECT_OPTIONS } from "./roles";
 
 interface Member {
   name: string;
-  email: string;
+  email?: string;
   role: Profile_Role_Enum;
   profile: ProfilesBySpaceIdQuery["profile"][number];
 }
@@ -79,7 +79,7 @@ export function MembersList() {
         .filter((profile) => profile.user?.type !== User_Type_Enum.Bot)
         .map((profile) => ({
           name: getFullNameOfUser(profile.user),
-          email: profile.user?.email ?? "N/A",
+          email: profile.user?.email,
           role: profile.profile_roles[0].profile_role,
           profile: profile,
         })) ?? [],
@@ -269,7 +269,10 @@ export function MembersList() {
           disabled={filteredMembers.length === 0}
           onClick={() => {
             setExportedEmailList(
-              filteredMembers.map((member) => member.email).join(";")
+              filteredMembers
+                .map((member) => member.email)
+                .filter((email) => !!email)
+                .join("\n")
             );
             setExportedEmailListModalOpen(true);
           }}

@@ -12,7 +12,7 @@ import {
 export function Table<T>({ table }: { table: Table<T> }) {
   return (
     <table className="w-full min-w-[40rem]">
-      <thead className="sticky top-0 z-10">
+      <thead className="sticky top-0" style={{ zIndex: 1 }}>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
@@ -50,7 +50,7 @@ export function Table<T>({ table }: { table: Table<T> }) {
           </tr>
         ))}
       </thead>
-      <tbody>
+      <tbody className="overflow-hidden">
         {table.getRowModel().rows.map((row) => (
           <tr key={row.id}>
             {row.getVisibleCells().map((cell) => (
