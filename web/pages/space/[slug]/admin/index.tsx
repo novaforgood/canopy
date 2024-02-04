@@ -79,7 +79,7 @@ function ManageSpace() {
         <Text variant="heading4">Manage Space</Text>
       </div>
       <div className="h-6 shrink-0 sm:h-12"></div>
-      <div className="flex h-full w-full flex-1 flex-col items-stretch sm:flex-row">
+      <div className="flex min-h-0 w-full flex-1 flex-col items-stretch sm:flex-row">
         <Responsive mode="desktop-only">
           <div className="flex flex-col items-start whitespace-nowrap">
             <div className="flex w-full flex-col items-end gap-3">
@@ -130,7 +130,7 @@ function ManageSpace() {
           <div className="h-8"></div>
         </Responsive>
 
-        <div className="flex flex-col overflow-y-auto sm:w-full">
+        <div className="flex h-full flex-col overflow-y-auto sm:w-full">
           <Text variant="heading4">{MAP_TAB_TO_TITLE[selectedTab]}</Text>
           <div className="h-2 shrink-0"></div>
 
