@@ -92,6 +92,11 @@ export default applyMiddleware({
             enableChatIntros: true,
           },
         },
+        flattened_profile_roles: {
+          profile_role: {
+            _eq: Profile_Role_Enum.Member,
+          },
+        },
         user: {
           type: { _eq: User_Type_Enum.User },
         },
