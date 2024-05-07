@@ -7,8 +7,8 @@ services:
       - canopy_prod_db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    env_file:
+      - .env.prod
   graphql-engine:
     image: hasura/graphql-engine:v2.16.0
     ports:
@@ -18,5 +18,6 @@ services:
     restart: always
     env_file:
       - .env.prod
+
 volumes:
   canopy_prod_db:
