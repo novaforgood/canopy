@@ -4,11 +4,11 @@ services:
     image: postgres:12
     restart: always
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - canopy_prod_db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: postgrespassword
+    env_file:
+      - .env.prod
   graphql-engine:
     image: hasura/graphql-engine:v2.16.0
     ports:
@@ -16,32 +16,8 @@ services:
     depends_on:
       - "postgres"
     restart: always
-    environment:
-      ## postgres database to store Hasura metadata
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
-      ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
-      PG_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
-      ## enable the console served by server
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
-      ## enable debugging mode. It is recommended to disable this in production
-      HASURA_GRAPHQL_DEV_MODE: "true"
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      ## uncomment next line to set an admin secret
-      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      ## Hasura JWT Secret
-      HASURA_GRAPHQL_JWT_SECRET: "${HASURA_GRAPHQL_JWT_SECRET}"
-      ## Unauthorized role
-      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "public"
+    env_file:
+      - .env.prod
 
-      ## CRON Webhook URL
-      CANOPY_CRON_WEBHOOK_URL: "${CANOPY_CRON_WEBHOOK_URL}"
-      ## CRON Client Key
-      CANOPY_CRON_CLIENT_KEY: "${CANOPY_CRON_CLIENT_KEY}"
-
-      ## Event Webhook URL
-      CANOPY_EVENT_WEBHOOK_URL: "${CANOPY_EVENT_WEBHOOK_URL}"
-      ## Event Client Key
-      CANOPY_EVENT_CLIENT_KEY: "${CANOPY_EVENT_CLIENT_KEY}"
 volumes:
-  db_data:
+  canopy_prod_db:
