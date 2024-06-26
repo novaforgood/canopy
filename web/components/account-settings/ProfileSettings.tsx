@@ -17,7 +17,10 @@ import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { usePrevious } from "../../hooks/usePrevious";
 import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { useUserData } from "../../hooks/useUserData";
-import { ProfileAttributes } from "../../lib/profileAttributes";
+import {
+  DEFAULT_PROFILE_ATTRIBUTES,
+  ProfileAttributes,
+} from "../../lib/profileAttributes";
 import { Button, Text } from "../atomic";
 import { CheckBox } from "../atomic/CheckBox";
 
@@ -57,8 +60,6 @@ export function ProfileSettings() {
     return true;
   }, [client, currentProfile?.profile_listing]);
 
-  console.log(settings);
-
   return (
     <>
       <Text variant="heading3">Settings for {currentSpace?.name}</Text>
@@ -88,6 +89,7 @@ export function ProfileSettings() {
           }
 
           setSettings((prev) => ({
+            ...DEFAULT_PROFILE_ATTRIBUTES,
             ...prev,
             enableChatIntros: newVal,
           }));
