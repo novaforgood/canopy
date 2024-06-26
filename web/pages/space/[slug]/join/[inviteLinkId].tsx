@@ -14,7 +14,7 @@ import {
 } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
-import { usePrivacySettings } from "../../../../hooks/usePrivacySettings";
+import { useSpaceAttributes } from "../../../../hooks/useSpaceAttributes";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { useUserData } from "../../../../hooks/useUserData";
 import { apiClient } from "../../../../lib/apiClient";
@@ -60,7 +60,6 @@ function JoinSpace() {
   });
   const publicSpace = publicSpaceData?.public_space[0];
 
-  const domainWhiteList = publicSpace?.domainWhitelist as string | undefined;
   const domainWhitelists = publicSpace?.domainWhitelists as
     | string[]
     | undefined;
@@ -78,12 +77,8 @@ function JoinSpace() {
       return false;
     }
 
-    if (domainWhiteList && !email.endsWith(domainWhiteList)) {
-      return false;
-    }
-
     return true;
-  }, [domainWhiteList, domainWhitelists, userData?.email]);
+  }, [domainWhitelists, userData?.email]);
 
   const joinSpace = useCallback(async () => {
     if (!inviteLinkId) {
@@ -126,11 +121,7 @@ function JoinSpace() {
           <div>
             <Text variant="body1">
               You are not allowed to join this space because your email address
-              does not end with one of:{" "}
-              {[domainWhiteList, ...(domainWhitelists ?? [])]
-                .filter(Boolean)
-                .join(", ")}
-              .
+              does not end with one of: {domainWhitelists?.join(", ")}.
             </Text>
             <div className="h-4"></div>
           </div>

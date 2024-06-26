@@ -1,8 +1,9 @@
+import { ReactNode } from "react";
 import { Text } from ".";
 
 export function CheckBox(
   props: {
-    label?: string;
+    label?: ReactNode;
   } & React.InputHTMLAttributes<HTMLInputElement>
 ) {
   const { label, ...rest } = props;
