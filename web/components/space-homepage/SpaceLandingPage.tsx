@@ -87,7 +87,7 @@ const FUSE_OPTIONS = {
 
 export function SpaceLandingPage() {
   const { currentSpace } = useCurrentSpace();
-  const { attrs: privacySettings } = useSpaceAttributes();
+  const { attributes } = useSpaceAttributes();
   const { currentProfileHasRole, currentProfile } = useCurrentProfile();
 
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
@@ -237,7 +237,7 @@ export function SpaceLandingPage() {
             ></div>
           ))}
         </div>
-      ) : privacySettings?.allowOnlyPublicMembersToViewProfiles &&
+      ) : attributes?.allowOnlyPublicMembersToViewProfiles &&
         !currentProfile?.profile_listing?.public &&
         !adminBypass ? (
         <>
