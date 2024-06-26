@@ -11,6 +11,7 @@ import {
 import { useCurrentProfile } from "./useCurrentProfile";
 import { useCurrentSpace } from "./useCurrentSpace";
 import { useUserData } from "./useUserData";
+import { useSpaceAttributes } from "./useSpaceAttributes";
 
 /**
  * This hook is used to validate that a profile is complete.
@@ -20,8 +21,9 @@ import { useUserData } from "./useUserData";
 export function useValidateProfileCompletion() {
   const client = useClient();
   const { userData } = useUserData();
-  const { currentProfile } = useCurrentProfile();
+  const { currentProfile, profileAttributes } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
+  const { attributes } = useSpaceAttributes();
 
   const validateProfileCompletion: () => Promise<
     | {
@@ -56,6 +58,17 @@ export function useValidateProfileCompletion() {
       return {
         valid: false,
         error: "Please set a profile image before publishing your profile",
+      };
+    }
+
+    if (
+      !!attributes?.communityGuidelinesUrl &&
+      profileAttributes.agreedToCommunityGuidelines === false
+    ) {
+      return {
+        valid: false,
+        error:
+          "Please agree to the community guidelines before publishing your profile",
       };
     }
 

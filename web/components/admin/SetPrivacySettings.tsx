@@ -2,37 +2,36 @@ import { useEffect, useMemo, useState } from "react";
 
 import toast from "react-hot-toast";
 
-import { Button, Text } from "../../components/atomic";
+import { Button, Input, Text } from "../../components/atomic";
 import {
   useUpdateSpaceAttributesMutation,
   useUpdateSpaceMutation,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import {
-  PrivacySettings,
-  usePrivacySettings,
-} from "../../hooks/usePrivacySettings";
+import { useSpaceAttributes } from "../../hooks/useSpaceAttributes";
 import { useSaveChangesState } from "../../hooks/useSaveChangesState";
 import { CheckBox } from "../atomic/CheckBox";
+import { TextInput } from "../inputs/TextInput";
+import { SpaceAttributes } from "../../lib/spaceAttributes";
 
 export function SetPrivacySettings() {
   const { currentSpace } = useCurrentSpace();
 
-  const { privacySettings } = usePrivacySettings();
+  const { attributes } = useSpaceAttributes();
 
-  const [settings, setSettings] = useState<PrivacySettings>();
+  const [attributesState, setAttributesState] = useState<SpaceAttributes>();
   const { mustSave, setMustSave } = useSaveChangesState();
 
   useEffect(() => {
-    if (privacySettings) {
-      setSettings(privacySettings);
+    if (attributes) {
+      setAttributesState(attributes);
     }
-  }, [privacySettings]);
+  }, [attributes]);
 
   const [loading, setLoading] = useState(false);
   const [_, updateSpaceAttributes] = useUpdateSpaceAttributesMutation();
 
-  if (!settings) {
+  if (!attributesState) {
     return null;
   }
 
@@ -48,24 +47,24 @@ export function SetPrivacySettings() {
       <div className="h-4"></div>
       <CheckBox
         label={`Public (visible to anyone who visits ${window.location.origin}/space/${currentSpace?.slug}, not just members in your space)`}
-        checked={settings.public}
+        checked={attributesState.public}
         onChange={(e) => {
           const newVal = e.target?.checked ?? false;
 
           setMustSave(true);
-          setSettings({ ...settings, public: newVal });
+          setAttributesState({ ...attributesState, public: newVal });
         }}
       />
       <div className="h-4"></div>
 
       <CheckBox
         label={`Only allow members with published profiles to view other profiles. (Admins will still be able to view all published profiles)`}
-        checked={settings.allowOnlyPublicMembersToViewProfiles}
+        checked={attributesState.allowOnlyPublicMembersToViewProfiles}
         onChange={(e) => {
           const newVal = e.target?.checked ?? false;
           setMustSave(true);
-          setSettings({
-            ...settings,
+          setAttributesState({
+            ...attributesState,
             allowOnlyPublicMembersToViewProfiles: newVal,
           });
         }}
@@ -74,19 +73,52 @@ export function SetPrivacySettings() {
       <div className="h-4"></div>
       <CheckBox
         label={`Opt new users in to matches by default (when they join the space)`}
-        checked={settings.optUsersInToMatchesByDefault}
+        checked={attributesState.optUsersInToMatchesByDefault}
         onChange={(e) => {
           const newVal = e.target?.checked ?? false;
 
           setMustSave(true);
-          setSettings({
-            ...settings,
+          setAttributesState({
+            ...attributesState,
             optUsersInToMatchesByDefault: newVal,
           });
         }}
       />
 
+      <div className="h-12"></div>
+      <TextInput
+        label="Comma-separated allowed domains to join space. Empty = allow all domains"
+        placeholder="example.com,example.org"
+        value={attributesState.domainWhitelists?.join(",") ?? ""}
+        onChange={(e) => {
+          const newVal = e.target.value;
+
+          setMustSave(true);
+          setAttributesState({
+            ...attributesState,
+            domainWhitelists: newVal
+              ? newVal.split(",").map((x) => x.trim())
+              : null,
+          });
+        }}
+      />
+
+      <div className="h-4"></div>
+      <TextInput
+        label="Community guidelines URL (users must agree to guidelines before publishing profile)"
+        value={attributesState.communityGuidelinesUrl || ""}
+        onChange={(e) => {
+          const newVal = e.target.value;
+          setMustSave(true);
+          setAttributesState({
+            ...attributesState,
+            communityGuidelinesUrl: newVal || null,
+          });
+        }}
+      />
+
       <div className="h-8"></div>
+      {/* <pre>{JSON.stringify(settings, null, 2)}</pre> */}
       <Button
         disabled={!mustSave}
         rounded
@@ -97,7 +129,7 @@ export function SetPrivacySettings() {
           }
           setLoading(true);
           updateSpaceAttributes({
-            changes: settings,
+            changes: attributesState,
             space_id: currentSpace.id,
           })
             .then((res) => {

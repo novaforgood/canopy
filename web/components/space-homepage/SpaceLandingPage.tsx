@@ -16,7 +16,7 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { usePrivacySettings } from "../../hooks/usePrivacySettings";
+import { useSpaceAttributes } from "../../hooks/useSpaceAttributes";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { useUserData } from "../../hooks/useUserData";
 import {
@@ -87,7 +87,7 @@ const FUSE_OPTIONS = {
 
 export function SpaceLandingPage() {
   const { currentSpace } = useCurrentSpace();
-  const { privacySettings } = usePrivacySettings();
+  const { attrs: privacySettings } = useSpaceAttributes();
   const { currentProfileHasRole, currentProfile } = useCurrentProfile();
 
   const isAdmin = currentProfileHasRole(Profile_Role_Enum.Admin);
