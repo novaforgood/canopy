@@ -18,6 +18,10 @@ import { EditResponse } from "./edit-profile/EditResponse";
 import { ProfileSocialsDisplay } from "./edit-socials-info/ProfileSocialsDisplay";
 import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
 import PublishedToggleSwitch from "./PublishedToggleSwitch";
+import { useSpaceAttributes } from "../hooks/useSpaceAttributes";
+import { CheckBox } from "./atomic/CheckBox";
+import { handleError } from "../lib/error";
+import toast from "react-hot-toast";
 
 function EditProfileImage() {
   const { currentProfile } = useCurrentProfile();
@@ -53,9 +57,15 @@ interface EditProfileListingProps {
 export function EditProfileListing(props: EditProfileListingProps) {
   const { showPublishedToggle = true } = props;
 
-  const { currentProfile, currentProfileHasRole } = useCurrentProfile();
+  const {
+    currentProfile,
+    currentProfileHasRole,
+    profileAttributes,
+    updateProfileAttributes,
+  } = useCurrentProfile();
   const { currentSpace } = useCurrentSpace();
   const { userData } = useUserData();
+  const { attributes } = useSpaceAttributes();
 
   const [socialsOpened, socialsHandlers] = useDisclosure(false);
 
@@ -78,7 +88,43 @@ export function EditProfileListing(props: EditProfileListingProps) {
           profileListingId={currentProfile.profile_listing?.id ?? ""}
         />
       )}
+
       <div className="h-4"></div>
+      {attributes?.communityGuidelinesUrl && (
+        <>
+          <CheckBox
+            label={
+              <span>
+                I agree to the{" "}
+                <a
+                  href={attributes.communityGuidelinesUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-lime-700 underline"
+                >
+                  community guidelines
+                </a>
+              </span>
+            }
+            checked={profileAttributes.agreedToCommunityGuidelines}
+            onChange={(e) => {
+              const newVal = e.target?.checked ?? false;
+
+              toast.promise(
+                updateProfileAttributes({
+                  agreedToCommunityGuidelines: newVal,
+                }),
+                {
+                  loading: "Loading",
+                  success: `${newVal ? "Agreed" : "Disagreed"} to guidelines`,
+                  error: (err) => err.message,
+                }
+              );
+            }}
+          />
+          <div className="h-4"></div>
+        </>
+      )}
       <div className="flex w-full max-w-3xl flex-col rounded-lg border border-black bg-white pb-12">
         <div className="h-20 rounded-t-lg bg-gray-100"></div>
         <div className="-mt-4 px-4 sm:px-12">

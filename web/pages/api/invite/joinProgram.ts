@@ -60,15 +60,8 @@ export default applyMiddleware({
 
   const { email } = req.token;
 
-  const domainWhitelist = attributes.domainWhitelist as string | undefined;
   const domainWhitelists = attributes.domainWhitelists as string[] | undefined;
   if (email) {
-    if (domainWhitelist && !email.endsWith(domainWhitelist)) {
-      throw makeApiFail(
-        `Your email, ${email}, is not allowed to join this space`
-      );
-    }
-
     if (domainWhitelists) {
       if (!domainWhitelists.some((domain) => email.endsWith(domain))) {
         throw makeApiFail(
