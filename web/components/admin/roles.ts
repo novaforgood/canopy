@@ -5,6 +5,7 @@ export const MAP_ROLE_TO_TITLE: Record<Profile_Role_Enum, string> = {
   [Profile_Role_Enum.Member]: "View-only Member",
   [Profile_Role_Enum.MemberWhoCanList]: "Full Member (can list profile)",
   [Profile_Role_Enum.Banned]: "Banned",
+  [Profile_Role_Enum.Archived]: "Archived",
 };
 
 export const ROLE_SELECT_OPTIONS = Object.values(Profile_Role_Enum).map(

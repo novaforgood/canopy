@@ -26,6 +26,7 @@ import { getCurrentUser } from "../../lib/firebase";
 import { getFullNameOfUser } from "../../lib/user";
 import { Button, Select, Text } from "../atomic";
 import { Table } from "../common/Table";
+
 import { ChatIntroResults } from "./ChatIntroResults";
 
 type ChatIntro = ChatIntrosQuery["chat_intro"][number];

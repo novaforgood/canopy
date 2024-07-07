@@ -36,6 +36,7 @@ import { CustomPage } from "../types";
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
+import { ArchivedModal } from "../components/ArchivedModal";
 
 type CustomAppProps = AppProps & {
   Component: CustomPage;
@@ -206,6 +207,7 @@ function App({ Component, pageProps }: CustomAppProps) {
       <Metadata />
       {getLayout(<Component {...pageProps} />)}
       {Component.showFooter !== false && <Footer />}
+      <ArchivedModal />
     </Suspense>
   );
 }

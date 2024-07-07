@@ -25265,6 +25265,12 @@
             "deprecationReason": null
           },
           {
+            "name": "Archived",
+            "description": "Profile cannot access the space, but can modify profile settings, and regain access via invite link.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "Banned",
             "description": "Profile is banned from space",
             "isDeprecated": false,

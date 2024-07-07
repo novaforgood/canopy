@@ -8,11 +8,11 @@ import {
   useUpdateSpaceMutation,
 } from "../../generated/graphql";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { useSpaceAttributes } from "../../hooks/useSpaceAttributes";
 import { useSaveChangesState } from "../../hooks/useSaveChangesState";
+import { useSpaceAttributes } from "../../hooks/useSpaceAttributes";
+import { SpaceAttributes } from "../../lib/spaceAttributes";
 import { CheckBox } from "../atomic/CheckBox";
 import { TextInput } from "../inputs/TextInput";
-import { SpaceAttributes } from "../../lib/spaceAttributes";
 
 export function SetPrivacySettings() {
   const { currentSpace } = useCurrentSpace();

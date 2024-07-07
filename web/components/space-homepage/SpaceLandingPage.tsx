@@ -16,8 +16,8 @@ import {
 } from "../../generated/graphql";
 import { useCurrentProfile } from "../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
-import { useSpaceAttributes } from "../../hooks/useSpaceAttributes";
 import { useQueryParam } from "../../hooks/useQueryParam";
+import { useSpaceAttributes } from "../../hooks/useSpaceAttributes";
 import { useUserData } from "../../hooks/useUserData";
 import {
   adminBypassAtom,
