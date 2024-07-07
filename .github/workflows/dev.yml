@@ -5,6 +5,7 @@ on:
       - dev
     paths:
       - "hasura/**"
+      - ".github/workflows/prod.yml"
 
 concurrency: dev_environment
 
