@@ -1,0 +1,4 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- INSERT INTO profile_role (value, description) VALUES
+--   ('Archived', 'Profile cannot access the space, but can modify profile settings, and regain access via invite link.');
