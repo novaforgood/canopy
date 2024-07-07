@@ -177,6 +177,11 @@ query GetProfiles($where: profile_bool_exp) {
       profile_id
       profile_role
     }
+    profile_roles {
+      id
+      profile_id
+      profile_role
+    }
     profile_listing {
       id
       headline
@@ -248,13 +253,8 @@ mutation InsertAnnouncement($object: announcement_insert_input!) {
   }
 }
 
-query EmailsBySpaceId($_user_attr_filter: jsonb!, $_space_id: uuid!) {
-  profile(
-    where: {
-      user: { _not: { attributes: { _contains: $_user_attr_filter } } }
-      space: { id: { _eq: $_space_id } }
-    }
-  ) {
+query EmailsBySpaceId($space_id: uuid!, $where: profile_bool_exp) {
+  profile(where: $where) {
     id
     user {
       id
@@ -329,5 +329,19 @@ mutation UpdateProfiles(
 ) {
   update_profile(where: $where, _set: $changes) {
     affected_rows
+  }
+}
+
+mutation UpdateProfileRoleRow(
+  $row_id: uuid!
+  $profile_role: profile_role_enum!
+) {
+  update_profile_to_profile_role_by_pk(
+    pk_columns: { id: $row_id }
+    _set: { profile_role: $profile_role }
+  ) {
+    id
+    profile_role
+    profile_id
   }
 }

@@ -1,13 +1,17 @@
 import { useDisclosure } from "@mantine/hooks";
+import toast from "react-hot-toast";
 
 import { Profile_Role_Enum, useProfileImageQuery } from "../generated/graphql";
 import { BxMessageDetail } from "../generated/icons/regular";
 import { BxsPencil } from "../generated/icons/solid";
 import { useCurrentProfile } from "../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../hooks/useCurrentSpace";
+import { useSpaceAttributes } from "../hooks/useSpaceAttributes";
 import { useUserData } from "../hooks/useUserData";
+import { handleError } from "../lib/error";
 
 import { Button, Text } from "./atomic";
+import { CheckBox } from "./atomic/CheckBox";
 import { EditButton } from "./common/EditButton";
 import { ProfileImage } from "./common/ProfileImage";
 import { EditHeadline } from "./edit-profile/EditHeadline";
@@ -18,10 +22,6 @@ import { EditResponse } from "./edit-profile/EditResponse";
 import { ProfileSocialsDisplay } from "./edit-socials-info/ProfileSocialsDisplay";
 import { ProfileSocialsModal } from "./edit-socials-info/ProfileSocialsModal";
 import PublishedToggleSwitch from "./PublishedToggleSwitch";
-import { useSpaceAttributes } from "../hooks/useSpaceAttributes";
-import { CheckBox } from "./atomic/CheckBox";
-import { handleError } from "../lib/error";
-import toast from "react-hot-toast";
 
 function EditProfileImage() {
   const { currentProfile } = useCurrentProfile();

@@ -9,12 +9,12 @@ import { PageNotFound } from "../../../../components/error-screens/PageNotFound"
 import { TwoThirdsPageLayout } from "../../../../components/layout/TwoThirdsPageLayout";
 import {
   InviteLinksQuery,
+  Profile_Role_Enum,
   Space_Invite_Link_Type_Enum,
   usePublicSpaceBySlugQuery,
 } from "../../../../generated/graphql";
 import { useCurrentProfile } from "../../../../hooks/useCurrentProfile";
 import { useCurrentSpace } from "../../../../hooks/useCurrentSpace";
-import { useSpaceAttributes } from "../../../../hooks/useSpaceAttributes";
 import { useQueryParam } from "../../../../hooks/useQueryParam";
 import { useUserData } from "../../../../hooks/useUserData";
 import { apiClient } from "../../../../lib/apiClient";
@@ -50,6 +50,7 @@ function JoinSpace() {
 
   const inviteLinkId = useQueryParam("inviteLinkId", "string");
   const slug = useQueryParam("slug", "string");
+  const { refetchCurrentProfile } = useCurrentProfile();
 
   const [loading, setLoading] = useState(false);
 
@@ -97,12 +98,13 @@ function JoinSpace() {
         }
       >("/api/invite/joinProgram", { inviteLinkId })
       .then((response) => {
+        refetchCurrentProfile();
         return response;
       })
       .catch((e) => {
         toast.error(`Error: ${e.message}`);
       });
-  }, [inviteLinkId]);
+  }, [inviteLinkId, refetchCurrentProfile]);
 
   if (!publicSpace) {
     return <PageNotFound />;
@@ -174,9 +176,11 @@ function JoinSpace() {
 }
 
 export default function SpaceHomepage() {
-  const { currentProfile } = useCurrentProfile();
+  const { currentProfile, currentProfileHasRole } = useCurrentProfile();
 
-  if (currentProfile) {
+  const partOfSpace = currentProfileHasRole(Profile_Role_Enum.Member);
+
+  if (partOfSpace) {
     return <AlreadyPartOfSpace />;
   } else {
     return <JoinSpace />;

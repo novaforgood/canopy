@@ -11,7 +11,6 @@ import { Input } from "../components/atomic/Input";
 import { TextInput } from "../components/inputs/TextInput";
 import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
-import { useUserQuery } from "../generated/graphql";
 import { BxlApple, BxlGoogle } from "../generated/icons/logos";
 import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
