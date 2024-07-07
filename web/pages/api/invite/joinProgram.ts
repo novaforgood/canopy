@@ -2,8 +2,12 @@ import { z } from "zod";
 
 import {
   executeGetInviteLinkQuery,
+  executeGetProfileQuery,
+  executeGetProfilesQuery,
   executeGetSpaceQuery,
   executeInsertProfileMutation,
+  executeUpdateProfileMutation,
+  executeUpdateProfileRoleRowMutation,
   Profile_Constraint,
   Profile_Role_Enum,
   Profile_Update_Column,
@@ -71,45 +75,78 @@ export default applyMiddleware({
     }
   }
 
+  // Determine profile metadata
   const shouldEnableChatIntros = !!attributes.optUsersInToMatchesByDefault;
-
-  // If not expired, accept invite link and add user to program
   const listingEnabled =
     inviteLink.type === Space_Invite_Link_Type_Enum.MemberListingEnabled
       ? true
       : false;
-  const { error: insertError, data: insertData } =
-    await executeInsertProfileMutation({
-      data: {
-        user_id: req.token.uid,
-        space_id: inviteLink.space_id,
-        attributes: {
-          enableChatIntros: shouldEnableChatIntros,
-        },
-        profile_roles: {
-          data: [
-            {
-              profile_role: listingEnabled
-                ? Profile_Role_Enum.MemberWhoCanList
-                : Profile_Role_Enum.Member,
-            },
-          ],
-        },
-      },
-      on_conflict: {
-        constraint: Profile_Constraint.ProfilesPkey,
-        update_columns: [Profile_Update_Column.Id],
-      },
-    });
-  if (insertError) {
-    throw makeApiError(insertError.message);
-  }
 
-  const newProfileId = insertData?.insert_profile_one?.id;
-  if (!newProfileId) {
-    throw makeApiError("Failed to insert new profile");
-  }
+  const newProfileRole = listingEnabled
+    ? Profile_Role_Enum.MemberWhoCanList
+    : Profile_Role_Enum.Member;
 
-  const response = makeApiSuccess({ newProfileId, inviteLink: inviteLink });
-  res.status(response.code).json(response);
+  // Check for existing profile
+  const rawProfileData = await executeGetProfilesQuery({
+    where: {
+      user_id: { _eq: req.token.uid },
+      space_id: { _eq: inviteLink.space_id },
+    },
+  });
+  const existingProfile = rawProfileData.data?.profile[0];
+  if (existingProfile) {
+    // If user profile exists but is archived, unarchive it.
+    const archivedRoleRowEntry = existingProfile.profile_roles.find(
+      (role) => role.profile_role === Profile_Role_Enum.Archived
+    );
+    if (archivedRoleRowEntry) {
+      await executeUpdateProfileRoleRowMutation({
+        row_id: archivedRoleRowEntry.id,
+        profile_role: newProfileRole,
+      });
+
+      const response = makeApiSuccess({
+        newProfileId: existingProfile.id,
+        inviteLink: inviteLink,
+      });
+      res.status(response.code).json(response);
+      return;
+    } else {
+      throw makeApiFail("Profile already exists and is not archived.");
+    }
+  } else {
+    // If not expired, accept invite link and add user to program
+    const { error: insertError, data: insertData } =
+      await executeInsertProfileMutation({
+        data: {
+          user_id: req.token.uid,
+          space_id: inviteLink.space_id,
+          attributes: {
+            enableChatIntros: shouldEnableChatIntros,
+          },
+          profile_roles: {
+            data: [
+              {
+                profile_role: newProfileRole,
+              },
+            ],
+          },
+        },
+        on_conflict: {
+          constraint: Profile_Constraint.ProfilesPkey,
+          update_columns: [Profile_Update_Column.Id],
+        },
+      });
+    if (insertError) {
+      throw makeApiError(insertError.message);
+    }
+
+    const newProfileId = insertData?.insert_profile_one?.id;
+    if (!newProfileId) {
+      throw makeApiError("Failed to insert new profile");
+    }
+
+    const response = makeApiSuccess({ newProfileId, inviteLink: inviteLink });
+    res.status(response.code).json(response);
+  }
 });

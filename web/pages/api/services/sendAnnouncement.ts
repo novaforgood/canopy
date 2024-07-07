@@ -51,8 +51,18 @@ export default applyMiddleware({
   const { space, user, profile_listing } = callerProfile ?? {};
 
   const { data: emailQueryData } = await executeEmailsBySpaceIdQuery({
-    _space_id: space?.id || "",
-    _user_attr_filter: { disableEmailNotifications: true },
+    space_id: space?.id || "",
+    where: {
+      space_id: { _eq: space?.id },
+      flattened_profile_roles: {
+        profile_role: { _eq: Profile_Role_Enum.Member },
+      },
+      user: {
+        _not: {
+          attributes: { _contains: { disableEmailNotifications: true } },
+        },
+      },
+    },
   });
   const emails = emailQueryData?.profile
     // Filter out deleted profiles

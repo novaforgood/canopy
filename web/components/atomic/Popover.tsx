@@ -1,5 +1,7 @@
-import { Popover as HeadlessPopover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+
+import { Popover as HeadlessPopover, Transition } from "@headlessui/react";
+
 import { BxChevronDown } from "../../generated/icons/regular";
 
 export function Popover(props: {

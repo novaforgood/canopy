@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "hasura/**"
+      - ".github/workflows/prod.yml"
 
 concurrency: prod_environment
 
@@ -22,7 +23,7 @@ jobs:
           cache: "npm"
 
       - name: Install Hasura CLI
-        run: npm install --global hasura-cli
+        run: npm install --global hasura-cli@2.36.1
 
       - name: Apply Metadata
         working-directory: ./hasura

@@ -1,6 +1,7 @@
 import { useClipboard } from "@mantine/hooks";
 import classNames from "classnames";
 import toast from "react-hot-toast";
+
 import { Button } from "../atomic";
 
 export function CopyText({
