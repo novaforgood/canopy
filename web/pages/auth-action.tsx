@@ -72,17 +72,40 @@ function AuthAction() {
       try {
         await applyActionCode(actionCode);
         setStatus("success");
-        if (continueUrl) {
-          window.location.href = continueUrl;
+        if (currentUser) {
+          setStatus("Processing...");
+          await fetch(`/api/auth/upsertUserData`, {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${await currentUser.getIdToken()}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ updateName: true }),
+          })
+            .then(async () => {
+              await sleep(500);
+              if (continueUrl) {
+                window.location.href = continueUrl;
+              } else {
+                window.location.href = "/";
+              }
+            })
+            .catch((e) => {
+              toast.error(e.message);
+            });
         } else {
-          window.location.href = "/";
+          if (continueUrl) {
+            window.location.href = continueUrl;
+          } else {
+            window.location.href = "/";
+          }
         }
       } catch (error) {
         setStatus("error");
         toast.error(`Verification Error: ${(error as Error).message}`);
       }
     },
-    []
+    [currentUser]
   );
 
   const handleAction = useCallback(

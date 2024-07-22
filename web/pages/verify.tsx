@@ -36,8 +36,6 @@ function VerifyYourEmail() {
     };
   }, [router.query.redirect]);
 
-  console.log(emailVerificationOptions);
-
   useWindowEvent("focus", async () => {
     currentUser
       ?.reload()
