@@ -8,6 +8,10 @@ import {
   createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword,
   signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
   sendPasswordResetEmail as firebaseSendPasswordResetEmail,
+  applyActionCode as firebaseApplyActionCode,
+  verifyPasswordResetCode as firebaseVerifyPasswordResetCode,
+  confirmPasswordReset as firebaseConfirmPasswordReset,
+  checkActionCode as firebaseCheckActionCode,
   NextOrObserver,
   User,
   ErrorFn,
@@ -72,3 +76,15 @@ export const signInWithEmailAndPassword = (email: string, password: string) =>
 
 export const sendPasswordResetEmail = (email: string) =>
   firebaseSendPasswordResetEmail(auth, email);
+
+export const applyActionCode = (oobCode: string) =>
+  firebaseApplyActionCode(auth, oobCode);
+
+export const verifyPasswordResetCode = (oobCode: string) =>
+  firebaseVerifyPasswordResetCode(auth, oobCode);
+
+export const confirmPasswordReset = (oobCode: string, newPassword: string) =>
+  firebaseConfirmPasswordReset(auth, oobCode, newPassword);
+
+export const checkActionCode = (oobCode: string) =>
+  firebaseCheckActionCode(auth, oobCode);
