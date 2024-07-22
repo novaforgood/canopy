@@ -15,9 +15,11 @@ interface DropdownProps {
   }[];
 
   renderButton: (props: { dropdownOpen: boolean }) => ReactNode;
+  placement?: "left" | "right";
 }
+
 export const Dropdown = (props: DropdownProps) => {
-  const { items, renderButton } = props;
+  const { items, renderButton, placement = "right" } = props;
 
   return (
     <Menu as="div" className="relative inline-block overflow-visible text-left">
@@ -38,7 +40,15 @@ export const Dropdown = (props: DropdownProps) => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="bg-red-500 absolute right-0 top-full z-10 origin-top-right divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Menu.Items
+                className={classNames(
+                  "bg-red-500 absolute top-full z-10 origin-top-right divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none",
+                  {
+                    "left-0": placement === "left",
+                    "right-0": placement === "right",
+                  }
+                )}
+              >
                 {items.map((item, idx) => {
                   const { label, icon, renderItem, onClick, hide } = item;
 

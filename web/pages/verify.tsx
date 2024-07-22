@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useWindowEvent } from "@mantine/hooks";
 import { sendEmailVerification } from "firebase/auth";
@@ -10,20 +10,33 @@ import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
 import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
-import { getCurrentUser } from "../lib/firebase";
+import { applyActionCode, getCurrentUser } from "../lib/firebase";
 import { CustomPage } from "../types";
+import { requireEnv } from "../lib/env";
 
 const sleep = async (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 function VerifyYourEmail() {
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
+  const router = useRouter();
 
   const [verified, setVerified] = useState(false);
   const [loadingResendVerification, setLoadingResendVerification] =
     useState(false);
 
   const currentUser = getCurrentUser();
+
+  const emailVerificationOptions = useMemo(() => {
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const baseUrl = `${protocol}//${host}`;
+    return {
+      url: `${baseUrl}${(router.query.redirect as string) ?? "/"}`,
+    };
+  }, [router.query.redirect]);
+
+  console.log(emailVerificationOptions);
 
   useWindowEvent("focus", async () => {
     currentUser
@@ -61,17 +74,42 @@ function VerifyYourEmail() {
   }, [redirectUsingQueryParam, currentUser]);
 
   useEffect(() => {
+    const { oobCode, mode } = router.query;
+    if (!currentUser) return;
+
+    if (oobCode && typeof oobCode === "string" && mode === "verifyEmail") {
+      applyActionCode(oobCode)
+        .then(() => {
+          setVerified(true);
+          redirectAfterVerification();
+        })
+        .catch((error) => {
+          toast.error(`Verification Error: ${error.message}`);
+        });
+    }
+  }, [currentUser, redirectAfterVerification, router.query]);
+
+  useEffect(() => {
     if (currentUser) {
       if (currentUser.emailVerified) {
         redirectAfterVerification();
       } else {
         // ignore too-many-requests error caused by resending request every page refresh (oops)
         // TODO: only send verification email first time, and not on every page reload
-        sendEmailVerification(currentUser).catch(() => {});
+        sendEmailVerification(currentUser, emailVerificationOptions).catch(
+          (error) => {
+            toast.error(
+              error.message.includes("too-many-requests")
+                ? "Please wait until sending another verification email."
+                : `Error sending verification email: ${error.message}`
+            );
+          }
+        );
       }
     }
-  }, [redirectAfterVerification, currentUser]);
+  }, [redirectAfterVerification, currentUser, emailVerificationOptions]);
 
+  console.log(requireEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN"));
   return (
     <TwoThirdsPageLayout
       renderLeft={() => {
@@ -125,7 +163,10 @@ function VerifyYourEmail() {
               onClick={async () => {
                 if (currentUser) {
                   setLoadingResendVerification(true);
-                  await sendEmailVerification(currentUser)
+                  await sendEmailVerification(
+                    currentUser,
+                    emailVerificationOptions
+                  )
                     .then(() => {
                       toast.success("Verification email re-sent!");
                     })
