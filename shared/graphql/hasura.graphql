@@ -412,6 +412,22 @@ mutation UpdateProfileRole($profile_role: profile_role_enum!, $row_id: uuid!) {
   }
 }
 
+mutation UpdateProfileRoles(
+  $profile_role: profile_role_enum!
+  $row_ids: [uuid!]!
+) {
+  update_profile_to_profile_role(
+    where: { id: { _in: $row_ids } }
+    _set: { profile_role: $profile_role }
+  ) {
+    returning {
+      id
+      profile_role
+      profile_id
+    }
+  }
+}
+
 query ProfileListing($profile_listing_id: uuid!) {
   profile_listing_by_pk(id: $profile_listing_id) {
     id

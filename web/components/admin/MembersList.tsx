@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   ColumnDef,
   getCoreRowModel,
   getSortedRowModel,
+  RowSelectionState,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -15,16 +16,19 @@ import {
   useProfilesBySpaceIdQuery,
   User_Type_Enum,
   useUpdateProfileRoleMutation,
+  useUpdateProfileRolesMutation,
 } from "../../generated/graphql";
 import {
   BxDotsHorizontalRounded,
   BxSearch,
+  BxChevronDown,
 } from "../../generated/icons/regular";
 import { BxsCrown } from "../../generated/icons/solid";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { apiClient } from "../../lib/apiClient";
 import { getFullNameOfUser } from "../../lib/user";
 import { Button, Text } from "../atomic";
+import { CheckBox } from "../atomic/CheckBox";
 import { Dropdown } from "../atomic/Dropdown";
 import { SelectAutocomplete } from "../atomic/SelectAutocomplete";
 import { IconButton } from "../buttons/IconButton";
@@ -36,6 +40,7 @@ import { CopyText } from "./CopyText";
 import { MAP_ROLE_TO_TITLE, ROLE_SELECT_OPTIONS } from "./roles";
 
 interface Member {
+  id: string;
   name: string;
   email?: string;
   role: Profile_Role_Enum;
@@ -49,19 +54,6 @@ type RoleFilter =
   | "PublicProfile";
 
 const options = {
-  // isCaseSensitive: false,
-  // includeScore: false,
-  // shouldSort: true,
-  // includeMatches: false,
-  // findAllMatches: false,
-  // minMatchCharLength: 1,
-  // location: 0,
-  // threshold: 0.6,
-  // distance: 100,
-  // useExtendedSearch: false,
-  // ignoreLocation: false,
-  // ignoreFieldNorm: false,
-  // fieldNormWeight: 1,
   keys: ["title", "author.firstName"],
 };
 
@@ -71,13 +63,15 @@ export function MembersList() {
   const [{ data: profilesData }, refetchProfiles] = useProfilesBySpaceIdQuery({
     variables: { space_id: currentSpace?.id ?? "" },
   });
-  const [_, updateProfileRole] = useUpdateProfileRoleMutation();
+  const [, updateProfileRole] = useUpdateProfileRoleMutation();
+  const [, updateProfileRoles] = useUpdateProfileRolesMutation();
 
   const members: Member[] = useMemo(
     () =>
       profilesData?.profile
         .filter((profile) => profile.user?.type !== User_Type_Enum.Bot)
         .map((profile) => ({
+          id: profile.id,
           name: getFullNameOfUser(profile.user),
           email: profile.user?.email,
           role: profile.profile_roles[0].profile_role,
@@ -88,6 +82,8 @@ export function MembersList() {
 
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<RoleFilter | null>("All");
+  const [selectedMembers, setSelectedMembers] = useState<RowSelectionState>({});
+
   const filteredMembers = useMemo(() => {
     let result = members;
     switch (roleFilter) {
@@ -126,9 +122,30 @@ export function MembersList() {
   );
   const [exportedEmailListModalOpen, setExportedEmailListModalOpen] =
     useState(false);
+  const [changeRoleModalOpen, setChangeRoleModalOpen] = useState(false);
+  const [selectedNewRole, setSelectedNewRole] =
+    useState<Profile_Role_Enum | null>(null);
 
   const defaultColumns: ColumnDef<Member>[] = useMemo(
     () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <div className="flex h-6 items-center">
+            <CheckBox
+              checked={table.getIsAllPageRowsSelected()}
+              onChange={table.getToggleAllPageRowsSelectedHandler()}
+            />
+          </div>
+        ),
+        cell: ({ row }) => (
+          <CheckBox
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        ),
+      },
       {
         id: "name",
         accessorFn: (row) => row.name,
@@ -246,16 +263,85 @@ export function MembersList() {
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  useEffect(() => {
+    setSelectedMembers({});
+  }, [filteredMembers]);
+
   const table = useReactTable({
+    getRowId: (row) => row.id,
     data: filteredMembers,
     columns: defaultColumns,
     getCoreRowModel: getCoreRowModel(),
-    state: { sorting },
+    state: { sorting, rowSelection: selectedMembers },
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
+    enableRowSelection: true,
+    onRowSelectionChange: setSelectedMembers,
   });
 
-  // Make some columns!
+  const handleMassAction = useCallback(
+    (action: string, newRole?: Profile_Role_Enum) => {
+      const selectedMemberIds = Object.keys(selectedMembers).filter(
+        (id) => selectedMembers[id]
+      );
+
+      switch (action) {
+        case "changeRole":
+          setChangeRoleModalOpen(true);
+          break;
+        case "copyEmails": {
+          const selectedEmails = filteredMembers
+            .filter((member) => selectedMemberIds.includes(member.id))
+            .map((member) => member.email)
+            .filter((email) => !!email)
+            .join("\n");
+          setExportedEmailList(selectedEmails);
+          setExportedEmailListModalOpen(true);
+          break;
+        }
+        default:
+          console.log("Unknown action:", action);
+      }
+    },
+    [filteredMembers, selectedMembers]
+  );
+
+  const handleChangeRole = useCallback(() => {
+    if (!selectedNewRole) return;
+
+    const roleRowIds = filteredMembers
+      .filter((member) => !!selectedMembers[member.id])
+      .map((member) => member.profile.profile_roles[0].id)
+      .filter(Boolean);
+
+    toast.promise(
+      updateProfileRoles({
+        row_ids: roleRowIds,
+        profile_role: selectedNewRole,
+      }).then((res) => {
+        if (res.error) {
+          throw new Error(res.error.message);
+        } else {
+          refetchProfiles();
+          setSelectedMembers({});
+          setChangeRoleModalOpen(false);
+          setSelectedNewRole(null);
+          return res;
+        }
+      }),
+      {
+        loading: "Changing roles...",
+        success: `Updated roles to ${MAP_ROLE_TO_TITLE[selectedNewRole]}`,
+        error: "Failed to change roles",
+      }
+    );
+  }, [
+    selectedNewRole,
+    selectedMembers,
+    filteredMembers,
+    updateProfileRoles,
+    refetchProfiles,
+  ]);
 
   if (!currentSpace) {
     return <div>404 - Space not found</div>;
@@ -263,28 +349,6 @@ export function MembersList() {
 
   return (
     <div className="flex h-full flex-col overflow-y-auto">
-      <div className="">
-        <Button
-          size="small"
-          disabled={filteredMembers.length === 0}
-          onClick={() => {
-            setExportedEmailList(
-              filteredMembers
-                .map((member) => member.email)
-                .filter((email) => !!email)
-                .join("\n")
-            );
-            setExportedEmailListModalOpen(true);
-          }}
-        >
-          Copy list of emails
-        </Button>
-        <Text className="text-gray-700" variant="body2">
-          Get filtered emails below in a comma-separated list, which you can
-          copy and paste into your email client.
-        </Text>
-      </div>
-      <div className="h-8 shrink-0"></div>
       <div className="flex w-full items-center gap-2">
         <TextInput
           value={search}
@@ -331,6 +395,32 @@ export function MembersList() {
       </div>
       <div className="h-4 shrink-0"></div>
 
+      <div className="mb-4 flex items-center gap-2">
+        <Dropdown
+          placement="left"
+          renderButton={() => (
+            <Button
+              size="small"
+              disabled={Object.keys(selectedMembers).length === 0}
+              className="flex items-center"
+            >
+              Selected ({Object.keys(selectedMembers).length})
+              <BxChevronDown className="ml-1 h-4 w-4" />
+            </Button>
+          )}
+          items={[
+            {
+              label: "Change Members' Roles",
+              onClick: () => handleMassAction("changeRole"),
+            },
+            {
+              label: "Copy Email List",
+              onClick: () => handleMassAction("copyEmails"),
+            },
+          ]}
+        />
+      </div>
+
       <div className="max-h-screen flex-1 overflow-y-scroll">
         <Table table={table} />
       </div>
@@ -354,6 +444,42 @@ export function MembersList() {
             </Text>
             <div className="h-4"></div>
             <CopyText breakAll text={exportedEmailList ?? ""} />
+          </div>
+        </div>
+      </ActionModal>
+
+      <ActionModal
+        isOpen={changeRoleModalOpen}
+        onClose={() => {
+          setChangeRoleModalOpen(false);
+          setSelectedNewRole(null);
+        }}
+        onAction={handleChangeRole}
+        actionText="Change Roles"
+        actionDisabled={!selectedNewRole}
+      >
+        <div className="h-full rounded-md bg-white px-4 py-16 sm:px-12">
+          <div className="flex flex-col items-center">
+            <Text variant="heading4">Change Members&apos; Roles</Text>
+            <div className="h-8"></div>
+            <Text className="w-96 text-center text-gray-700" variant="body2">
+              Select a new role for the selected members:
+            </Text>
+            <div className="h-4"></div>
+            <SelectAutocomplete
+              options={ROLE_SELECT_OPTIONS.filter(
+                (option) => option.value !== Profile_Role_Enum.Admin
+              )}
+              value={selectedNewRole}
+              onSelect={setSelectedNewRole}
+              placeholder="Select a role"
+              className="w-64"
+            />
+            <div className="h-8"></div>
+            <Text className="w-96 text-center text-gray-700" variant="body2">
+              {Object.keys(selectedMembers).length} member(s) will be affected
+              by this change.
+            </Text>
           </div>
         </div>
       </ActionModal>
