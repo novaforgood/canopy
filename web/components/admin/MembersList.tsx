@@ -84,8 +84,18 @@ export function MembersList() {
   const [roleFilter, setRoleFilter] = useState<RoleFilter | null>("All");
   const [selectedMembers, setSelectedMembers] = useState<RowSelectionState>({});
 
+  const { regularMembers, adminMembers } = useMemo(() => {
+    const regular = members.filter(
+      (member) => member.role !== Profile_Role_Enum.Admin
+    );
+    const admins = members.filter(
+      (member) => member.role === Profile_Role_Enum.Admin
+    );
+    return { regularMembers: regular, adminMembers: admins };
+  }, [members]);
+
   const filteredMembers = useMemo(() => {
-    let result = members;
+    let result = regularMembers;
     switch (roleFilter) {
       case "All":
         break;
@@ -115,7 +125,7 @@ export function MembersList() {
         `${member.name} ${member.email} ${member.role}`.toLowerCase();
       return memberString.includes(search.toLowerCase());
     });
-  }, [members, roleFilter, search]);
+  }, [regularMembers, roleFilter, search]);
 
   const [exportedEmailList, setExportedEmailList] = useState<string | null>(
     null
@@ -188,13 +198,20 @@ export function MembersList() {
                     if (res.error) {
                       throw new Error(res.error.message);
                     } else {
+                      if (!res.data?.update_profile_to_profile_role_by_pk) {
+                        throw new Error(
+                          "You are not permitted to change this role."
+                        );
+                      }
                       return res;
                     }
                   }),
                   {
                     loading: "Loading",
                     success: `Updated ${name}'s role to ${MAP_ROLE_TO_TITLE[newRole]}`,
-                    error: "Error when fetching",
+                    error: (err) => {
+                      return err.message || "Error when fetching";
+                    },
                   }
                 );
               }
@@ -279,6 +296,16 @@ export function MembersList() {
     onRowSelectionChange: setSelectedMembers,
   });
 
+  const adminTable = useReactTable({
+    getRowId: (row) => row.id,
+    data: adminMembers,
+    columns: defaultColumns.filter((col) => col.id !== "select"),
+    getCoreRowModel: getCoreRowModel(),
+    state: { sorting },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+  });
+
   const handleMassAction = useCallback(
     (action: string, newRole?: Profile_Role_Enum) => {
       const selectedMemberIds = Object.keys(selectedMembers).filter(
@@ -349,6 +376,15 @@ export function MembersList() {
 
   return (
     <div className="flex h-full flex-col overflow-y-auto">
+      <Text variant="subheading1" bold className="mb-2">
+        Admins
+      </Text>
+      <Table table={adminTable} />
+      <div className="h-8"></div>
+
+      <Text variant="subheading1" bold className="mb-2">
+        Regular Members
+      </Text>
       <div className="flex w-full items-center gap-2">
         <TextInput
           value={search}
@@ -384,10 +420,6 @@ export function MembersList() {
               {
                 label: "Full members (public profile)",
                 value: "PublicProfile",
-              },
-              {
-                label: "Admin",
-                value: Profile_Role_Enum.Admin,
               },
             ]}
           />
