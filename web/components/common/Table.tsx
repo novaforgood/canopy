@@ -1,6 +1,4 @@
-import { table } from "console";
-
-import { flexRender, Table } from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 import classNames from "classnames";
 
 import {
@@ -9,9 +7,11 @@ import {
   BxsSortAlt,
 } from "../../generated/icons/solid";
 
+import type { Table } from "@tanstack/react-table";
+
 export function Table<T>({ table }: { table: Table<T> }) {
   return (
-    <table className="w-full min-w-[40rem]">
+    <table className="relative w-full min-w-[40rem]">
       <thead className="sticky top-0" style={{ zIndex: 1 }}>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
