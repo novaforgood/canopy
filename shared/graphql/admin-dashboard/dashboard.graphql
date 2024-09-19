@@ -108,10 +108,12 @@ query ChatStats(
   $space_id: uuid
   $after: timestamp
   $order_by: [chat_stats_order_by!]
+  $where: chat_stats_bool_exp
 ) {
   get_chat_stats(
     args: { sp_id: $space_id, after: $after }
     order_by: $order_by
+    where: $where
   ) {
     profile_id
     rooms_messaged
