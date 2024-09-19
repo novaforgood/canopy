@@ -14,8 +14,10 @@ import toast from "react-hot-toast";
 
 import {
   ChatStatsQuery,
+  Profile_Role_Enum,
   useAggregateProfilesQuery,
   useChatStatsQuery,
+  User_Type_Enum,
 } from "../../generated/graphql";
 import {
   BxCaretDown,
@@ -49,15 +51,53 @@ export function ChatIntroResults() {
     variables: {
       space_id: currentSpace?.id,
       after: date?.toISOString(),
+      where: {
+        profile: {
+          attributes: {
+            _contains: {
+              enableChatIntros: true,
+            },
+          },
+          space_id: {
+            _eq: currentSpace?.id,
+          },
+          flattened_profile_roles: {
+            profile_role: {
+              _eq: Profile_Role_Enum.Member,
+            },
+          },
+          user: {
+            type: {
+              _eq: User_Type_Enum.User,
+            },
+          },
+        },
+      },
     },
     pause: !currentSpace,
   });
   const [_, refetchAggregateProfiles] = useAggregateProfilesQuery({
     variables: {
-      attributes_filter: {
-        enableChatIntros: true,
+      where: {
+        attributes: {
+          _contains: {
+            enableChatIntros: true,
+          },
+        },
+        space_id: {
+          _eq: currentSpace?.id,
+        },
+        flattened_profile_roles: {
+          profile_role: {
+            _eq: Profile_Role_Enum.Member,
+          },
+        },
+        user: {
+          type: {
+            _eq: User_Type_Enum.User,
+          },
+        },
       },
-      space_id: currentSpace?.id ?? "",
     },
     pause: !currentSpace,
   });
