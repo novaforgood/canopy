@@ -178,6 +178,7 @@ mutation CreateOwnerProfileInNewSpace(
 query ProfilesBySpaceId($space_id: uuid!) {
   profile(where: { space_id: { _eq: $space_id } }) {
     id
+    attributes
     user {
       id
       type
