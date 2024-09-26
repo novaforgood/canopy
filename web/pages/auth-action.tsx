@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+// AuthActionPage.tsx
 
+import { useState, useEffect, useCallback } from "react";
+
+import Link from "next/link";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 
 import { Button, Text } from "../components/atomic";
+import { TextInput } from "../components/inputs/TextInput";
 import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
-import { BxRefresh } from "../generated/icons/regular";
-import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
 import {
   applyActionCode,
   getCurrentUser,
@@ -18,60 +20,62 @@ import {
 } from "../lib/firebase";
 import { CustomPage } from "../types";
 
-const sleep = async (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function AuthAction() {
-  const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
+const AuthAction = () => {
   const router = useRouter();
 
+  // State variables
   const [mode, setMode] = useState("");
   const [status, setStatus] = useState("Processing...");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [actionCode, setActionCode] = useState("");
   const [continueUrl, setContinueUrl] = useState("");
+  const [lang, setLang] = useState("");
 
-  const currentUser = getCurrentUser();
+  const [previousEmailAddress, setPreviousEmailAddress] = useState("");
+  const [newEmailAddress, setNewEmailAddress] = useState("");
 
-  const handleResetPassword = useCallback(
-    async (actionCode: string, continueUrl: string, lang: string) => {
-      try {
-        const email = await verifyPasswordResetCode(actionCode);
-        setEmail(email);
-        setStatus("ready");
-      } catch (error) {
-        setStatus("error");
-        toast.error(`Reset Password Error: ${(error as Error).message}`);
+  // Handle reset password action
+  const handleResetPassword = useCallback(async (actionCode: string) => {
+    try {
+      const email = await verifyPasswordResetCode(actionCode);
+      setEmail(email);
+      setStatus("ready");
+    } catch (error) {
+      setStatus("error");
+      toast.error(`Reset Password Error: ${(error as Error).message}`);
+    }
+  }, []);
+
+  // Handle recover email action
+  const handleRecoverEmail = useCallback(async (actionCode: string) => {
+    try {
+      const info = await checkActionCode(actionCode);
+      const restoredEmail = info.data.email;
+
+      await applyActionCode(actionCode);
+      setEmail(restoredEmail || "");
+      setStatus("success");
+      if (restoredEmail) {
+        await sendPasswordResetEmail(restoredEmail);
       }
-    },
-    []
-  );
+    } catch (error) {
+      setStatus("error");
+      toast.error(`Recover Email Error: ${(error as Error).message}`);
+    }
+  }, []);
 
-  const handleRecoverEmail = useCallback(
-    async (actionCode: string, lang: string) => {
-      try {
-        const info = await checkActionCode(actionCode);
-        const restoredEmail = info.data.email;
-        await applyActionCode(actionCode);
-        setEmail(restoredEmail || "");
-        setStatus("success");
-        if (restoredEmail) {
-          await sendPasswordResetEmail(restoredEmail);
-        }
-      } catch (error) {
-        setStatus("error");
-        toast.error(`Recover Email Error: ${(error as Error).message}`);
-      }
-    },
-    []
-  );
-
+  // Handle verify email action
   const handleVerifyEmail = useCallback(
-    async (actionCode: string, continueUrl: string, lang: string) => {
+    async (actionCode: string, continueUrl: string) => {
       try {
         await applyActionCode(actionCode);
         setStatus("success");
+
+        const currentUser = getCurrentUser();
+        // Optionally, reload user to get updated email
         if (currentUser) {
           setStatus("Processing...");
           await fetch(`/api/auth/upsertUserData`, {
@@ -105,33 +109,63 @@ function AuthAction() {
         toast.error(`Verification Error: ${(error as Error).message}`);
       }
     },
-    [currentUser]
+    []
   );
 
-  const handleAction = useCallback(
-    async (
-      mode: string,
-      oobCode: string,
-      continueUrl: string,
-      lang: string
-    ) => {
-      switch (mode) {
-        case "resetPassword":
-          await handleResetPassword(oobCode, continueUrl, lang);
-          break;
-        case "recoverEmail":
-          await handleRecoverEmail(oobCode, lang);
-          break;
-        case "verifyEmail":
-          await handleVerifyEmail(oobCode, continueUrl, lang);
-          break;
-        default:
-          setStatus("Error: Invalid mode");
+  // Handle verify and change email action
+  const handleVerifyAndChangeEmail = useCallback(
+    async (actionCode: string, continueUrl: string) => {
+      try {
+        const actionCodeInfo = await checkActionCode(actionCode);
+        setPreviousEmailAddress(actionCodeInfo.data.previousEmail ?? "");
+        setNewEmailAddress(actionCodeInfo.data.email ?? "");
+
+        await applyActionCode(actionCode);
+        const user = getCurrentUser();
+        if (user) {
+          await user.reload();
+        }
+        setStatus("success");
+      } catch (error) {
+        setStatus("error");
+        toast.error(
+          `Verification and Email Change Error: ${(error as Error).message}`
+        );
       }
     },
-    [handleRecoverEmail, handleResetPassword, handleVerifyEmail]
+    []
   );
 
+  // Determine which action to handle based on the mode
+  const handleAction = useCallback(
+    async (mode: string, actionCode: string, continueUrl: string) => {
+      switch (mode) {
+        case "resetPassword":
+          await handleResetPassword(actionCode);
+          break;
+        case "recoverEmail":
+          await handleRecoverEmail(actionCode);
+          break;
+        case "verifyEmail":
+          await handleVerifyEmail(actionCode, continueUrl);
+          break;
+        case "verifyAndChangeEmail":
+          await handleVerifyAndChangeEmail(actionCode, continueUrl);
+          break;
+        default:
+          setStatus("error");
+          toast.error("Invalid action mode.");
+      }
+    },
+    [
+      handleResetPassword,
+      handleRecoverEmail,
+      handleVerifyEmail,
+      handleVerifyAndChangeEmail,
+    ]
+  );
+
+  // Extract query parameters and initiate the appropriate action
   useEffect(() => {
     const { mode, oobCode, continueUrl, lang } = router.query;
 
@@ -139,15 +173,19 @@ function AuthAction() {
       setMode(mode as string);
       setActionCode(oobCode as string);
       setContinueUrl((continueUrl as string) || "");
+      setLang((lang as string) || "");
       handleAction(
         mode as string,
         oobCode as string,
-        (continueUrl as string) || "",
-        (lang as string) || ""
+        (continueUrl as string) || ""
       );
+    } else {
+      setStatus("error");
+      toast.error("Invalid or missing action code parameters.");
     }
-  }, [handleAction, router.query]);
+  }, [router.query, handleAction]);
 
+  // Handle password reset submission
   const submitNewPassword = useCallback(async () => {
     try {
       await confirmPasswordReset(actionCode, newPassword);
@@ -159,7 +197,8 @@ function AuthAction() {
     }
   }, [actionCode, newPassword]);
 
-  const renderResetPassword = useCallback(() => {
+  // Render functions for different action modes
+  const renderResetPassword = () => {
     switch (status) {
       case "Processing...":
         return <Text>Verifying your request...</Text>;
@@ -176,16 +215,15 @@ function AuthAction() {
                 submitNewPassword();
               }}
             >
-              <input
+              <TextInput
+                label="New Password"
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="New password"
                 required
-                className="rounded border p-2"
               />
               <div className="h-4"></div>
-              <Button type="submit" variant="primary" rounded>
+              <Button type="submit" variant="primary">
                 Reset Password
               </Button>
             </form>
@@ -200,6 +238,10 @@ function AuthAction() {
               Your password has been successfully reset. You can now log in with
               your new password.
             </Text>
+            <div className="h-4"></div>
+            <Link passHref href="/login">
+              <Button variant="primary">Go to Login</Button>
+            </Link>
           </>
         );
       case "error":
@@ -213,10 +255,12 @@ function AuthAction() {
             </Text>
           </>
         );
+      default:
+        return null;
     }
-  }, [status, email, newPassword, submitNewPassword]);
+  };
 
-  const renderRecoverEmail = useCallback(() => {
+  const renderRecoverEmail = () => {
     switch (status) {
       case "Processing...":
         return <Text>Processing your email recovery request...</Text>;
@@ -244,10 +288,12 @@ function AuthAction() {
             </Text>
           </>
         );
+      default:
+        return null;
     }
-  }, [status, email]);
+  };
 
-  const renderVerifyEmail = useCallback(() => {
+  const renderVerifyEmail = () => {
     switch (status) {
       case "Processing...":
         return <Text>Verifying your email address...</Text>;
@@ -279,10 +325,51 @@ function AuthAction() {
             </Text>
           </>
         );
+      default:
+        return null;
     }
-  }, [status, continueUrl]);
+  };
 
-  const renderContent = useCallback(() => {
+  const renderVerifyAndChangeEmail = () => {
+    switch (status) {
+      case "Processing...":
+        return <Text>Verifying and updating your email address...</Text>;
+      case "success":
+        return (
+          <>
+            <Text variant="heading2">Email Verified and Updated</Text>
+            <div className="h-8"></div>
+            <Text>
+              You have successfully changed your email from{" "}
+              <b>{previousEmailAddress}</b> to <b>{newEmailAddress}</b>.
+            </Text>
+            <div className="h-4"></div>
+            <Text>Please log in again with your new email address.</Text>
+            <div className="h-8"></div>
+            <Link passHref href="/login">
+              <Button variant="primary">Go to Login Page</Button>
+            </Link>
+          </>
+        );
+      case "error":
+        return (
+          <>
+            <Text variant="heading2">Email Verification and Update Error</Text>
+            <div className="h-8"></div>
+            <Text>
+              Unable to verify and update email. The link may be invalid or
+              expired. Please try requesting a new verification email or contact
+              support for assistance.
+            </Text>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
+  // Determine which content to render based on the action mode
+  const renderContent = () => {
     switch (mode) {
       case "resetPassword":
         return renderResetPassword();
@@ -290,10 +377,12 @@ function AuthAction() {
         return renderRecoverEmail();
       case "verifyEmail":
         return renderVerifyEmail();
+      case "verifyAndChangeEmail":
+        return renderVerifyAndChangeEmail();
       default:
         return <Text>Invalid action mode.</Text>;
     }
-  }, [mode, renderResetPassword, renderRecoverEmail, renderVerifyEmail]);
+  };
 
   return (
     <TwoThirdsPageLayout
@@ -305,12 +394,12 @@ function AuthAction() {
         />
       )}
     >
-      <div className="flex h-[calc(100dvh)] max-w-2xl flex-col items-start justify-center px-16">
+      <div className="flex h-[calc(100vh)] max-w-2xl flex-col items-start justify-center px-16">
         {renderContent()}
       </div>
     </TwoThirdsPageLayout>
   );
-}
+};
 
 const AuthActionPage: CustomPage = () => {
   return (

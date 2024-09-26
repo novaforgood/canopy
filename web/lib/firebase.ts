@@ -12,11 +12,21 @@ import {
   verifyPasswordResetCode as firebaseVerifyPasswordResetCode,
   confirmPasswordReset as firebaseConfirmPasswordReset,
   checkActionCode as firebaseCheckActionCode,
+  verifyBeforeUpdateEmail as firebaseVerifyBeforeUpdateEmail,
+  linkWithCredential as firebaseLinkWithCredential,
+  linkWithPopup as firebaseLinkWithPopup,
+  updateEmail as firebaseUpdateEmail,
   NextOrObserver,
   User,
   ErrorFn,
   CompleteFn,
   OAuthProvider,
+  EmailAuthProvider,
+  reauthenticateWithCredential as firebaseReauthenticateWithCredential,
+  reauthenticateWithPopup as firebaseReauthenticateWithPopup,
+  ActionCodeSettings,
+  AuthCredential,
+  AuthProvider,
 } from "firebase/auth";
 
 import { requireEnv } from "./env";
@@ -88,3 +98,61 @@ export const confirmPasswordReset = (oobCode: string, newPassword: string) =>
 
 export const checkActionCode = (oobCode: string) =>
   firebaseCheckActionCode(auth, oobCode);
+
+export const verifyBeforeUpdateEmail = (
+  newEmail: string,
+  settings?: ActionCodeSettings
+) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return firebaseVerifyBeforeUpdateEmail(user, newEmail, settings);
+};
+
+// Reauthenticate with email and password
+export const reauthenticateWithEmailPassword = (
+  email: string,
+  password: string
+) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const credential = EmailAuthProvider.credential(email, password);
+  return firebaseReauthenticateWithCredential(user, credential);
+};
+
+// Reauthenticate with Google
+export const reauthenticateWithGoogle = () => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const provider = new GoogleAuthProvider();
+  return firebaseReauthenticateWithPopup(user, provider);
+};
+
+export const linkWithCredential = (credential: AuthCredential) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return firebaseLinkWithCredential(user, credential);
+};
+
+export const linkWithPopup = (provider: AuthProvider) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return firebaseLinkWithPopup(user, provider);
+};
+
+export const updateEmail = (newEmail: string) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return firebaseUpdateEmail(user, newEmail);
+};
