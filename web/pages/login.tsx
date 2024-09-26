@@ -32,7 +32,7 @@ const LoginPage: CustomPage = () => {
 
   const isLoggedIn = useIsLoggedIn();
   const router = useRouter();
-  const { userData } = useUserData();
+  const { userData, refetchUserData } = useUserData();
 
   // determine where to redirect to after login
   const { redirectUsingQueryParam } = useRedirectUsingQueryParam();
@@ -87,6 +87,7 @@ const LoginPage: CustomPage = () => {
           },
           body: JSON.stringify({ updateName: shouldUpdateName }),
         });
+        refetchUserData();
         await redirectUsingQueryParam("/");
       })
       .catch((e) => {
@@ -114,6 +115,7 @@ const LoginPage: CustomPage = () => {
               "Content-Type": "application/json",
             },
           });
+          refetchUserData();
           await redirectUsingQueryParam("/");
         }
       })
