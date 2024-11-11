@@ -253,7 +253,7 @@ mutation InsertAnnouncement($object: announcement_insert_input!) {
   }
 }
 
-query EmailsBySpaceId($space_id: uuid!, $where: profile_bool_exp) {
+query EmailsBySpaceId($where: profile_bool_exp) {
   profile(where: $where) {
     id
     user {
