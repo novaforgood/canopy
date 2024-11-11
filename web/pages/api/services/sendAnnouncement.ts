@@ -51,7 +51,6 @@ export default applyMiddleware({
   const { space, user, profile_listing } = callerProfile ?? {};
 
   const { data: emailQueryData } = await executeEmailsBySpaceIdQuery({
-    space_id: space?.id || "",
     where: {
       space_id: { _eq: space?.id },
       flattened_profile_roles: {
