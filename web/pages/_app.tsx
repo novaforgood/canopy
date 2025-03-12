@@ -214,6 +214,11 @@ function App({ Component, pageProps }: CustomAppProps) {
 
 function AppWrapper({ Component, ...pageProps }: CustomAppProps) {
   return (
+    <div className="flex h-screen w-screen items-center justify-center">
+      Canopy is under maintenance, and will be back soon.
+    </div>
+  );
+  return (
     <AuthProvider requiredAuthorizations={Component.requiredAuthorizations}>
       <UrqlProvider>
         <App {...pageProps} Component={Component} />
