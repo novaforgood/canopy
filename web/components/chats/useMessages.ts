@@ -17,7 +17,23 @@ import { PromiseQueue } from "../../lib/PromiseQueue";
 import { DEFAULT_ID_CAP, MESSAGES_PER_FETCH } from "./constants";
 import { useChatRoom } from "./useChatRoom";
 
-type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
+type ChatMessage = Omit<
+  Chat_Message,
+  "chat_room" | "sender_profile" | "message_replies" | "reply_to_message"
+> & {
+  reply_to_message?: {
+    id: number;
+    text: string;
+    sender_profile_id?: string | null;
+    sender_profile?: {
+      id: string;
+      user?: {
+        first_name?: string | null;
+        last_name?: string | null;
+      } | null;
+    } | null;
+  } | null;
+};
 
 const promiseQueue = new PromiseQueue();
 

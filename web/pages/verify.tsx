@@ -10,9 +10,9 @@ import { ImageSidebar } from "../components/layout/ImageSidebar";
 import { TwoThirdsPageLayout } from "../components/layout/TwoThirdsPageLayout";
 import { BxRefresh } from "../generated/icons/regular";
 import { useRedirectUsingQueryParam } from "../hooks/useRedirectUsingQueryParam";
+import { requireEnv } from "../lib/env";
 import { applyActionCode, getCurrentUser } from "../lib/firebase";
 import { CustomPage } from "../types";
-import { requireEnv } from "../lib/env";
 
 const sleep = async (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));

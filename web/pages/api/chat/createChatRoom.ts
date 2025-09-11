@@ -79,6 +79,7 @@ export default applyMiddleware({
     },
   });
   const chatRoomId = data?.insert_chat_room_one?.id;
+  const firstMessageId = data?.insert_chat_room_one?.chat_messages?.[0]?.id;
   if (error || !chatRoomId) {
     throw makeApiFail(error?.message ?? "Chat room creation error");
   }
@@ -93,6 +94,8 @@ export default applyMiddleware({
           replyUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat/${chatRoomId}`,
           message: firstMessage,
           spaceName: space.name,
+          chatRoomId: chatRoomId,
+          messageId: firstMessageId,
         }),
       });
     })
