@@ -259,13 +259,14 @@ function groupIntoGroupsOfN<T>(arr: T[], n: number): T[][] {
     groups.push(shuffled.slice(i, i + n));
   }
 
-  // Avoid groups of 1. Dump the last group into the first group.
-  if (groups.length > 1 && groups[groups.length - 1].length === 1) {
+  if (groups.length > 1 && groups[groups.length - 1].length < n) {
     const lastGroup = groups.pop();
-    if (!lastGroup) {
-      throw new Error("Last group should exist");
+    if (lastGroup) {
+      for (let i = 0; i < lastGroup.length; i++) {
+        const relocationIndex = i % groups.length;
+        groups[relocationIndex].push(lastGroup[i]);
+      }
     }
-    groups[0].push(lastGroup[0]);
   }
 
   return groups;

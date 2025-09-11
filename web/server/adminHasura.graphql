@@ -133,6 +133,9 @@ query GetChatRoom($where: chat_room_bool_exp) {
 mutation InsertChatRoomOne($data: chat_room_insert_input!) {
   insert_chat_room_one(object: $data) {
     id
+    chat_messages {
+      id
+    }
     profile_to_chat_rooms {
       id
       profile {
@@ -343,5 +346,90 @@ mutation UpdateProfileRoleRow(
     id
     profile_role
     profile_id
+  }
+}
+
+query GetUnreadMessagesPerChatRoom($since: timestamptz!) {
+  profile(
+    where: {
+      profile_to_chat_rooms: {
+        chat_room: {
+          chat_messages: {
+            created_at: { _gte: $since }
+            sender_profile: { user: { type: { _eq: User } } }
+          }
+        }
+      }
+    }
+  ) {
+    id
+    space {
+      id
+      name
+      slug
+    }
+    user {
+      id
+      email
+      first_name
+      last_name
+    }
+    profile_to_chat_rooms {
+      id
+      chat_room_id
+      latest_read_chat_message_id
+      chat_room {
+        id
+        chat_messages(
+          where: {
+            created_at: { _gte: $since }
+            sender_profile: { user: { type: { _eq: User } } }
+          }
+          order_by: { id: asc }
+        ) {
+          id
+          text
+          created_at
+          reply_to_message_id
+          reply_to_message {
+            text
+            sender_profile {
+              id
+              user {
+                id
+                first_name
+              }
+            }
+          }
+          sender_profile {
+            id
+            user {
+              id
+              first_name
+              last_name
+              email
+            }
+            profile_listing {
+              headline
+              profile_listing_image {
+                image {
+                  url
+                }
+              }
+            }
+          }
+        }
+        profile_to_chat_rooms {
+          profile {
+            id
+            user {
+              id
+              first_name
+              last_name
+            }
+          }
+        }
+      }
+    }
   }
 }

@@ -32,10 +32,6 @@ export function RenderChatRoomMessages(props: RenderChatRoomMessagesProps) {
     markMessageAsRead,
     noMoreMessages,
   } = useMessages(chatRoomId ?? "");
-  const [newMessage, setNewMessage] = useState("");
-  useEffect(() => {
-    setNewMessage("");
-  }, [chatRoomId]);
 
   const lastMessageIdByOther: number | null = useMemo(() => {
     return (
