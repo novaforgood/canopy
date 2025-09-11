@@ -106,7 +106,9 @@ async function handleCronJob(cronJobType: CronJobType) {
             senderName:
               `${msg.sender_profile?.user?.first_name} ${msg.sender_profile?.user?.last_name}`.trim(),
             senderFirstName: msg.sender_profile?.user?.first_name || "",
-            senderProfilePic: msg.sender_profile?.profile_listing?.profile_listing_image?.image?.url || 
+            senderProfilePic:
+              msg.sender_profile?.profile_listing?.profile_listing_image?.image
+                ?.url ||
               "https://canopy-prod.s3.us-west-2.amazonaws.com/placeholder_profile_pic.jpg",
             createdAt: format(new Date(msg.created_at), "h:mm a"),
             isReply: !!msg.reply_to_message_id,
@@ -116,9 +118,23 @@ async function handleCronJob(cronJobType: CronJobType) {
               undefined,
           }));
 
-          console.log("formattedMessages", formattedMessages);
-
           const latestMessageId = Math.max(...unreadMessages.map((m) => m.id));
+
+          // Determine if all messages are from the same sender
+          const uniqueSenders = new Set(
+            unreadMessages.map((msg) => msg.sender_profile?.id).filter(Boolean)
+          );
+          const singleSender = uniqueSenders.size === 1;
+
+          // Create subject line
+          let subject: string;
+          if (singleSender && unreadMessages[0]?.sender_profile?.user) {
+            const senderName =
+              unreadMessages[0].sender_profile.user.first_name || "Someone";
+            subject = `${senderName} sent you a message in ${profile.space.name}`;
+          } else {
+            subject = `You have unread messages in ${profile.space.name}`;
+          }
 
           // Send email for this chat room
           const emailPromise = sendEmail({
@@ -131,6 +147,7 @@ async function handleCronJob(cronJobType: CronJobType) {
               messages: formattedMessages,
               viewChatUrl: `${HOST_URL}/go/${MOBILE_APP_SCHEME}/space/${space.slug}/chat/${chatRoom.id}`,
               totalUnreadCount: unreadMessages.length,
+              subject: subject,
             }),
           });
 

@@ -69,6 +69,7 @@ type TemplateInfo = {
     }>;
     viewChatUrl: string;
     totalUnreadCount: number;
+    subject: string;
   };
 };
 
@@ -122,16 +123,6 @@ export async function sendEmail<T extends TemplateId>({
       replyTo = `reply+${chatData.chatRoomId}+${chatData.latestMessageId}@${EMAIL_REPLY_SUBDOMAIN}.joincanopy.org`;
     }
   }
-
-  console.log("sending email", {
-    replyTo,
-    sender,
-    receiver,
-    space,
-    templateId,
-    data,
-    ccSender,
-  });
 
   return sendgridMail
     .send({
