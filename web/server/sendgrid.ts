@@ -24,6 +24,7 @@ export enum TemplateId {
   FirstChatRoomMessage = "d-a36dca61b0a9433f904787ced5e00686",
   DailyChatMessageNotification = "d-da0723a2ee0242f4a9ef932d146ded61",
   ChatIntroNotification = "d-32d8eb503662482a825c4b202683fab0",
+  ChatRoomNotification = "d-ff1ad2e5c5f949f39674ed9df5be3ea9",
 }
 
 type TemplateInfo = {
@@ -31,6 +32,8 @@ type TemplateInfo = {
     replyUrl: string;
     message: string;
     spaceName: string;
+    chatRoomId?: string;
+    messageId?: string | number;
   };
   [TemplateId.ConnectionRequest]?: {
     introMessage?: string;
@@ -48,6 +51,24 @@ type TemplateInfo = {
     groupMemberNames: string;
     groupMemberProfiles: SendgridProfile[];
     viewGroupChatUrl: string;
+  };
+  [TemplateId.ChatRoomNotification]?: {
+    chatRoomId: string;
+    latestMessageId: number;
+    participantNames: string;
+    messages: Array<{
+      id: number;
+      text: string;
+      senderName: string;
+      senderFirstName: string;
+      senderProfilePic: string;
+      createdAt: string;
+      isReply: boolean;
+      replyToText?: string;
+      replyToSenderName?: string;
+    }>;
+    viewChatUrl: string;
+    totalUnreadCount: number;
   };
 };
 
@@ -87,12 +108,38 @@ export async function sendEmail<T extends TemplateId>({
       ? dynamicTemplateData({ sender, receiver, space })
       : dynamicTemplateData;
 
+  const EMAIL_REPLY_SUBDOMAIN = requireServerEnv("EMAIL_REPLY_SUBDOMAIN");
+  // Build reply-to address if this is a chat message with IDs
+  let replyTo = undefined;
+  if (templateId === TemplateId.FirstChatRoomMessage && data) {
+    const chatData = data as TemplateInfo[TemplateId.FirstChatRoomMessage];
+    if (chatData?.chatRoomId && chatData?.messageId) {
+      replyTo = `reply+${chatData.chatRoomId}+${chatData.messageId}@${EMAIL_REPLY_SUBDOMAIN}.joincanopy.org`;
+    }
+  } else if (templateId === TemplateId.ChatRoomNotification && data) {
+    const chatData = data as TemplateInfo[TemplateId.ChatRoomNotification];
+    if (chatData?.chatRoomId && chatData?.latestMessageId) {
+      replyTo = `reply+${chatData.chatRoomId}+${chatData.latestMessageId}@${EMAIL_REPLY_SUBDOMAIN}.joincanopy.org`;
+    }
+  }
+
+  console.log("sending email", {
+    replyTo,
+    sender,
+    receiver,
+    space,
+    templateId,
+    data,
+    ccSender,
+  });
+
   return sendgridMail
     .send({
       from: {
         email: "connect@joincanopy.org",
         name: "Canopy",
       },
+      replyTo: replyTo,
       cc: sender && ccSender ? [sender.email] : undefined,
       to: receiver.email,
       templateId: templateId,
