@@ -19,7 +19,23 @@ import { Tooltip } from "../tooltips";
 import { ChatProfileImage } from "./ChatProfileImage";
 import { ChatParticipant } from "./utils";
 
-type ChatMessage = Omit<Chat_Message, "chat_room" | "sender_profile">;
+type ChatMessage = Omit<
+  Chat_Message,
+  "chat_room" | "sender_profile" | "message_replies" | "reply_to_message"
+> & {
+  reply_to_message?: {
+    id: number;
+    text: string;
+    sender_profile_id?: string | null;
+    sender_profile?: {
+      id: string;
+      user?: {
+        first_name?: string | null;
+        last_name?: string | null;
+      } | null;
+    } | null;
+  } | null;
+};
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;

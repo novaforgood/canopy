@@ -105,7 +105,7 @@ export default async function handler(
 
     // Extract sender email
     const fromMatch = from.match(/<(.+)>/) || [null, from];
-    const senderEmail = fromMatch[1].toLowerCase().trim();
+    const senderEmail = fromMatch[1]?.toLowerCase().trim() || from.toLowerCase().trim();
 
     console.log(
       `Processing email reply from ${senderEmail} to chat ${chatRoomId}, replying to message ${replyToMessageId}`
