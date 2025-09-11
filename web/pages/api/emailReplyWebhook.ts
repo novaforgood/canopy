@@ -210,14 +210,23 @@ export default async function handler(
 
     console.log("Extracted reply text:", replyText.substring(0, 200));
 
-    // Remove common email reply patterns
+    // Remove common email reply patterns and signatures
+    // Look for common reply patterns and truncate everything after them
     const replyPatterns = [
+      // Gmail-style: "On [date] at [time], [name] <email> wrote:"
+      /On .+? at .+?[AP]M.+? <.+?> wrote:/i,
+      // Outlook-style: "On [date], [name] <email> wrote:"
+      /On .+?, .+? <.+?> wrote:/i,
+      // Generic "On ... wrote:" pattern
       /On .+ wrote:/i,
+      // Encoded time patterns (=E2=80=AF is a UTF-8 encoded character)
+      /On .+? at \d+:\d+=E2=80=.+/i,
+      // Original message separator
       /-----\s*Original Message\s*-----/i,
-      /From: .+/i,
-      />+\s*.*/g, // Remove quoted lines starting with >
-      /_{10,}/g, // Remove long underscores
-      /-{10,}/g, // Remove long dashes
+      // From: line (often starts quoted content)
+      /^From: .+$/im,
+      // Sent from my iPhone/Android
+      /^Sent from my .+$/im,
     ];
 
     for (const pattern of replyPatterns) {
@@ -227,6 +236,18 @@ export default async function handler(
         break;
       }
     }
+
+    // Also remove lines that start with > (quoted text)
+    const lines = replyText.split('\n');
+    const cleanLines = [];
+    for (const line of lines) {
+      // Stop if we hit a quoted line
+      if (line.trim().startsWith('>')) {
+        break;
+      }
+      cleanLines.push(line);
+    }
+    replyText = cleanLines.join('\n').trim();
 
     // Ensure we still have some text after cleaning
     if (!replyText || replyText.length === 0) {
