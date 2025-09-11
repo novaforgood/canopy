@@ -193,6 +193,22 @@ export function RenderMessage(props: RenderMessageProps) {
                 "rounded-br-lg": breakAfter,
               })}
             >
+              {message.reply_to_message && !message.deleted && (
+                <div className="mb-2">
+                  <div>
+                    <Text variant="body2" className="text-gray-600">
+                      Replying to{" "}
+                      {message.reply_to_message.sender_profile?.user
+                        ?.first_name || "Unknown"}
+                    </Text>
+                  </div>
+                  <div className="mt-1 border-l-2 pl-2">
+                    <Text variant="body3" className=" text-gray-700">
+                      {message.reply_to_message.text}
+                    </Text>
+                  </div>
+                </div>
+              )}
               <Text className="break-words" italic={message.deleted}>
                 {message.deleted ? "Message was deleted" : message.text}
               </Text>
@@ -272,6 +288,22 @@ export function RenderMessage(props: RenderMessageProps) {
                 "text-gray-700": message.deleted,
               })}
             >
+              {message.reply_to_message && !message.deleted && (
+                <div className="mb-2">
+                  <div>
+                    <Text variant="body2" className="text-gray-600">
+                      Replying to{" "}
+                      {message.reply_to_message.sender_profile?.user
+                        ?.first_name || "Unknown"}
+                    </Text>
+                  </div>
+                  <div className="mt-1 border-l-2 pl-2">
+                    <Text variant="body3" className=" text-gray-700">
+                      {message.reply_to_message.text}
+                    </Text>
+                  </div>
+                </div>
+              )}
               <Text className="break-words" italic={message.deleted}>
                 {message.deleted ? "Message was deleted" : message.text}
               </Text>
