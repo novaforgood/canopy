@@ -21,12 +21,13 @@ import {
   useChatIntrosQuery,
   User_Type_Enum,
 } from "../../generated/graphql";
-import { BxChevronDown, BxChevronRight } from "../../generated/icons/regular";
+import { BxChevronDown } from "../../generated/icons/regular";
 import { useCurrentSpace } from "../../hooks/useCurrentSpace";
 import { useQueryParam } from "../../hooks/useQueryParam";
 import { getCurrentUser } from "../../lib/firebase";
 import { getFullNameOfUser } from "../../lib/user";
 import { Button, Select, Text } from "../atomic";
+import { CheckBox } from "../atomic/CheckBox";
 import { Table } from "../common/Table";
 
 import { ChatIntroResults } from "./ChatIntroResults";
@@ -142,6 +143,7 @@ export function ChatIntroductions() {
   });
 
   const [groupSize, setGroupSize] = useState<number | null>(null);
+  const [allowRepeats, setAllowRepeats] = useState(false);
 
   const [loadingSendIntros, setLoadingSendIntros] = useState(false);
 
@@ -203,6 +205,20 @@ export function ChatIntroductions() {
         chat will have a question to help start the conversation.
       </Text>
       <div className="h-4"></div>
+      <div className="mb-4">
+        <CheckBox
+          checked={allowRepeats}
+          onChange={(e) => setAllowRepeats(e.target.checked)}
+          label={
+            <>
+              Allow repeat pairings{" "}
+              <span className="text-gray-500">
+                (use when running out of new combinations)
+              </span>
+            </>
+          }
+        />
+      </div>
       <div className="flex flex-wrap items-center">
         <Text>
           Match <b>{availableMembers ?? "--"}</b> members into{" "}
@@ -232,7 +248,10 @@ export function ChatIntroductions() {
                 authorization: `Bearer ${await getCurrentUser()?.getIdToken()}`,
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ groupSize: groupSize }),
+              body: JSON.stringify({
+                groupSize: groupSize,
+                allowRepeats: allowRepeats,
+              }),
             })
               .then((res) => res.json())
               .then(async (res) => {

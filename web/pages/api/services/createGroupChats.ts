@@ -3,6 +3,7 @@ import { z } from "zod";
 import { makeListSentence } from "../../../common/lib/words";
 import { requireServerEnv } from "../../../server/env";
 import {
+  executeGetPreviousPairingsQuery,
   executeGetProfilesQuery,
   executeInsertChatIntroMutation,
   executeInsertChatRoomOneMutation,
@@ -52,6 +53,7 @@ const CONVERSATION_STARTERS = [
 
 const createGroupChatsSchema = z.object({
   groupSize: z.number().min(2).max(5),
+  allowRepeats: z.boolean().optional().default(false),
 });
 
 enum ChatBotIds {
@@ -73,7 +75,7 @@ export default applyMiddleware({
   }
 
   const spaceId = callerProfile.space.id;
-  const { groupSize } = req.body;
+  const { groupSize, allowRepeats = false } = req.body;
 
   if (!spaceId) {
     throw makeApiFail("Missing spaceId in headers");
@@ -114,9 +116,62 @@ export default applyMiddleware({
     );
   }
 
+  // Get previous pairings to avoid repeats
+  const previousPairings: Set<string> = new Set();
+  if (!allowRepeats) {
+    const { data: pairingsData, error: pairingsError } =
+      await executeGetPreviousPairingsQuery({
+        space_id: spaceId,
+      });
+
+    if (pairingsError) {
+      console.error("Error fetching previous pairings:", pairingsError);
+    } else if (pairingsData?.chat_room) {
+      // Build set of previous pairings
+      for (const room of pairingsData.chat_room) {
+        const profileIds = room.profile_to_chat_rooms
+          .map((p) => p.profile_id)
+          .filter((id): id is string => id !== canopyBotProfileId)
+          .sort();
+
+        // Create pair keys for all combinations in this room
+        for (let i = 0; i < profileIds.length; i++) {
+          for (let j = i + 1; j < profileIds.length; j++) {
+            const pairKey = `${profileIds[i]},${profileIds[j]}`;
+            previousPairings.add(pairKey);
+          }
+        }
+      }
+    }
+    console.log(`Found ${previousPairings.size} previous pairings`);
+  }
+
   // At this point, we have decided to proceed with creating the group chats.
-  const profileGroups = groupIntoGroupsOfN(allProfiles, groupSize);
-  console.log("Grouped profiles");
+  let profileGroups: typeof allProfiles[] = [];
+
+  if (allowRepeats || previousPairings.size === 0) {
+    // Use simple random grouping if allowing repeats or no history
+    profileGroups = groupIntoGroupsOfN(allProfiles, groupSize);
+    console.log("Grouped profiles (random)");
+  } else {
+    // Use greedy algorithm with constraint checking
+    const result = await createGroupsWithConstraints(
+      allProfiles,
+      groupSize,
+      previousPairings,
+      5000
+    );
+
+    if (!result.success) {
+      throw makeApiFail(
+        "Unable to create groups without repeating previous pairings. " +
+          "Try enabling 'Allow repeat pairings' option."
+      );
+    }
+
+    profileGroups = result.groups;
+    console.log("Grouped profiles (constraint-based)");
+  }
 
   const { data: chatIntroData, error: insertChatIntroError } =
     await executeInsertChatIntroMutation({
@@ -270,4 +325,147 @@ function groupIntoGroupsOfN<T>(arr: T[], n: number): T[][] {
   }
 
   return groups;
+}
+
+/**
+ * Creates groups while avoiding previous pairings using a greedy algorithm with backtracking
+ */
+async function createGroupsWithConstraints<T extends { id: string }>(
+  profiles: T[],
+  groupSize: number,
+  previousPairings: Set<string>,
+  timeoutMs: number
+): Promise<{ success: boolean; groups: T[][] }> {
+  const startTime = Date.now();
+  const groups: T[][] = [];
+  const usedProfiles = new Set<string>();
+
+  // Helper function to check if two profiles can be paired
+  const canPair = (profile1Id: string, profile2Id: string): boolean => {
+    const pairKey = [profile1Id, profile2Id].sort().join(",");
+    return !previousPairings.has(pairKey);
+  };
+
+  // Helper function to check if a profile can join a group
+  const canJoinGroup = (profileId: string, group: T[]): boolean => {
+    for (const member of group) {
+      if (!canPair(profileId, member.id)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  // Shuffle profiles for randomness
+  const shuffled = [...profiles].sort(() => Math.random() - 0.5);
+
+  // Try to create groups greedily with backtracking
+  const tryCreateGroups = (): boolean => {
+    // Check timeout
+    if (Date.now() - startTime > timeoutMs) {
+      return false;
+    }
+
+    // If all profiles are used, we're done
+    const remainingProfiles = shuffled.filter((p) => !usedProfiles.has(p.id));
+    if (remainingProfiles.length === 0) {
+      return true;
+    }
+
+    // If we can't form a complete group with remaining profiles, redistribute
+    if (remainingProfiles.length < groupSize) {
+      // Try to redistribute remaining profiles to existing groups
+      for (const profile of remainingProfiles) {
+        let placed = false;
+        for (const group of groups) {
+          if (group.length < groupSize + 1 && canJoinGroup(profile.id, group)) {
+            group.push(profile);
+            usedProfiles.add(profile.id);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) {
+          // If we can't place this profile anywhere, backtrack
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // Try to form a new group
+    const currentGroup: T[] = [];
+    const candidateProfiles = [...remainingProfiles];
+
+    // Start with the first available profile
+    const firstProfile = candidateProfiles.shift();
+    if (!firstProfile) {
+      return false;
+    }
+    currentGroup.push(firstProfile);
+    usedProfiles.add(firstProfile.id);
+
+    // Try to fill the group
+    for (let i = 1; i < groupSize; i++) {
+      let found = false;
+
+      for (let j = 0; j < candidateProfiles.length; j++) {
+        const candidate = candidateProfiles[j];
+        if (
+          !usedProfiles.has(candidate.id) &&
+          canJoinGroup(candidate.id, currentGroup)
+        ) {
+          currentGroup.push(candidate);
+          usedProfiles.add(candidate.id);
+          candidateProfiles.splice(j, 1);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        // Couldn't complete this group, backtrack
+        for (const member of currentGroup) {
+          usedProfiles.delete(member.id);
+        }
+        return false;
+      }
+    }
+
+    // Successfully created a group
+    groups.push(currentGroup);
+
+    // Recursively try to create more groups
+    if (tryCreateGroups()) {
+      return true;
+    }
+
+    // Backtrack if recursive call failed
+    groups.pop();
+    for (const member of currentGroup) {
+      usedProfiles.delete(member.id);
+    }
+    return false;
+  };
+
+  // Try multiple times with different shuffles
+  const maxAttempts = 10;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (Date.now() - startTime > timeoutMs) {
+      break;
+    }
+
+    // Reset state
+    groups.length = 0;
+    usedProfiles.clear();
+
+    // Reshuffle for different starting configuration
+    shuffled.sort(() => Math.random() - 0.5);
+
+    if (tryCreateGroups()) {
+      return { success: true, groups };
+    }
+  }
+
+  return { success: false, groups: [] };
 }
