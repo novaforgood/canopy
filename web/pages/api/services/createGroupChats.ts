@@ -159,7 +159,7 @@ export default applyMiddleware({
       allProfiles,
       groupSize,
       previousPairings,
-      30000 // 30 second timeout
+      5000
     );
 
     if (!result.success) {
