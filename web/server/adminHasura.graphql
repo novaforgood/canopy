@@ -433,3 +433,15 @@ query GetUnreadMessagesPerChatRoom($since: timestamptz!) {
     }
   }
 }
+
+query GetPreviousPairings($space_id: uuid!) {
+  chat_room(where: { chat_intro_id: { _is_null: false } }) {
+    id
+    chat_intro_id
+    profile_to_chat_rooms(
+      where: { profile: { space_id: { _eq: $space_id } } }
+    ) {
+      profile_id
+    }
+  }
+}
